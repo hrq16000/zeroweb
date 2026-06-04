@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getFunnel, resetFunnel } from "@/lib/analytics";
+import { getFunnel, resetFunnel, EXPECTED_EVENT_SCHEMA, CONVERSION_EVENTS } from "@/lib/analytics";
 import { getAllAssignments, resetAssignments } from "@/lib/ab-testing";
 
 export const Route = createFileRoute("/qa-events")({

@@ -114,6 +114,11 @@ function PainelPage() {
             <Rate label="WhatsApp → Formulário" value={waToForm} />
           </div>
 
+          {/* A/B comparison */}
+          <div className="mt-10">
+            <ABComparison data={data} />
+          </div>
+
           {/* By page */}
           <div className="mt-10 grid lg:grid-cols-2 gap-6">
             <Card title="Conversões por página">
@@ -236,4 +241,69 @@ function toneBar(t: "primary" | "emerald" | "accent" | "violet") {
     accent: "bg-accent",
     violet: "bg-violet-500",
   }[t];
+}
+
+function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
+  const rows = Object.entries(data.byVariant ?? {}).map(([key, ev]) => {
+    const cta = ev["cta_click"] ?? 0;
+    const wa = ev["whatsapp_click"] ?? 0;
+    const form = ev["form_submit"] ?? 0;
+    const score = cta + wa * 3 + form * 5; // weighted conversion score
+    return { key, cta, wa, form, score };
+  });
+  const best = rows.length ? rows.reduce((a, b) => (a.score > b.score ? a : b)) : null;
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="flex items-baseline justify-between flex-wrap gap-2">
+        <h3 className="font-semibold font-display">Comparação A/B · Hero × CTA</h3>
+        <span className="text-xs text-muted-foreground">
+          Pontuação ponderada: 1·CTA + 3·WhatsApp + 5·Form
+        </span>
+      </div>
+      {rows.length === 0 ? (
+        <p className="mt-4 text-sm text-muted-foreground">
+          Sem dados ainda. Interaja com o site para gerar variantes.
+        </p>
+      ) : (
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                <th className="py-2 px-2">Combinação de variantes</th>
+                <th className="py-2 px-2 text-right">CTA</th>
+                <th className="py-2 px-2 text-right">WhatsApp</th>
+                <th className="py-2 px-2 text-right">Form</th>
+                <th className="py-2 px-2 text-right">Pontuação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => {
+                const isBest = best && r.key === best.key && r.score > 0;
+                return (
+                  <tr
+                    key={r.key}
+                    className={`border-t border-border ${isBest ? "bg-emerald-500/5" : ""}`}
+                  >
+                    <td className="py-2 px-2 font-mono text-xs">
+                      {r.key}
+                      {isBest ? (
+                        <span className="ml-2 rounded-full bg-emerald-500 text-white text-[10px] px-2 py-0.5 font-semibold">
+                          MELHOR
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2 px-2 text-right tabular-nums">{r.cta}</td>
+                    <td className="py-2 px-2 text-right tabular-nums">{r.wa}</td>
+                    <td className="py-2 px-2 text-right tabular-nums">{r.form}</td>
+                    <td className="py-2 px-2 text-right tabular-nums font-semibold">{r.score}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
