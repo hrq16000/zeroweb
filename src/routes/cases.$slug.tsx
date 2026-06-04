@@ -126,21 +126,17 @@ function CasePage() {
                   Visitar {c.domain}
                   <ExternalLink className="w-4 h-4" />
                 </a>
-                <a
-                  href={whatsappUrl(
-                    `Olá! Vim do case ${c.brand} no site da 0WEB e quero um projeto parecido.`,
-                    `case_${c.slug}`,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() =>
-                    trackConversion("whatsapp_click", { location: "case_hero", slug: c.slug })
-                  }
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackConversion("whatsapp_click", { location: "case_hero", slug: c.slug });
+                    openFunnel(`case_${c.slug}`);
+                  }}
                   className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
                 >
                   <MessageCircle className="w-4 h-4 text-accent" />
                   Quero algo parecido
-                </a>
+                </button>
               </div>
             </div>
 
