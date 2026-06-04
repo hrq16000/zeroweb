@@ -6,6 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { trackConversion } from "@/lib/analytics";
+import { persistLead } from "@/lib/persistence";
 import { whatsappUrl } from "@/lib/site-config";
 
 const TITLE = "Contato 0WEB · Fale com a gente · WhatsApp, e-mail e formulário";
@@ -126,6 +127,16 @@ function ContatoPage() {
                 e.preventDefault();
                 const data = new FormData(e.currentTarget);
                 trackConversion("form_submit", { form_name: "contato", page: "/contato" });
+                void persistLead({
+                  name: String(data.get("name") || ""),
+                  email: String(data.get("email") || ""),
+                  phone: String(data.get("phone") || ""),
+                  source: "contato_form",
+                  payload: {
+                    company: String(data.get("company") || ""),
+                    message: String(data.get("message") || ""),
+                  },
+                });
                 window.open(
                   whatsappUrl(
                     `Olá! Sou ${data.get("name")} (${data.get("company") || "—"}). Mensagem: ${data.get("message")}`,

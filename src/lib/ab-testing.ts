@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "./analytics";
+import { bumpExperiment } from "./persistence";
 
 const KEY = "0web_ab_v1";
 const OVERRIDE_KEY = "0web_ab_winner_v1";
@@ -61,6 +62,7 @@ export function useExperiment<T extends string>(experiment: string, variants: re
       const picked = assignVariant(experiment, variants);
       setV(picked);
       trackEvent("experiment_view", { experiment, variant: picked });
+      bumpExperiment(experiment, picked, { impressions: 1 });
     };
     apply();
     const onOv = () => setV(assignVariant(experiment, variants));
