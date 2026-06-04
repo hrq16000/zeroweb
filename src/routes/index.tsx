@@ -15,6 +15,9 @@ import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { ScrollTracker } from "@/components/site/ScrollTracker";
+import { ConsentBanner } from "@/components/site/ConsentBanner";
+import { SocialProof, TrustBar } from "@/components/site/SocialProof";
+import { ExitIntent } from "@/components/site/ExitIntent";
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital para Empresas";
 const DESC =
@@ -94,6 +97,7 @@ function Index() {
       <Header />
       <main>
         <Hero />
+        <TrustBar />
         <Problems />
         <Solutions />
         <AISection />
@@ -108,6 +112,9 @@ function Index() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <SocialProof />
+      <ExitIntent />
+      <ConsentBanner />
     </div>
   );
 }

@@ -59,7 +59,7 @@ export function Header() {
 
         <div className="hidden lg:flex items-center gap-3">
           <a
-            href={whatsappUrl()}
+            href={whatsappUrl(undefined, "header")}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackConversion("whatsapp_click", { location: "header" })}

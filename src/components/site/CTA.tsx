@@ -31,6 +31,7 @@ export function CTA() {
                 window.open(
                   whatsappUrl(
                     `Olá! Sou ${data.get("name") || ""} (${data.get("company") || "—"}). Quero solicitar um diagnóstico.`,
+                    "final_cta_form",
                   ),
                   "_blank",
                 );
@@ -66,7 +67,7 @@ export function CTA() {
 
             <div className="mt-5">
               <a
-                href={whatsappUrl()}
+                href={whatsappUrl(undefined, "final_cta")}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {
