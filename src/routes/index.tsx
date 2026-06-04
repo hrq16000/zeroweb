@@ -63,7 +63,7 @@ export const Route = createFileRoute("/")({
               "@type": "LocalBusiness",
               name: "0WEB",
               url: "https://0web.com.br",
-              telephone: "+55-00-00000-0000",
+              telephone: "+55-41-99745-2053",
               priceRange: "$$",
               areaServed: "BR",
             },

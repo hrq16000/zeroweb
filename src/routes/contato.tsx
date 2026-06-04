@@ -18,9 +18,9 @@ export const Route = createFileRoute("/contato")({
       { name: "description", content: DESC },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
-      { property: "og:url", content: "https://grow-evolution-engine.lovable.app/contato" },
+      { property: "og:url", content: "https://0web.com.br/contato" },
     ],
-    links: [{ rel: "canonical", href: "https://grow-evolution-engine.lovable.app/contato" }],
+    links: [{ rel: "canonical", href: "https://0web.com.br/contato" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/contato")({
             name: "0WEB",
             telephone: "+55-41-99745-2053",
             email: "contato@0web.com.br",
-            url: "https://grow-evolution-engine.lovable.app/",
+            url: "https://0web.com.br/",
             contactPoint: [
               {
                 "@type": "ContactPoint",

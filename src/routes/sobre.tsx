@@ -17,9 +17,9 @@ export const Route = createFileRoute("/sobre")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://grow-evolution-engine.lovable.app/sobre" },
+      { property: "og:url", content: "https://0web.com.br/sobre" },
     ],
-    links: [{ rel: "canonical", href: "https://grow-evolution-engine.lovable.app/sobre" }],
+    links: [{ rel: "canonical", href: "https://0web.com.br/sobre" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/sobre")({
             name: "0WEB",
             foundingDate: "2006",
             taxID: "41.723.708/0001-58",
-            url: "https://grow-evolution-engine.lovable.app/",
+            url: "https://0web.com.br/",
           },
         }),
       },

@@ -12,9 +12,9 @@ export const Route = createFileRoute("/termos")({
       { name: "description", content: DESC },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
-      { property: "og:url", content: "https://grow-evolution-engine.lovable.app/termos" },
+      { property: "og:url", content: "https://0web.com.br/termos" },
     ],
-    links: [{ rel: "canonical", href: "https://grow-evolution-engine.lovable.app/termos" }],
+    links: [{ rel: "canonical", href: "https://0web.com.br/termos" }],
   }),
   component: TermosPage,
 });
