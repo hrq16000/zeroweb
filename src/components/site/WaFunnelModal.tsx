@@ -28,7 +28,8 @@ export function WaFunnelProvider({ children }: { children: ReactNode }) {
     setLocation(loc);
     setOpen(true);
     trackEvent("wa_funnel_open", { location: loc });
-  }, []);
+    void persistWaFunnelOpen(cfg.steps.length);
+  }, [cfg.steps.length]);
 
   return (
     <FunnelCtx.Provider value={{ open }}>
