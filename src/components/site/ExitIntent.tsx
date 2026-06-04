@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "motion/react";
 import { Gift, X, ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const STORAGE_KEY = "0web_exit_seen_v1";
 
 export function ExitIntent() {
   const [open, setOpen] = useState(false);
+  const { open: openFunnel } = useWaFunnel();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
