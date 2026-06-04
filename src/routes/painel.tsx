@@ -13,6 +13,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
+import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
@@ -249,6 +250,13 @@ function toneBar(t: "primary" | "emerald" | "accent" | "violet") {
 }
 
 function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
+  const [overrides, setOv] = useState(() => getOverrides());
+  useEffect(() => {
+    const on = () => setOv(getOverrides());
+    window.addEventListener("0web:ab-override", on);
+    return () => window.removeEventListener("0web:ab-override", on);
+  }, []);
+
   const rows = Object.entries(data.byVariant ?? {}).map(([key, ev]) => {
     const cta = ev["cta_click"] ?? 0;
     const wa = ev["whatsapp_click"] ?? 0;
@@ -264,6 +272,10 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
   const bestCta = bestBy("cta");
   const bestWa = bestBy("wa");
   const bestForm = bestBy("form");
+
+  const winners = computeWinners(data.byVariant ?? {});
+  const hasWinners = Object.keys(winners).length > 0;
+  const overrideActive = Object.keys(overrides).length > 0;
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
