@@ -4,6 +4,7 @@ import { Menu, X, MessageCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import logoAsset from "@/assets/logo-0web.png.asset.json";
 
 const nav = [
   { href: "/#inicio", label: "Início" },
@@ -34,14 +35,22 @@ export function Header() {
         scrolled ? "glass shadow-elegant" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between h-16 lg:h-20">
-        <Link to="/" className="flex items-center gap-2 font-display font-bold text-xl">
-          <span className="grid place-items-center w-9 h-9 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow-primary">
-            0
-          </span>
-          <span className="tracking-tight">
-            0<span className="text-gradient">WEB</span>
-          </span>
+      <div
+        className={`mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between transition-all duration-300 ${
+          scrolled ? "h-14 lg:h-16" : "h-20 lg:h-28"
+        }`}
+      >
+        <Link to="/" aria-label="0WEB — Início" className="flex items-center">
+          <img
+            src={logoAsset.url}
+            alt="0WEB — do zero ao digital"
+            width={920}
+            height={250}
+            className={`w-auto transition-all duration-300 ${
+              scrolled ? "h-8 lg:h-10" : "h-12 lg:h-20"
+            }`}
+            fetchPriority="high"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">

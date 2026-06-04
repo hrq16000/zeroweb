@@ -13,9 +13,9 @@ export const Route = createFileRoute("/politica-privacidade")({
       { name: "robots", content: "index,follow" },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
-      { property: "og:url", content: "https://grow-evolution-engine.lovable.app/politica-privacidade" },
+      { property: "og:url", content: "https://0web.com.br/politica-privacidade" },
     ],
-    links: [{ rel: "canonical", href: "https://grow-evolution-engine.lovable.app/politica-privacidade" }],
+    links: [{ rel: "canonical", href: "https://0web.com.br/politica-privacidade" }],
   }),
   component: PoliticaPage,
 });

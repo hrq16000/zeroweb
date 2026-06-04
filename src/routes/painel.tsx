@@ -12,6 +12,8 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
+import { AnalyticsIdsAdmin } from "@/components/site/AnalyticsIdsAdmin";
+import { PainelGate } from "@/components/site/PainelGate";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
 import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
 
@@ -24,9 +26,17 @@ export const Route = createFileRoute("/painel")({
     ],
     links: [{ rel: "canonical", href: "/painel" }],
   }),
-  component: PainelPage,
+  component: PainelGated,
   ssr: false,
 });
+
+function PainelGated() {
+  return (
+    <PainelGate>
+      <PainelPage />
+    </PainelGate>
+  );
+}
 
 function PainelPage() {
   const [data, setData] = useState(() => getFunnel());
@@ -129,6 +139,10 @@ function PainelPage() {
             <Card title="Conversões por categoria (blog/setor)">
               <Table rows={tableRows(data.byCategory)} emptyMsg="Sem categorias rastreadas ainda." />
             </Card>
+          </div>
+
+          <div className="mt-10">
+            <AnalyticsIdsAdmin />
           </div>
 
           <div className="mt-10">

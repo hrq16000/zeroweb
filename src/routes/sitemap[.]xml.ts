@@ -3,8 +3,7 @@ import type {} from "@tanstack/react-start";
 import { posts } from "@/lib/blog-data";
 import { cases } from "@/lib/cases-data";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+const BASE_URL = "https://0web.com.br";
 
 interface SitemapEntry {
   path: string;
