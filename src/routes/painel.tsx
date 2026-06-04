@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
 
 export const Route = createFileRoute("/painel")({
@@ -127,6 +128,10 @@ function PainelPage() {
             <Card title="Conversões por categoria (blog/setor)">
               <Table rows={tableRows(data.byCategory)} emptyMsg="Sem categorias rastreadas ainda." />
             </Card>
+          </div>
+
+          <div className="mt-10">
+            <WaFunnelAdmin />
           </div>
 
           <div className="mt-10 rounded-2xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
