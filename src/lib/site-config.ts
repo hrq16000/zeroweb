@@ -1,12 +1,43 @@
 // Centralized site configuration.
-// Replace the GA4_ID and GTM_ID with your real IDs.
-// They are public (client-side) identifiers — safe to commit.
+// GA4/GTM IDs default to placeholders here and can be overridden at runtime
+// from the admin painel — values persist in localStorage and the analytics
+// scripts are injected client-side by <AnalyticsBootstrap/>.
 
 export const SITE = {
   GA4_ID: "G-XXXXXXXXXX",
   GTM_ID: "GTM-XXXXXXX",
   domain: "0web.com.br",
+  origin: "https://0web.com.br",
 };
+
+const LS_GA4 = "0web_ga4_id";
+const LS_GTM = "0web_gtm_id";
+
+export function isValidGa4(id: string | null | undefined) {
+  return !!id && /^G-[A-Z0-9]{6,}$/.test(id);
+}
+export function isValidGtm(id: string | null | undefined) {
+  return !!id && /^GTM-[A-Z0-9]{5,}$/.test(id);
+}
+
+export function getGa4Id(): string {
+  if (typeof window === "undefined") return SITE.GA4_ID;
+  const v = localStorage.getItem(LS_GA4);
+  return isValidGa4(v) ? (v as string) : SITE.GA4_ID;
+}
+export function getGtmId(): string {
+  if (typeof window === "undefined") return SITE.GTM_ID;
+  const v = localStorage.getItem(LS_GTM);
+  return isValidGtm(v) ? (v as string) : SITE.GTM_ID;
+}
+export function setAnalyticsIds(ga4: string, gtm: string) {
+  if (typeof window === "undefined") return;
+  if (ga4) localStorage.setItem(LS_GA4, ga4.trim());
+  else localStorage.removeItem(LS_GA4);
+  if (gtm) localStorage.setItem(LS_GTM, gtm.trim());
+  else localStorage.removeItem(LS_GTM);
+  window.dispatchEvent(new Event("0web:analytics-ids"));
+}
 
 // WhatsApp configuration (Curitiba/PR)
 export const WHATSAPP = {
@@ -15,14 +46,12 @@ export const WHATSAPP = {
     "Olá! Vim pelo site 0WEB e quero solicitar um diagnóstico gratuito para minha empresa.",
 };
 
-// Default UTM source/medium for outbound conversion links
 export const DEFAULT_UTM = {
   utm_source: "site",
   utm_medium: "0web",
   utm_campaign: "diagnostico",
 };
 
-/** Reads UTMs already on the page URL (campaign attribution) and merges defaults. */
 export function getActiveUtms(): Record<string, string> {
   if (typeof window === "undefined") return { ...DEFAULT_UTM };
   const url = new URL(window.location.href);
@@ -34,7 +63,6 @@ export function getActiveUtms(): Record<string, string> {
   return utms;
 }
 
-/** Append UTMs to any URL (preserves existing query). */
 export function withUtms(href: string, extra: Record<string, string> = {}) {
   const utms = { ...getActiveUtms(), ...extra };
   try {
