@@ -149,18 +149,16 @@ export function DiagnosticForm() {
                         ? "Bom começo, mas há grandes ganhos possíveis em conversão e SEO."
                         : "Excelente base — podemos escalar com IA e automação."}
                   </p>
-                  <a
-                    href={whatsappUrl(
-                      `Olá! Sou ${form.name} (${form.company}). Fiz o diagnóstico no site e meu score foi ${score}/100. Quero o plano completo.`,
-                      "diagnostico_form",
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackConversion("whatsapp_click", { location: "diagnostic_result", score })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      trackConversion("whatsapp_click", { location: "diagnostic_result", score });
+                      openFunnel("diagnostic_result");
+                    }}
                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
                   >
                     Solicitar Diagnóstico Completo <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </button>
                 </div>
                 <div className="space-y-3">
                   {[
