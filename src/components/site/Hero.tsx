@@ -36,6 +36,7 @@ export function Hero() {
   const copy = HERO_VARIANTS[heroVariant];
   const cta = CTA_VARIANTS[ctaVariant];
   const CtaIcon = cta.icon;
+  const { open: openFunnel } = useWaFunnel();
 
   return (
     <section id="inicio" className="relative pt-32 lg:pt-40 pb-24 bg-hero overflow-hidden">
