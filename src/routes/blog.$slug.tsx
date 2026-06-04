@@ -161,6 +161,7 @@ function PostPage() {
                   key={p.slug}
                   to="/blog/$slug"
                   params={{ slug: p.slug }}
+                  preload="render"
                   className="rounded-2xl bg-card border border-border p-5 hover:shadow-elegant transition"
                 >
                   <div className="text-xs uppercase tracking-wider text-primary">{p.category}</div>
