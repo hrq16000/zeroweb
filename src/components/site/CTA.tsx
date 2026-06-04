@@ -1,8 +1,10 @@
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 export function CTA() {
+  const { open } = useWaFunnel();
   return (
     <section id="contato" className="py-24">
       <div className="mx-auto max-w-6xl px-5 lg:px-8">
@@ -66,19 +68,18 @@ export function CTA() {
             </form>
 
             <div className="mt-5">
-              <a
-                href={whatsappUrl(undefined, "final_cta")}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
                 onClick={() => {
                   trackConversion("whatsapp_click", { location: "final_cta" });
                   trackEvent("cta_click", { label: "falar_whatsapp", location: "final_cta" });
+                  open("final_cta");
                 }}
                 className="inline-flex items-center gap-2 rounded-full glass-dark text-background font-semibold px-6 py-3.5 hover:bg-background/10 transition"
               >
                 <MessageCircle className="w-4 h-4 text-accent" />
                 Falar direto no WhatsApp
-              </a>
+              </button>
             </div>
           </div>
         </div>
