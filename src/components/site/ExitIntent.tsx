@@ -145,16 +145,18 @@ export function ExitIntent() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              <a
-                href={whatsappUrl(undefined, "exit_intent")}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "exit_intent" })}
+              <button
+                type="button"
+                onClick={() => {
+                  trackConversion("whatsapp_click", { location: "exit_intent" });
+                  openFunnel("exit_intent");
+                  setOpen(false);
+                }}
                 className="inline-flex items-center justify-center gap-2 text-sm font-medium text-foreground/70 hover:text-foreground"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-500" />
                 Prefiro falar agora no WhatsApp
-              </a>
+              </button>
 
               <p className="text-[11px] text-muted-foreground text-center">
                 Seus dados são protegidos pela LGPD. Sem spam.
