@@ -61,11 +61,25 @@ export const Route = createFileRoute("/")({
             },
             {
               "@type": "LocalBusiness",
+              "@id": "https://0web.com.br/#localbusiness",
               name: "0WEB",
               url: "https://0web.com.br",
               telephone: "+55-41-99745-2053",
+              email: "contato@0web.com.br",
               priceRange: "$$",
-              areaServed: "BR",
+              areaServed: { "@type": "Country", name: "BR" },
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Curitiba",
+                addressRegion: "PR",
+                addressCountry: "BR",
+              },
+              openingHoursSpecification: [{
+                "@type": "OpeningHoursSpecification",
+                dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+                opens: "09:00",
+                closes: "19:00",
+              }],
             },
             {
               "@type": "WebSite",
