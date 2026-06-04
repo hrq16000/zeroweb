@@ -18,6 +18,7 @@ type Key = (typeof checks)[number]["key"];
 export function DiagnosticForm() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [form, setForm] = useState({ name: "", company: "", whatsapp: "", email: "", site: "" });
+  const { open: openFunnel } = useWaFunnel();
   const [answers, setAnswers] = useState<Record<Key, boolean>>({
     site: false, gmb: false, ads: false, seo: false, auto: false,
   });
