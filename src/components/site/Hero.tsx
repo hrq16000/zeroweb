@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
-import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity, Zap } from "lucide-react";
+import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
 import { useExperiment } from "@/lib/ab-testing";
+import heroDashboard from "@/assets/hero-dashboard.jpg";
 
 const stats = [
   { label: "Projetos", value: "+500" },
@@ -127,97 +128,34 @@ export function Hero() {
           transition={{ delay: 0.2 }}
           className="lg:col-span-5 relative"
         >
-          <DashboardMockup />
+          <div className="relative">
+            <div className="absolute -inset-8 bg-gradient-primary opacity-25 blur-3xl rounded-full pointer-events-none" />
+            <picture>
+              <img
+                src={heroDashboard}
+                alt="Dashboard 0WEB mostrando crescimento de tráfego orgânico e leads qualificados"
+                width={1280}
+                height={960}
+                fetchPriority="high"
+                decoding="async"
+                sizes="(min-width: 1024px) 480px, 100vw"
+                className="relative w-full h-auto rounded-3xl shadow-elegant border border-border/40"
+              />
+            </picture>
+            <div className="absolute -bottom-4 -left-4 sm:-left-6 glass rounded-2xl px-4 py-3 shadow-elegant hidden sm:flex items-center gap-3">
+              <span className="grid place-items-center w-9 h-9 rounded-full bg-emerald-500/15 text-emerald-600 font-bold">↑</span>
+              <div>
+                <p className="text-xs text-muted-foreground">Tráfego orgânico</p>
+                <p className="text-lg font-bold font-display">+312%</p>
+              </div>
+            </div>
+            <div className="absolute -top-3 -right-3 sm:-right-6 glass rounded-2xl px-4 py-3 shadow-elegant hidden sm:block">
+              <p className="text-xs text-muted-foreground">Leads/mês</p>
+              <p className="text-lg font-bold font-display text-gradient">2.8k</p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function DashboardMockup() {
-  return (
-    <div className="relative">
-      <div className="absolute -inset-8 bg-gradient-primary opacity-20 blur-3xl rounded-full" />
-      <div className="relative glass rounded-3xl p-6 shadow-elegant">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-destructive/70" />
-            <span className="w-2.5 h-2.5 rounded-full bg-accent/70" />
-            <span className="w-2.5 h-2.5 rounded-full bg-secondary/70" />
-          </div>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-            0web · dashboard
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <MetricCard icon={<TrendingUp className="w-4 h-4" />} label="Conversão" value="+184%" tone="primary" />
-          <MetricCard icon={<Users className="w-4 h-4" />} label="Leads/mês" value="2.8k" tone="accent" />
-        </div>
-
-        <div className="mt-3 rounded-2xl bg-foreground text-background p-5">
-          <div className="flex items-center justify-between text-xs text-background/70">
-            <span className="inline-flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-accent" />
-              Tráfego orgânico
-            </span>
-            <span>últimos 30 dias</span>
-          </div>
-          <svg viewBox="0 0 300 80" className="mt-3 w-full h-20">
-            <defs>
-              <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="oklch(0.83 0.17 170)" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="oklch(0.83 0.17 170)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M0,60 C30,45 50,55 80,35 C110,15 140,40 170,28 C200,18 230,30 260,12 L300,8 L300,80 L0,80 Z"
-              fill="url(#g)"
-            />
-            <path
-              d="M0,60 C30,45 50,55 80,35 C110,15 140,40 170,28 C200,18 230,30 260,12 L300,8"
-              fill="none"
-              stroke="oklch(0.83 0.17 170)"
-              strokeWidth="2"
-            />
-          </svg>
-          <div className="mt-2 text-2xl font-bold font-display">+312%</div>
-        </div>
-
-        <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-          {["LCP 1.1s", "SEO 100", "A11y 98"].map((m) => (
-            <div key={m} className="rounded-xl bg-muted py-2 text-[11px] font-medium">
-              {m}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MetricCard({
-  icon,
-  label,
-  value,
-  tone,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  tone: "primary" | "accent";
-}) {
-  return (
-    <div className="rounded-2xl bg-muted p-4">
-      <div
-        className={`inline-flex items-center justify-center w-8 h-8 rounded-lg ${
-          tone === "primary" ? "bg-primary/10 text-primary" : "bg-accent/20 text-accent-foreground"
-        }`}
-      >
-        {icon}
-      </div>
-      <div className="mt-3 text-xs text-muted-foreground">{label}</div>
-      <div className="text-xl font-bold font-display">{value}</div>
-    </div>
   );
 }

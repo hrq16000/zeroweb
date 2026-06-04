@@ -1,13 +1,20 @@
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import nexa from "@/assets/portfolio-nexa.jpg";
+import lumen from "@/assets/portfolio-lumen.jpg";
+import pulse from "@/assets/portfolio-pulse.jpg";
+import orbita from "@/assets/portfolio-orbita.jpg";
+import volt from "@/assets/portfolio-volt.jpg";
+import mira from "@/assets/portfolio-mira.jpg";
 
 const projects = [
-  { title: "Nexa Health", cat: "Sistema", color: "from-[oklch(0.58_0.24_262)] to-[oklch(0.78_0.14_220)]" },
-  { title: "Lumen Store", cat: "E-commerce", color: "from-[oklch(0.83_0.17_170)] to-[oklch(0.58_0.24_262)]" },
-  { title: "Pulse Lab", cat: "Landing Page", color: "from-[oklch(0.78_0.14_220)] to-[oklch(0.83_0.17_170)]" },
-  { title: "Orbita Tech", cat: "Site Institucional", color: "from-[oklch(0.58_0.24_262)] to-[oklch(0.83_0.17_170)]" },
-  { title: "Volt Energia", cat: "Sistema", color: "from-[oklch(0.20_0.04_260)] to-[oklch(0.58_0.24_262)]" },
-  { title: "Mira Studio", cat: "Landing Page", color: "from-[oklch(0.83_0.17_170)] to-[oklch(0.78_0.14_220)]" },
+  { title: "Nexa Health", cat: "Sistema", img: nexa, href: "/contato" },
+  { title: "Lumen Store", cat: "E-commerce", img: lumen, href: "/contato" },
+  { title: "Pulse Lab", cat: "Landing Page", img: pulse, href: "/contato" },
+  { title: "Orbita Tech", cat: "Site Institucional", img: orbita, href: "/contato" },
+  { title: "Volt Energia", cat: "Sistema", img: volt, href: "/contato" },
+  { title: "Mira Studio", cat: "Landing Page", img: mira, href: "/contato" },
 ];
 
 export function Portfolio() {
@@ -30,28 +37,39 @@ export function Portfolio() {
 
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((p, i) => (
-            <motion.a
+            <motion.div
               key={p.title}
-              href="#"
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-80px" }}
               transition={{ delay: (i % 3) * 0.05 }}
-              className="group relative aspect-[4/5] rounded-3xl overflow-hidden border border-border"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${p.color}`} />
-              <div className="absolute inset-0 bg-mesh opacity-50 mix-blend-overlay" />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/10 to-transparent" />
+              <Link
+                to={p.href}
+                className="group relative block aspect-[4/5] rounded-3xl overflow-hidden border border-border bg-muted"
+              >
+                <img
+                  src={p.img}
+                  alt={`${p.title} — projeto de ${p.cat.toLowerCase()} desenvolvido pela 0WEB`}
+                  width={800}
+                  height={1000}
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/10 to-transparent" />
 
-              <div className="absolute top-4 right-4 grid place-items-center w-10 h-10 rounded-full glass text-foreground translate-x-2 -translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition">
-                <ArrowUpRight className="w-4 h-4" />
-              </div>
+                <div className="absolute top-4 right-4 grid place-items-center w-10 h-10 rounded-full glass text-foreground translate-x-2 -translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition">
+                  <ArrowUpRight className="w-4 h-4" />
+                </div>
 
-              <div className="absolute bottom-0 inset-x-0 p-6 text-background">
-                <div className="text-xs uppercase tracking-wider opacity-80">{p.cat}</div>
-                <div className="mt-1 text-2xl font-bold font-display">{p.title}</div>
-              </div>
-            </motion.a>
+                <div className="absolute bottom-0 inset-x-0 p-6 text-background">
+                  <div className="text-xs uppercase tracking-wider opacity-80">{p.cat}</div>
+                  <div className="mt-1 text-2xl font-bold font-display">{p.title}</div>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>

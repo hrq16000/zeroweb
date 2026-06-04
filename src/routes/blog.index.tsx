@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { posts, categories } from "@/lib/blog-data";
+import { coverForCategory } from "@/components/site/Blog";
 import { ArrowUpRight } from "lucide-react";
 
 const TITLE = "Blog 0WEB · Marketing, SEO, IA e Tecnologia para empresas";
@@ -114,9 +115,18 @@ function BlogIndex() {
                 params={{ slug: p.slug }}
                 className="group rounded-3xl bg-card border border-border overflow-hidden hover:shadow-elegant transition"
               >
-                <div className="aspect-[16/10] relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-primary" />
-                  <div className="absolute inset-0 bg-mesh opacity-60 mix-blend-overlay" />
+                <div className="aspect-[16/10] relative overflow-hidden bg-muted">
+                  <img
+                    src={coverForCategory(p.category)}
+                    alt={`Imagem ilustrativa: ${p.title}`}
+                    width={1280}
+                    height={800}
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
                   <div className="absolute top-4 left-4 rounded-full glass text-xs font-medium px-3 py-1">
                     {p.category}
                   </div>

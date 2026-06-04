@@ -1,6 +1,18 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { posts } from "@/lib/blog-data";
+import blogSeo from "@/assets/blog-seo.jpg";
+import blogIa from "@/assets/blog-ia.jpg";
+import blogMarketing from "@/assets/blog-marketing.jpg";
+import blogSites from "@/assets/blog-sites.jpg";
+
+export function coverForCategory(cat: string): string {
+  const c = cat.toLowerCase();
+  if (c.includes("seo")) return blogSeo;
+  if (c.includes("inteligência") || c.includes("ia") || c.includes("automa")) return blogIa;
+  if (c.includes("site") || c.includes("negóc")) return blogSites;
+  return blogMarketing;
+}
 
 export function Blog() {
   const featured = posts.slice(0, 6);
@@ -27,9 +39,18 @@ export function Blog() {
               params={{ slug: p.slug }}
               className="group rounded-3xl bg-background border border-border overflow-hidden hover:shadow-elegant transition"
             >
-              <div className="aspect-[16/10] relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-primary" />
-                <div className="absolute inset-0 bg-mesh opacity-60 mix-blend-overlay" />
+              <div className="aspect-[16/10] relative overflow-hidden bg-muted">
+                <img
+                  src={coverForCategory(p.category)}
+                  alt={`Imagem ilustrativa: ${p.title}`}
+                  width={1280}
+                  height={800}
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
                 <div className="absolute top-4 left-4 rounded-full glass text-xs font-medium px-3 py-1">
                   {p.category}
                 </div>

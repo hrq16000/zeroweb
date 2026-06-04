@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { getPost, posts } from "@/lib/blog-data";
+import { coverForCategory } from "@/components/site/Blog";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -133,9 +134,17 @@ function PostPage() {
             <span>{post.readTime} de leitura</span>
           </div>
 
-          <div className="mt-10 aspect-[16/9] rounded-3xl overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-primary" />
-            <div className="absolute inset-0 bg-mesh opacity-60 mix-blend-overlay" />
+          <div className="mt-10 aspect-[16/9] rounded-3xl overflow-hidden relative bg-muted">
+            <img
+              src={coverForCategory(post.category)}
+              alt={`Capa do artigo: ${post.title}`}
+              width={1280}
+              height={720}
+              fetchPriority="high"
+              decoding="async"
+              sizes="(min-width: 1024px) 960px, 100vw"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
           </div>
 
           <div className="mt-10 text-lg leading-relaxed text-foreground/90 whitespace-pre-line">

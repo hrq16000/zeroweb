@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import heroDashboard from "@/assets/hero-dashboard.jpg";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { Problems } from "@/components/site/Problems";
@@ -44,6 +45,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "/" },
+      { rel: "preload", as: "image", href: heroDashboard, fetchpriority: "high" },
     ],
     scripts: [
       {
