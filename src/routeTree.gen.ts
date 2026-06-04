@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ServiceRouteImport } from './routes/$service'
@@ -22,6 +23,11 @@ import { Route as CityServiceRouteImport } from './routes/$city.$service'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaEventsRoute = QaEventsRouteImport.update({
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/$service'
     | '/painel'
     | '/qa-events'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/$city/$service'
     | '/blog/$slug'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/$service'
     | '/painel'
     | '/qa-events'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/$city/$service'
     | '/blog/$slug'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/$service'
     | '/painel'
     | '/qa-events'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/$city/$service'
     | '/blog/$slug'
@@ -140,6 +152,7 @@ export interface RootRouteChildren {
   ServiceRoute: typeof ServiceRoute
   PainelRoute: typeof PainelRoute
   QaEventsRoute: typeof QaEventsRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa-events': {
@@ -220,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServiceRoute: ServiceRoute,
   PainelRoute: PainelRoute,
   QaEventsRoute: QaEventsRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
