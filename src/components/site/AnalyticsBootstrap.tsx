@@ -3,7 +3,6 @@ import { getGa4Id, getGtmId, isValidGa4, isValidGtm } from "@/lib/site-config";
 
 declare global {
   interface Window {
-    dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
     __0web_analytics_loaded?: { ga4?: string; gtm?: string };
   }
@@ -19,12 +18,13 @@ export function AnalyticsBootstrap() {
       const loaded = window.__0web_analytics_loaded;
 
       // dataLayer + gtag shim + consent defaults
-      window.dataLayer = window.dataLayer || [];
-      if (!window.gtag) {
-        window.gtag = function gtag() {
-          // eslint-disable-next-line prefer-rest-params
-          window.dataLayer!.push(arguments);
+      const w = window as unknown as { dataLayer: unknown[]; gtag?: (...a: unknown[]) => void };
+      w.dataLayer = w.dataLayer || [];
+      if (!w.gtag) {
+        w.gtag = function gtag(...args: unknown[]) {
+          w.dataLayer.push(args);
         };
+        window.gtag = w.gtag;
         window.gtag("consent", "default", {
           ad_storage: "denied",
           ad_user_data: "denied",
