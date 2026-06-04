@@ -19,8 +19,12 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/blog" },
+      { name: "robots", content: "max-image-preview:large, max-snippet:-1" },
     ],
-    links: [{ rel: "canonical", href: "/blog" }],
+    links: [
+      { rel: "canonical", href: "/blog" },
+      { rel: "alternate", type: "application/rss+xml", title: "Blog 0WEB", href: "/rss.xml" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -29,11 +33,28 @@ export const Route = createFileRoute("/blog/")({
           "@type": "Blog",
           name: "Blog 0WEB",
           url: "/blog",
+          inLanguage: "pt-BR",
+          publisher: { "@type": "Organization", name: "0WEB" },
           blogPost: posts.map((p) => ({
             "@type": "BlogPosting",
             headline: p.title,
+            description: p.excerpt,
             datePublished: p.date,
+            articleSection: p.category,
             url: `/blog/${p.slug}`,
+          })),
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: posts.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `/blog/${p.slug}`,
+            name: p.title,
           })),
         }),
       },
