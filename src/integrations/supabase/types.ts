@@ -14,13 +14,219 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analytics_events: {
+        Row: {
+          created_at: string
+          cta_variant: string | null
+          device_type: string | null
+          event_name: string
+          hero_variant: string | null
+          id: string
+          location: string | null
+          metadata_json: Json | null
+          page: string | null
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          cta_variant?: string | null
+          device_type?: string | null
+          event_name: string
+          hero_variant?: string | null
+          id?: string
+          location?: string | null
+          metadata_json?: Json | null
+          page?: string | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          cta_variant?: string | null
+          device_type?: string | null
+          event_name?: string
+          hero_variant?: string | null
+          id?: string
+          location?: string | null
+          metadata_json?: Json | null
+          page?: string | null
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
+      experiments: {
+        Row: {
+          clicks: number
+          conversions: number
+          experiment_name: string
+          id: string
+          impressions: number
+          updated_at: string
+          variant: string
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          experiment_name: string
+          id?: string
+          impressions?: number
+          updated_at?: string
+          variant: string
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          experiment_name?: string
+          id?: string
+          impressions?: number
+          updated_at?: string
+          variant?: string
+        }
+        Relationships: []
+      }
+      lead_submissions: {
+        Row: {
+          created_at: string
+          cta_variant: string | null
+          email: string | null
+          hero_variant: string | null
+          id: string
+          landing_page: string | null
+          name: string | null
+          payload_json: Json | null
+          phone: string | null
+          source: string | null
+          status: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          created_at?: string
+          cta_variant?: string | null
+          email?: string | null
+          hero_variant?: string | null
+          id?: string
+          landing_page?: string | null
+          name?: string | null
+          payload_json?: Json | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          created_at?: string
+          cta_variant?: string | null
+          email?: string | null
+          hero_variant?: string | null
+          id?: string
+          landing_page?: string | null
+          name?: string | null
+          payload_json?: Json | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
+      wa_funnel_sessions: {
+        Row: {
+          answers_json: Json | null
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          cta_variant: string | null
+          current_step: number
+          hero_variant: string | null
+          id: string
+          landing_page: string | null
+          session_id: string | null
+          started_at: string | null
+          total_steps: number
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          answers_json?: Json | null
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          cta_variant?: string | null
+          current_step?: number
+          hero_variant?: string | null
+          id?: string
+          landing_page?: string | null
+          session_id?: string | null
+          started_at?: string | null
+          total_steps?: number
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          answers_json?: Json | null
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          cta_variant?: string | null
+          current_step?: number
+          hero_variant?: string | null
+          id?: string
+          landing_page?: string | null
+          session_id?: string | null
+          started_at?: string | null
+          total_steps?: number
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      bump_experiment: {
+        Args: {
+          p_clicks?: number
+          p_conversions?: number
+          p_impressions?: number
+          p_name: string
+          p_variant: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
