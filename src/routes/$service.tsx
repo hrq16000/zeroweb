@@ -107,6 +107,7 @@ export const Route = createFileRoute("/$service")({
 function ServicePage() {
   const data = Route.useLoaderData();
   const { service } = Route.useParams();
+  const { open: openFunnel } = useWaFunnel();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
