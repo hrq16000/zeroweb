@@ -6,7 +6,6 @@ import { Problems } from "@/components/site/Problems";
 import { Solutions } from "@/components/site/Solutions";
 import { AISection } from "@/components/site/AISection";
 import { Differentials } from "@/components/site/Differentials";
-import { Portfolio } from "@/components/site/Portfolio";
 import { Cases } from "@/components/site/Cases";
 import { Plans } from "@/components/site/Plans";
 import { Process } from "@/components/site/Process";
