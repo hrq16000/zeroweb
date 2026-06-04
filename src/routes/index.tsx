@@ -108,7 +108,7 @@ function Index() {
         <AISection />
         <DiagnosticForm />
         <Differentials />
-        <Portfolio />
+        {/* Portfolio fake removido — substituído pela seção Cases (reais) */}
         <Cases />
         <Plans />
         <Process />
