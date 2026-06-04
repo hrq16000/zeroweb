@@ -142,6 +142,10 @@ function PainelPage() {
           </div>
 
           <div className="mt-10">
+            <AnalyticsIdsAdmin />
+          </div>
+
+          <div className="mt-10">
             <WaFunnelAdmin />
           </div>
 
