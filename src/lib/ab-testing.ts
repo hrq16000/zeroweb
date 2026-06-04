@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "./analytics";
+import { bumpExperiment } from "./persistence";
 
 const KEY = "0web_ab_v1";
 const OVERRIDE_KEY = "0web_ab_winner_v1";
