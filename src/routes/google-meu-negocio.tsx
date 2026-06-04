@@ -159,7 +159,7 @@ function GMBPage() {
               alt="Sua empresa não aparece no Google? A 0WEB configura e otimiza seu Google Meu Negócio."
               width={1248}
               height={1248}
-              fetchpriority="high"
+              fetchPriority="high"
               decoding="async"
               className="relative w-full rounded-3xl shadow-2xl ring-1 ring-white/10"
             />
