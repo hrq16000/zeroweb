@@ -121,15 +121,17 @@ function ServicePage() {
               <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
-            <a
-              href={whatsappUrl(`Quero saber mais sobre ${data.h1}.`, `service_${service}`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("cta_click", { label: "service_whatsapp", location: service })}
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("cta_click", { label: "service_whatsapp", location: service });
+                trackConversion("whatsapp_click", { location: `service_${service}` });
+                openFunnel(`service_${service}`);
+              }}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
             >
               Falar com especialista <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
         </section>
 
