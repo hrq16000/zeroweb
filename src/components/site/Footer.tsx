@@ -73,7 +73,12 @@ export function Footer() {
         </div>
 
         <div className="mt-14 pt-8 border-t border-background/10 flex flex-wrap items-center justify-between gap-4 text-xs text-background/60">
-          <p>© {new Date().getFullYear()} 0WEB · Tecnologia que gera crescimento.</p>
+          <p>
+            © {new Date().getFullYear()} 0WEB · Tecnologia que gera crescimento.
+            <span className="block mt-1 text-background/50">
+              CNPJ 41.723.708/0001-58 · Atuando com Marketing Digital desde 2006.
+            </span>
+          </p>
           <div className="flex flex-wrap gap-5">
             <a href="#" className="hover:text-accent">Política de Privacidade</a>
             <a href="#" className="hover:text-accent">Termos de Uso</a>
