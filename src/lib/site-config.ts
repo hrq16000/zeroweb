@@ -51,13 +51,10 @@ export function whatsappUrl(extraMessage?: string, utmContent?: string) {
   const utms = getActiveUtms();
   if (utmContent) utms.utm_content = utmContent;
   const tail =
-    "\n\n—\n" +
+    "\n\n—\nOrigem: " +
     Object.entries(utms)
       .map(([k, v]) => `${k}=${v}`)
       .join(" · ");
-  const msg = encodeURIComponent(baseMsg + tail);
-  const params = new URLSearchParams({ text: "" });
-  params.set("text", baseMsg + tail);
-  return `https://wa.me/${WHATSAPP.number}?${params.toString()}`;
-  void msg;
+  const text = encodeURIComponent(baseMsg + tail);
+  return `https://wa.me/${WHATSAPP.number}?text=${text}`;
 }
