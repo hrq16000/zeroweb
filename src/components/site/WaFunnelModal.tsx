@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { X, ArrowRight, ArrowLeft, MessageCircle, Check } from "lucide-react";
 import { getFunnelConfig, renderTemplate, type FunnelConfig } from "@/lib/wa-funnel";
 import { trackConversion, trackEvent } from "@/lib/analytics";
+import { persistWaFunnelOpen, persistWaFunnelStep, persistWaFunnelComplete } from "@/lib/persistence";
 import { WHATSAPP, getActiveUtms } from "@/lib/site-config";
 
 type Ctx = { open: (location: string) => void };
