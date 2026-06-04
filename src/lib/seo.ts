@@ -129,6 +129,7 @@ export const CITIES_DICT: Record<string, string> = {
   "porto-alegre": "Porto Alegre",
   fortaleza: "Fortaleza",
   salvador: "Salvador",
-  brasilia": Brasília
-  ".":""
+  brasilia: "Brasília",
+  florianopolis: "Florianópolis",
+  recife: "Recife",
 };
