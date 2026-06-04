@@ -147,6 +147,9 @@ export const CONVERSION_EVENTS = [
   "whatsapp_click",
   "form_submit",
   "scroll_depth",
+  "wa_funnel_open",
+  "wa_funnel_step",
+  "wa_funnel_complete",
 ] as const;
 
 /** Expected dataLayer schema per event (used by /qa-events expected vs captured). */
@@ -157,6 +160,9 @@ export const EXPECTED_EVENT_SCHEMA: Record<string, string[]> = {
   scroll_depth: ["percent"],
   experiment_view: ["experiment", "variant"],
   consent_update: ["analytics_storage", "ad_storage"],
+  wa_funnel_open: ["location"],
+  wa_funnel_step: ["step_id", "step_index"],
+  wa_funnel_complete: ["steps"],
 };
 
 

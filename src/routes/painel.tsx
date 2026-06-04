@@ -13,6 +13,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
+import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
@@ -249,6 +250,13 @@ function toneBar(t: "primary" | "emerald" | "accent" | "violet") {
 }
 
 function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
+  const [overrides, setOv] = useState(() => getOverrides());
+  useEffect(() => {
+    const on = () => setOv(getOverrides());
+    window.addEventListener("0web:ab-override", on);
+    return () => window.removeEventListener("0web:ab-override", on);
+  }, []);
+
   const rows = Object.entries(data.byVariant ?? {}).map(([key, ev]) => {
     const cta = ev["cta_click"] ?? 0;
     const wa = ev["whatsapp_click"] ?? 0;
@@ -264,6 +272,10 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
   const bestCta = bestBy("cta");
   const bestWa = bestBy("wa");
   const bestForm = bestBy("form");
+
+  const winners = computeWinners(data.byVariant ?? {});
+  const hasWinners = Object.keys(winners).length > 0;
+  const overrideActive = Object.keys(overrides).length > 0;
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
@@ -287,6 +299,41 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
             <KpiWinner label="Melhor por Formulário" winner={bestForm?.key} value={bestForm?.form ?? 0} />
             <KpiWinner label="Melhor combinação (score)" winner={best?.key} value={best?.score ?? 0} highlight />
           </div>
+
+          {/* Auto-winner controls */}
+          <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4 flex flex-wrap items-center gap-3">
+            <div className="text-xs text-muted-foreground">
+              Vencedor por experimento:{" "}
+              {hasWinners ? (
+                <span className="font-mono text-foreground">
+                  {Object.entries(winners).map(([k, v]) => `${k}=${v}`).join(" · ")}
+                </span>
+              ) : (
+                <span>—</span>
+              )}
+              {overrideActive ? (
+                <span className="ml-2 rounded-full bg-emerald-500/15 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">
+                  ATIVO: {Object.entries(overrides).map(([k, v]) => `${k}=${v}`).join(" · ")}
+                </span>
+              ) : null}
+            </div>
+            <div className="ml-auto flex gap-2">
+              <button
+                disabled={!hasWinners}
+                onClick={() => setOverrides(winners)}
+                className="rounded-full bg-foreground text-background px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+              >
+                Aplicar vencedor à home e LPs
+              </button>
+              <button
+                onClick={() => clearOverrides()}
+                className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold"
+              >
+                Limpar
+              </button>
+            </div>
+          </div>
+
 
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm">

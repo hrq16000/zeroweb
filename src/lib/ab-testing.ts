@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { trackEvent } from "./analytics";
 
 const KEY = "0web_ab_v1";
+const OVERRIDE_KEY = "0web_ab_winner_v1";
 
 type Assignments = Record<string, string>;
 
@@ -19,9 +20,32 @@ function write(a: Assignments) {
   localStorage.setItem(KEY, JSON.stringify(a));
 }
 
-/** Deterministically assigns user to a variant and persists it. */
+export function getOverrides(): Assignments {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function setOverrides(o: Assignments) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(o));
+  window.dispatchEvent(new CustomEvent("0web:ab-override"));
+}
+
+export function clearOverrides() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(OVERRIDE_KEY);
+  window.dispatchEvent(new CustomEvent("0web:ab-override"));
+}
+
+/** Deterministically assigns user to a variant and persists it. Overrides win. */
 export function assignVariant<T extends string>(experiment: string, variants: readonly T[]): T {
   if (typeof window === "undefined") return variants[0];
+  const ov = getOverrides();
+  if (ov[experiment] && variants.includes(ov[experiment] as T)) return ov[experiment] as T;
   const cur = read();
   if (cur[experiment] && variants.includes(cur[experiment] as T)) return cur[experiment] as T;
   const picked = variants[Math.floor(Math.random() * variants.length)];
@@ -33,9 +57,15 @@ export function assignVariant<T extends string>(experiment: string, variants: re
 export function useExperiment<T extends string>(experiment: string, variants: readonly T[]): T {
   const [v, setV] = useState<T>(variants[0]);
   useEffect(() => {
-    const picked = assignVariant(experiment, variants);
-    setV(picked);
-    trackEvent("experiment_view", { experiment, variant: picked });
+    const apply = () => {
+      const picked = assignVariant(experiment, variants);
+      setV(picked);
+      trackEvent("experiment_view", { experiment, variant: picked });
+    };
+    apply();
+    const onOv = () => setV(assignVariant(experiment, variants));
+    window.addEventListener("0web:ab-override", onOv);
+    return () => window.removeEventListener("0web:ab-override", onOv);
   }, [experiment]);
   return v;
 }
@@ -46,4 +76,33 @@ export function getAllAssignments(): Assignments {
 
 export function resetAssignments() {
   if (typeof window !== "undefined") localStorage.removeItem(KEY);
+}
+
+/**
+ * Compute winning variant per experiment from funnel byVariant counts.
+ * Variant key format: "hero_copy:A|hero_cta:B" with weighted score 1·CTA + 3·WhatsApp + 5·Form.
+ */
+export function computeWinners(
+  byVariant: Record<string, Record<string, number>>,
+): Assignments {
+  const perExp: Record<string, Record<string, number>> = {};
+  for (const [combo, events] of Object.entries(byVariant)) {
+    const score =
+      (events["cta_click"] ?? 0) * 1 +
+      (events["whatsapp_click"] ?? 0) * 3 +
+      (events["form_submit"] ?? 0) * 5;
+    if (score <= 0) continue;
+    for (const pair of combo.split("|")) {
+      const [exp, variant] = pair.split(":");
+      if (!exp || !variant) continue;
+      perExp[exp] = perExp[exp] ?? {};
+      perExp[exp][variant] = (perExp[exp][variant] ?? 0) + score;
+    }
+  }
+  const winners: Assignments = {};
+  for (const [exp, variants] of Object.entries(perExp)) {
+    const best = Object.entries(variants).reduce((a, b) => (a[1] > b[1] ? a : b));
+    winners[exp] = best[0];
+  }
+  return winners;
 }
