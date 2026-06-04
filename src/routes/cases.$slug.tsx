@@ -19,6 +19,7 @@ import { ScrollTracker } from "@/components/site/ScrollTracker";
 import { cases, getCase } from "@/lib/cases-data";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 export const Route = createFileRoute("/cases/$slug")({
   loader: ({ params }) => {
