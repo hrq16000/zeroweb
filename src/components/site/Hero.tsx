@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
 import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity } from "lucide-react";
+import { trackConversion, trackEvent } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const stats = [
   { label: "Projetos", value: "+500" },
