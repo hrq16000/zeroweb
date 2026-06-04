@@ -1,4 +1,6 @@
 import { ArrowRight, MessageCircle } from "lucide-react";
+import { trackConversion, trackEvent } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 export function CTA() {
   return (
@@ -18,20 +20,63 @@ export function CTA() {
               Diagnóstico gratuito, sem compromisso. Em 24h você recebe um plano sob medida.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#"
-                className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const data = new FormData(e.currentTarget);
+                trackConversion("form_submit", {
+                  form_name: "diagnostico",
+                  has_company: Boolean(data.get("company")),
+                });
+                window.open(
+                  whatsappUrl(
+                    `Olá! Sou ${data.get("name") || ""} (${data.get("company") || "—"}). Quero solicitar um diagnóstico.`,
+                  ),
+                  "_blank",
+                );
+              }}
+              className="mt-8 grid sm:grid-cols-2 gap-3 max-w-xl"
+            >
+              <input
+                name="name"
+                required
+                placeholder="Seu nome"
+                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
+              />
+              <input
+                name="company"
+                placeholder="Empresa"
+                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
+              />
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="E-mail"
+                className="sm:col-span-2 rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
+              />
+              <button
+                type="submit"
+                className="sm:col-span-2 group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
               >
                 Solicitar Diagnóstico
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              </button>
+            </form>
+
+            <div className="mt-5">
               <a
-                href="https://wa.me/5500000000000"
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  trackConversion("whatsapp_click", { location: "final_cta" });
+                  trackEvent("cta_click", { label: "falar_whatsapp", location: "final_cta" });
+                }}
                 className="inline-flex items-center gap-2 rounded-full glass-dark text-background font-semibold px-6 py-3.5 hover:bg-background/10 transition"
               >
                 <MessageCircle className="w-4 h-4 text-accent" />
-                Falar no WhatsApp
+                Falar direto no WhatsApp
               </a>
             </div>
           </div>
