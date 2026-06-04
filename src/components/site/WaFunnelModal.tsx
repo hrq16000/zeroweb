@@ -57,6 +57,7 @@ function FunnelModal({ cfg, location, onClose }: { cfg: FunnelConfig; location: 
     const val = answers[current.id]?.trim();
     if (current.required && !val) return;
     trackEvent("wa_funnel_step", { step: step + 1, total, field: current.id, location });
+    void persistWaFunnelStep(step + 1, answers);
     if (step < total - 1) {
       setStep(step + 1);
     } else {
@@ -67,6 +68,7 @@ function FunnelModal({ cfg, location, onClose }: { cfg: FunnelConfig; location: 
   function finish() {
     setDone(true);
     trackConversion("wa_funnel_complete", { location, steps: total });
+    void persistWaFunnelComplete(answers);
     const utms = getActiveUtms();
     const tail =
       "\n\n—\nOrigem: " + Object.entries(utms).map(([k, v]) => `${k}=${v}`).join(" · ") + ` · location=${location}`;
