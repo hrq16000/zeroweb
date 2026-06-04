@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
+import { trackEvent } from "@/lib/analytics";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const nav = [
   { href: "/#inicio", label: "Início" },
@@ -19,6 +19,7 @@ const nav = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { open: openFunnel } = useWaFunnel();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -58,16 +59,14 @@ export function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
-          <a
-            href={whatsappUrl(undefined, "header")}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackConversion("whatsapp_click", { location: "header" })}
+          <button
+            type="button"
+            onClick={() => openFunnel("header")}
             className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground"
           >
             <MessageCircle className="w-4 h-4 text-accent" />
             WhatsApp
-          </a>
+          </button>
           <a
             href="/#contato"
             onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
