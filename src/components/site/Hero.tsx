@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
-import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity } from "lucide-react";
+import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useExperiment } from "@/lib/ab-testing";
 
 const stats = [
   { label: "Projetos", value: "+500" },
@@ -9,6 +10,24 @@ const stats = [
   { label: "Aprovação", value: "95%" },
   { label: "Suporte", value: "Nacional" },
 ];
+
+const HERO_VARIANTS = {
+  A: {
+    headline: "Sua empresa merece mais que",
+    accent: "apenas um site.",
+    sub: "Criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam negócios em máquinas de crescimento.",
+  },
+  B: {
+    headline: "Mais clientes. Menos esforço.",
+    accent: "Tudo no mesmo time.",
+    sub: "Tecnologia, IA e marketing performam juntos para multiplicar seus leads em até 312% nos primeiros 90 dias.",
+  },
+} as const;
+
+const CTA_VARIANTS = {
+  A: { label: "Solicitar Diagnóstico Gratuito", icon: ArrowRight },
+  B: { label: "Quero Mais Clientes Agora", icon: Zap },
+} as const;
 
 export function Hero() {
   return (
