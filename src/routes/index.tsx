@@ -90,6 +90,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ScrollTracker />
       <Header />
       <main>
         <Hero />
@@ -106,6 +107,7 @@ function Index() {
         <CTA />
       </main>
       <Footer />
+      <WhatsAppFloat />
     </div>
   );
 }
