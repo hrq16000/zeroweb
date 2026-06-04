@@ -135,7 +135,7 @@ function ServicePage() {
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
             <h2 className="text-2xl font-bold mb-8">Benefícios incluídos</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              {data.benefits.map((b) => (
+              {data.benefits.map((b: string) => (
                 <div key={b} className="flex items-start gap-3 p-5 rounded-2xl border border-border bg-card">
                   <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="font-medium">{b}</span>
