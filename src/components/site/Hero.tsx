@@ -61,7 +61,7 @@ export function Hero() {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
-              href={whatsappUrl()}
+              href={whatsappUrl(undefined, "hero")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackConversion("whatsapp_click", { location: "hero" })}
