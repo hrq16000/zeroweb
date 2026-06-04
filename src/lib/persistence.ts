@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { getVisitorId, getSessionId, getDeviceType } from "./visitor";
 import { getActiveUtms } from "./site-config";
 
-type Json = Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = any;
 
 function abState() {
   try {
