@@ -300,6 +300,41 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
             <KpiWinner label="Melhor combinação (score)" winner={best?.key} value={best?.score ?? 0} highlight />
           </div>
 
+          {/* Auto-winner controls */}
+          <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4 flex flex-wrap items-center gap-3">
+            <div className="text-xs text-muted-foreground">
+              Vencedor por experimento:{" "}
+              {hasWinners ? (
+                <span className="font-mono text-foreground">
+                  {Object.entries(winners).map(([k, v]) => `${k}=${v}`).join(" · ")}
+                </span>
+              ) : (
+                <span>—</span>
+              )}
+              {overrideActive ? (
+                <span className="ml-2 rounded-full bg-emerald-500/15 text-emerald-700 px-2 py-0.5 text-[10px] font-semibold">
+                  ATIVO: {Object.entries(overrides).map(([k, v]) => `${k}=${v}`).join(" · ")}
+                </span>
+              ) : null}
+            </div>
+            <div className="ml-auto flex gap-2">
+              <button
+                disabled={!hasWinners}
+                onClick={() => setOverrides(winners)}
+                className="rounded-full bg-foreground text-background px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+              >
+                Aplicar vencedor à home e LPs
+              </button>
+              <button
+                onClick={() => clearOverrides()}
+                className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold"
+              >
+                Limpar
+              </button>
+            </div>
+          </div>
+
+
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
