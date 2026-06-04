@@ -114,15 +114,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {/* GTM noscript fallback — MUST be in <body>, never in <head> */}
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${SITE.GTM_ID}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
+        {/* GTM noscript fallback is injected client-side by AnalyticsBootstrap when a valid GTM ID is configured. */}
         {children}
         <Scripts />
       </body>
