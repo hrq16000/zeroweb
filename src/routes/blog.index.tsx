@@ -1,0 +1,131 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
+import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { posts, categories } from "@/lib/blog-data";
+import { ArrowUpRight } from "lucide-react";
+
+const TITLE = "Blog 0WEB · Marketing, SEO, IA e Tecnologia para empresas";
+const DESC =
+  "Conteúdo prático sobre marketing digital, SEO, criação de sites, IA, automação e crescimento de negócios.";
+
+export const Route = createFileRoute("/blog/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESC },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESC },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/blog" },
+    ],
+    links: [{ rel: "canonical", href: "/blog" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          name: "Blog 0WEB",
+          url: "/blog",
+          blogPost: posts.map((p) => ({
+            "@type": "BlogPosting",
+            headline: p.title,
+            datePublished: p.date,
+            url: `/blog/${p.slug}`,
+          })),
+        }),
+      },
+    ],
+  }),
+  component: BlogIndex,
+});
+
+function BlogIndex() {
+  const [cat, setCat] = useState<string | null>(null);
+  const filtered = cat ? posts.filter((p) => p.category === cat) : posts;
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main className="pt-32 lg:pt-40 pb-24">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary">Blog</p>
+          <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05]">
+            Conteúdo que <span className="text-gradient">faz crescer.</span>
+          </h1>
+          <p className="mt-4 text-muted-foreground max-w-2xl text-lg">
+            Estratégia, tecnologia e marketing digital — direto ao ponto.
+          </p>
+
+          <div className="mt-10 flex flex-wrap gap-2">
+            <button
+              onClick={() => setCat(null)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                cat === null
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-foreground/70 hover:bg-muted/70"
+              }`}
+            >
+              Todos
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCat(c)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  cat === c
+                    ? "bg-foreground text-background"
+                    : "bg-muted text-foreground/70 hover:bg-muted/70"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map((p) => (
+              <Link
+                key={p.slug}
+                to="/blog/$slug"
+                params={{ slug: p.slug }}
+                className="group rounded-3xl bg-card border border-border overflow-hidden hover:shadow-elegant transition"
+              >
+                <div className="aspect-[16/10] relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-primary" />
+                  <div className="absolute inset-0 bg-mesh opacity-60 mix-blend-overlay" />
+                  <div className="absolute top-4 left-4 rounded-full glass text-xs font-medium px-3 py-1">
+                    {p.category}
+                  </div>
+                  <div className="absolute top-4 right-4 grid place-items-center w-9 h-9 rounded-full glass opacity-0 group-hover:opacity-100 transition">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h2 className="font-semibold text-lg leading-snug group-hover:text-primary transition">
+                    {p.title}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{p.excerpt}</p>
+                  <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                    <time dateTime={p.date}>
+                      {new Date(p.date).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <span>{p.readTime}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </main>
+      <Footer />
+      <WhatsAppFloat />
+    </div>
+  );
+}

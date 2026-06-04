@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, MessageCircle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { trackConversion, trackEvent } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const nav = [
-  { href: "#inicio", label: "Início" },
-  { href: "#solucoes", label: "Soluções" },
-  { href: "#servicos", label: "Serviços" },
-  { href: "#ia", label: "IA" },
-  { href: "#cases", label: "Cases" },
-  { href: "#planos", label: "Planos" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#blog", label: "Blog" },
+  { href: "/#inicio", label: "Início" },
+  { href: "/#solucoes", label: "Soluções" },
+  { href: "/#servicos", label: "Serviços" },
+  { href: "/#ia", label: "IA" },
+  { href: "/#cases", label: "Cases" },
+  { href: "/#planos", label: "Planos" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export function Header() {
@@ -31,33 +34,43 @@ export function Header() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between h-16 lg:h-20">
-        <a href="#inicio" className="flex items-center gap-2 font-display font-bold text-xl">
+        <Link to="/" className="flex items-center gap-2 font-display font-bold text-xl">
           <span className="grid place-items-center w-9 h-9 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow-primary">
             0
           </span>
           <span className="tracking-tight">
             0<span className="text-gradient">WEB</span>
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-          {nav.map((n) => (
-            <a key={n.href} href={n.href} className="hover:text-foreground transition-colors">
-              {n.label}
-            </a>
-          ))}
+          {nav.map((n) =>
+            n.href.startsWith("/blog") ? (
+              <Link key={n.href} to={n.href} className="hover:text-foreground transition-colors">
+                {n.label}
+              </Link>
+            ) : (
+              <a key={n.href} href={n.href} className="hover:text-foreground transition-colors">
+                {n.label}
+              </a>
+            ),
+          )}
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
           <a
-            href="https://wa.me/5500000000000"
+            href={whatsappUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackConversion("whatsapp_click", { location: "header" })}
             className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground"
           >
             <MessageCircle className="w-4 h-4 text-accent" />
             WhatsApp
           </a>
           <a
-            href="#contato"
+            href="/#contato"
+            onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
             className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold px-5 py-2.5 shadow-glow-primary hover:opacity-95 transition"
           >
             Solicitar Diagnóstico
@@ -93,7 +106,11 @@ export function Header() {
                 </a>
               ))}
               <a
-                href="#contato"
+                href="/#contato"
+                onClick={() => {
+                  trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
+                  setOpen(false);
+                }}
                 className="mt-2 text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
               >
                 Solicitar Diagnóstico

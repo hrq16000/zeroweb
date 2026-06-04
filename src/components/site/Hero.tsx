@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
 import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity } from "lucide-react";
+import { trackConversion, trackEvent } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const stats = [
   { label: "Projetos", value: "+500" },
@@ -52,13 +54,17 @@ export function Hero() {
           >
             <a
               href="#contato"
+              onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "hero" })}
               className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
             >
               Solicitar Diagnóstico Gratuito
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
-              href="https://wa.me/5500000000000"
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackConversion("whatsapp_click", { location: "hero" })}
               className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
             >
               <MessageCircle className="w-4 h-4 text-accent" />
