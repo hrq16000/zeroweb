@@ -5,7 +5,8 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { whatsappUrl } from "@/lib/site-config";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackConversion } from "@/lib/analytics";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const CITIES: Record<string, string> = {
   "curitiba": "Curitiba",
@@ -68,6 +69,7 @@ export const Route = createFileRoute("/$city/$service")({
 
 function GeoPage() {
   const { city, service, citySlug, serviceSlug } = Route.useLoaderData();
+  const { open: openFunnel } = useWaFunnel();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -84,15 +86,17 @@ function GeoPage() {
               Agência especializada em {service.toLowerCase()} para empresas em {city}.
               Time sênior, entrega ágil e foco em resultado real.
             </p>
-            <a
-              href={whatsappUrl(`Quero ${service} em ${city}.`, `geo_${citySlug}_${serviceSlug}`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("cta_click", { label: "geo_whatsapp", city: citySlug, service: serviceSlug })}
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("cta_click", { label: "geo_whatsapp", city: citySlug, service: serviceSlug });
+                trackConversion("whatsapp_click", { location: `geo_${citySlug}_${serviceSlug}` });
+                openFunnel(`geo_${citySlug}_${serviceSlug}`);
+              }}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
             >
               Orçamento para {city} <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
         </section>
 

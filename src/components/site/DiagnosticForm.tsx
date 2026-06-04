@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const checks = [
   { key: "site", label: "Possui site profissional?", weight: 25 },
@@ -17,6 +18,7 @@ type Key = (typeof checks)[number]["key"];
 export function DiagnosticForm() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [form, setForm] = useState({ name: "", company: "", whatsapp: "", email: "", site: "" });
+  const { open: openFunnel } = useWaFunnel();
   const [answers, setAnswers] = useState<Record<Key, boolean>>({
     site: false, gmb: false, ads: false, seo: false, auto: false,
   });
@@ -147,18 +149,16 @@ export function DiagnosticForm() {
                         ? "Bom começo, mas há grandes ganhos possíveis em conversão e SEO."
                         : "Excelente base — podemos escalar com IA e automação."}
                   </p>
-                  <a
-                    href={whatsappUrl(
-                      `Olá! Sou ${form.name} (${form.company}). Fiz o diagnóstico no site e meu score foi ${score}/100. Quero o plano completo.`,
-                      "diagnostico_form",
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackConversion("whatsapp_click", { location: "diagnostic_result", score })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      trackConversion("whatsapp_click", { location: "diagnostic_result", score });
+                      openFunnel("diagnostic_result");
+                    }}
                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
                   >
                     Solicitar Diagnóstico Completo <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </button>
                 </div>
                 <div className="space-y-3">
                   {[

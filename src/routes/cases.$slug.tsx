@@ -19,6 +19,7 @@ import { ScrollTracker } from "@/components/site/ScrollTracker";
 import { cases, getCase } from "@/lib/cases-data";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 export const Route = createFileRoute("/cases/$slug")({
   loader: ({ params }) => {
@@ -85,6 +86,7 @@ export const Route = createFileRoute("/cases/$slug")({
 
 function CasePage() {
   const { case: c } = Route.useLoaderData() as { case: import("@/lib/cases-data").CaseStudy };
+  const { open: openFunnel } = useWaFunnel();
 
   return (
     <div className="min-h-screen bg-background text-foreground scroll-smooth">
@@ -124,21 +126,17 @@ function CasePage() {
                   Visitar {c.domain}
                   <ExternalLink className="w-4 h-4" />
                 </a>
-                <a
-                  href={whatsappUrl(
-                    `Olá! Vim do case ${c.brand} no site da 0WEB e quero um projeto parecido.`,
-                    `case_${c.slug}`,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() =>
-                    trackConversion("whatsapp_click", { location: "case_hero", slug: c.slug })
-                  }
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackConversion("whatsapp_click", { location: "case_hero", slug: c.slug });
+                    openFunnel(`case_${c.slug}`);
+                  }}
                   className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
                 >
                   <MessageCircle className="w-4 h-4 text-accent" />
                   Quero algo parecido
-                </a>
+                </button>
               </div>
             </div>
 
@@ -259,17 +257,16 @@ function CasePage() {
               >
                 Solicitar Diagnóstico <ArrowRight className="w-4 h-4" />
               </Link>
-              <a
-                href={whatsappUrl(undefined, `case_${c.slug}_cta`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() =>
-                  trackConversion("whatsapp_click", { location: `case_${c.slug}_cta` })
-                }
+              <button
+                type="button"
+                onClick={() => {
+                  trackConversion("whatsapp_click", { location: `case_${c.slug}_cta` });
+                  openFunnel(`case_${c.slug}_cta`);
+                }}
                 className="inline-flex items-center gap-2 rounded-full bg-background text-foreground font-semibold px-6 py-3.5"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-500" /> Falar no WhatsApp
-              </a>
+              </button>
             </div>
           </div>
         </section>

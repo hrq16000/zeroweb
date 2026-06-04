@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
 import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useExperiment } from "@/lib/ab-testing";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import heroDashboard from "@/assets/hero-dashboard.jpg";
 
 const stats = [
@@ -36,6 +36,7 @@ export function Hero() {
   const copy = HERO_VARIANTS[heroVariant];
   const cta = CTA_VARIANTS[ctaVariant];
   const CtaIcon = cta.icon;
+  const { open: openFunnel } = useWaFunnel();
 
   return (
     <section id="inicio" className="relative pt-32 lg:pt-40 pb-24 bg-hero overflow-hidden">
@@ -93,16 +94,17 @@ export function Hero() {
               {cta.label}
               <CtaIcon className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
-            <a
-              href={whatsappUrl(undefined, "hero")}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackConversion("whatsapp_click", { location: "hero", experiment_hero: heroVariant })}
+            <button
+              type="button"
+              onClick={() => {
+                trackConversion("whatsapp_click", { location: "hero", experiment_hero: heroVariant });
+                openFunnel("hero");
+              }}
               className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
             >
               <MessageCircle className="w-4 h-4 text-accent" />
               Falar no WhatsApp
-            </a>
+            </button>
           </motion.div>
 
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6">

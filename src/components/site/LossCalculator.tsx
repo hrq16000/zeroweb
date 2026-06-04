@@ -3,11 +3,13 @@ import { motion } from "motion/react";
 import { TrendingDown, ArrowRight } from "lucide-react";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const fmt = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 
 export function LossCalculator() {
+  const { open: openFunnel } = useWaFunnel();
   const [visitors, setVisitors] = useState(3000);
   const [ticket, setTicket] = useState(800);
   const [conv, setConv] = useState(1);
@@ -75,18 +77,16 @@ export function LossCalculator() {
               <Metric label="Faturamento mensal perdido" value={fmt(result.monthly)} highlight />
               <Metric label="Receita anual desperdiçada" value={fmt(result.annual)} />
             </div>
-            <a
-              href={whatsappUrl(
-                `Olá! Calculei na 0WEB que minha empresa perde ${fmt(result.monthly)}/mês. Quero recuperar isso.`,
-                "calculadora",
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackConversion("whatsapp_click", { location: "calculator", value: result.monthly })}
+            <button
+              type="button"
+              onClick={() => {
+                trackConversion("whatsapp_click", { location: "calculator", value: result.monthly });
+                openFunnel("calculator");
+              }}
               className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-accent text-foreground font-semibold px-6 py-3.5"
             >
               Recuperar essa receita <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </div>
         </div>
       </div>
