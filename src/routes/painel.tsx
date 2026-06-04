@@ -47,10 +47,27 @@ function PainelPage() {
     window.addEventListener("0web:funnel", onChange);
     window.addEventListener("storage", onChange);
     const interval = setInterval(onChange, 2500);
+
+    // Merge remote (persistent) data over local cache when available.
+    const loadRemote = async () => {
+      const remote = await fetchRemoteFunnel();
+      if (!remote) return;
+      setData((prev) => ({
+        ...prev,
+        totals: { ...prev.totals, ...remote.totals },
+        byPage: { ...prev.byPage, ...remote.byPage },
+        byVariant: { ...prev.byVariant, ...remote.byVariant },
+        lastUpdated: remote.lastUpdated,
+      }));
+    };
+    void loadRemote();
+    const remoteInterval = setInterval(loadRemote, 15000);
+
     return () => {
       window.removeEventListener("0web:funnel", onChange);
       window.removeEventListener("storage", onChange);
       clearInterval(interval);
+      clearInterval(remoteInterval);
     };
   }, []);
 
