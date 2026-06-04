@@ -101,8 +101,10 @@ function Index() {
         <Hero />
         <TrustBar />
         <Problems />
+        <LossCalculator />
         <Solutions />
         <AISection />
+        <DiagnosticForm />
         <Differentials />
         <Portfolio />
         <Cases />
