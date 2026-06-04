@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
 import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useExperiment } from "@/lib/ab-testing";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import heroDashboard from "@/assets/hero-dashboard.jpg";
 
 const stats = [
