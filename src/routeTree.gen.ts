@@ -10,19 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as CityServiceRouteImport } from './routes/$city.$service'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QaEventsRoute = QaEventsRouteImport.update({
+  id: '/qa-events',
+  path: '/qa-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiceRoute = ServiceRouteImport.update({
+  id: '/$service',
+  path: '/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -40,41 +53,83 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CityServiceRoute = CityServiceRouteImport.update({
+  id: '/$city/$service',
+  path: '/$city/$service',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
+  '/qa-events': typeof QaEventsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
+  '/qa-events': typeof QaEventsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$service': typeof ServiceRoute
   '/painel': typeof PainelRoute
+  '/qa-events': typeof QaEventsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/painel' | '/sitemap.xml' | '/blog/$slug' | '/blog/'
+  fullPaths:
+    | '/'
+    | '/$service'
+    | '/painel'
+    | '/qa-events'
+    | '/sitemap.xml'
+    | '/$city/$service'
+    | '/blog/$slug'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/painel' | '/sitemap.xml' | '/blog/$slug' | '/blog'
-  id: '__root__' | '/' | '/painel' | '/sitemap.xml' | '/blog/$slug' | '/blog/'
+  to:
+    | '/'
+    | '/$service'
+    | '/painel'
+    | '/qa-events'
+    | '/sitemap.xml'
+    | '/$city/$service'
+    | '/blog/$slug'
+    | '/blog'
+  id:
+    | '__root__'
+    | '/'
+    | '/$service'
+    | '/painel'
+    | '/qa-events'
+    | '/sitemap.xml'
+    | '/$city/$service'
+    | '/blog/$slug'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ServiceRoute: typeof ServiceRoute
   PainelRoute: typeof PainelRoute
+  QaEventsRoute: typeof QaEventsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
@@ -88,11 +143,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/qa-events': {
+      id: '/qa-events'
+      path: '/qa-events'
+      fullPath: '/qa-events'
+      preLoaderRoute: typeof QaEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/painel': {
       id: '/painel'
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$service': {
+      id: '/$service'
+      path: '/$service'
+      fullPath: '/$service'
+      preLoaderRoute: typeof ServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -116,16 +185,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$city/$service': {
+      id: '/$city/$service'
+      path: '/$city/$service'
+      fullPath: '/$city/$service'
+      preLoaderRoute: typeof CityServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ServiceRoute: ServiceRoute,
   PainelRoute: PainelRoute,
+  QaEventsRoute: QaEventsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
