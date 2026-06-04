@@ -135,6 +135,8 @@ export function trackEvent(name: string, params: EventParams = {}) {
     window.gtag("event", name, params);
   }
   incFunnel(name, params);
+  // Persistent storage (best-effort, non-blocking, never throws).
+  import("./persistence").then((m) => m.persistEvent(name, params)).catch(() => {});
 }
 
 export function trackConversion(name: string, params: EventParams = {}) {
