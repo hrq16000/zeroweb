@@ -1,10 +1,19 @@
 import { motion } from "motion/react";
+import { Link } from "@tanstack/react-router";
 import {
   Globe, Rocket, ShoppingBag, Search, Megaphone, Instagram,
-  Bot, Workflow, Server, Cloud,
+  Bot, Workflow, Server, Cloud, MapPin,
 } from "lucide-react";
 
-const items = [
+type Item = {
+  icon: typeof Globe;
+  title: string;
+  desc: string;
+  to?: "/google-meu-negocio";
+};
+
+const items: Item[] = [
+  { icon: MapPin, title: "Google Meu Negócio", desc: "Apareça no Maps e receba clientes todos os dias.", to: "/google-meu-negocio" },
   { icon: Globe, title: "Criação de Sites", desc: "Sites institucionais modernos, rápidos e otimizados." },
   { icon: Rocket, title: "Landing Pages", desc: "Páginas de alta conversão para campanhas." },
   { icon: ShoppingBag, title: "E-commerce", desc: "Lojas virtuais escaláveis e prontas para vender." },
@@ -43,6 +52,9 @@ export function Solutions() {
               transition={{ delay: (i % 5) * 0.04 }}
               className="group relative rounded-2xl border border-border bg-card p-5 hover:-translate-y-1 hover:shadow-elegant transition-all duration-300 overflow-hidden"
             >
+              {it.to ? (
+                <Link to={it.to} className="absolute inset-0 z-10" aria-label={it.title} />
+              ) : null}
               <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-primary opacity-0 group-hover:opacity-20 blur-2xl transition-opacity" />
               <span className="relative grid place-items-center w-11 h-11 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow-primary">
                 <it.icon className="w-5 h-5" />

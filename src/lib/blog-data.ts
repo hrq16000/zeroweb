@@ -20,6 +20,17 @@ export const categories = [
 
 export const posts: BlogPost[] = [
   {
+    slug: "google-meu-negocio-como-aparecer-no-google",
+    title: "Sua empresa NÃO aparece no Google? Veja como mudar isso em 2026",
+    excerpt:
+      "Enquanto seus concorrentes recebem clientes todos os dias pelo Google Maps, quem não está otimizado fica invisível. Veja o passo a passo para virar o jogo.",
+    category: "Marketing Digital",
+    date: "2026-06-04",
+    readTime: "10 min",
+    content:
+      "🚨 Sua empresa NÃO aparece no Google? Então provavelmente seus concorrentes estão recebendo clientes que poderiam ser seus TODOS OS DIAS.\n\nHoje, quando alguém procura por empresas do seu segmento, o Google mostra primeiro quem está bem posicionado no Maps. Se a sua empresa não estiver otimizada, você simplesmente fica invisível — e cada clique que vai para o concorrente é uma venda perdida.\n\n## Por que o Google Meu Negócio é decisivo\n\nO Google Maps virou a nova vitrine local. Mais de 75% das pessoas que pesquisam por um serviço próximo entram em contato com a empresa nas primeiras 24 horas. Sem perfil otimizado, sua empresa não entra nessa disputa.\n\n## O que a 0WEB Marketing Digital faz pela sua empresa\n\nA 0WEB configura e otimiza seu Google Meu Negócio de ponta a ponta:\n\n- ✅ Aparecer no Google\n- ✅ Ganhar mais visibilidade\n- ✅ Receber mensagens no WhatsApp\n- ✅ Transmitir mais confiança\n- ✅ Atrair novos clientes diariamente\n\n## Passo a passo do que entregamos\n\n1. Reivindicação ou criação do perfil oficial.\n2. Categorização correta e áreas de atuação otimizadas.\n3. Fotos profissionais, horários, atributos e descrição persuasiva.\n4. Integração com WhatsApp para receber leads quentes.\n5. Postagens estratégicas e resposta a avaliações (Plano PRO).\n6. Relatórios mensais com cliques, ligações e direções (Plano PRO).\n\n## 🔥 Oferta de lançamento para os 10 primeiros clientes\n\n- ✔ Plano Único: R$397 (configuração completa)\n- ✔ Plano PRO: R$247/mês por 3 meses (tempo mínimo) — otimização contínua, postagens e relatórios\n\n## Mais visibilidade. Mais confiança. Mais clientes.\n\nConectamos sua empresa a mais clientes todos os dias.\n\n📲 Clique em “Saiba Mais” e fale conosco no WhatsApp.",
+  },
+  {
     slug: "como-rankear-no-google-em-2026",
     title: "Como rankear no Google em 2026 sem truques",
     excerpt:
