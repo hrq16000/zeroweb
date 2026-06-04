@@ -62,6 +62,7 @@ export function useExperiment<T extends string>(experiment: string, variants: re
       const picked = assignVariant(experiment, variants);
       setV(picked);
       trackEvent("experiment_view", { experiment, variant: picked });
+      bumpExperiment(experiment, picked, { impressions: 1 });
     };
     apply();
     const onOv = () => setV(assignVariant(experiment, variants));
