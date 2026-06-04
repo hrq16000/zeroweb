@@ -15,20 +15,29 @@ export const Route = createFileRoute("/blog/$slug")({
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Artigo não encontrado · 0WEB" }] };
     const { post } = loaderData;
+    const wordCount = post.content.split(/\s+/).filter(Boolean).length;
+    const url = `/blog/${params.slug}`;
     return {
       meta: [
         { title: `${post.title} · Blog 0WEB` },
         { name: "description", content: post.excerpt },
+        { name: "author", content: "0WEB" },
+        { name: "news_keywords", content: post.category },
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/blog/${params.slug}` },
+        { property: "og:url", content: url },
         { property: "article:section", content: post.category },
         { property: "article:published_time", content: post.date },
+        { property: "article:modified_time", content: post.date },
+        { property: "article:author", content: "0WEB" },
+        { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: post.excerpt },
+        // Google Discover prefers large, high-quality images (max-image-preview:large)
+        { name: "robots", content: "max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       ],
-      links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
@@ -38,10 +47,21 @@ export const Route = createFileRoute("/blog/$slug")({
             headline: post.title,
             description: post.excerpt,
             datePublished: post.date,
+            dateModified: post.date,
             articleSection: post.category,
-            author: { "@type": "Organization", name: "0WEB" },
-            publisher: { "@type": "Organization", name: "0WEB" },
-            mainEntityOfPage: { "@type": "WebPage", "@id": `/blog/${params.slug}` },
+            wordCount,
+            inLanguage: "pt-BR",
+            author: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
+            publisher: {
+              "@type": "Organization",
+              name: "0WEB",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://0web.com.br/favicon.ico",
+              },
+            },
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            keywords: post.category,
           }),
         },
         {
@@ -52,7 +72,8 @@ export const Route = createFileRoute("/blog/$slug")({
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "Início", item: "/" },
               { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
-              { "@type": "ListItem", position: 3, name: post.title, item: `/blog/${params.slug}` },
+              { "@type": "ListItem", position: 3, name: post.category, item: `/blog?cat=${encodeURIComponent(post.category)}` },
+              { "@type": "ListItem", position: 4, name: post.title, item: url },
             ],
           }),
         },

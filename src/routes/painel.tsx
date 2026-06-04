@@ -253,6 +253,13 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
   });
   const best = rows.length ? rows.reduce((a, b) => (a.score > b.score ? a : b)) : null;
 
+  // Best by each KPI individually
+  const bestBy = (kpi: "cta" | "wa" | "form" | "score") =>
+    rows.length ? rows.reduce((a, b) => (a[kpi] > b[kpi] ? a : b)) : null;
+  const bestCta = bestBy("cta");
+  const bestWa = bestBy("wa");
+  const bestForm = bestBy("form");
+
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-baseline justify-between flex-wrap gap-2">
@@ -261,49 +268,86 @@ function ABComparison({ data }: { data: ReturnType<typeof getFunnel> }) {
           Pontuação ponderada: 1·CTA + 3·WhatsApp + 5·Form
         </span>
       </div>
+
       {rows.length === 0 ? (
         <p className="mt-4 text-sm text-muted-foreground">
           Sem dados ainda. Interaja com o site para gerar variantes.
         </p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground">
-                <th className="py-2 px-2">Combinação de variantes</th>
-                <th className="py-2 px-2 text-right">CTA</th>
-                <th className="py-2 px-2 text-right">WhatsApp</th>
-                <th className="py-2 px-2 text-right">Form</th>
-                <th className="py-2 px-2 text-right">Pontuação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => {
-                const isBest = best && r.key === best.key && r.score > 0;
-                return (
-                  <tr
-                    key={r.key}
-                    className={`border-t border-border ${isBest ? "bg-emerald-500/5" : ""}`}
-                  >
-                    <td className="py-2 px-2 font-mono text-xs">
-                      {r.key}
-                      {isBest ? (
-                        <span className="ml-2 rounded-full bg-emerald-500 text-white text-[10px] px-2 py-0.5 font-semibold">
-                          MELHOR
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="py-2 px-2 text-right tabular-nums">{r.cta}</td>
-                    <td className="py-2 px-2 text-right tabular-nums">{r.wa}</td>
-                    <td className="py-2 px-2 text-right tabular-nums">{r.form}</td>
-                    <td className="py-2 px-2 text-right tabular-nums font-semibold">{r.score}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Best by KPI summary */}
+          <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <KpiWinner label="Melhor por CTA" winner={bestCta?.key} value={bestCta?.cta ?? 0} />
+            <KpiWinner label="Melhor por WhatsApp" winner={bestWa?.key} value={bestWa?.wa ?? 0} />
+            <KpiWinner label="Melhor por Formulário" winner={bestForm?.key} value={bestForm?.form ?? 0} />
+            <KpiWinner label="Melhor combinação (score)" winner={best?.key} value={best?.score ?? 0} highlight />
+          </div>
+
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <th className="py-2 px-2">Combinação de variantes</th>
+                  <th className="py-2 px-2 text-right">CTA</th>
+                  <th className="py-2 px-2 text-right">WhatsApp</th>
+                  <th className="py-2 px-2 text-right">Form</th>
+                  <th className="py-2 px-2 text-right">Pontuação</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => {
+                  const isBest = best && r.key === best.key && r.score > 0;
+                  return (
+                    <tr
+                      key={r.key}
+                      className={`border-t border-border ${isBest ? "bg-emerald-500/5" : ""}`}
+                    >
+                      <td className="py-2 px-2 font-mono text-xs">
+                        {r.key}
+                        {isBest ? (
+                          <span className="ml-2 rounded-full bg-emerald-500 text-white text-[10px] px-2 py-0.5 font-semibold">
+                            MELHOR
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="py-2 px-2 text-right tabular-nums">{r.cta}</td>
+                      <td className="py-2 px-2 text-right tabular-nums">{r.wa}</td>
+                      <td className="py-2 px-2 text-right tabular-nums">{r.form}</td>
+                      <td className="py-2 px-2 text-right tabular-nums font-semibold">{r.score}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
+    </div>
+  );
+}
+
+function KpiWinner({
+  label,
+  winner,
+  value,
+  highlight,
+}: {
+  label: string;
+  winner?: string;
+  value: number;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-xl border p-3 ${
+        highlight ? "border-emerald-500/40 bg-emerald-500/5" : "border-border bg-muted/40"
+      }`}
+    >
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-1 font-mono text-xs truncate" title={winner}>
+        {winner ?? "—"}
+      </div>
+      <div className="mt-1 text-lg font-bold font-display tabular-nums">{value}</div>
     </div>
   );
 }
