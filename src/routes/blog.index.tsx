@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { posts, categories } from "@/lib/blog-data";
+import { coverForCategory } from "@/components/site/Blog";
 import { ArrowUpRight } from "lucide-react";
 
 const TITLE = "Blog 0WEB · Marketing, SEO, IA e Tecnologia para empresas";

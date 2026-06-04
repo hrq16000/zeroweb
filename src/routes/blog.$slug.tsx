@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { getPost, posts } from "@/lib/blog-data";
+import { coverForCategory } from "@/components/site/Blog";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
