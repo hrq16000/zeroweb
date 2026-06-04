@@ -13,6 +13,8 @@ import { FAQ, faqData } from "@/components/site/FAQ";
 import { Blog } from "@/components/site/Blog";
 import { CTA } from "@/components/site/CTA";
 import { Footer } from "@/components/site/Footer";
+import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { ScrollTracker } from "@/components/site/ScrollTracker";
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital para Empresas";
 const DESC =
