@@ -3,11 +3,13 @@ import { motion } from "motion/react";
 import { TrendingDown, ArrowRight } from "lucide-react";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const fmt = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 
 export function LossCalculator() {
+  const { open: openFunnel } = useWaFunnel();
   const [visitors, setVisitors] = useState(3000);
   const [ticket, setTicket] = useState(800);
   const [conv, setConv] = useState(1);
