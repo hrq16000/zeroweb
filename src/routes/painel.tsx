@@ -16,6 +16,7 @@ import { AnalyticsIdsAdmin } from "@/components/site/AnalyticsIdsAdmin";
 import { PainelGate } from "@/components/site/PainelGate";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
 import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
+import { fetchRemoteFunnel } from "@/lib/analytics-remote";
 
 export const Route = createFileRoute("/painel")({
   head: () => ({
