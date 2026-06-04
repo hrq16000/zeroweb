@@ -58,7 +58,7 @@ export function AnalyticsBootstrap() {
         s.src = `https://www.googletagmanager.com/gtm.js?id=${gtm}`;
         s.dataset.zeroweb = "gtm";
         document.head.appendChild(s);
-        window.dataLayer!.push({ "gtm.start": Date.now(), event: "gtm.js" });
+        w.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
         loaded.gtm = gtm;
       }
 
