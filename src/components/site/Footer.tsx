@@ -1,4 +1,6 @@
 import { Instagram, Linkedin, Youtube, Mail, MessageCircle } from "lucide-react";
+import { trackConversion } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const cols = [
   {
@@ -31,11 +33,19 @@ export function Footer() {
             </p>
 
             <div className="mt-6 space-y-2 text-sm text-background/80">
-              <a href="https://wa.me/5500000000000" className="flex items-center gap-2 hover:text-accent">
-                <MessageCircle className="w-4 h-4 text-accent" /> WhatsApp · (00) 00000-0000
+              <a
+                href={whatsappUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackConversion("whatsapp_click", { location: "footer" })}
+                className="flex items-center gap-2 hover:text-accent"
+              >
+                <MessageCircle className="w-4 h-4 text-accent" />
+                <span>WhatsApp · (41) 9 9745-2053</span>
               </a>
               <a href="mailto:contato@0web.com.br" className="flex items-center gap-2 hover:text-accent">
-                <Mail className="w-4 h-4 text-accent" /> contato@0web.com.br
+                <Mail className="w-4 h-4 text-accent" />
+                <span>contato@0web.com.br</span>
               </a>
             </div>
 
@@ -67,7 +77,7 @@ export function Footer() {
           <div className="flex flex-wrap gap-5">
             <a href="#" className="hover:text-accent">Política de Privacidade</a>
             <a href="#" className="hover:text-accent">Termos de Uso</a>
-            <a href="#" className="hover:text-accent">Mapa do Site</a>
+            <a href="/sitemap.xml" className="hover:text-accent">Mapa do Site</a>
           </div>
         </div>
       </div>
