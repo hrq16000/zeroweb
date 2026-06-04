@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -38,6 +39,11 @@ const QaEventsRoute = QaEventsRouteImport.update({
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
+  id: '/google-meu-negocio',
+  path: '/google-meu-negocio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceRoute = ServiceRouteImport.update({
@@ -74,6 +80,7 @@ const CityServiceRoute = CityServiceRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$service'
+    | '/google-meu-negocio'
     | '/painel'
     | '/qa-events'
     | '/rss.xml'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$service'
+    | '/google-meu-negocio'
     | '/painel'
     | '/qa-events'
     | '/rss.xml'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$service'
+    | '/google-meu-negocio'
     | '/painel'
     | '/qa-events'
     | '/rss.xml'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ServiceRoute: typeof ServiceRoute
+  GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   PainelRoute: typeof PainelRoute
   QaEventsRoute: typeof QaEventsRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/google-meu-negocio': {
+      id: '/google-meu-negocio'
+      path: '/google-meu-negocio'
+      fullPath: '/google-meu-negocio'
+      preLoaderRoute: typeof GoogleMeuNegocioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$service': {
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ServiceRoute: ServiceRoute,
+  GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   PainelRoute: PainelRoute,
   QaEventsRoute: QaEventsRoute,
   RssDotxmlRoute: RssDotxmlRoute,
@@ -250,3 +271,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
