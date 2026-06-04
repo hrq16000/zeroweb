@@ -20,6 +20,7 @@ import { SocialProof, TrustBar } from "@/components/site/SocialProof";
 import { ExitIntent } from "@/components/site/ExitIntent";
 import { DiagnosticForm } from "@/components/site/DiagnosticForm";
 import { LossCalculator } from "@/components/site/LossCalculator";
+import { SocialProofSection } from "@/components/site/SocialProofSection";
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital para Empresas";
 const DESC =
@@ -112,6 +113,7 @@ function Index() {
         <Process />
         <FAQ />
         <Blog />
+        <SocialProofSection />
         <CTA />
       </main>
       <Footer />

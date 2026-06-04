@@ -59,23 +59,32 @@ export function setConsent(next: Partial<ConsentState>) {
   window.dispatchEvent(new CustomEvent("0web:consent", { detail: merged }));
 }
 
-/** Funnel counter (per-event, page, category) stored in localStorage. */
+/** Funnel counter (per-event, page, category, variant) stored in localStorage. */
 type FunnelRecord = {
   totals: Record<string, number>;
   byPage: Record<string, Record<string, number>>;
   byCategory: Record<string, Record<string, number>>;
+  byVariant: Record<string, Record<string, number>>; // variantKey "hero_copy:A|hero_cta:B" -> event counts
   lastUpdated: string;
 };
 
 function emptyFunnel(): FunnelRecord {
-  return { totals: {}, byPage: {}, byCategory: {}, lastUpdated: new Date().toISOString() };
+  return {
+    totals: {},
+    byPage: {},
+    byCategory: {},
+    byVariant: {},
+    lastUpdated: new Date().toISOString(),
+  };
 }
 
 export function getFunnel(): FunnelRecord {
   if (typeof window === "undefined") return emptyFunnel();
   try {
     const raw = localStorage.getItem(FUNNEL_KEY);
-    return raw ? (JSON.parse(raw) as FunnelRecord) : emptyFunnel();
+    const parsed = raw ? (JSON.parse(raw) as FunnelRecord) : emptyFunnel();
+    parsed.byVariant = parsed.byVariant ?? {};
+    return parsed;
   } catch {
     return emptyFunnel();
   }
@@ -85,6 +94,17 @@ export function resetFunnel() {
   if (typeof window === "undefined") return;
   localStorage.setItem(FUNNEL_KEY, JSON.stringify(emptyFunnel()));
   window.dispatchEvent(new CustomEvent("0web:funnel"));
+}
+
+function getVariantKey(): string {
+  try {
+    const ab = JSON.parse(localStorage.getItem("0web_ab_v1") || "{}");
+    const keys = Object.keys(ab).sort();
+    if (!keys.length) return "(none)";
+    return keys.map((k) => `${k}:${ab[k]}`).join("|");
+  } catch {
+    return "(none)";
+  }
 }
 
 function incFunnel(event: string, params: EventParams) {
@@ -99,6 +119,9 @@ function incFunnel(event: string, params: EventParams) {
     cur.byCategory[cat] = cur.byCategory[cat] ?? {};
     cur.byCategory[cat][event] = (cur.byCategory[cat][event] ?? 0) + 1;
   }
+  const vKey = getVariantKey();
+  cur.byVariant[vKey] = cur.byVariant[vKey] ?? {};
+  cur.byVariant[vKey][event] = (cur.byVariant[vKey][event] ?? 0) + 1;
   cur.lastUpdated = new Date().toISOString();
   localStorage.setItem(FUNNEL_KEY, JSON.stringify(cur));
   window.dispatchEvent(new CustomEvent("0web:funnel"));
@@ -117,6 +140,25 @@ export function trackEvent(name: string, params: EventParams = {}) {
 export function trackConversion(name: string, params: EventParams = {}) {
   trackEvent(name, { ...params, conversion: true, event_category: params.event_category ?? "conversion" });
 }
+
+/** Canonical list of events that should be marked as GA4 Conversion events. */
+export const CONVERSION_EVENTS = [
+  "cta_click",
+  "whatsapp_click",
+  "form_submit",
+  "scroll_depth",
+] as const;
+
+/** Expected dataLayer schema per event (used by /qa-events expected vs captured). */
+export const EXPECTED_EVENT_SCHEMA: Record<string, string[]> = {
+  cta_click: ["label", "location"],
+  whatsapp_click: ["location"],
+  form_submit: ["form_name"],
+  scroll_depth: ["percent"],
+  experiment_view: ["experiment", "variant"],
+  consent_update: ["analytics_storage", "ad_storage"],
+};
+
 
 export function useScrollDepthTracking() {
   const fired = useRef<Set<number>>(new Set());

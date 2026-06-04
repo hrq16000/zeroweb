@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getFunnel, resetFunnel } from "@/lib/analytics";
+import { getFunnel, resetFunnel, EXPECTED_EVENT_SCHEMA, CONVERSION_EVENTS } from "@/lib/analytics";
 import { getAllAssignments, resetAssignments } from "@/lib/ab-testing";
 
 export const Route = createFileRoute("/qa-events")({
@@ -134,6 +134,11 @@ function QAEvents() {
           </div>
         </div>
 
+        {/* Expected vs Captured comparison */}
+        <ExpectedVsCaptured logs={logs} />
+
+
+
         <div className="mt-8">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold">Stream de eventos ({filtered.length})</h2>
@@ -176,3 +181,94 @@ function QAEvents() {
     </div>
   );
 }
+
+function ExpectedVsCaptured({ logs }: { logs: LogItem[] }) {
+  const expected = Object.keys(EXPECTED_EVENT_SCHEMA);
+  const seen = new Map<string, LogItem>();
+  for (const l of logs) if (!seen.has(l.event)) seen.set(l.event, l);
+
+  return (
+    <div className="mt-8 rounded-2xl border border-border overflow-hidden">
+      <div className="px-5 py-3 border-b border-border bg-muted/40 flex items-center justify-between flex-wrap gap-2">
+        <h2 className="font-semibold">Esperado vs Capturado</h2>
+        <span className="text-xs text-muted-foreground">
+          Conferência completa do dataLayer por evento — não altera a captura.
+        </span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="text-xs uppercase tracking-wider text-muted-foreground">
+            <tr className="text-left">
+              <th className="py-2 px-4">Evento</th>
+              <th className="py-2 px-4">Conversão GA4?</th>
+              <th className="py-2 px-4">Capturado?</th>
+              <th className="py-2 px-4">Campos esperados</th>
+              <th className="py-2 px-4">Campos faltantes</th>
+              <th className="py-2 px-4">Último payload</th>
+            </tr>
+          </thead>
+          <tbody>
+            {expected.map((ev) => {
+              const fields = EXPECTED_EVENT_SCHEMA[ev];
+              const log = seen.get(ev);
+              const captured = !!log;
+              const present = log ? Object.keys(log.payload) : [];
+              const missing = fields.filter((f) => !present.includes(f));
+              const isConversion = (CONVERSION_EVENTS as readonly string[]).includes(ev);
+              return (
+                <tr key={ev} className="border-t border-border align-top">
+                  <td className="py-3 px-4 font-mono text-xs font-semibold">{ev}</td>
+                  <td className="py-3 px-4">
+                    {isConversion ? (
+                      <span className="rounded-full bg-emerald-500/10 text-emerald-600 text-[11px] px-2 py-0.5 font-semibold">
+                        SIM
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground text-xs">não</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    {captured ? (
+                      <span className="rounded-full bg-emerald-500/10 text-emerald-600 text-[11px] px-2 py-0.5 font-semibold">
+                        ✓ ok
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-amber-500/10 text-amber-600 text-[11px] px-2 py-0.5 font-semibold">
+                        aguardando
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-xs">
+                    {fields.map((f) => (
+                      <code key={f} className="mr-1.5 rounded bg-muted px-1.5 py-0.5">
+                        {f}
+                      </code>
+                    ))}
+                  </td>
+                  <td className="py-3 px-4 text-xs">
+                    {missing.length === 0 && captured ? (
+                      <span className="text-emerald-600">—</span>
+                    ) : (
+                      missing.map((f) => (
+                        <code
+                          key={f}
+                          className="mr-1.5 rounded bg-rose-500/10 text-rose-600 px-1.5 py-0.5"
+                        >
+                          {f}
+                        </code>
+                      ))
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-xs font-mono max-w-[20rem] truncate">
+                    {log ? JSON.stringify(log.payload) : "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
