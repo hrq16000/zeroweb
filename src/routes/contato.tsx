@@ -6,6 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { trackConversion } from "@/lib/analytics";
+import { persistLead } from "@/lib/persistence";
 import { whatsappUrl } from "@/lib/site-config";
 
 const TITLE = "Contato 0WEB · Fale com a gente · WhatsApp, e-mail e formulário";
