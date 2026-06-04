@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
-import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity } from "lucide-react";
+import { ArrowRight, MessageCircle, Sparkles, TrendingUp, Users, Activity, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useExperiment } from "@/lib/ab-testing";
 
 const stats = [
   { label: "Projetos", value: "+500" },
@@ -10,7 +11,31 @@ const stats = [
   { label: "Suporte", value: "Nacional" },
 ];
 
+const HERO_VARIANTS = {
+  A: {
+    headline: "Sua empresa merece mais que",
+    accent: "apenas um site.",
+    sub: "Criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam negócios em máquinas de crescimento.",
+  },
+  B: {
+    headline: "Mais clientes. Menos esforço.",
+    accent: "Tudo no mesmo time.",
+    sub: "Tecnologia, IA e marketing performam juntos para multiplicar seus leads em até 312% nos primeiros 90 dias.",
+  },
+} as const;
+
+const CTA_VARIANTS = {
+  A: { label: "Solicitar Diagnóstico Gratuito", icon: ArrowRight },
+  B: { label: "Quero Mais Clientes Agora", icon: Zap },
+} as const;
+
 export function Hero() {
+  const heroVariant = useExperiment("hero_copy", ["A", "B"] as const);
+  const ctaVariant = useExperiment("hero_cta", ["A", "B"] as const);
+  const copy = HERO_VARIANTS[heroVariant];
+  const cta = CTA_VARIANTS[ctaVariant];
+  const CtaIcon = cta.icon;
+
   return (
     <section id="inicio" className="relative pt-32 lg:pt-40 pb-24 bg-hero overflow-hidden">
       <div className="absolute inset-0 bg-mesh opacity-60 pointer-events-none" />
@@ -28,12 +53,13 @@ export function Hero() {
           </motion.div>
 
           <motion.h1
+            key={heroVariant}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight"
           >
-            Sua empresa merece mais que <span className="text-gradient">apenas um site.</span>
+            {copy.headline} <span className="text-gradient">{copy.accent}</span>
           </motion.h1>
 
           <motion.p
@@ -42,8 +68,7 @@ export function Hero() {
             transition={{ delay: 0.1 }}
             className="mt-6 text-lg text-muted-foreground max-w-2xl"
           >
-            Criamos sites, automações, sistemas e estratégias digitais que atraem clientes,
-            aumentam vendas e transformam negócios em máquinas de crescimento.
+            {copy.sub}
           </motion.p>
 
           <motion.div
@@ -53,18 +78,25 @@ export function Hero() {
             className="mt-8 flex flex-wrap gap-3"
           >
             <a
-              href="#contato"
-              onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "hero" })}
+              href="#diagnostico"
+              onClick={() =>
+                trackEvent("cta_click", {
+                  label: "solicitar_diagnostico",
+                  location: "hero",
+                  experiment_hero: heroVariant,
+                  experiment_cta: ctaVariant,
+                })
+              }
               className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
             >
-              Solicitar Diagnóstico Gratuito
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              {cta.label}
+              <CtaIcon className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
             <a
               href={whatsappUrl(undefined, "hero")}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackConversion("whatsapp_click", { location: "hero" })}
+              onClick={() => trackConversion("whatsapp_click", { location: "hero", experiment_hero: heroVariant })}
               className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
             >
               <MessageCircle className="w-4 h-4 text-accent" />
