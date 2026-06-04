@@ -86,6 +86,7 @@ export const Route = createFileRoute("/cases/$slug")({
 
 function CasePage() {
   const { case: c } = Route.useLoaderData() as { case: import("@/lib/cases-data").CaseStudy };
+  const { open: openFunnel } = useWaFunnel();
 
   return (
     <div className="min-h-screen bg-background text-foreground scroll-smooth">
