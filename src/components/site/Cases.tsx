@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
-import { TrendingUp, Users, ShoppingCart } from "lucide-react";
+import { TrendingUp, Users, ShoppingCart, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { cases as caseStudies } from "@/lib/cases-data";
 
 const cases = [
   {
