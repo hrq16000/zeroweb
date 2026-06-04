@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const checks = [
   { key: "site", label: "Possui site profissional?", weight: 25 },
