@@ -257,17 +257,16 @@ function CasePage() {
               >
                 Solicitar Diagnóstico <ArrowRight className="w-4 h-4" />
               </Link>
-              <a
-                href={whatsappUrl(undefined, `case_${c.slug}_cta`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() =>
-                  trackConversion("whatsapp_click", { location: `case_${c.slug}_cta` })
-                }
+              <button
+                type="button"
+                onClick={() => {
+                  trackConversion("whatsapp_click", { location: `case_${c.slug}_cta` });
+                  openFunnel(`case_${c.slug}_cta`);
+                }}
                 className="inline-flex items-center gap-2 rounded-full bg-background text-foreground font-semibold px-6 py-3.5"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-500" /> Falar no WhatsApp
-              </a>
+              </button>
             </div>
           </div>
         </section>
