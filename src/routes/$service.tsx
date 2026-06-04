@@ -5,7 +5,8 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { whatsappUrl } from "@/lib/site-config";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackConversion } from "@/lib/analytics";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 type ServiceData = {
   title: string;
