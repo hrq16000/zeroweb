@@ -69,6 +69,7 @@ export const Route = createFileRoute("/$city/$service")({
 
 function GeoPage() {
   const { city, service, citySlug, serviceSlug } = Route.useLoaderData();
+  const { open: openFunnel } = useWaFunnel();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
