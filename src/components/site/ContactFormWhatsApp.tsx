@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
@@ -18,6 +19,7 @@ type Props = {
   ctx?: string;
   title?: string;
   defaultMessage?: string;
+  redirectTo?: string;
 };
 
 export function ContactFormWhatsApp({
