@@ -3,23 +3,37 @@ import { motion } from "motion/react";
 
 const plans = [
   {
+    name: "Landing Page",
+    price: "R$ 99,99",
+    period: "/mês",
+    desc: "Sua presença online profissional, sem complicação.",
+    features: [
+      "Landing page de alta conversão",
+      "Design responsivo premium",
+      "Formulário + WhatsApp integrado",
+      "SEO básico on-page",
+      "Hospedagem e SSL inclusos",
+      "Suporte por e-mail",
+    ],
+  },
+  {
     name: "Start",
-    price: "R$ 1.490",
-    period: "/projeto",
+    price: "R$ 249",
+    period: "/mês",
     desc: "Para empresas que precisam estar online com qualidade.",
     features: [
       "Site institucional até 5 páginas",
       "Design responsivo premium",
       "SEO básico on-page",
       "Formulário + WhatsApp",
-      "Hospedagem inclusa 12 meses",
+      "Hospedagem inclusa",
       "Suporte 30 dias",
     ],
   },
   {
     name: "Pro",
-    price: "R$ 3.890",
-    period: "/projeto",
+    price: "R$ 649",
+    period: "/mês",
     desc: "O plano mais escolhido. Site + estratégia + IA.",
     highlight: true,
     features: [
