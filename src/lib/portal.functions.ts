@@ -59,10 +59,11 @@ export const upsertPortal = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
     if (!isSuper) throw new Error("forbidden");
-    const payload = { ...data, aliases: data.aliases ?? [] };
+    const payload = { ...data, aliases: data.aliases ?? [] } as never;
+    const q = supabaseAdmin.from("portals");
     const { data: row, error } = data.id
-      ? await supabaseAdmin.from("portals").update(payload).eq("id", data.id).select().single()
-      : await supabaseAdmin.from("portals").insert(payload).select().single();
+      ? await q.update(payload).eq("id", data.id).select().single()
+      : await q.insert(payload).select().single();
     if (error) throw new Error(error.message);
     return { row };
   });
