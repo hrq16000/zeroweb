@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getGa4Id, getGtmId, isValidGa4, isValidGtm } from "@/lib/site-config";
+import { getGa4Id, getGtmId, isValidGa4, isValidGtm, captureAttribution } from "@/lib/site-config";
 
 declare global {
   interface Window {
