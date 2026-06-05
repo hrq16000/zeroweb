@@ -1276,6 +1276,128 @@ export type Database = {
         }
         Relationships: []
       }
+      visitantes_rastreio: {
+        Row: {
+          asn: string | null
+          block_reason: string | null
+          blocked: boolean
+          city: string | null
+          country: string | null
+          created_at: string
+          day: string
+          fbclid: string | null
+          gclid: string | null
+          id: string
+          ip_address: unknown
+          ip_hash: string
+          is_bot: boolean
+          landing_page: string | null
+          meta: Json
+          method: string | null
+          path: string | null
+          portal_id: string | null
+          query: string | null
+          referer: string | null
+          region: string | null
+          risk_score: number
+          session_id: string | null
+          tenant_slug: string | null
+          ua_browser: string | null
+          ua_device: string | null
+          ua_os: string | null
+          user_agent: string | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          asn?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          day?: string
+          fbclid?: string | null
+          gclid?: string | null
+          id?: string
+          ip_address?: unknown
+          ip_hash: string
+          is_bot?: boolean
+          landing_page?: string | null
+          meta?: Json
+          method?: string | null
+          path?: string | null
+          portal_id?: string | null
+          query?: string | null
+          referer?: string | null
+          region?: string | null
+          risk_score?: number
+          session_id?: string | null
+          tenant_slug?: string | null
+          ua_browser?: string | null
+          ua_device?: string | null
+          ua_os?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          asn?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          day?: string
+          fbclid?: string | null
+          gclid?: string | null
+          id?: string
+          ip_address?: unknown
+          ip_hash?: string
+          is_bot?: boolean
+          landing_page?: string | null
+          meta?: Json
+          method?: string | null
+          path?: string | null
+          portal_id?: string | null
+          query?: string | null
+          referer?: string | null
+          region?: string | null
+          risk_score?: number
+          session_id?: string | null
+          tenant_slug?: string | null
+          ua_browser?: string | null
+          ua_device?: string | null
+          ua_os?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitantes_rastreio_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wa_funnel_sessions: {
         Row: {
           answers_json: Json | null
@@ -1377,6 +1499,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_portal_member: {
+        Args: { _portal: string; _uid: string }
         Returns: boolean
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
