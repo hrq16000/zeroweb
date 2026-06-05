@@ -44,6 +44,7 @@ import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/le
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
+import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 
 const TermosRoute = TermosRouteImport.update({
@@ -223,6 +224,12 @@ const AuthenticatedAppDocumentsRoute =
     path: '/documents',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppSupportIdRoute =
+  AuthenticatedAppSupportIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAppSupportRoute,
+  } as any)
 const AuthenticatedAppProjectsIdRoute =
   AuthenticatedAppProjectsIdRouteImport.update({
     id: '/$id',
@@ -262,10 +269,11 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
-  '/app/support': typeof AuthenticatedAppSupportRoute
+  '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -298,10 +306,11 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
-  '/app/support': typeof AuthenticatedAppSupportRoute
+  '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -337,10 +346,11 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
-  '/_authenticated/app/support': typeof AuthenticatedAppSupportRoute
+  '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -380,6 +390,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/app/'
     | '/app/projects/$id'
+    | '/app/support/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -416,6 +427,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/app'
     | '/app/projects/$id'
+    | '/app/support/$id'
   id:
     | '__root__'
     | '/'
@@ -454,6 +466,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/_authenticated/app/'
     | '/_authenticated/app/projects/$id'
+    | '/_authenticated/app/support/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -735,6 +748,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDocumentsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/support/$id': {
+      id: '/_authenticated/app/support/$id'
+      path: '/$id'
+      fullPath: '/app/support/$id'
+      preLoaderRoute: typeof AuthenticatedAppSupportIdRouteImport
+      parentRoute: typeof AuthenticatedAppSupportRoute
+    }
     '/_authenticated/app/projects/$id': {
       id: '/_authenticated/app/projects/$id'
       path: '/$id'
@@ -759,17 +779,31 @@ const AuthenticatedAppProjectsRouteWithChildren =
     AuthenticatedAppProjectsRouteChildren,
   )
 
+interface AuthenticatedAppSupportRouteChildren {
+  AuthenticatedAppSupportIdRoute: typeof AuthenticatedAppSupportIdRoute
+}
+
+const AuthenticatedAppSupportRouteChildren: AuthenticatedAppSupportRouteChildren =
+  {
+    AuthenticatedAppSupportIdRoute: AuthenticatedAppSupportIdRoute,
+  }
+
+const AuthenticatedAppSupportRouteWithChildren =
+  AuthenticatedAppSupportRoute._addFileChildren(
+    AuthenticatedAppSupportRouteChildren,
+  )
+
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
-  AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRoute
+  AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
-  AuthenticatedAppSupportRoute: AuthenticatedAppSupportRoute,
+  AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
