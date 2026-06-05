@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "build": "vite build && bun run postbuild",
+    "build:dev": "vite build --mode development && bun run postbuild",
+    "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs",
     "preview": "vite preview",
+    "lhci": "lhci autorun --config=.lighthouserc.cjs",
+    "seo:images": "node scripts/validate-seo-images.mjs",
+    "img:optimize": "node scripts/optimize-blog-images.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
