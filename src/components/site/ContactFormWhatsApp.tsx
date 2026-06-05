@@ -9,6 +9,7 @@ import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
 import { getIpGeo, requestGpsThenFallback, formatLocation, type GeoInfo } from "@/lib/geo-location";
+import { GpsConsentModal, getStoredGpsDecision } from "@/components/site/GpsConsentModal";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
@@ -43,6 +44,7 @@ export function ContactFormWhatsApp({
   const [modalOpen, setModalOpen] = useState(false);
   const [geo, setGeo] = useState<GeoInfo | null>(null);
   const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
+  const [gpsConsentOpen, setGpsConsentOpen] = useState(false);
   const shouldUseModal = useModal ?? !redirectTo;
 
   // Subliminal IP geo on mount
@@ -50,11 +52,17 @@ export function ContactFormWhatsApp({
     void getIpGeo().then((g) => { if (g) setGeo(g); });
   }, []);
 
-  const askGps = async () => {
+  const performGps = async () => {
     setGpsStatus("asking");
     const g = await requestGpsThenFallback();
     if (g) { setGeo(g); setGpsStatus(g.source.includes("gps") ? "ok" : "denied"); }
     else setGpsStatus("denied");
+  };
+
+  const askGps = () => {
+    const prev = getStoredGpsDecision();
+    if (prev === "granted") { void performGps(); return; }
+    setGpsConsentOpen(true);
   };
 
   return (
@@ -218,6 +226,12 @@ export function ContactFormWhatsApp({
       {shouldUseModal && (
         <ThankYouModal open={modalOpen} onOpenChange={setModalOpen} source={source} />
       )}
+      <GpsConsentModal
+        open={gpsConsentOpen}
+        onAccept={() => { setGpsConsentOpen(false); void performGps(); }}
+        onDecline={() => { setGpsConsentOpen(false); setGpsStatus("denied"); }}
+        onDismiss={() => setGpsConsentOpen(false)}
+      />
     </>
   );
 }

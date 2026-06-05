@@ -1241,6 +1241,36 @@ export type Database = {
           },
         ]
       }
+      gps_consent_log: {
+        Row: {
+          created_at: string
+          decision: string
+          id: string
+          page: string | null
+          session_id: string | null
+          user_agent: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          decision: string
+          id?: string
+          page?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          id?: string
+          page?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       identity_stitch_log: {
         Row: {
           actor: string | null
@@ -1277,6 +1307,48 @@ export type Database = {
           user_id?: string | null
           user_ref?: string | null
           visitor_id?: string | null
+        }
+        Relationships: []
+      }
+      index_coverage_issues: {
+        Row: {
+          created_at: string
+          detected_at: string
+          id: string
+          issue_type: string
+          message: string | null
+          metadata: Json | null
+          resolved_at: string | null
+          source: string
+          status_code: number | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          detected_at?: string
+          id?: string
+          issue_type: string
+          message?: string | null
+          metadata?: Json | null
+          resolved_at?: string | null
+          source?: string
+          status_code?: number | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          detected_at?: string
+          id?: string
+          issue_type?: string
+          message?: string | null
+          metadata?: Json | null
+          resolved_at?: string | null
+          source?: string
+          status_code?: number | null
+          updated_at?: string
+          url?: string
         }
         Relationships: []
       }

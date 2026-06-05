@@ -1,23 +1,30 @@
 #!/usr/bin/env sh
 # Lovable / 0WEB pre-commit hook.
-# Runs the SEO image validator against the latest build output (dist/).
-# If dist/ is absent, the validator no-ops and the commit passes — CI will
-# still gate via the postbuild step. When dist/ exists, og:image,
-# twitter:image, max-image-preview:large, JSON-LD images and og:video are
-# all validated against the configured thresholds.
 
 # Allow bypass: SKIP_SEO_IMAGE_CHECK=1 git commit ...
-if [ "$SKIP_SEO_IMAGE_CHECK" = "1" ]; then
-  exit 0
+if [ "$SKIP_SEO_IMAGE_CHECK" != "1" ]; then
+  echo "[pre-commit] validating SEO images..."
+  SEO_PRECOMMIT=1 node scripts/validate-seo-images.mjs
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo ""
+    echo "✖ Pre-commit bloqueado: og:image/twitter:image ou max-image-preview:large inválidos."
+    echo "  Corrija as imagens/metas ou rode com SKIP_SEO_IMAGE_CHECK=1 para pular."
+    exit $status
+  fi
 fi
 
-echo "[pre-commit] validating SEO images..."
-SEO_PRECOMMIT=1 node scripts/validate-seo-images.mjs
-status=$?
-if [ $status -ne 0 ]; then
-  echo ""
-  echo "✖ Pre-commit bloqueado: og:image/twitter:image ou max-image-preview:large inválidos."
-  echo "  Corrija as imagens/metas ou rode com SKIP_SEO_IMAGE_CHECK=1 para pular."
-  exit $status
+# Validate JSON-LD schemas (Organization/LocalBusiness/WebSite/Review/...).
+if [ "$SKIP_SCHEMA_VALIDATION" != "1" ]; then
+  echo "[pre-commit] validating Schema.org JSON-LD..."
+  node scripts/validate-schemas.mjs
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo ""
+    echo "✖ Pre-commit bloqueado: rich results inconsistentes."
+    echo "  Corrija os blocos JSON-LD ou rode com SKIP_SCHEMA_VALIDATION=1 para pular."
+    exit $status
+  fi
 fi
+
 exit 0
