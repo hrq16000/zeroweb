@@ -315,6 +315,66 @@ export type Database = {
         }
         Relationships: []
       }
+      commission_rules: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          kind_target: Database["public"]["Enums"]["partner_kind"] | null
+          notes: string | null
+          partner_id: string | null
+          recurrence_months: number | null
+          scope_category: string | null
+          scope_product: string | null
+          type: Database["public"]["Enums"]["commission_type"]
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          kind_target?: Database["public"]["Enums"]["partner_kind"] | null
+          notes?: string | null
+          partner_id?: string | null
+          recurrence_months?: number | null
+          scope_category?: string | null
+          scope_product?: string | null
+          type: Database["public"]["Enums"]["commission_type"]
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          kind_target?: Database["public"]["Enums"]["partner_kind"] | null
+          notes?: string | null
+          partner_id?: string | null
+          recurrence_months?: number | null
+          scope_category?: string | null
+          scope_product?: string | null
+          type?: Database["public"]["Enums"]["commission_type"]
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_rules_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "commission_rules_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           categories: string[]
@@ -1069,6 +1129,365 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      partner_attributions: {
+        Row: {
+          campaign: string | null
+          conversion_type: string
+          created_at: string
+          id: string
+          landing_path: string | null
+          lead_id: string | null
+          link_id: string | null
+          notes: string | null
+          partner_id: string
+          status: string
+          value_cents: number
+        }
+        Insert: {
+          campaign?: string | null
+          conversion_type?: string
+          created_at?: string
+          id?: string
+          landing_path?: string | null
+          lead_id?: string | null
+          link_id?: string | null
+          notes?: string | null
+          partner_id: string
+          status?: string
+          value_cents?: number
+        }
+        Update: {
+          campaign?: string | null
+          conversion_type?: string
+          created_at?: string
+          id?: string
+          landing_path?: string | null
+          lead_id?: string | null
+          link_id?: string | null
+          notes?: string | null
+          partner_id?: string
+          status?: string
+          value_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_attributions_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "partner_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_attributions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_attributions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_audit_log: {
+        Row: {
+          action: string
+          actor: string | null
+          created_at: string
+          id: string
+          partner_id: string | null
+          payload: Json | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          partner_id?: string | null
+          payload?: Json | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          partner_id?: string | null
+          payload?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_audit_log_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_audit_log_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_clicks: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          id: string
+          ip_hash: string | null
+          link_id: string
+          partner_id: string
+          referer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          link_id: string
+          partner_id: string
+          referer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          link_id?: string
+          partner_id?: string
+          referer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "partner_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_clicks_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_clicks_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_links: {
+        Row: {
+          active: boolean
+          campaign: string | null
+          code: string
+          created_at: string
+          id: string
+          label: string | null
+          partner_id: string
+          target_path: string
+        }
+        Insert: {
+          active?: boolean
+          campaign?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          partner_id: string
+          target_path?: string
+        }
+        Update: {
+          active?: boolean
+          campaign?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          partner_id?: string
+          target_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_links_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_links_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_materials: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          kind: Database["public"]["Enums"]["material_kind"]
+          title: string
+          url: string
+          visible_to_kinds: Database["public"]["Enums"]["partner_kind"][]
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["material_kind"]
+          title: string
+          url: string
+          visible_to_kinds?: Database["public"]["Enums"]["partner_kind"][]
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["material_kind"]
+          title?: string
+          url?: string
+          visible_to_kinds?: Database["public"]["Enums"]["partner_kind"][]
+        }
+        Relationships: []
+      }
+      partner_territories: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          exclusivity: Database["public"]["Enums"]["territory_exclusivity"]
+          id: string
+          partner_id: string
+          scope: Database["public"]["Enums"]["territory_scope"]
+          starts_at: string | null
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          exclusivity?: Database["public"]["Enums"]["territory_exclusivity"]
+          id?: string
+          partner_id: string
+          scope: Database["public"]["Enums"]["territory_scope"]
+          starts_at?: string | null
+          value: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          exclusivity?: Database["public"]["Enums"]["territory_exclusivity"]
+          id?: string
+          partner_id?: string
+          scope?: Database["public"]["Enums"]["territory_scope"]
+          starts_at?: string | null
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_territories_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_territories_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partners: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          areas: string[]
+          bio: string | null
+          city: string | null
+          company: string | null
+          created_at: string
+          email: string
+          email_lower: string | null
+          id: string
+          kind: Database["public"]["Enums"]["partner_kind"]
+          name: string
+          notes: string | null
+          phone: string | null
+          specialties: string[]
+          state: string | null
+          status: Database["public"]["Enums"]["partner_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          areas?: string[]
+          bio?: string | null
+          city?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          email_lower?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["partner_kind"]
+          name: string
+          notes?: string | null
+          phone?: string | null
+          specialties?: string[]
+          state?: string | null
+          status?: Database["public"]["Enums"]["partner_status"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          areas?: string[]
+          bio?: string | null
+          city?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          email_lower?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["partner_kind"]
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          specialties?: string[]
+          state?: string | null
+          status?: Database["public"]["Enums"]["partner_status"]
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -2118,6 +2537,18 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_ranking_30d: {
+        Row: {
+          clicks_30d: number | null
+          conversions_30d: number | null
+          kind: Database["public"]["Enums"]["partner_kind"] | null
+          leads_30d: number | null
+          name: string | null
+          partner_id: string | null
+          revenue_cents_30d: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       anonymize_visitantes_rastreio_old: { Args: never; Returns: number }
@@ -2174,6 +2605,27 @@ export type Database = {
         | "empresa"
         | "parceiro"
         | "admin_integrations"
+      commission_type:
+        | "fixo"
+        | "percentual"
+        | "recorrente"
+        | "vitalicio"
+        | "por_produto"
+        | "por_categoria"
+      material_kind:
+        | "apresentacao"
+        | "proposta"
+        | "treinamento"
+        | "material"
+        | "link"
+        | "download"
+      partner_kind:
+        | "afiliado"
+        | "representante"
+        | "parceiro_comercial"
+        | "agencia"
+        | "franqueado"
+      partner_status: "pendente" | "aprovado" | "suspenso" | "bloqueado"
       portal_role:
         | "super_admin"
         | "portal_admin"
@@ -2182,6 +2634,8 @@ export type Database = {
         | "client"
         | "provider"
         | "partner"
+      territory_exclusivity: "exclusivo" | "compartilhado"
+      territory_scope: "cidade" | "regiao" | "estado" | "nacional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2317,6 +2771,30 @@ export const Constants = {
         "parceiro",
         "admin_integrations",
       ],
+      commission_type: [
+        "fixo",
+        "percentual",
+        "recorrente",
+        "vitalicio",
+        "por_produto",
+        "por_categoria",
+      ],
+      material_kind: [
+        "apresentacao",
+        "proposta",
+        "treinamento",
+        "material",
+        "link",
+        "download",
+      ],
+      partner_kind: [
+        "afiliado",
+        "representante",
+        "parceiro_comercial",
+        "agencia",
+        "franqueado",
+      ],
+      partner_status: ["pendente", "aprovado", "suspenso", "bloqueado"],
       portal_role: [
         "super_admin",
         "portal_admin",
@@ -2326,6 +2804,8 @@ export const Constants = {
         "provider",
         "partner",
       ],
+      territory_exclusivity: ["exclusivo", "compartilhado"],
+      territory_scope: ["cidade", "regiao", "estado", "nacional"],
     },
   },
 } as const
