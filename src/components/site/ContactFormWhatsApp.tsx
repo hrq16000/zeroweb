@@ -65,11 +65,13 @@ export function ContactFormWhatsApp({
           }
           setErrors({});
           const d = parsed.data;
-          const content = getThankYouContent(source);
+          const attr = getLeadAttribution(source, ctx);
+          const content = attr.content;
+          const evtAttr = attributionToEventParams(attr);
           trackConversion("form_submit", {
             form_name: source,
-            channel: content.channel,
             event_category: "lead",
+            ...evtAttr,
           });
           void persistLead({
             name: d.name,
@@ -79,8 +81,18 @@ export function ContactFormWhatsApp({
             source,
             payload: {
               message: d.message,
-              channel: content.channel,
-              origin_page: typeof window !== "undefined" ? window.location.pathname : null,
+              channel: attr.channel,
+              ctx: attr.ctx,
+              origin_page: attr.page_path,
+              landing_page: attr.landing_page,
+              referrer: attr.referrer,
+              utm_source: attr.utm_source,
+              utm_medium: attr.utm_medium,
+              utm_campaign: attr.utm_campaign,
+              utm_term: attr.utm_term,
+              utm_content: attr.utm_content,
+              gclid: attr.gclid,
+              fbclid: attr.fbclid,
             },
           });
           // WhatsApp message includes a confirmation CTA matching the thank-you content.
@@ -97,7 +109,7 @@ export function ContactFormWhatsApp({
             "",
             `👉 Próximo passo: ${content.finalCtaLabel} — ${ctaUrl}`,
           ].join("\n");
-          window.open(whatsappUrl(msg, ctx), "_blank", "noopener,noreferrer");
+          window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
           setSent(true);
           if (shouldUseModal) {
             setModalOpen(true);
