@@ -22,6 +22,7 @@ import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
 import { Route as EstadosRouteImport } from './routes/estados'
@@ -34,6 +35,7 @@ import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
+import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -101,6 +103,11 @@ const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   path: '/politica-privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelCrmRoute = PainelCrmRouteImport.update({
+  id: '/painel-crm',
+  path: '/painel-crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
@@ -161,6 +168,11 @@ const CityServiceRoute = CityServiceRouteImport.update({
   path: '/$city/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
+  id: '/api/public/lead-webhook',
+  path: '/api/public/lead-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -170,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -188,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -197,6 +211,7 @@ export interface FileRoutesByTo {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -215,6 +230,7 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -225,6 +241,7 @@ export interface FileRoutesById {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -243,6 +260,7 @@ export interface FileRoutesById {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -254,6 +272,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -272,6 +291,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/api/public/lead-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -281,6 +301,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -299,6 +320,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/api/public/lead-webhook'
   id:
     | '__root__'
     | '/'
@@ -308,6 +330,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -326,6 +349,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/api/public/lead-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -336,6 +360,7 @@ export interface RootRouteChildren {
   EstadosRoute: typeof EstadosRouteWithChildren
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   PainelRoute: typeof PainelRoute
+  PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -353,6 +378,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   CasesSlugRoute: typeof CasesSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -448,6 +474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel-crm': {
+      id: '/painel-crm'
+      path: '/painel-crm'
+      fullPath: '/painel-crm'
+      preLoaderRoute: typeof PainelCrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/painel': {
       id: '/painel'
       path: '/painel'
@@ -532,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CityServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/lead-webhook': {
+      id: '/api/public/lead-webhook'
+      path: '/api/public/lead-webhook'
+      fullPath: '/api/public/lead-webhook'
+      preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -554,6 +594,7 @@ const rootRouteChildren: RootRouteChildren = {
   EstadosRoute: EstadosRouteWithChildren,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   PainelRoute: PainelRoute,
+  PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   RssDotxmlRoute: RssDotxmlRoute,
@@ -571,6 +612,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   CasesSlugRoute: CasesSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

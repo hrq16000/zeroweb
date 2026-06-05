@@ -77,6 +77,36 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_settings: {
+        Row: {
+          assignees: string[]
+          distribution_mode: string
+          fixed_assignee: string | null
+          id: string
+          round_robin_pointer: number
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          assignees?: string[]
+          distribution_mode?: string
+          fixed_assignee?: string | null
+          id?: string
+          round_robin_pointer?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          assignees?: string[]
+          distribution_mode?: string
+          fixed_assignee?: string | null
+          id?: string
+          round_robin_pointer?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       experiments: {
         Row: {
           clicks: number
@@ -107,51 +137,113 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_history: {
+        Row: {
+          actor: string | null
+          created_at: string
+          from_value: string | null
+          id: string
+          kind: string
+          lead_id: string
+          note: string | null
+          to_value: string | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          from_value?: string | null
+          id?: string
+          kind: string
+          lead_id: string
+          note?: string | null
+          to_value?: string | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          from_value?: string | null
+          id?: string
+          kind?: string
+          lead_id?: string
+          note?: string | null
+          to_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_submissions: {
         Row: {
+          assignee: string | null
+          company: string | null
           created_at: string
           cta_variant: string | null
           email: string | null
           hero_variant: string | null
           id: string
           landing_page: string | null
+          last_interaction: string | null
           name: string | null
+          notes: string | null
           payload_json: Json | null
           phone: string | null
+          score: number
+          score_label: string
           source: string | null
           status: string
+          updated_at: string
           utm_campaign: string | null
           utm_medium: string | null
           utm_source: string | null
         }
         Insert: {
+          assignee?: string | null
+          company?: string | null
           created_at?: string
           cta_variant?: string | null
           email?: string | null
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
+          last_interaction?: string | null
           name?: string | null
+          notes?: string | null
           payload_json?: Json | null
           phone?: string | null
+          score?: number
+          score_label?: string
           source?: string | null
           status?: string
+          updated_at?: string
           utm_campaign?: string | null
           utm_medium?: string | null
           utm_source?: string | null
         }
         Update: {
+          assignee?: string | null
+          company?: string | null
           created_at?: string
           cta_variant?: string | null
           email?: string | null
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
+          last_interaction?: string | null
           name?: string | null
+          notes?: string | null
           payload_json?: Json | null
           phone?: string | null
+          score?: number
+          score_label?: string
           source?: string | null
           status?: string
+          updated_at?: string
           utm_campaign?: string | null
           utm_medium?: string | null
           utm_source?: string | null
@@ -226,6 +318,13 @@ export type Database = {
           p_variant: string
         }
         Returns: undefined
+      }
+      compute_lead_score: {
+        Args: { p_row: Database["public"]["Tables"]["lead_submissions"]["Row"] }
+        Returns: {
+          label: string
+          score: number
+        }[]
       }
     }
     Enums: {
