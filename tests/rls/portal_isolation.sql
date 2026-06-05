@@ -19,7 +19,7 @@ BEGIN
     VALUES (pa,'test-a','Portal A',false), (pb,'test-b','Portal B',false)
     ON CONFLICT (id) DO NOTHING;
   INSERT INTO public.portal_members(user_id, portal_id, role)
-    VALUES (uid_a, pa, 'admin'), (uid_b, pb, 'admin')
+    VALUES (uid_a, pa, 'portal_admin'), (uid_b, pb, 'portal_admin')
     ON CONFLICT DO NOTHING;
 
   -- Seed rows in each portal
