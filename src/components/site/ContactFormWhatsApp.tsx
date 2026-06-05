@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
@@ -18,6 +19,7 @@ type Props = {
   ctx?: string;
   title?: string;
   defaultMessage?: string;
+  redirectTo?: string;
 };
 
 export function ContactFormWhatsApp({
@@ -25,7 +27,9 @@ export function ContactFormWhatsApp({
   ctx = "contact_form",
   title = "Fale com a 0WEB e receba uma proposta",
   defaultMessage = "Quero uma proposta da 0WEB.",
+  redirectTo,
 }: Props) {
+  const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
 
@@ -63,6 +67,9 @@ export function ContactFormWhatsApp({
         const msg = `${defaultMessage}\n\nNome: ${d.name}\nEmpresa: ${d.company || "—"}\nE-mail: ${d.email}\nWhatsApp: ${d.phone}\n\n${d.message}`;
         window.open(whatsappUrl(msg, ctx), "_blank", "noopener,noreferrer");
         setSent(true);
+        if (redirectTo) {
+          navigate({ to: redirectTo });
+        }
       }}
       className="rounded-2xl border border-border bg-card p-6 lg:p-8 space-y-3"
       aria-labelledby="contact-form-title"

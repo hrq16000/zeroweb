@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { MessageCircle, Mail, MapPin, Clock, ArrowRight } from "lucide-react";
@@ -66,6 +66,7 @@ export const Route = createFileRoute("/contato")({
 });
 
 function ContatoPage() {
+  const navigate = useNavigate();
   const [sent, setSent] = useState(false);
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -157,6 +158,7 @@ function ContatoPage() {
                   "_blank",
                 );
                 setSent(true);
+                navigate({ to: "/obrigado" });
               }}
               className="rounded-2xl border border-border bg-card p-6 lg:p-8 space-y-3"
             >
