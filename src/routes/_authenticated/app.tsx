@@ -82,6 +82,28 @@ function AppShell() {
                 <Shield className="w-4 h-4" />
                 Painel admin
               </Link>
+              <Link
+                to="/app/master"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/master")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Globe className="w-4 h-4" />
+                Dashboard Master
+              </Link>
+              <Link
+                to="/app/portals"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/portals")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                Portais
+              </Link>
             </>
           )}
         </nav>
