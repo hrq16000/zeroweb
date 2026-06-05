@@ -20,6 +20,7 @@ import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
@@ -28,6 +29,7 @@ import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negoci
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CidadesRouteImport } from './routes/cidades'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -93,6 +95,11 @@ const RssDotxmlRoute = RssDotxmlRouteImport.update({
   path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaEventsRoute = QaEventsRouteImport.update({
   id: '/qa-events',
   path: '/qa-events',
@@ -131,6 +138,11 @@ const ContatoRoute = ContatoRouteImport.update({
 const CidadesRoute = CidadesRouteImport.update({
   id: '/cidades',
   path: '/cidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceRoute = ServiceRouteImport.update({
@@ -177,6 +189,7 @@ const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -185,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -206,6 +220,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -214,6 +229,7 @@ export interface FileRoutesByTo {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -236,6 +252,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -244,6 +261,7 @@ export interface FileRoutesById {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -267,6 +285,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -275,6 +294,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -296,6 +316,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -304,6 +325,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -325,6 +347,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -333,6 +356,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -355,6 +379,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ServiceRoute: typeof ServiceRoute
+  AuthRoute: typeof AuthRoute
   CidadesRoute: typeof CidadesRoute
   ContatoRoute: typeof ContatoRoute
   EstadosRoute: typeof EstadosRouteWithChildren
@@ -363,6 +388,7 @@ export interface RootRouteChildren {
   PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   ServicosRoute: typeof ServicosRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
@@ -460,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa-events': {
       id: '/qa-events'
       path: '/qa-events'
@@ -514,6 +547,13 @@ declare module '@tanstack/react-router' {
       path: '/cidades'
       fullPath: '/cidades'
       preLoaderRoute: typeof CidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$service': {
@@ -589,6 +629,7 @@ const EstadosRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ServiceRoute: ServiceRoute,
+  AuthRoute: AuthRoute,
   CidadesRoute: CidadesRoute,
   ContatoRoute: ContatoRoute,
   EstadosRoute: EstadosRouteWithChildren,
@@ -597,6 +638,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   ServicosRoute: ServicosRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
