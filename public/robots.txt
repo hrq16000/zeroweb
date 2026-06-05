@@ -1,6 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /app
+Disallow: /app/
+Disallow: /auth
 Disallow: /painel
+Disallow: /painel-crm
 Disallow: /qa-events
+Disallow: /r/
+Disallow: /api/
 
 Sitemap: https://0web.com.br/sitemap.xml

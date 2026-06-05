@@ -2,16 +2,38 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getCityCatalog } from "@/lib/marketplace.functions";
-import { ORIGIN } from "@/lib/seo";
+import { ORIGIN, breadcrumbLd } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 
 export const Route = createFileRoute("/cidade/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Profissionais em ${params.slug} | Marketplace 0WEB` },
-      { name: "description", content: `Prestadores e empresas atendendo em ${params.slug}. Marketplace nacional 0WEB.` },
-      { rel: "canonical", href: `${ORIGIN}/cidade/${params.slug}` } as never,
-    ],
-  }),
+  head: ({ params }) => {
+    const url = `${ORIGIN}/cidade/${params.slug}`;
+    const title = `Profissionais em ${params.slug} | Marketplace 0WEB`;
+    const description = `Prestadores e empresas atendendo em ${params.slug}. Marketplace nacional 0WEB.`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(
+            breadcrumbLd([
+              { name: "Marketplace", path: "/marketplace" },
+              { name: "Cidades", path: "/cidades" },
+              { name: params.slug, path: `/cidade/${params.slug}` },
+            ]),
+          ),
+        },
+      ],
+    };
+  },
   component: CityPage,
 });
 
@@ -25,6 +47,13 @@ function CityPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Breadcrumbs
+        items={[
+          { name: "Marketplace", path: "/marketplace" },
+          { name: "Cidades", path: "/cidades" },
+          { name: data.city ?? slug, path: `/cidade/${slug}` },
+        ]}
+      />
       <div className="max-w-6xl mx-auto px-5 py-10">
         <Link to="/marketplace" className="text-sm text-muted-foreground">← Marketplace</Link>
         <h1 className="text-3xl md:text-4xl font-display font-bold mt-4 capitalize">Profissionais em {data.city}</h1>
