@@ -19,6 +19,26 @@ const POOL: Notif[] = [
   { name: "TechFlow Ltda.", city: "Rio de Janeiro, RJ", action: "lançou novo e-commerce", time: "há 22 min" },
   { name: "Bruno F.", city: "Maringá, PR", action: "pediu auditoria de SEO", time: "há 28 min" },
   { name: "Casa Verde Co.", city: "Brasília, DF", action: "subiu o tráfego em 240%", time: "há 41 min" },
+  { name: "Luana T.", city: "Goiânia, GO", action: "ativou campanha no Google Ads", time: "há 2 min" },
+  { name: "Pedro K.", city: "Campinas, SP", action: "renovou contrato anual", time: "há 5 min" },
+  { name: "Mercado Aurora", city: "Salvador, BA", action: "implantou chatbot de IA", time: "há 9 min" },
+  { name: "Camila R.", city: "Recife, PE", action: "alcançou top 3 no Google", time: "há 14 min" },
+  { name: "Northway Co.", city: "Manaus, AM", action: "subiu CTR em 3.2x", time: "há 19 min" },
+  { name: "Felipe A.", city: "Vitória, ES", action: "pediu proposta de marketing", time: "há 25 min" },
+  { name: "Joana B.", city: "Natal, RN", action: "contratou pacote SEO Local", time: "há 32 min" },
+  { name: "DentClin", city: "Fortaleza, CE", action: "captou 47 leads nesta semana", time: "há 36 min" },
+  { name: "Lucas P.", city: "Londrina, PR", action: "iniciou auditoria GMN", time: "há 45 min" },
+  { name: "Bruna H.", city: "Joinville, SC", action: "atualizou identidade visual", time: "há 52 min" },
+  { name: "Vila Bistrô", city: "Curitiba, PR", action: "dobrou reservas via Instagram Ads", time: "há 58 min" },
+  { name: "Diego N.", city: "Cuiabá, MT", action: "fechou plano Enterprise", time: "há 1h" },
+  { name: "Patrícia O.", city: "Uberlândia, MG", action: "implementou WhatsApp Business API", time: "há 1h" },
+  { name: "Imobiliária Norte", city: "Belém, PA", action: "lançou portal de imóveis", time: "há 1h" },
+  { name: "Renato V.", city: "Sorocaba, SP", action: "começou consultoria de IA", time: "há 1h" },
+  { name: "Júlia M.", city: "Ribeirão Preto, SP", action: "subiu conversão de LP em 38%", time: "há 1h" },
+  { name: "AutoPeças BR", city: "São José dos Campos, SP", action: "rodou nova campanha PMax", time: "há 2h" },
+  { name: "Fernanda G.", city: "Juiz de Fora, MG", action: "marcou diagnóstico estratégico", time: "há 2h" },
+  { name: "Studio HUB", city: "Niterói, RJ", action: "publicou novo blog editorial", time: "há 2h" },
+  { name: "Marcos T.", city: "Caxias do Sul, RS", action: "ativou remarketing dinâmico", time: "há 2h" },
 ];
 
 export function SocialProof() {
@@ -33,10 +53,10 @@ export function SocialProof() {
     const cycle = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setIdx((i) => (i + 1) % POOL.length);
+        setIdx(() => Math.floor(Math.random() * POOL.length));
         setVisible(true);
       }, 500);
-    }, 8000);
+    }, 6500);
     const live = setInterval(() => {
       setOnline((n) => Math.max(80, Math.min(220, n + Math.floor(Math.random() * 9) - 4)));
     }, 4000);
