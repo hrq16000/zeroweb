@@ -108,22 +108,32 @@ export function ContactFormWhatsApp({
               utm_content: attr.utm_content,
               gclid: attr.gclid,
               fbclid: attr.fbclid,
+              geo_city: geo?.city,
+              geo_region: geo?.region,
+              geo_country: geo?.country,
+              geo_lat: geo?.latitude,
+              geo_lng: geo?.longitude,
+              geo_source: geo?.source,
             },
           });
-          // WhatsApp message includes a confirmation CTA matching the thank-you content.
+          // WhatsApp message: only include non-empty lines, with name/city/interest.
           const ctaUrl = `${ORIGIN}${content.finalCtaTo}`;
-          const msg = [
-            defaultMessage,
-            "",
-            `Nome: ${d.name}`,
-            `Empresa: ${d.company || "—"}`,
-            `E-mail: ${d.email}`,
-            `WhatsApp: ${d.phone}`,
+          const loc = formatLocation(geo);
+          const interest = defaultMessage.replace(/\.$/, "");
+          const lines = [
+            `Olá! Sou ${d.name}.`,
+            loc ? `📍 ${loc}` : "",
+            `💡 Interesse: ${interest}`,
+            d.company ? `🏢 Empresa: ${d.company}` : "",
+            `✉️ E-mail: ${d.email}`,
+            `📱 WhatsApp: ${d.phone}`,
             "",
             d.message,
             "",
             `👉 Próximo passo: ${content.finalCtaLabel} — ${ctaUrl}`,
-          ].join("\n");
+          ].filter((l) => l !== "" || true).filter(Boolean);
+          // Remove falsy lines but preserve intentional blank separators
+          const msg = lines.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
           window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
           setSent(true);
           if (shouldUseModal) {
