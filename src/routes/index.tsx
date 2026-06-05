@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
@@ -19,8 +20,15 @@ import { ConsentBanner } from "@/components/site/ConsentBanner";
 import { SocialProof, TrustBar } from "@/components/site/SocialProof";
 import { ExitIntent } from "@/components/site/ExitIntent";
 import { DiagnosticForm } from "@/components/site/DiagnosticForm";
-// import { LossCalculator } from "@/components/site/LossCalculator"; // desabilitada
+import { LossCalculator } from "@/components/site/LossCalculator";
 import { SocialProofSection } from "@/components/site/SocialProofSection";
+import { getPageSections } from "@/lib/site-sections.functions";
+
+const homeSectionsQuery = queryOptions({
+  queryKey: ["site-sections", "home"],
+  queryFn: () => getPageSections({ data: { page: "home" } }),
+  staleTime: 60_000,
+});
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
 const DESC =
