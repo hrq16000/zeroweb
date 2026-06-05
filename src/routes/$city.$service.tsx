@@ -254,7 +254,7 @@ function GeoPage() {
               <HelpCircle className="w-7 h-7 text-primary" /> Perguntas frequentes
             </h2>
             <div className="space-y-3">
-              {faq.map((f) => (
+              {faq.map((f: {q:string;a:string}) => (
                 <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
                   <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
                     {f.q}

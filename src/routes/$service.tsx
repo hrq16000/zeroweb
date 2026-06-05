@@ -57,7 +57,7 @@ export const Route = createFileRoute("/$service")({
               {
                 "@type": "FAQPage",
                 "@id": `${url}#faq`,
-                mainEntity: loaderData.faq.map((f) => ({
+                mainEntity: loaderData.faq.map((f: {q:string;a:string}) => ({
                   "@type": "Question",
                   name: f.q,
                   acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -130,7 +130,7 @@ function ServicePage() {
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-6">O que costuma travar o resultado</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {data.problems.map((p) => (
+              {data.problems.map((p: string) => (
                 <div key={p} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
                   <XCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
                   <span>{p}</span>
@@ -145,7 +145,7 @@ function ServicePage() {
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-6">Benefícios incluídos</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {data.benefits.map((b) => (
+              {data.benefits.map((b: string) => (
                 <div key={b} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
                   <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="font-medium">{b}</span>
@@ -160,7 +160,7 @@ function ServicePage() {
           <div className="mx-auto max-w-5xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-8">Como entregamos</h2>
             <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {data.process.map((p, i) => (
+              {data.process.map((p: {step:string;desc:string}, i: number) => (
                 <li key={p.step} className="p-5 rounded-2xl border border-border bg-card">
                   <span className="text-xs font-mono text-primary">0{i + 1}</span>
                   <h3 className="mt-2 font-semibold text-lg">{p.step}</h3>
@@ -178,7 +178,7 @@ function ServicePage() {
               <HelpCircle className="w-7 h-7 text-primary" /> Perguntas frequentes
             </h2>
             <div className="space-y-3">
-              {data.faq.map((f) => (
+              {data.faq.map((f: {q:string;a:string}) => (
                 <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
                   <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
                     {f.q}
