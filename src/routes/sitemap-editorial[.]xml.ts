@@ -13,6 +13,7 @@ export const Route = createFileRoute("/sitemap-editorial.xml")({
         const today = new Date().toISOString().slice(0, 10);
         const urls = [
           `${base}/blog/mapa`,
+          ...CLUSTERS.map((c) => `${base}${c.hubPath}`),
           ...CLUSTERS.map((c) => `${base}/blog/cluster/${c.slug}`),
         ];
         const xml = [
