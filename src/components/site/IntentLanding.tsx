@@ -198,9 +198,22 @@ export function buildHead(opts: { title: string; description: string; url: strin
       { name: "robots", content: "index,follow,max-image-preview:large" },
       { property: "og:title", content: opts.title },
       { property: "og:description", content: opts.description },
-      { property: "og:type", content: "article" },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: opts.url },
     ],
     links: [{ rel: "canonical", href: opts.url }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+            { "@type": "ListItem", position: 2, name: opts.title.split(" · ")[0], item: opts.url },
+          ],
+        }),
+      },
+    ],
   };
 }
