@@ -36,6 +36,7 @@ import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as DesenvolvimentoRouteImport } from './routes/desenvolvimento'
 import { Route as CriacaoSitesRouteImport } from './routes/criacao-sites'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as ConsultoriaRouteImport } from './routes/consultoria'
 import { Route as CidadesRouteImport } from './routes/cidades'
 import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -205,6 +206,11 @@ const CriacaoSitesRoute = CriacaoSitesRouteImport.update({
 const ContatoRoute = ContatoRouteImport.update({
   id: '/contato',
   path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultoriaRoute = ConsultoriaRouteImport.update({
+  id: '/consultoria',
+  path: '/consultoria',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CidadesRoute = CidadesRouteImport.update({
@@ -387,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
+  '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
@@ -448,6 +455,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
+  '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
@@ -510,6 +518,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
+  '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
@@ -573,6 +582,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/automacao'
     | '/cidades'
+    | '/consultoria'
     | '/contato'
     | '/criacao-sites'
     | '/desenvolvimento'
@@ -634,6 +644,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/automacao'
     | '/cidades'
+    | '/consultoria'
     | '/contato'
     | '/criacao-sites'
     | '/desenvolvimento'
@@ -695,6 +706,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/automacao'
     | '/cidades'
+    | '/consultoria'
     | '/contato'
     | '/criacao-sites'
     | '/desenvolvimento'
@@ -758,6 +770,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   AutomacaoRoute: typeof AutomacaoRoute
   CidadesRoute: typeof CidadesRoute
+  ConsultoriaRoute: typeof ConsultoriaRoute
   ContatoRoute: typeof ContatoRoute
   CriacaoSitesRoute: typeof CriacaoSitesRoute
   DesenvolvimentoRoute: typeof DesenvolvimentoRoute
@@ -985,6 +998,13 @@ declare module '@tanstack/react-router' {
       path: '/contato'
       fullPath: '/contato'
       preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultoria': {
+      id: '/consultoria'
+      path: '/consultoria'
+      fullPath: '/consultoria'
+      preLoaderRoute: typeof ConsultoriaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cidades': {
@@ -1331,6 +1351,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   AutomacaoRoute: AutomacaoRoute,
   CidadesRoute: CidadesRoute,
+  ConsultoriaRoute: ConsultoriaRoute,
   ContatoRoute: ContatoRoute,
   CriacaoSitesRoute: CriacaoSitesRoute,
   DesenvolvimentoRoute: DesenvolvimentoRoute,
