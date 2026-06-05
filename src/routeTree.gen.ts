@@ -41,7 +41,9 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/ap
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
+import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
+import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 
 const TermosRoute = TermosRouteImport.update({
@@ -204,10 +206,21 @@ const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   path: '/api/public/lead-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppProjectsRoute =
   AuthenticatedAppProjectsRouteImport.update({
     id: '/projects',
     path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDocumentsRoute =
+  AuthenticatedAppDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppProjectsIdRoute =
@@ -247,7 +260,9 @@ export interface FileRoutesByFullPath {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/support': typeof AuthenticatedAppSupportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
@@ -281,7 +296,9 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/support': typeof AuthenticatedAppSupportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
@@ -318,7 +335,9 @@ export interface FileRoutesById {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/_authenticated/app/support': typeof AuthenticatedAppSupportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
@@ -355,7 +374,9 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/app/documents'
     | '/app/projects'
+    | '/app/support'
     | '/api/public/lead-webhook'
     | '/app/'
     | '/app/projects/$id'
@@ -389,7 +410,9 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/app/documents'
     | '/app/projects'
+    | '/app/support'
     | '/api/public/lead-webhook'
     | '/app'
     | '/app/projects/$id'
@@ -425,7 +448,9 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/_authenticated/app/documents'
     | '/_authenticated/app/projects'
+    | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
     | '/_authenticated/app/'
     | '/_authenticated/app/projects/$id'
@@ -689,11 +714,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/support': {
+      id: '/_authenticated/app/support'
+      path: '/support'
+      fullPath: '/app/support'
+      preLoaderRoute: typeof AuthenticatedAppSupportRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/projects': {
       id: '/_authenticated/app/projects'
       path: '/projects'
       fullPath: '/app/projects'
       preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/documents': {
+      id: '/_authenticated/app/documents'
+      path: '/documents'
+      fullPath: '/app/documents'
+      preLoaderRoute: typeof AuthenticatedAppDocumentsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/projects/$id': {
@@ -721,12 +760,16 @@ const AuthenticatedAppProjectsRouteWithChildren =
   )
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
+  AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
+  AuthenticatedAppSupportRoute: AuthenticatedAppSupportRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
@@ -789,3 +832,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
