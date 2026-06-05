@@ -5,11 +5,13 @@ import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, S
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { trackConversion } from "@/lib/analytics";
+import { trackConversion, trackEvent } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
+import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
