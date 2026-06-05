@@ -338,5 +338,5 @@ const visitorTrackingMiddleware = createMiddleware().server(async ({ next, reque
 
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [globalBlockMiddleware, visitorTrackingMiddleware, errorMiddleware],
+  requestMiddleware: [canonicalRedirectMiddleware, globalBlockMiddleware, visitorTrackingMiddleware, errorMiddleware],
 }));
