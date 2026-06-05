@@ -25,15 +25,19 @@ import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]x
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
+import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as IaRouteImport } from './routes/ia'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as DesenvolvimentoRouteImport } from './routes/desenvolvimento'
 import { Route as CriacaoSitesRouteImport } from './routes/criacao-sites'
@@ -45,6 +49,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
@@ -184,6 +189,11 @@ const RssDotxmlRoute = RssDotxmlRouteImport.update({
   path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedesSociaisRoute = RedesSociaisRouteImport.update({
+  id: '/redes-sociais',
+  path: '/redes-sociais',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaEventsRoute = QaEventsRouteImport.update({
   id: '/qa-events',
   path: '/qa-events',
@@ -197,6 +207,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   id: '/politica-privacidade',
   path: '/politica-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanosRoute = PlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParceirosRoute = ParceirosRouteImport.update({
@@ -219,6 +234,11 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
   path: '/marketplace',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LandingPagesRoute = LandingPagesRouteImport.update({
+  id: '/landing-pages',
+  path: '/landing-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IaRoute = IaRouteImport.update({
   id: '/ia',
   path: '/ia',
@@ -227,6 +247,11 @@ const IaRoute = IaRouteImport.update({
 const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
   id: '/google-meu-negocio',
   path: '/google-meu-negocio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EstadosRoute = EstadosRouteImport.update({
@@ -281,6 +306,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CasesIndexRoute = CasesIndexRouteImport.update({
+  id: '/cases/',
+  path: '/cases/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -600,15 +630,19 @@ export interface FileRoutesByFullPath {
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
   '/estados': typeof EstadosRouteWithChildren
+  '/faq': typeof FaqRoute
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
+  '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
+  '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -647,6 +681,7 @@ export interface FileRoutesByFullPath {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
+  '/cases/': typeof CasesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -693,15 +728,19 @@ export interface FileRoutesByTo {
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
   '/estados': typeof EstadosRouteWithChildren
+  '/faq': typeof FaqRoute
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
+  '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
+  '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -739,6 +778,7 @@ export interface FileRoutesByTo {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog': typeof BlogIndexRoute
+  '/cases': typeof CasesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -787,15 +827,19 @@ export interface FileRoutesById {
   '/criacao-sites': typeof CriacaoSitesRoute
   '/desenvolvimento': typeof DesenvolvimentoRoute
   '/estados': typeof EstadosRouteWithChildren
+  '/faq': typeof FaqRoute
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
+  '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
+  '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -834,6 +878,7 @@ export interface FileRoutesById {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
+  '/cases/': typeof CasesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -882,15 +927,19 @@ export interface FileRouteTypes {
     | '/criacao-sites'
     | '/desenvolvimento'
     | '/estados'
+    | '/faq'
     | '/google-meu-negocio'
     | '/ia'
+    | '/landing-pages'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
+    | '/planos'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
+    | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -929,6 +978,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog/'
+    | '/cases/'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
@@ -975,15 +1025,19 @@ export interface FileRouteTypes {
     | '/criacao-sites'
     | '/desenvolvimento'
     | '/estados'
+    | '/faq'
     | '/google-meu-negocio'
     | '/ia'
+    | '/landing-pages'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
+    | '/planos'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
+    | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -1021,6 +1075,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog'
+    | '/cases'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
@@ -1068,15 +1123,19 @@ export interface FileRouteTypes {
     | '/criacao-sites'
     | '/desenvolvimento'
     | '/estados'
+    | '/faq'
     | '/google-meu-negocio'
     | '/ia'
+    | '/landing-pages'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
+    | '/planos'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
+    | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -1115,6 +1174,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog/'
+    | '/cases/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
@@ -1163,15 +1223,19 @@ export interface RootRouteChildren {
   CriacaoSitesRoute: typeof CriacaoSitesRoute
   DesenvolvimentoRoute: typeof DesenvolvimentoRoute
   EstadosRoute: typeof EstadosRouteWithChildren
+  FaqRoute: typeof FaqRoute
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   IaRoute: typeof IaRoute
+  LandingPagesRoute: typeof LandingPagesRoute
   MarketplaceRoute: typeof MarketplaceRoute
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
   ParceirosRoute: typeof ParceirosRoute
+  PlanosRoute: typeof PlanosRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
+  RedesSociaisRoute: typeof RedesSociaisRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRoute
@@ -1208,6 +1272,7 @@ export interface RootRouteChildren {
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  CasesIndexRoute: typeof CasesIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
@@ -1333,6 +1398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redes-sociais': {
+      id: '/redes-sociais'
+      path: '/redes-sociais'
+      fullPath: '/redes-sociais'
+      preLoaderRoute: typeof RedesSociaisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa-events': {
       id: '/qa-events'
       path: '/qa-events'
@@ -1352,6 +1424,13 @@ declare module '@tanstack/react-router' {
       path: '/politica-privacidade'
       fullPath: '/politica-privacidade'
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planos': {
+      id: '/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof PlanosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/parceiros': {
@@ -1382,6 +1461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/landing-pages': {
+      id: '/landing-pages'
+      path: '/landing-pages'
+      fullPath: '/landing-pages'
+      preLoaderRoute: typeof LandingPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ia': {
       id: '/ia'
       path: '/ia'
@@ -1394,6 +1480,13 @@ declare module '@tanstack/react-router' {
       path: '/google-meu-negocio'
       fullPath: '/google-meu-negocio'
       preLoaderRoute: typeof GoogleMeuNegocioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/estados': {
@@ -1471,6 +1564,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cases/': {
+      id: '/cases/'
+      path: '/cases'
+      fullPath: '/cases/'
+      preLoaderRoute: typeof CasesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -2002,15 +2102,19 @@ const rootRouteChildren: RootRouteChildren = {
   CriacaoSitesRoute: CriacaoSitesRoute,
   DesenvolvimentoRoute: DesenvolvimentoRoute,
   EstadosRoute: EstadosRouteWithChildren,
+  FaqRoute: FaqRoute,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   IaRoute: IaRoute,
+  LandingPagesRoute: LandingPagesRoute,
   MarketplaceRoute: MarketplaceRoute,
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
   ParceirosRoute: ParceirosRoute,
+  PlanosRoute: PlanosRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
+  RedesSociaisRoute: RedesSociaisRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRoute,
@@ -2047,6 +2151,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
   BlogIndexRoute: BlogIndexRoute,
+  CasesIndexRoute: CasesIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,

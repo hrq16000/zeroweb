@@ -2,27 +2,27 @@ import { Instagram, Linkedin, Youtube, Mail, MessageCircle } from "lucide-react"
 import { Link } from "@tanstack/react-router";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
-const cols: { title: string; links: { label: string; to: string; hash?: string }[] }[] = [
+const cols: { title: string; links: { label: string; to: string }[] }[] = [
   {
     title: "Soluções",
     links: [
-      { label: "Criação de Sites", to: "/", hash: "solucoes" },
-      { label: "Landing Pages", to: "/", hash: "solucoes" },
+      { label: "Criação de Sites", to: "/criacao-sites" },
+      { label: "Landing Pages", to: "/landing-pages" },
       { label: "Google Meu Negócio", to: "/google-meu-negocio" },
-      { label: "SEO", to: "/", hash: "solucoes" },
-      { label: "Tráfego Pago", to: "/", hash: "solucoes" },
-      { label: "Redes Sociais", to: "/", hash: "solucoes" },
+      { label: "SEO", to: "/seo" },
+      { label: "Tráfego Pago", to: "/trafego-pago" },
+      { label: "Redes Sociais", to: "/redes-sociais" },
     ],
   },
   {
     title: "Tecnologia",
     links: [
-      { label: "IA & Chatbots", to: "/", hash: "ia" },
-      { label: "Automações", to: "/", hash: "ia" },
-      { label: "Sistemas Web", to: "/", hash: "servicos" },
-      { label: "Cases", to: "/", hash: "cases" },
-      { label: "Planos", to: "/", hash: "planos" },
-      { label: "FAQ", to: "/", hash: "faq" },
+      { label: "IA & Chatbots", to: "/ia" },
+      { label: "Automações", to: "/automacao" },
+      { label: "Sistemas Web", to: "/desenvolvimento" },
+      { label: "Cases", to: "/cases" },
+      { label: "Planos", to: "/planos" },
+      { label: "FAQ", to: "/faq" },
     ],
   },
   {
@@ -96,7 +96,6 @@ export function Footer() {
                   <li key={l.label}>
                     <Link
                       to={l.to}
-                      hash={l.hash}
                       className="text-background/80 hover:text-accent transition"
                     >
                       {l.label}
