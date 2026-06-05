@@ -117,53 +117,41 @@ const globalBlockMiddleware = createMiddleware().server(async ({ next, request }
 // respects analytics consent cookie (`0web_consent_v1`).
 // ---------------------------------------------------------------------------
 
-function parseCookies(header: string | null): Record<string, string> {
-  const out: Record<string, string> = {};
-  if (!header) return out;
-  for (const part of header.split(";")) {
-    const idx = part.indexOf("=");
-    if (idx < 0) continue;
-    const k = part.slice(0, idx).trim();
-    const v = part.slice(idx + 1).trim();
-    if (k) out[k] = decodeURIComponent(v);
-  }
-  return out;
-}
+import { decideTracking } from "@/lib/tracking-middleware.helpers";
 
-function hasAnalyticsConsent(cookies: Record<string, string>): boolean {
-  const raw = cookies["0web_consent_v1"];
-  if (!raw) return false;
-  try {
-    const c = JSON.parse(raw);
-    return c?.decided === true && c?.analytics_storage === "granted";
-  } catch {
-    return false;
+// Token bucket per ip_hash to avoid stampedes hitting Supabase: at most
+// 4 inserts per 10s per visitor (well above normal navigation cadence).
+const insertRateBucket = new Map<string, { count: number; resetAt: number }>();
+const RATE_WINDOW_MS = 10_000;
+const RATE_MAX = 4;
+function allowInsert(ipHash: string): boolean {
+  const now = Date.now();
+  const slot = insertRateBucket.get(ipHash);
+  if (!slot || slot.resetAt < now) {
+    insertRateBucket.set(ipHash, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    if (insertRateBucket.size > 5000) {
+      for (const [k, v] of insertRateBucket) if (v.resetAt < now) insertRateBucket.delete(k);
+    }
+    return true;
   }
+  if (slot.count >= RATE_MAX) return false;
+  slot.count += 1;
+  return true;
 }
 
 const visitorTrackingMiddleware = createMiddleware().server(async ({ next, request }) => {
   let setCookieValue: string | null = null;
   try {
     const url = new URL(request.url);
-    if (request.method !== "GET" || shouldSkip(url.pathname)) return next();
+    const decision = decideTracking({
+      method: request.method,
+      pathname: url.pathname,
+      accept: request.headers.get("accept"),
+      cookieHeader: request.headers.get("cookie"),
+    });
 
-    const accept = request.headers.get("accept") || "";
-    // Only track real document navigations (HTML), never XHR/fetch/data calls.
-    if (!accept.includes("text/html")) return next();
-
-    const cookies = parseCookies(request.headers.get("cookie"));
-    const consented = hasAnalyticsConsent(cookies);
-
-    let visitorId = cookies["0web_vid"];
-    const ephemeral = !consented;
-    if (!visitorId) {
-      visitorId = crypto.randomUUID();
-      if (!ephemeral) {
-        setCookieValue = `0web_vid=${visitorId}; Path=/; Max-Age=63072000; HttpOnly; Secure; SameSite=Lax`;
-      }
-    }
-
-    if (consented) {
+    if (decision.action === "track") {
+      setCookieValue = decision.setCookie;
       const headers = request.headers;
       const ipRaw =
         headers.get("cf-connecting-ip") ||
@@ -172,46 +160,49 @@ const visitorTrackingMiddleware = createMiddleware().server(async ({ next, reque
         "";
       const day = new Date().toISOString().slice(0, 10);
       const salt = process.env.VISITOR_HASH_SALT || "0web-salt";
-      const ipHash = ipRaw ? await sha256Hex(`${ipRaw}|${day}|${salt}`) : await sha256Hex(`${visitorId}|${day}|${salt}`);
+      const ipHash = ipRaw
+        ? await sha256Hex(`${ipRaw}|${day}|${salt}`)
+        : await sha256Hex(`${decision.visitorId}|${day}|${salt}`);
 
-      const sp = url.searchParams;
-      const insertPromise = (async () => {
-        try {
-          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-          await supabaseAdmin.from("visitantes_rastreio").upsert(
-            {
-              visitor_id: visitorId,
-              ip_hash: ipHash,
-              day,
-              method: "GET",
-              path: url.pathname,
-              query: url.search || null,
-              referer: headers.get("referer"),
-              user_agent: headers.get("user-agent"),
-              country: headers.get("cf-ipcountry"),
-              city: headers.get("cf-ipcity"),
-              asn: headers.get("cf-ip-asn"),
-              landing_page: url.pathname,
-              utm_source: sp.get("utm_source"),
-              utm_medium: sp.get("utm_medium"),
-              utm_campaign: sp.get("utm_campaign"),
-              utm_content: sp.get("utm_content"),
-              utm_term: sp.get("utm_term"),
-              gclid: sp.get("gclid"),
-              fbclid: sp.get("fbclid"),
-            },
-            { onConflict: "ip_hash,day,path", ignoreDuplicates: true },
-          );
-        } catch (e) {
-          console.warn("[visitorTrackingMiddleware insert]", e);
-        }
-      })();
-
-      // Cloudflare Workers exposes waitUntil; fall back to fire-and-forget.
-      const cfCtx = (globalThis as { __cfCtx?: { waitUntil?: (p: Promise<unknown>) => void } }).__cfCtx;
-      if (cfCtx?.waitUntil) cfCtx.waitUntil(insertPromise);
-      else void insertPromise;
+      if (allowInsert(ipHash)) {
+        const sp = url.searchParams;
+        const insertPromise = (async () => {
+          try {
+            const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+            await supabaseAdmin.from("visitantes_rastreio").upsert(
+              {
+                visitor_id: decision.visitorId,
+                ip_hash: ipHash,
+                day,
+                method: "GET",
+                path: url.pathname,
+                query: url.search || null,
+                referer: headers.get("referer"),
+                user_agent: headers.get("user-agent"),
+                country: headers.get("cf-ipcountry"),
+                city: headers.get("cf-ipcity"),
+                asn: headers.get("cf-ip-asn"),
+                landing_page: url.pathname,
+                utm_source: sp.get("utm_source"),
+                utm_medium: sp.get("utm_medium"),
+                utm_campaign: sp.get("utm_campaign"),
+                utm_content: sp.get("utm_content"),
+                utm_term: sp.get("utm_term"),
+                gclid: sp.get("gclid"),
+                fbclid: sp.get("fbclid"),
+              },
+              { onConflict: "ip_hash,day,path", ignoreDuplicates: true },
+            );
+          } catch (e) {
+            console.warn("[visitorTrackingMiddleware insert]", e);
+          }
+        })();
+        const cfCtx = (globalThis as { __cfCtx?: { waitUntil?: (p: Promise<unknown>) => void } }).__cfCtx;
+        if (cfCtx?.waitUntil) cfCtx.waitUntil(insertPromise);
+        else void insertPromise;
+      }
     }
+    // action === "skip" or "track-ephemeral" → no insert, no cookie.
   } catch (e) {
     console.warn("[visitorTrackingMiddleware]", e);
   }
