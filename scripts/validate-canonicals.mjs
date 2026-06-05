@@ -41,9 +41,56 @@ function walk(dir) {
   return out;
 }
 
-/** Match every `{ rel: "canonical", href: <expr> }` in source, capturing href and index. */
-const CANONICAL_RE =
-  /\{\s*rel\s*:\s*["']canonical["']\s*,\s*href\s*:\s*([^,}\n]+?)\s*[,}]/g;
+/** Locate every `{ rel: "canonical", href: ` opener; href value is extracted manually. */
+const CANONICAL_OPENER_RE =
+  /\{\s*rel\s*:\s*["']canonical["']\s*,\s*href\s*:\s*/g;
+
+/**
+ * Extract the href expression starting at `start` in src. Supports string
+ * literals "..." / '...' and template literals `...${...}...` with nested
+ * braces. Returns { expr, end } or null.
+ */
+function extractHrefExpr(src, start) {
+  let i = start;
+  // Skip whitespace
+  while (i < src.length && /\s/.test(src[i])) i++;
+  const ch = src[i];
+  if (ch === '"' || ch === "'") {
+    const quote = ch;
+    let j = i + 1;
+    while (j < src.length && src[j] !== quote) {
+      if (src[j] === "\\") j++;
+      j++;
+    }
+    return { expr: src.slice(i, j + 1), end: j + 1 };
+  }
+  if (ch === "`") {
+    let j = i + 1;
+    let depth = 0;
+    while (j < src.length) {
+      const c = src[j];
+      if (c === "\\") { j += 2; continue; }
+      if (c === "`" && depth === 0) return { expr: src.slice(i, j + 1), end: j + 1 };
+      if (c === "$" && src[j + 1] === "{") { depth++; j += 2; continue; }
+      if (c === "}" && depth > 0) { depth--; j++; continue; }
+      j++;
+    }
+    return { expr: src.slice(i, j), end: j };
+  }
+  // Identifier / call expression — read until , or } at top level
+  let j = i;
+  let depth = 0;
+  while (j < src.length) {
+    const c = src[j];
+    if (c === "(" || c === "[" || c === "{") depth++;
+    else if (c === ")" || c === "]" || c === "}") {
+      if (depth === 0) break;
+      depth--;
+    } else if ((c === "," || c === "\n") && depth === 0) break;
+    j++;
+  }
+  return { expr: src.slice(i, j).trim(), end: j };
+}
 
 /**
  * For a given canonical match index, walk backwards to find the nearest
