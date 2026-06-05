@@ -1,6 +1,5 @@
-// Admin-managed runtime settings (key/value). Allows the admin panel to
-// configure integrations (e.g. uazapi WhatsApp alerts) without touching env.
-// Sprint 16: audit + versioning + rollback + connection tests + granular role.
+// Admin-managed runtime settings (key/value). Sprint 17: declarative schema,
+// required reason for critical changes, periodic health-check support.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -13,7 +12,6 @@ async function getAdmin() {
   return supabaseAdmin as unknown as AnyClient;
 }
 
-/** admin OR admin_integrations may manage settings. */
 async function canManage(userId: string) {
   const sb = await getAdmin();
   const { data } = await sb.from("user_roles").select("role").eq("user_id", userId);
@@ -22,7 +20,7 @@ async function canManage(userId: string) {
   );
 }
 
-// ── In-process cache for hot reads (alerts loop). 60s TTL. ────────────
+// ── In-process cache for hot reads. 60s TTL. ──────────────────────────
 const _cache = new Map<string, { v: string | null; exp: number }>();
 const TTL = 60_000;
 
@@ -41,7 +39,50 @@ export function invalidateSettingsCache(keys?: string[]) {
   else keys.forEach((k) => _cache.delete(k));
 }
 
-// ── Admin RPCs ────────────────────────────────────────────────────────
+// ── Reason capture: stamp the most recent history row for this key. ───
+async function stampReason(sb: AnyClient, key: string, reason: string | null) {
+  if (!reason) return;
+  const { data: latest } = await sb
+    .from("app_settings_history")
+    .select("id")
+    .eq("key", key)
+    .order("changed_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (latest?.id) {
+    await sb.from("app_settings_history").update({ reason }).eq("id", latest.id);
+  }
+}
+
+async function requireReasonIfCritical(
+  sb: AnyClient,
+  key: string,
+  reason: string | null | undefined,
+) {
+  // Critical if the schema field marks it OR app_settings.is_critical is true.
+  const { data: row } = await sb
+    .from("app_settings")
+    .select("is_critical")
+    .eq("key", key)
+    .maybeSingle();
+  let critical = !!row?.is_critical;
+  if (!critical) {
+    const prefix = key.includes(".") ? key.split(".")[0] : key;
+    const { data: schema } = await sb
+      .from("integration_schemas")
+      .select("fields")
+      .eq("key", prefix)
+      .maybeSingle();
+    const f = (schema?.fields as any[] | null)?.find((x) => x.key === key);
+    critical = !!f?.critical;
+  }
+  if (critical && (!reason || reason.trim().length < 5)) {
+    throw new Error("Motivo obrigatório (mín. 5 caracteres) para chaves críticas.");
+  }
+  return critical;
+}
+
+// ── CRUD ──────────────────────────────────────────────────────────────
 
 export const listSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -50,13 +91,14 @@ export const listSettings = createServerFn({ method: "GET" })
     const sb = await getAdmin();
     const { data, error } = await sb
       .from("app_settings")
-      .select("key,value,is_secret,description,updated_at,updated_by")
+      .select("key,value,is_secret,is_critical,description,updated_at,updated_by")
       .order("key");
     if (error) throw new Error(error.message);
     const rows = (data ?? []).map((r: any) => ({
       key: r.key,
       description: r.description,
       is_secret: r.is_secret,
+      is_critical: r.is_critical,
       has_value: !!r.value,
       value: r.is_secret ? null : r.value,
       updated_at: r.updated_at,
@@ -72,18 +114,22 @@ export const upsertSetting = createServerFn({ method: "POST" })
         key: z.string().min(1).max(120).regex(/^[a-z0-9_.\-]+$/i),
         value: z.string().max(8192).nullable(),
         is_secret: z.boolean().optional(),
+        is_critical: z.boolean().optional(),
         description: z.string().max(500).optional(),
+        reason: z.string().max(500).nullable().optional(),
       })
       .parse(i)
   )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
     const sb = await getAdmin();
+    await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     const { error } = await sb.from("app_settings").upsert(
       {
         key: data.key,
         value: data.value,
         is_secret: data.is_secret ?? undefined,
+        is_critical: data.is_critical ?? undefined,
         description: data.description ?? undefined,
         updated_at: new Date().toISOString(),
         updated_by: context.userId,
@@ -91,17 +137,22 @@ export const upsertSetting = createServerFn({ method: "POST" })
       { onConflict: "key" }
     );
     if (error) throw new Error(error.message);
+    await stampReason(sb, data.key, data.reason ?? null);
     invalidateSettingsCache([data.key]);
     return { ok: true };
   });
 
 export const deleteSetting = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ key: z.string().min(1) }).parse(i))
+  .inputValidator((i) =>
+    z.object({ key: z.string().min(1), reason: z.string().max(500).nullable().optional() }).parse(i)
+  )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
     const sb = await getAdmin();
+    await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     await sb.from("app_settings").delete().eq("key", data.key);
+    await stampReason(sb, data.key, data.reason ?? null);
     invalidateSettingsCache([data.key]);
     return { ok: true };
   });
@@ -110,19 +161,24 @@ export const deleteSetting = createServerFn({ method: "POST" })
 
 export const listSettingHistory = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ key: z.string().min(1), limit: z.number().min(1).max(100).optional() }).parse(i))
+  .inputValidator((i) =>
+    z.object({ key: z.string().min(1), limit: z.number().min(1).max(100).optional() }).parse(i)
+  )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
     const sb = await getAdmin();
     const { data: rows, error } = await sb
       .from("app_settings_history")
-      .select("id,key,old_value,new_value,action,changed_at,changed_by")
+      .select("id,key,old_value,new_value,action,changed_at,changed_by,reason")
       .eq("key", data.key)
       .order("changed_at", { ascending: false })
       .limit(data.limit ?? 20);
     if (error) throw new Error(error.message);
-    // Mask secret values: load setting once to see if it's secret.
-    const { data: setting } = await sb.from("app_settings").select("is_secret").eq("key", data.key).maybeSingle();
+    const { data: setting } = await sb
+      .from("app_settings")
+      .select("is_secret")
+      .eq("key", data.key)
+      .maybeSingle();
     const mask = (v: string | null) =>
       v == null ? null : setting?.is_secret ? `••• (${v.length} chars)` : v;
     return {
@@ -136,11 +192,17 @@ export const listSettingHistory = createServerFn({ method: "GET" })
 
 export const rollbackSetting = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ history_id: z.string().uuid() }).parse(i))
+  .inputValidator((i) =>
+    z
+      .object({
+        history_id: z.string().uuid(),
+        reason: z.string().max(500).nullable().optional(),
+      })
+      .parse(i)
+  )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
     const sb = await getAdmin();
-    // Find target snapshot — restore its new_value as the new current value.
     const { data: snap, error: e1 } = await sb
       .from("app_settings_history")
       .select("id,key,new_value")
@@ -148,6 +210,8 @@ export const rollbackSetting = createServerFn({ method: "POST" })
       .maybeSingle();
     if (e1) throw new Error(e1.message);
     if (!snap) throw new Error("Versão não encontrada");
+
+    await requireReasonIfCritical(sb, snap.key, data.reason ?? null);
 
     const { error: e2 } = await sb.from("app_settings").upsert(
       {
@@ -160,7 +224,6 @@ export const rollbackSetting = createServerFn({ method: "POST" })
     );
     if (e2) throw new Error(e2.message);
 
-    // Update the most recent history row (just created by the trigger) to mark as rollback.
     const { data: latest } = await sb
       .from("app_settings_history")
       .select("id")
@@ -171,10 +234,55 @@ export const rollbackSetting = createServerFn({ method: "POST" })
     if (latest?.id) {
       await sb
         .from("app_settings_history")
-        .update({ action: "rollback", rolled_back_from_id: snap.id })
+        .update({
+          action: "rollback",
+          rolled_back_from_id: snap.id,
+          reason: data.reason ?? null,
+        })
         .eq("id", latest.id);
     }
     invalidateSettingsCache([snap.key]);
+    return { ok: true };
+  });
+
+// ── Declarative integration schemas ──────────────────────────────────
+
+export const listIntegrationSchemas = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const sb = await getAdmin();
+    const { data, error } = await sb
+      .from("integration_schemas")
+      .select("key,label,description,testable,fields,sort_order,enabled")
+      .eq("enabled", true)
+      .order("sort_order");
+    if (error) throw new Error(error.message);
+    return { rows: data ?? [] };
+  });
+
+export const upsertIntegrationSchema = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) =>
+    z
+      .object({
+        key: z.string().min(1).max(60).regex(/^[a-z0-9_]+$/),
+        label: z.string().min(1).max(120),
+        description: z.string().max(500).optional(),
+        testable: z.boolean().optional(),
+        fields: z.array(z.record(z.any())).max(20).optional(),
+        sort_order: z.number().int().optional(),
+        enabled: z.boolean().optional(),
+      })
+      .parse(i)
+  )
+  .handler(async ({ context, data }) => {
+    if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const sb = await getAdmin();
+    const { error } = await sb
+      .from("integration_schemas")
+      .upsert({ ...data, updated_at: new Date().toISOString() }, { onConflict: "key" });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -187,13 +295,18 @@ export const listIntegrationStatus = createServerFn({ method: "GET" })
     const sb = await getAdmin();
     const { data, error } = await sb
       .from("integration_status")
-      .select("key,last_status,last_message,last_tested_at,last_tested_by")
+      .select("key,last_status,last_message,last_tested_at,last_tested_by,last_alert_at")
       .order("key");
     if (error) throw new Error(error.message);
     return { rows: data ?? [] };
   });
 
-async function writeStatus(key: string, status: "ok" | "error", message: string, userId: string) {
+async function writeStatus(
+  key: string,
+  status: "ok" | "error",
+  message: string,
+  userId: string | null,
+) {
   const sb = await getAdmin();
   await sb.from("integration_status").upsert(
     {
@@ -232,7 +345,7 @@ async function testSupabase(): Promise<{ ok: boolean; message: string }> {
       .from("app_settings")
       .select("key", { count: "exact", head: true });
     if (error) return { ok: false, message: error.message };
-    return { ok: true, message: `Conectado. ${count ?? 0} configuração(ões) na tabela.` };
+    return { ok: true, message: `Conectado. ${count ?? 0} configuração(ões).` };
   } catch (e: any) {
     return { ok: false, message: e?.message ?? "Falha" };
   }
@@ -255,17 +368,92 @@ async function testLovableAi(): Promise<{ ok: boolean; message: string }> {
   }
 }
 
+async function testGoogleSearchConsole(): Promise<{ ok: boolean; message: string }> {
+  const lk = process.env.LOVABLE_API_KEY;
+  const ck = process.env.GOOGLE_SEARCH_CONSOLE_API_KEY;
+  if (!lk || !ck) {
+    return {
+      ok: false,
+      message: "Conector não autorizado. Habilite Google Search Console em Conectores.",
+    };
+  }
+  try {
+    const r = await fetch(
+      "https://connector-gateway.lovable.dev/google_search_console/webmasters/v3/sites",
+      { headers: { Authorization: `Bearer ${lk}`, "X-Connection-Api-Key": ck } },
+    );
+    if (!r.ok) {
+      const t = await r.text().catch(() => "");
+      return { ok: false, message: `HTTP ${r.status}: ${t.slice(0, 200)}` };
+    }
+    return { ok: true, message: "Search Console conectado" };
+  } catch (e: any) {
+    return { ok: false, message: e?.message ?? "Erro de rede" };
+  }
+}
+
+const TESTERS: Record<string, () => Promise<{ ok: boolean; message: string }>> = {
+  uazapi: testUazapi,
+  supabase: testSupabase,
+  lovable_ai: testLovableAi,
+  google_search_console: testGoogleSearchConsole,
+};
+
 export const testIntegration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
-    z.object({ key: z.enum(["uazapi", "supabase", "lovable_ai"]) }).parse(i)
-  )
+  .inputValidator((i) => z.object({ key: z.string().min(1).max(60) }).parse(i))
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
-    let result: { ok: boolean; message: string };
-    if (data.key === "uazapi") result = await testUazapi();
-    else if (data.key === "supabase") result = await testSupabase();
-    else result = await testLovableAi();
-    await writeStatus(data.key, result.ok ? "ok" : "error", result.message, context.userId);
-    return result;
+    const fn = TESTERS[data.key];
+    if (!fn) throw new Error(`Integração desconhecida: ${data.key}`);
+    const r = await fn();
+    await writeStatus(data.key, r.ok ? "ok" : "error", r.message, context.userId);
+    return r;
   });
+
+/**
+ * Runs every testable integration. Used by the periodic cron health-check
+ * endpoint. Returns the per-integration result and alerts (via WhatsApp) when
+ * an integration transitions to / stays in error — dedup window: 1h.
+ */
+export async function runHealthChecks(): Promise<
+  { key: string; ok: boolean; message: string; alerted: boolean }[]
+> {
+  const sb = await getAdmin();
+  const { data: schemas } = await sb
+    .from("integration_schemas")
+    .select("key")
+    .eq("enabled", true)
+    .eq("testable", true);
+  const keys = (schemas ?? []).map((r: any) => r.key as string).filter((k) => TESTERS[k]);
+
+  const out: { key: string; ok: boolean; message: string; alerted: boolean }[] = [];
+  for (const key of keys) {
+    const r = await TESTERS[key]();
+    await writeStatus(key, r.ok ? "ok" : "error", r.message, null);
+    let alerted = false;
+    if (!r.ok) {
+      const { data: st } = await sb
+        .from("integration_status")
+        .select("last_alert_at")
+        .eq("key", key)
+        .maybeSingle();
+      const last = st?.last_alert_at ? new Date(st.last_alert_at).getTime() : 0;
+      if (Date.now() - last > 60 * 60 * 1000) {
+        const { sendWhatsAppAlert } = await import("@/lib/alerts.functions");
+        const send = await sendWhatsAppAlert(
+          `⚠️ 0WEB — Integração em erro: ${key}\n${r.message}`,
+        );
+        if (send.ok) {
+          await sb
+            .from("integration_status")
+            .update({ last_alert_at: new Date().toISOString() })
+            .eq("key", key);
+          alerted = true;
+        }
+      }
+    }
+    out.push({ key, ...r, alerted });
+  }
+  return out;
+}
