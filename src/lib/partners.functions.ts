@@ -1,7 +1,14 @@
 // Sprint 13 — Server functions para rede de parceiros
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestIP, getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+async function hashIp(ip: string): Promise<string> {
+  const data = new TextEncoder().encode(ip);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const KINDS = ["afiliado", "representante", "parceiro_comercial", "agencia", "franqueado"] as const;
 const STATUSES = ["pendente", "aprovado", "suspenso", "bloqueado"] as const;
