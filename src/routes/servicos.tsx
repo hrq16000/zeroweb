@@ -118,7 +118,7 @@ function ServicosHub() {
               ctx="servicos_page"
               title="Receba uma proposta personalizada"
               defaultMessage="Olá! Vi os serviços da 0WEB e quero uma proposta personalizada."
-              redirectTo="/obrigado"
+              useModal
             />
           </div>
         </section>
