@@ -150,7 +150,7 @@ function LeadsDashboard() {
                         </div>
                       </td></tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>
