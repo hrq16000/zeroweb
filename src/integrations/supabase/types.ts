@@ -3962,6 +3962,7 @@ export type Database = {
         | "empresa"
         | "parceiro"
         | "admin_integrations"
+        | "dev"
       commission_type:
         | "fixo"
         | "percentual"
@@ -4150,6 +4151,7 @@ export const Constants = {
         "empresa",
         "parceiro",
         "admin_integrations",
+        "dev",
       ],
       commission_type: [
         "fixo",

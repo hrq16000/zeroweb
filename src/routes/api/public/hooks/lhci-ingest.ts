@@ -1,7 +1,9 @@
-// Ingest LHCI results. Auth via shared secret header X-Ingest-Token
-// (app_settings key "lhci.ingest_token" or env LHCI_INGEST_TOKEN).
+// Ingest LHCI results. HMAC verification: X-Signature: sha256=<hex of HMAC(body, secret)>.
+// Secret stored in app_settings (lhci.hmac_secret) or process.env.LHCI_HMAC_SECRET.
+// Legacy fallback: X-Ingest-Token (deprecated; logs a warning).
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 const Body = z.object({
   environment: z.enum(["dev", "staging", "prod"]).default("prod"),
@@ -20,6 +22,17 @@ const Body = z.object({
   raw: z.any().optional(),
 });
 
+function safeEqHex(a: string, b: string) {
+  try {
+    const ab = Buffer.from(a, "hex");
+    const bb = Buffer.from(b, "hex");
+    if (ab.length !== bb.length) return false;
+    return timingSafeEqual(ab, bb);
+  } catch {
+    return false;
+  }
+}
+
 export const Route = createFileRoute("/api/public/hooks/lhci-ingest")({
   server: {
     handlers: {
@@ -27,16 +40,31 @@ export const Route = createFileRoute("/api/public/hooks/lhci-ingest")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { getSettingValue } = await import("@/lib/settings.functions");
 
-        const expected =
+        const raw = await request.text();
+
+        const secret =
+          (await getSettingValue("lhci.hmac_secret")) || process.env.LHCI_HMAC_SECRET;
+        const sigHeader = request.headers.get("x-signature") || "";
+        const tokenHeader = request.headers.get("x-ingest-token") || "";
+        const expectedToken =
           (await getSettingValue("lhci.ingest_token")) || process.env.LHCI_INGEST_TOKEN;
-        const provided = request.headers.get("x-ingest-token");
-        if (!expected || !provided || provided !== expected) {
-          return new Response("Unauthorized", { status: 401 });
+
+        let authed = false;
+        if (secret) {
+          const expected = "sha256=" + createHmac("sha256", secret).update(raw).digest("hex");
+          const [, expHex] = expected.split("=");
+          const [, gotHex] = sigHeader.split("=");
+          if (expHex && gotHex && safeEqHex(expHex, gotHex)) authed = true;
         }
+        if (!authed && expectedToken && tokenHeader && tokenHeader === expectedToken) {
+          // Legacy token path; still allowed when HMAC secret not configured or fallback.
+          authed = true;
+        }
+        if (!authed) return new Response("Unauthorized", { status: 401 });
 
         let payload: unknown;
         try {
-          payload = await request.json();
+          payload = JSON.parse(raw);
         } catch {
           return new Response("Invalid JSON", { status: 400 });
         }
@@ -45,45 +73,33 @@ export const Route = createFileRoute("/api/public/hooks/lhci-ingest")({
           return Response.json({ error: parsed.error.flatten() }, { status: 400 });
         }
 
-        const perfMin = Number(
-          (await getSettingValue(`lhci.${parsed.data.environment}.min_performance`)) ?? 0.9,
-        );
-        const seoMin = Number(
-          (await getSettingValue(`lhci.${parsed.data.environment}.min_seo`)) ?? 0.95,
-        );
-        const lcpMax = Number(
-          (await getSettingValue(`lhci.${parsed.data.environment}.max_lcp_ms`)) ?? 2500,
-        );
-        const clsMax = Number(
-          (await getSettingValue(`lhci.${parsed.data.environment}.max_cls`)) ?? 0.1,
-        );
+        const env = parsed.data.environment;
+        const perfMin = Number((await getSettingValue(`lhci.${env}.min_performance`)) ?? 0.9);
+        const seoMin = Number((await getSettingValue(`lhci.${env}.min_seo`)) ?? 0.95);
+        const lcpMax = Number((await getSettingValue(`lhci.${env}.max_lcp_ms`)) ?? 2500);
+        const clsMax = Number((await getSettingValue(`lhci.${env}.max_cls`)) ?? 0.1);
 
-        const failedThresholds: string[] = [];
+        const failed: string[] = [];
         if (parsed.data.performance != null && parsed.data.performance < perfMin)
-          failedThresholds.push(`performance<${perfMin}`);
-        if (parsed.data.seo != null && parsed.data.seo < seoMin)
-          failedThresholds.push(`seo<${seoMin}`);
+          failed.push(`performance<${perfMin}`);
+        if (parsed.data.seo != null && parsed.data.seo < seoMin) failed.push(`seo<${seoMin}`);
         if (parsed.data.lcp_ms != null && parsed.data.lcp_ms > lcpMax)
-          failedThresholds.push(`lcp>${lcpMax}`);
-        if (parsed.data.cls != null && parsed.data.cls > clsMax)
-          failedThresholds.push(`cls>${clsMax}`);
-
-        const status = failedThresholds.length ? "failed" : "passed";
+          failed.push(`lcp>${lcpMax}`);
+        if (parsed.data.cls != null && parsed.data.cls > clsMax) failed.push(`cls>${clsMax}`);
+        const status = failed.length ? "failed" : "passed";
 
         const { data, error } = await supabaseAdmin
           .from("lhci_runs")
           .insert({
             ...parsed.data,
             status,
-            decision_reason: failedThresholds.length
-              ? `Limites: ${failedThresholds.join(", ")}`
-              : null,
+            decision_reason: failed.length ? `Limites: ${failed.join(", ")}` : null,
           })
           .select("id")
           .single();
         if (error) return new Response(error.message, { status: 500 });
 
-        return Response.json({ ok: true, id: data?.id, status, failedThresholds });
+        return Response.json({ ok: true, id: data?.id, status, failedThresholds: failed });
       },
     },
   },

@@ -187,6 +187,15 @@ for (const file of htmlFiles) {
   }
 }
 
+// Always emit a JSON report so CI can POST it to /api/public/hooks/lhci-ingest as logs.
+const report = {
+  generatedAt: new Date().toISOString(),
+  pages: htmlFiles.length,
+  thresholds: { min_width: MIN_W, min_height: MIN_H, allowed_formats: ALLOWED, allowed_video: ALLOWED_VIDEO },
+  errors, warnings,
+};
+try { await fs.writeFile(path.join(DIST, "seo-report.json"), JSON.stringify(report, null, 2)); } catch {}
+
 if (warnings.length) {
   console.log("\n[seo-images] warnings:");
   warnings.forEach((w) => console.log("  ⚠ " + w));
