@@ -20,7 +20,7 @@ function LeadsDashboard() {
   const [rows, setRows] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
-  const [filters, setFilters] = useState({ form_id: "", status: "all" as const | string, from: "", to: "", q: "" });
+  const [filters, setFilters] = useState<{ form_id: string; status: string; from: string; to: string; q: string }>({ form_id: "", status: "all", from: "", to: "", q: "" });
 
   const refresh = async () => {
     setLoading(true);
