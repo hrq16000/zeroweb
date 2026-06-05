@@ -52,7 +52,17 @@ import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadeSlugRouteImport } from './routes/cidade.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
+import { Route as BlogVendasRouteImport } from './routes/blog.vendas'
+import { Route as BlogTrafegoPagoRouteImport } from './routes/blog.trafego-pago'
+import { Route as BlogSitesRouteImport } from './routes/blog.sites'
+import { Route as BlogSeoRouteImport } from './routes/blog.seo'
+import { Route as BlogMarketingLocalRouteImport } from './routes/blog.marketing-local'
 import { Route as BlogMapaRouteImport } from './routes/blog.mapa'
+import { Route as BlogLandingPagesRouteImport } from './routes/blog.landing-pages'
+import { Route as BlogIaRouteImport } from './routes/blog.ia'
+import { Route as BlogGoogleMeuNegocioRouteImport } from './routes/blog.google-meu-negocio'
+import { Route as BlogConversaoRouteImport } from './routes/blog.conversao'
+import { Route as BlogAutomacaoRouteImport } from './routes/blog.automacao'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
@@ -299,9 +309,59 @@ const CasesSlugRoute = CasesSlugRouteImport.update({
   path: '/cases/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogVendasRoute = BlogVendasRouteImport.update({
+  id: '/blog/vendas',
+  path: '/blog/vendas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogTrafegoPagoRoute = BlogTrafegoPagoRouteImport.update({
+  id: '/blog/trafego-pago',
+  path: '/blog/trafego-pago',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSitesRoute = BlogSitesRouteImport.update({
+  id: '/blog/sites',
+  path: '/blog/sites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSeoRoute = BlogSeoRouteImport.update({
+  id: '/blog/seo',
+  path: '/blog/seo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogMarketingLocalRoute = BlogMarketingLocalRouteImport.update({
+  id: '/blog/marketing-local',
+  path: '/blog/marketing-local',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogMapaRoute = BlogMapaRouteImport.update({
   id: '/blog/mapa',
   path: '/blog/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogLandingPagesRoute = BlogLandingPagesRouteImport.update({
+  id: '/blog/landing-pages',
+  path: '/blog/landing-pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIaRoute = BlogIaRouteImport.update({
+  id: '/blog/ia',
+  path: '/blog/ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogGoogleMeuNegocioRoute = BlogGoogleMeuNegocioRouteImport.update({
+  id: '/blog/google-meu-negocio',
+  path: '/blog/google-meu-negocio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogConversaoRoute = BlogConversaoRouteImport.update({
+  id: '/blog/conversao',
+  path: '/blog/conversao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogAutomacaoRoute = BlogAutomacaoRouteImport.update({
+  id: '/blog/automacao',
+  path: '/blog/automacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
@@ -506,7 +566,17 @@ export interface FileRoutesByFullPath {
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/automacao': typeof BlogAutomacaoRoute
+  '/blog/conversao': typeof BlogConversaoRoute
+  '/blog/google-meu-negocio': typeof BlogGoogleMeuNegocioRoute
+  '/blog/ia': typeof BlogIaRoute
+  '/blog/landing-pages': typeof BlogLandingPagesRoute
   '/blog/mapa': typeof BlogMapaRoute
+  '/blog/marketing-local': typeof BlogMarketingLocalRoute
+  '/blog/seo': typeof BlogSeoRoute
+  '/blog/sites': typeof BlogSitesRoute
+  '/blog/trafego-pago': typeof BlogTrafegoPagoRoute
+  '/blog/vendas': typeof BlogVendasRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -579,7 +649,17 @@ export interface FileRoutesByTo {
   '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/automacao': typeof BlogAutomacaoRoute
+  '/blog/conversao': typeof BlogConversaoRoute
+  '/blog/google-meu-negocio': typeof BlogGoogleMeuNegocioRoute
+  '/blog/ia': typeof BlogIaRoute
+  '/blog/landing-pages': typeof BlogLandingPagesRoute
   '/blog/mapa': typeof BlogMapaRoute
+  '/blog/marketing-local': typeof BlogMarketingLocalRoute
+  '/blog/seo': typeof BlogSeoRoute
+  '/blog/sites': typeof BlogSitesRoute
+  '/blog/trafego-pago': typeof BlogTrafegoPagoRoute
+  '/blog/vendas': typeof BlogVendasRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -655,7 +735,17 @@ export interface FileRoutesById {
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/automacao': typeof BlogAutomacaoRoute
+  '/blog/conversao': typeof BlogConversaoRoute
+  '/blog/google-meu-negocio': typeof BlogGoogleMeuNegocioRoute
+  '/blog/ia': typeof BlogIaRoute
+  '/blog/landing-pages': typeof BlogLandingPagesRoute
   '/blog/mapa': typeof BlogMapaRoute
+  '/blog/marketing-local': typeof BlogMarketingLocalRoute
+  '/blog/seo': typeof BlogSeoRoute
+  '/blog/sites': typeof BlogSitesRoute
+  '/blog/trafego-pago': typeof BlogTrafegoPagoRoute
+  '/blog/vendas': typeof BlogVendasRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -731,7 +821,17 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
+    | '/blog/automacao'
+    | '/blog/conversao'
+    | '/blog/google-meu-negocio'
+    | '/blog/ia'
+    | '/blog/landing-pages'
     | '/blog/mapa'
+    | '/blog/marketing-local'
+    | '/blog/seo'
+    | '/blog/sites'
+    | '/blog/trafego-pago'
+    | '/blog/vendas'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -804,7 +904,17 @@ export interface FileRouteTypes {
     | '/trafego-pago'
     | '/$city/$service'
     | '/blog/$slug'
+    | '/blog/automacao'
+    | '/blog/conversao'
+    | '/blog/google-meu-negocio'
+    | '/blog/ia'
+    | '/blog/landing-pages'
     | '/blog/mapa'
+    | '/blog/marketing-local'
+    | '/blog/seo'
+    | '/blog/sites'
+    | '/blog/trafego-pago'
+    | '/blog/vendas'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -879,7 +989,17 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
+    | '/blog/automacao'
+    | '/blog/conversao'
+    | '/blog/google-meu-negocio'
+    | '/blog/ia'
+    | '/blog/landing-pages'
     | '/blog/mapa'
+    | '/blog/marketing-local'
+    | '/blog/seo'
+    | '/blog/sites'
+    | '/blog/trafego-pago'
+    | '/blog/vendas'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -954,7 +1074,17 @@ export interface RootRouteChildren {
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogAutomacaoRoute: typeof BlogAutomacaoRoute
+  BlogConversaoRoute: typeof BlogConversaoRoute
+  BlogGoogleMeuNegocioRoute: typeof BlogGoogleMeuNegocioRoute
+  BlogIaRoute: typeof BlogIaRoute
+  BlogLandingPagesRoute: typeof BlogLandingPagesRoute
   BlogMapaRoute: typeof BlogMapaRoute
+  BlogMarketingLocalRoute: typeof BlogMarketingLocalRoute
+  BlogSeoRoute: typeof BlogSeoRoute
+  BlogSitesRoute: typeof BlogSitesRoute
+  BlogTrafegoPagoRoute: typeof BlogTrafegoPagoRoute
+  BlogVendasRoute: typeof BlogVendasRoute
   CasesSlugRoute: typeof CasesSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadeSlugRoute: typeof CidadeSlugRoute
@@ -1273,11 +1403,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CasesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/vendas': {
+      id: '/blog/vendas'
+      path: '/blog/vendas'
+      fullPath: '/blog/vendas'
+      preLoaderRoute: typeof BlogVendasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/trafego-pago': {
+      id: '/blog/trafego-pago'
+      path: '/blog/trafego-pago'
+      fullPath: '/blog/trafego-pago'
+      preLoaderRoute: typeof BlogTrafegoPagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/sites': {
+      id: '/blog/sites'
+      path: '/blog/sites'
+      fullPath: '/blog/sites'
+      preLoaderRoute: typeof BlogSitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/seo': {
+      id: '/blog/seo'
+      path: '/blog/seo'
+      fullPath: '/blog/seo'
+      preLoaderRoute: typeof BlogSeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/marketing-local': {
+      id: '/blog/marketing-local'
+      path: '/blog/marketing-local'
+      fullPath: '/blog/marketing-local'
+      preLoaderRoute: typeof BlogMarketingLocalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/mapa': {
       id: '/blog/mapa'
       path: '/blog/mapa'
       fullPath: '/blog/mapa'
       preLoaderRoute: typeof BlogMapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/landing-pages': {
+      id: '/blog/landing-pages'
+      path: '/blog/landing-pages'
+      fullPath: '/blog/landing-pages'
+      preLoaderRoute: typeof BlogLandingPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/ia': {
+      id: '/blog/ia'
+      path: '/blog/ia'
+      fullPath: '/blog/ia'
+      preLoaderRoute: typeof BlogIaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/google-meu-negocio': {
+      id: '/blog/google-meu-negocio'
+      path: '/blog/google-meu-negocio'
+      fullPath: '/blog/google-meu-negocio'
+      preLoaderRoute: typeof BlogGoogleMeuNegocioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/conversao': {
+      id: '/blog/conversao'
+      path: '/blog/conversao'
+      fullPath: '/blog/conversao'
+      preLoaderRoute: typeof BlogConversaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/automacao': {
+      id: '/blog/automacao'
+      path: '/blog/automacao'
+      fullPath: '/blog/automacao'
+      preLoaderRoute: typeof BlogAutomacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/$slug': {
@@ -1634,7 +1834,17 @@ const rootRouteChildren: RootRouteChildren = {
   TrafegoPagoRoute: TrafegoPagoRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BlogAutomacaoRoute: BlogAutomacaoRoute,
+  BlogConversaoRoute: BlogConversaoRoute,
+  BlogGoogleMeuNegocioRoute: BlogGoogleMeuNegocioRoute,
+  BlogIaRoute: BlogIaRoute,
+  BlogLandingPagesRoute: BlogLandingPagesRoute,
   BlogMapaRoute: BlogMapaRoute,
+  BlogMarketingLocalRoute: BlogMarketingLocalRoute,
+  BlogSeoRoute: BlogSeoRoute,
+  BlogSitesRoute: BlogSitesRoute,
+  BlogTrafegoPagoRoute: BlogTrafegoPagoRoute,
+  BlogVendasRoute: BlogVendasRoute,
   CasesSlugRoute: CasesSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadeSlugRoute: CidadeSlugRoute,

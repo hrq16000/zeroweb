@@ -6,6 +6,8 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { getPost, posts } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
+import { AuthorBio } from "@/components/site/AuthorBio";
+import { suggestLinksForArticle } from "@/lib/interlinking";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -151,6 +153,27 @@ function PostPage() {
           <div className="mt-10 text-lg leading-relaxed text-foreground/90 whitespace-pre-line">
             {post.content}
           </div>
+
+          <AuthorBio className="mt-12" />
+
+          {(() => {
+            const internal = suggestLinksForArticle({ category: post.category, limit: 6 });
+            if (internal.length === 0) return null;
+            return (
+              <section className="mt-12">
+                <h2 className="text-xl font-bold">Links internos relacionados</h2>
+                <ul className="mt-4 grid sm:grid-cols-2 gap-2 text-sm">
+                  {internal.map((l) => (
+                    <li key={l.href}>
+                      <a href={l.href} className="text-primary hover:underline">
+                        → {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })()}
         </article>
 
         {related.length > 0 && (
