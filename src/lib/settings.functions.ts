@@ -425,7 +425,7 @@ export async function runHealthChecks(): Promise<
     .select("key")
     .eq("enabled", true)
     .eq("testable", true);
-  const keys = (schemas ?? []).map((r: any) => r.key as string).filter((k) => TESTERS[k]);
+  const keys = (schemas ?? []).map((r: any) => r.key as string).filter((k: string) => !!TESTERS[k]);
 
   const out: { key: string; ok: boolean; message: string; alerted: boolean }[] = [];
   for (const key of keys) {
