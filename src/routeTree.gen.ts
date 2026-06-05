@@ -83,6 +83,7 @@ import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppLicensesRouteImport } from './routes/_authenticated/app.licenses'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
+import { Route as AuthenticatedAppEcosystemRouteImport } from './routes/_authenticated/app.ecosystem'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
@@ -475,6 +476,12 @@ const AuthenticatedAppEditorialRoute =
     path: '/editorial',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppEcosystemRoute =
+  AuthenticatedAppEcosystemRouteImport.update({
+    id: '/ecosystem',
+    path: '/ecosystem',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppDocumentsRoute =
   AuthenticatedAppDocumentsRouteImport.update({
     id: '/documents',
@@ -615,6 +622,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -702,6 +710,7 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -792,6 +801,7 @@ export interface FileRoutesById {
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -882,6 +892,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/ecosystem'
     | '/app/editorial'
     | '/app/licenses'
     | '/app/marketplace'
@@ -969,6 +980,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/ecosystem'
     | '/app/editorial'
     | '/app/licenses'
     | '/app/marketplace'
@@ -1058,6 +1070,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
+    | '/_authenticated/app/ecosystem'
     | '/_authenticated/app/editorial'
     | '/_authenticated/app/licenses'
     | '/_authenticated/app/marketplace'
@@ -1672,6 +1685,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppEditorialRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/ecosystem': {
+      id: '/_authenticated/app/ecosystem'
+      path: '/ecosystem'
+      fullPath: '/app/ecosystem'
+      preLoaderRoute: typeof AuthenticatedAppEcosystemRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/documents': {
       id: '/_authenticated/app/documents'
       path: '/documents'
@@ -1819,6 +1839,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -1838,6 +1859,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
