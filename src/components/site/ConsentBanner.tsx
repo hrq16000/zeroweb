@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Shield, X, Settings2, Check } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { getConsent, setConsent, type ConsentState } from "@/lib/analytics";
+import { logConsentDecision } from "@/lib/visitor-analytics.functions";
 
 export function ConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [showPrefs, setShowPrefs] = useState(false);
   const [prefs, setPrefs] = useState<ConsentState>(getConsent());
+  const log = useServerFn(logConsentDecision);
 
   useEffect(() => {
     const c = getConsent();
@@ -17,30 +20,45 @@ export function ConsentBanner() {
     }
   }, []);
 
+  const logDecision = (state: Pick<ConsentState, "analytics_storage" | "ad_storage">, source: string) => {
+    void log({ data: {
+      decision: state.analytics_storage === "granted" ? "granted" : "denied",
+      analytics_storage: state.analytics_storage,
+      ad_storage: state.ad_storage,
+      source,
+      path: typeof window !== "undefined" ? window.location.pathname : undefined,
+    } }).catch(() => {});
+  };
+
   const acceptAll = () => {
-    setConsent({
-      analytics_storage: "granted",
-      ad_storage: "granted",
-      ad_user_data: "granted",
-      ad_personalization: "granted",
-      functionality_storage: "granted",
-    });
+    const next = {
+      analytics_storage: "granted" as const,
+      ad_storage: "granted" as const,
+      ad_user_data: "granted" as const,
+      ad_personalization: "granted" as const,
+      functionality_storage: "granted" as const,
+    };
+    setConsent(next);
+    logDecision(next, "banner-accept-all");
     setVisible(false);
   };
 
   const rejectAll = () => {
-    setConsent({
-      analytics_storage: "denied",
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-      functionality_storage: "granted",
-    });
+    const next = {
+      analytics_storage: "denied" as const,
+      ad_storage: "denied" as const,
+      ad_user_data: "denied" as const,
+      ad_personalization: "denied" as const,
+      functionality_storage: "granted" as const,
+    };
+    setConsent(next);
+    logDecision(next, "banner-reject-all");
     setVisible(false);
   };
 
   const savePrefs = () => {
     setConsent(prefs);
+    logDecision(prefs, "banner-custom");
     setVisible(false);
   };
 
