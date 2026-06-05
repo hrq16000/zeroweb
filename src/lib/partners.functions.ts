@@ -221,3 +221,134 @@ export const attachAttributionPublic = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+// computeCommission — aplica regras ativas a uma atribuição e registra partner_commissions
+export const computeCommission = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        attribution_id: z.string().uuid(),
+        base_amount_cents: z.number().int().min(0).max(1_000_000_000).optional(),
+        period: z.string().max(20).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Apenas administradores podem calcular comissões");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: attr, error: attrErr } = await supabaseAdmin
+      .from("partner_attributions")
+      .select("id, partner_id, value_cents, conversion_type")
+      .eq("id", data.attribution_id)
+      .maybeSingle();
+    if (attrErr || !attr) throw new Error("Atribuição não encontrada");
+
+    const { data: partner } = await supabaseAdmin
+      .from("partners")
+      .select("id, kind")
+      .eq("id", attr.partner_id)
+      .maybeSingle();
+    if (!partner) throw new Error("Parceiro não encontrado");
+
+    const { data: rules } = await supabaseAdmin
+      .from("commission_rules")
+      .select("*")
+      .eq("active", true)
+      .or(`partner_id.eq.${partner.id},partner_id.is.null`);
+
+    const candidate =
+      rules?.find((r) => r.partner_id === partner.id) ||
+      rules?.find((r) => r.kind_target === partner.kind) ||
+      rules?.find((r) => r.partner_id === null && r.kind_target === null);
+
+    if (!candidate) throw new Error("Nenhuma regra de comissão aplicável");
+
+    const base = data.base_amount_cents ?? attr.value_cents ?? 0;
+    let commission = 0;
+    switch (candidate.type) {
+      case "fixo":
+      case "recorrente":
+      case "vitalicio":
+      case "por_produto":
+      case "por_categoria":
+        commission = Math.round(Number(candidate.value) * 100);
+        break;
+      case "percentual":
+        commission = Math.round((base * Number(candidate.value)) / 100);
+        break;
+      default:
+        commission = 0;
+    }
+
+    const period = data.period ?? new Date().toISOString().slice(0, 7);
+
+    const { data: row, error } = await supabaseAdmin
+      .from("partner_commissions")
+      .upsert(
+        {
+          partner_id: partner.id,
+          attribution_id: attr.id,
+          rule_id: candidate.id,
+          base_amount_cents: base,
+          commission_amount_cents: commission,
+          commission_type: candidate.type,
+          period,
+          status: "pending",
+        },
+        { onConflict: "attribution_id" },
+      )
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return { ok: true, commission: row };
+  });
+
+// Computa em lote: todas atribuições "sale" sem commission ainda
+export const computePendingCommissions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Apenas administradores");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pendingAttrs } = await supabaseAdmin
+      .from("partner_attributions")
+      .select("id")
+      .eq("conversion_type", "sale")
+      .gt("value_cents", 0)
+      .limit(500);
+
+    const ids = (pendingAttrs ?? []).map((a) => a.id);
+    if (!ids.length) return { processed: 0, errors: 0 };
+
+    const { data: existing } = await supabaseAdmin
+      .from("partner_commissions")
+      .select("attribution_id")
+      .in("attribution_id", ids);
+    const done = new Set((existing ?? []).map((e) => e.attribution_id));
+
+    let processed = 0;
+    let errors = 0;
+    for (const id of ids) {
+      if (done.has(id)) continue;
+      try {
+        await computeCommission({ data: { attribution_id: id } });
+        processed++;
+      } catch {
+        errors++;
+      }
+    }
+    return { processed, errors };
+  });
