@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
 import { ORIGIN } from "@/lib/seo";
 import { trackConversion } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { getIpGeo, requestGpsThenFallback, formatLocation, type GeoInfo } from "@/lib/geo-location";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
