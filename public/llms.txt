@@ -1,0 +1,35 @@
+# 0WEB
+
+> Agência de marketing digital, criação de sites, SEO, tráfego pago, IA e automação para empresas brasileiras.
+
+A 0WEB constrói máquinas previsíveis de aquisição: sites de alta conversão, SEO programático, campanhas de tráfego pago e automações com IA. Atuamos em todo o Brasil a partir de Curitiba/PR.
+
+## Páginas principais
+
+- [Início](/): Visão geral da 0WEB, serviços e cases.
+- [Serviços](/servicos): Catálogo de serviços de marketing digital e tecnologia.
+- [Sobre](/sobre): Quem somos, metodologia e diferenciais.
+- [Contato](/contato): WhatsApp, e-mail e formulário de contato.
+- [Solicitar orçamento](/solicitar-orcamento): Pedido de proposta comercial.
+
+## Serviços
+
+- [Criação de sites](/criacao-sites): Sites institucionais e landing pages de alta conversão.
+- [SEO](/seo): SEO técnico, conteúdo estratégico e link building.
+- [Tráfego pago](/trafego-pago): Google Ads e Meta Ads com tracking ponta a ponta.
+- [Google Meu Negócio](/google-meu-negocio): Setup e otimização do perfil local.
+- [Automação](/automacao): Automações de marketing, vendas e atendimento.
+- [Inteligência Artificial](/ia): IA aplicada ao atendimento e qualificação de leads.
+- [Desenvolvimento web](/desenvolvimento): Sistemas web sob medida.
+- [Consultoria](/consultoria): Diagnóstico e plano de crescimento digital.
+
+## Conteúdo
+
+- [Blog](/blog): Artigos sobre marketing digital, SEO, IA e tecnologia.
+- [Mapa de conteúdo](/blog/mapa): Árvore temática completa de artigos.
+- [Cidades atendidas](/cidades): Atuação por cidade no Brasil.
+
+## Optional
+
+- [Política de privacidade](/politica-privacidade)
+- [Termos de uso](/termos)

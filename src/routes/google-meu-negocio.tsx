@@ -13,7 +13,7 @@ import cover from "@/assets/google-meu-negocio-capa.png.asset.json";
 
 const TITLE = "Google Meu Negócio para Empresas · 0WEB Marketing Digital";
 const DESC =
-  "Sua empresa não aparece no Google? A 0WEB configura e otimiza o Google Meu Negócio para gerar visibilidade, confiança e clientes todos os dias. Planos a partir de R$247/mês.";
+  "A 0WEB configura e otimiza o Google Meu Negócio para sua empresa aparecer no Maps, gerar confiança e atrair clientes. Planos a partir de R$247/mês.";
 const URL = "https://0web.com.br/google-meu-negocio";
 
 const benefits = [

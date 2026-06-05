@@ -67,7 +67,7 @@ export const cases: CaseStudy[] = [
       role: "Preciso de um Profissional",
     },
     seo: {
-      title: "Case Preciso de um Profissional · Marketplace +612% tráfego · 0WEB",
+      title: "Case Preciso de um Profissional · +612% Tráfego · 0WEB",
       description:
         "Como a 0WEB construiu a plataforma nacional Preciso de um Profissional e gerou +612% de tráfego orgânico com SEO programático e funil automatizado.",
       keywords:
@@ -208,7 +208,7 @@ export const cases: CaseStudy[] = [
       role: "Autoescola Aptos",
     },
     seo: {
-      title: "Case Autoescola Aptos · +217% matrículas com SEO local · 0WEB",
+      title: "Case Autoescola Aptos · +217% Matrículas · 0WEB",
       description:
         "Como a 0WEB levou a Autoescola Aptos ao Top 1 do Google em Curitiba e mais que dobrou as matrículas mensais com SEO local e funil WhatsApp.",
       keywords:

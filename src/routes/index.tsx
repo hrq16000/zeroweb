@@ -22,7 +22,7 @@ import { DiagnosticForm } from "@/components/site/DiagnosticForm";
 import { LossCalculator } from "@/components/site/LossCalculator";
 import { SocialProofSection } from "@/components/site/SocialProofSection";
 
-const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital para Empresas";
+const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
 const DESC =
   "Criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam empresas em máquinas de crescimento.";
 
