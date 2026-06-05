@@ -83,8 +83,9 @@ export const Route = createFileRoute("/blog/cluster/$cluster")({
 function ClusterHub() {
   const { cluster } = Route.useLoaderData();
   const related = (CLUSTER_RELATIONS[cluster.slug] ?? [])
-    .map((s) => CLUSTERS.find((c) => c.slug === s))
+    .map((s: string) => CLUSTERS.find((c) => c.slug === s))
     .filter(Boolean);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -131,7 +132,7 @@ function ClusterHub() {
             <section className="mt-16">
               <h2 className="text-2xl font-bold">Serviços relacionados</h2>
               <div className="mt-6 flex flex-wrap gap-3">
-                {cluster.relatedServices.map((p) => (
+                {cluster.relatedServices.map((p: string) => (
                   <a
                     key={p}
                     href={p}
@@ -141,6 +142,7 @@ function ClusterHub() {
                   </a>
                 ))}
               </div>
+
             </section>
           )}
 
