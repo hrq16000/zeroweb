@@ -97,7 +97,7 @@ export const Route = createFileRoute("/$city/$service")({
               {
                 "@type": "FAQPage",
                 "@id": `${url}#faq`,
-                mainEntity: faq.map((f) => ({
+                mainEntity: faq.map((f: {q:string;a:string}) => ({
                   "@type": "Question",
                   name: f.q,
                   acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -188,7 +188,7 @@ function GeoPage() {
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-6">Problemas comuns que resolvemos em {city.name}</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {service.problems.map((p) => (
+              {service.problems.map((p: string) => (
                 <div key={p} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
                   <XCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
                   <span>{p}</span>
@@ -203,7 +203,7 @@ function GeoPage() {
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-6">O que sua empresa em {city.name} ganha com a 0WEB</h2>
             <div className="grid sm:grid-cols-2 gap-3">
-              {service.benefits.map((b) => (
+              {service.benefits.map((b: string) => (
                 <div key={b} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
                   <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="font-medium">{b}</span>
@@ -218,7 +218,7 @@ function GeoPage() {
           <div className="mx-auto max-w-5xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-8">Como entregamos {service.name.toLowerCase()} para {city.gentilico}s</h2>
             <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {service.process.map((p, i) => (
+              {service.process.map((p: {step:string;desc:string}, i: number) => (
                 <li key={p.step} className="p-5 rounded-2xl border border-border bg-card">
                   <span className="text-xs font-mono text-primary">0{i + 1}</span>
                   <h3 className="mt-2 font-semibold text-lg">{p.step}</h3>
