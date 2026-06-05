@@ -10,7 +10,14 @@ import {
   adminSetRole,
   PROJECT_STATUSES_LIST,
 } from "@/lib/clientarea.functions";
-import { listSettings, upsertSetting } from "@/lib/settings.functions";
+import {
+  listSettings,
+  upsertSetting,
+  listSettingHistory,
+  rollbackSetting,
+  listIntegrationStatus,
+  testIntegration,
+} from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
