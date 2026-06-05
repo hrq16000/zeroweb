@@ -71,6 +71,7 @@ import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
+import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
@@ -395,6 +396,12 @@ const AuthenticatedAppAdminRoute = AuthenticatedAppAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const ApiPublicHooksVisitorsCleanupRoute =
+  ApiPublicHooksVisitorsCleanupRouteImport.update({
+    id: '/api/public/hooks/visitors-cleanup',
+    path: '/api/public/hooks/visitors-cleanup',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAppSupportIdRoute =
   AuthenticatedAppSupportIdRouteImport.update({
     id: '/$id',
@@ -493,6 +500,7 @@ export interface FileRoutesByFullPath {
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -560,6 +568,7 @@ export interface FileRoutesByTo {
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -630,6 +639,7 @@ export interface FileRoutesById {
   '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -700,6 +710,7 @@ export interface FileRouteTypes {
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
+    | '/api/public/hooks/visitors-cleanup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -767,6 +778,7 @@ export interface FileRouteTypes {
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
+    | '/api/public/hooks/visitors-cleanup'
   id:
     | '__root__'
     | '/'
@@ -836,6 +848,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/marketplace/provider'
     | '/_authenticated/app/projects/$id'
     | '/_authenticated/app/support/$id'
+    | '/api/public/hooks/visitors-cleanup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -885,6 +898,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
+  ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1323,6 +1337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAdminRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/api/public/hooks/visitors-cleanup': {
+      id: '/api/public/hooks/visitors-cleanup'
+      path: '/api/public/hooks/visitors-cleanup'
+      fullPath: '/api/public/hooks/visitors-cleanup'
+      preLoaderRoute: typeof ApiPublicHooksVisitorsCleanupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/support/$id': {
       id: '/_authenticated/app/support/$id'
       path: '/$id'
@@ -1517,6 +1538,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
+  ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
