@@ -251,6 +251,7 @@ function TrafegoPagoLocalPage() {
               ctx="lp_trafego_local"
               title="Quero começar com tráfego pago"
               defaultMessage="Olá! Quero começar com o tráfego pago da 0WEB a partir de R$499/mês."
+              redirectTo="/obrigado"
             />
           </div>
         </section>
