@@ -1,0 +1,431 @@
+// ============================================================================
+// Sprint 5 — Rich service catalogue.
+// Single source of truth for services. Drives /$service, /$city/$service,
+// the services hub and interlinking. Add a service → page + sitemap entry
+// + interlinks pick it up automatically.
+// ============================================================================
+
+export type ServiceCategory =
+  | "Web"
+  | "Conversão"
+  | "E-commerce"
+  | "SEO"
+  | "Tráfego"
+  | "IA"
+  | "Sistemas"
+  | "Social";
+
+export type ServiceData = {
+  slug: string;
+  name: string;
+  category: ServiceCategory;
+  title: string;            // full <title>
+  h1: string;
+  description: string;      // meta description
+  serviceType: string;      // schema.org Service.serviceType
+  problems: string[];       // 4-6 problem statements (city-agnostic)
+  benefits: string[];       // 4-6 outcomes
+  process: { step: string; desc: string }[];
+  faq: { q: string; a: string }[];
+  keywords: string[];
+  ctaLabel: string;
+};
+
+export const SERVICES: Record<string, ServiceData> = {
+  "criacao-de-sites": {
+    slug: "criacao-de-sites",
+    name: "Criação de Sites",
+    category: "Web",
+    title: "Criação de Sites Profissionais · 0WEB",
+    h1: "Criação de sites que vendem",
+    description:
+      "Sites institucionais rápidos, modernos e otimizados para Google. Conversão acima da média do mercado.",
+    serviceType: "Web Design",
+    problems: [
+      "Site lento, desatualizado ou difícil de editar",
+      "Aparece mal no celular e perde clientes",
+      "Não converte visitas em contatos",
+      "Sem segurança, sem backup, sem suporte",
+    ],
+    benefits: [
+      "Design premium e identidade forte",
+      "Performance 95+ no Lighthouse",
+      "SEO técnico embutido desde o dia 1",
+      "Painel simples para o cliente editar",
+      "Hospedagem, SSL e backup inclusos",
+    ],
+    process: [
+      { step: "Diagnóstico", desc: "Briefing, benchmarking e arquitetura de informação" },
+      { step: "Design", desc: "UI/UX premium aprovada antes de codar" },
+      { step: "Desenvolvimento", desc: "Código limpo, responsivo e performático" },
+      { step: "Lançamento", desc: "Deploy, SEO técnico, analytics e treinamento" },
+    ],
+    faq: [
+      { q: "Em quanto tempo o site fica pronto?", a: "Sites institucionais ficam prontos em 15 a 30 dias, dependendo do escopo aprovado." },
+      { q: "Posso editar o site depois?", a: "Sim. Entregamos um painel simples para você atualizar textos, imagens e seções sem depender de programador." },
+      { q: "Hospedagem está inclusa?", a: "Sim. Cuidamos de hospedagem, SSL, backup e monitoramento durante todo o contrato." },
+      { q: "Vocês fazem SEO no site?", a: "Sim. SEO técnico, semântico e on-page já vem embutido em toda entrega." },
+    ],
+    keywords: ["criação de sites", "desenvolvimento de sites", "agência de sites", "site profissional"],
+    ctaLabel: "Quero meu site",
+  },
+  "landing-pages": {
+    slug: "landing-pages",
+    name: "Landing Pages",
+    category: "Conversão",
+    title: "Landing Pages de Alta Conversão · 0WEB",
+    h1: "Landing pages que convertem visitantes em clientes",
+    description:
+      "Páginas focadas em conversão para Google Ads e Meta Ads. Taxa de conversão até 4x maior.",
+    serviceType: "Conversion Rate Optimization",
+    problems: [
+      "Investimento em mídia paga sem retorno",
+      "Taxa de conversão abaixo de 1%",
+      "Sem tracking, sem dados, sem decisão",
+      "Página confusa, sem foco em uma ação",
+    ],
+    benefits: [
+      "Estrutura validada por CRO",
+      "Integração direta com Ads e CRM",
+      "A/B testing nativo",
+      "Tracking completo (GA4 + Pixel + GTM)",
+      "Entrega em 7 dias úteis",
+    ],
+    process: [
+      { step: "Estratégia", desc: "Persona, oferta e proposta única de valor" },
+      { step: "Copy + Design", desc: "Headline, prova social, oferta e CTA" },
+      { step: "Build", desc: "Página rápida, mobile-first, integrada" },
+      { step: "Otimização", desc: "A/B testing, heatmap e melhoria contínua" },
+    ],
+    faq: [
+      { q: "Em quanto tempo entregam?", a: "7 dias úteis para a primeira versão pronta para tráfego." },
+      { q: "Vocês cuidam dos anúncios também?", a: "Sim, oferecemos pacote integrado de landing page + gestão de Ads." },
+      { q: "Tem teste A/B?", a: "Sim. Implementamos variações e medimos conversão para decidir o vencedor." },
+      { q: "Funciona em mobile?", a: "Todas as páginas são mobile-first e otimizadas para o tráfego pago." },
+    ],
+    keywords: ["landing page", "página de conversão", "página de vendas", "CRO"],
+    ctaLabel: "Quero minha landing page",
+  },
+  "loja-virtual": {
+    slug: "loja-virtual",
+    name: "Loja Virtual",
+    category: "E-commerce",
+    title: "E-commerce e Lojas Virtuais · 0WEB",
+    h1: "Lojas virtuais prontas para escalar",
+    description:
+      "E-commerce de alta performance integrado a meios de pagamento, frete e marketing.",
+    serviceType: "E-commerce Development",
+    problems: [
+      "Loja lenta e com checkout abandonado",
+      "Sem integração com pagamentos e frete",
+      "Falta de SEO de produto e categoria",
+      "Operação manual sem automação de marketing",
+    ],
+    benefits: [
+      "Checkout otimizado para conversão",
+      "Pagamentos (Pix, cartão, boleto) integrados",
+      "Painel admin completo",
+      "Recuperação de carrinho automática",
+      "SEO de produto e categoria nativo",
+    ],
+    process: [
+      { step: "Catálogo", desc: "Estruturação de categorias, atributos e SEO" },
+      { step: "Plataforma", desc: "Setup Shopify / WooCommerce / custom" },
+      { step: "Pagamentos", desc: "Integração com gateways e antifraude" },
+      { step: "Tráfego", desc: "Google Shopping, Meta Ads e SEO programático" },
+    ],
+    faq: [
+      { q: "Qual plataforma vocês usam?", a: "Shopify, WooCommerce ou desenvolvimento sob medida, conforme o projeto." },
+      { q: "Vocês integram com ERP?", a: "Sim. Integramos com Bling, Tiny, Omie e ERPs próprios via API." },
+      { q: "Como funciona o frete?", a: "Integramos com Correios, Melhor Envio e transportadoras direto." },
+      { q: "Vocês fazem o marketing?", a: "Sim, pacotes integrados de Ads, SEO e e-mail marketing." },
+    ],
+    keywords: ["loja virtual", "e-commerce", "criação de loja online", "shopify", "woocommerce"],
+    ctaLabel: "Quero minha loja virtual",
+  },
+  seo: {
+    slug: "seo",
+    name: "SEO",
+    category: "SEO",
+    title: "SEO Técnico e Estratégico · 0WEB",
+    h1: "SEO que posiciona sua empresa no topo do Google",
+    description:
+      "Estratégia completa de SEO técnico, on-page e off-page para tráfego orgânico sustentável.",
+    serviceType: "Search Engine Optimization",
+    problems: [
+      "Site não aparece no Google",
+      "Concorrentes ranqueando à sua frente",
+      "Conteúdo desorganizado e sem palavras-chave",
+      "Core Web Vitals ruins e penalização técnica",
+    ],
+    benefits: [
+      "Auditoria técnica completa",
+      "Core Web Vitals otimizados",
+      "Conteúdo estratégico baseado em palavras-chave",
+      "Link building white-hat",
+      "Relatórios mensais transparentes",
+    ],
+    process: [
+      { step: "Auditoria", desc: "Técnica, on-page e de autoridade" },
+      { step: "Estratégia", desc: "Cluster de conteúdo e roadmap" },
+      { step: "Execução", desc: "Otimização técnica + conteúdo + links" },
+      { step: "Mensuração", desc: "GSC, GA4, posicionamento e ROI" },
+    ],
+    faq: [
+      { q: "Em quanto tempo vejo resultado?", a: "Primeiros ganhos em 60-90 dias; SEO consistente em 6 meses." },
+      { q: "Vocês escrevem o conteúdo?", a: "Sim. Time editorial próprio com SEO embutido na escrita." },
+      { q: "Fazem SEO local?", a: "Sim. Otimização de GMB, citações locais e páginas geo-targeted." },
+      { q: "Como medem o ROI?", a: "Tracking de leads orgânicos, conversões e valor de oportunidade." },
+    ],
+    keywords: ["SEO", "otimização para google", "agência de SEO", "consultoria SEO"],
+    ctaLabel: "Quero ranquear no Google",
+  },
+  "marketing-digital": {
+    slug: "marketing-digital",
+    name: "Marketing Digital",
+    category: "Tráfego",
+    title: "Marketing Digital com ROI · 0WEB",
+    h1: "Marketing digital que gera resultado",
+    description:
+      "Estratégia 360° de tráfego pago, orgânico, social media e automação focada em ROI.",
+    serviceType: "Digital Marketing",
+    problems: [
+      "Investimento em mídia sem estratégia",
+      "Falta de funil e atribuição",
+      "Equipe interna sobrecarregada",
+      "Sem clareza sobre custo por lead e LTV",
+    ],
+    benefits: [
+      "Google Ads e Meta Ads geridos por especialistas",
+      "Funil completo (TOFU/MOFU/BOFU)",
+      "Atribuição multicanal",
+      "Otimização semanal baseada em dados",
+      "Relatórios executivos mensais",
+    ],
+    process: [
+      { step: "Diagnóstico", desc: "Análise de funil, métricas e mercado" },
+      { step: "Estratégia", desc: "Planejamento de mídia, criativos e oferta" },
+      { step: "Execução", desc: "Setup, criativos, campanhas e tracking" },
+      { step: "Otimização", desc: "Ajustes semanais e escalonamento" },
+    ],
+    faq: [
+      { q: "Qual investimento mínimo recomendam?", a: "Mínimo de R$ 3.000/mês em mídia + fee para resultado consistente." },
+      { q: "Vocês criam os criativos?", a: "Sim, design e copy fazem parte do pacote." },
+      { q: "Trabalham com Google e Meta?", a: "Sim, somos certificados nos dois ecossistemas." },
+      { q: "Como sei se está dando certo?", a: "Painel com CAC, ROAS e LTV atualizado em tempo real." },
+    ],
+    keywords: ["marketing digital", "tráfego pago", "google ads", "meta ads", "agência de performance"],
+    ctaLabel: "Quero gerar mais leads",
+  },
+  "automacao-com-ia": {
+    slug: "automacao-com-ia",
+    name: "Automação com IA",
+    category: "IA",
+    title: "Automação com IA · 0WEB",
+    h1: "Automações inteligentes que escalam sua operação",
+    description:
+      "Agentes de IA, integrações e workflows que economizam horas e aumentam vendas.",
+    serviceType: "AI Automation",
+    problems: [
+      "Equipe sobrecarregada com tarefas repetitivas",
+      "Leads esfriam antes do primeiro contato",
+      "Sistemas isolados, dados em planilhas",
+      "Falta de visão unificada do cliente",
+    ],
+    benefits: [
+      "Agentes GPT customizados para seu negócio",
+      "Integrações n8n / Make / Zapier",
+      "Qualificação automática de leads",
+      "Follow-up inteligente 24/7",
+      "ROI mensurável em horas economizadas",
+    ],
+    process: [
+      { step: "Mapeamento", desc: "Identificar processos manuais e gargalos" },
+      { step: "Desenho", desc: "Workflow, integrações e prompts" },
+      { step: "Implementação", desc: "Build, testes e ajustes" },
+      { step: "Operação", desc: "Monitoramento, evolução e suporte" },
+    ],
+    faq: [
+      { q: "Funciona com meu CRM?", a: "Sim. Integramos com HubSpot, Pipedrive, RD Station, Salesforce e CRMs próprios." },
+      { q: "Os agentes substituem meu time?", a: "Não. Eles aumentam a capacidade do time e cuidam do operacional repetitivo." },
+      { q: "É seguro?", a: "Sim. Dados criptografados, ambientes isolados e LGPD compliance." },
+      { q: "Em quanto tempo implanta?", a: "MVPs em 2-4 semanas; automações completas em 30-60 dias." },
+    ],
+    keywords: ["automação", "automação com IA", "agentes de IA", "workflow", "n8n", "make"],
+    ctaLabel: "Quero automatizar minha operação",
+  },
+  "chatbot-whatsapp": {
+    slug: "chatbot-whatsapp",
+    name: "Chatbot WhatsApp",
+    category: "IA",
+    title: "Chatbot WhatsApp com IA · 0WEB",
+    h1: "Chatbot WhatsApp que vende 24/7",
+    description:
+      "Atendimento e vendas automatizadas no WhatsApp com Inteligência Artificial.",
+    serviceType: "Conversational AI",
+    problems: [
+      "Leads parados na fila de atendimento",
+      "Mensagens fora do horário sem resposta",
+      "Atendentes ocupados com dúvidas básicas",
+      "Sem histórico unificado por cliente",
+    ],
+    benefits: [
+      "Resposta em segundos, 24h por dia",
+      "Treinado com a base do seu negócio",
+      "Integra com CRM, agendamento e pagamentos",
+      "Multi-atendente com transferência automática",
+      "Métricas e satisfação em tempo real",
+    ],
+    process: [
+      { step: "Conhecimento", desc: "Treinar o bot com FAQ, política e tom de voz" },
+      { step: "Integração", desc: "WhatsApp Business API + CRM + agenda" },
+      { step: "Fluxos", desc: "Atendimento, qualificação, agendamento e venda" },
+      { step: "Operação", desc: "Métricas, aprendizado contínuo e ajustes" },
+    ],
+    faq: [
+      { q: "Precisa do WhatsApp Business API?", a: "Sim, configuramos a API oficial Meta para você." },
+      { q: "Atende fora do horário comercial?", a: "Sim, o bot atende 24/7 e escala para humano quando preciso." },
+      { q: "Integra com meu sistema?", a: "Sim, com CRM, ERP, agenda, pagamentos e sistemas próprios via API." },
+      { q: "Quanto custa?", a: "Setup + mensalidade. Avaliamos no diagnóstico gratuito." },
+    ],
+    keywords: ["chatbot whatsapp", "atendimento whatsapp", "bot whatsapp", "whatsapp business"],
+    ctaLabel: "Quero meu chatbot",
+  },
+  "desenvolvimento-saas": {
+    slug: "desenvolvimento-saas",
+    name: "Desenvolvimento de SaaS",
+    category: "Sistemas",
+    title: "Desenvolvimento de SaaS · 0WEB",
+    h1: "Desenvolvemos seu SaaS do MVP ao scale",
+    description: "Arquitetura moderna, escalável e segura para produtos SaaS B2B e B2C.",
+    serviceType: "Software Development",
+    problems: [
+      "Validar uma ideia sem estourar orçamento",
+      "Escalar produto que cresceu além do MVP",
+      "Multi-tenancy, billing e onboarding mal resolvidos",
+      "Stack legada travando a evolução",
+    ],
+    benefits: [
+      "Next.js + TypeScript + arquitetura moderna",
+      "Multi-tenant com isolamento por workspace",
+      "Billing integrado (Stripe / Paddle)",
+      "Painel admin e analytics nativos",
+      "Suporte contínuo e evolução incremental",
+    ],
+    process: [
+      { step: "Discovery", desc: "Validação de hipóteses e escopo do MVP" },
+      { step: "MVP", desc: "Build enxuto, focado no core" },
+      { step: "Go-to-market", desc: "Onboarding, billing e métricas" },
+      { step: "Scale", desc: "Performance, novos módulos e expansão" },
+    ],
+    faq: [
+      { q: "Quanto tempo até o MVP?", a: "Entre 8 e 16 semanas para a primeira versão utilizável." },
+      { q: "Quem é dono do código?", a: "Você. Entregamos repositório e infraestrutura no seu nome." },
+      { q: "Vocês operam pós-lançamento?", a: "Sim. Squad dedicado com SLA e roadmap mensal." },
+      { q: "Qual stack usam?", a: "Next.js, TypeScript, PostgreSQL, Supabase, Stripe e Cloudflare." },
+    ],
+    keywords: ["desenvolvimento de saas", "criar saas", "agência saas", "mvp saas"],
+    ctaLabel: "Quero desenvolver meu SaaS",
+  },
+  "sistemas-web": {
+    slug: "sistemas-web",
+    name: "Sistemas Web",
+    category: "Sistemas",
+    title: "Sistemas Web Sob Medida · 0WEB",
+    h1: "Sistemas web sob medida para sua operação",
+    description: "ERP, CRM, ordens de serviço, agendamento e dashboards customizados.",
+    serviceType: "Custom Software Development",
+    problems: [
+      "Planilhas controlando o que deveria ser sistema",
+      "Time perdendo horas com retrabalho",
+      "Falta de visibilidade gerencial",
+      "Software de prateleira engessando o negócio",
+    ],
+    benefits: [
+      "Análise profunda dos processos atuais",
+      "Stack moderna, segura e escalável",
+      "Treinamento e adoção pela equipe",
+      "Hospedagem dedicada e backup",
+      "Evolução contínua conforme o negócio",
+    ],
+    process: [
+      { step: "Mapeamento", desc: "Entrevistas, BPMN e priorização" },
+      { step: "Protótipo", desc: "Telas navegáveis aprovadas antes de codar" },
+      { step: "Build", desc: "Desenvolvimento incremental em sprints" },
+      { step: "Adoção", desc: "Treinamento, suporte e melhorias" },
+    ],
+    faq: [
+      { q: "Vocês integram com sistemas existentes?", a: "Sim, via API REST, webhooks ou banco direto." },
+      { q: "É no celular também?", a: "Sim, sistemas responsivos por padrão; apps nativos sob demanda." },
+      { q: "Como cobram?", a: "Projeto fechado ou squad mensal, conforme o escopo." },
+      { q: "E quando o negócio mudar?", a: "Evoluímos o sistema em sprints; não há limite." },
+    ],
+    keywords: ["sistema web", "ERP sob medida", "CRM customizado", "software sob medida"],
+    ctaLabel: "Quero meu sistema",
+  },
+  "gestao-redes-sociais": {
+    slug: "gestao-redes-sociais",
+    name: "Gestão de Redes Sociais",
+    category: "Social",
+    title: "Gestão de Redes Sociais · 0WEB",
+    h1: "Gestão estratégica de redes sociais",
+    description: "Conteúdo, criativos, estratégia e métricas para Instagram, LinkedIn, TikTok e mais.",
+    serviceType: "Social Media Management",
+    problems: [
+      "Perfil parado e sem identidade",
+      "Conteúdo sem estratégia, postado por postar",
+      "Sem engajamento real, só vaidade",
+      "Falta de conexão com vendas",
+    ],
+    benefits: [
+      "Calendário editorial mensal",
+      "Criativos premium (foto, vídeo, motion)",
+      "Copywriting persuasivo",
+      "Engajamento real e crescimento orgânico",
+      "Relatórios mensais com métricas que importam",
+    ],
+    process: [
+      { step: "Posicionamento", desc: "Audiência, voz, pilares e referências" },
+      { step: "Produção", desc: "Criativos, vídeos e roteiros mensais" },
+      { step: "Distribuição", desc: "Postagens, stories, reels e engajamento" },
+      { step: "Análise", desc: "Métricas, ajustes e crescimento" },
+    ],
+    faq: [
+      { q: "Quantos posts por mês?", a: "Pacotes a partir de 12 posts/mês + stories diários." },
+      { q: "Fazem foto e vídeo?", a: "Sim. Visitas mensais para produção ou estúdio dedicado." },
+      { q: "Cuidam de tráfego pago?", a: "Sim, integramos orgânico e impulsionamento estratégico." },
+      { q: "Posso aprovar antes?", a: "Sim, todo conteúdo passa por aprovação antes da publicação." },
+    ],
+    keywords: ["gestão de redes sociais", "social media", "agência de social media", "instagram para empresas"],
+    ctaLabel: "Quero gerenciar minhas redes",
+  },
+};
+
+export const ALL_SERVICE_SLUGS = Object.keys(SERVICES);
+
+/** Subset that has a dedicated City × Service geo page.
+ *  Kept conservative for quality; expand here to scale (each new entry
+ *  adds N city pages to the sitemap automatically). */
+export const GEO_SERVICE_SLUGS: string[] = [
+  "criacao-de-sites",
+  "landing-pages",
+  "loja-virtual",
+  "seo",
+  "marketing-digital",
+  "automacao-com-ia",
+  "chatbot-whatsapp",
+  "gestao-redes-sociais",
+];
+
+export function getService(slug: string): ServiceData | undefined {
+  return SERVICES[slug];
+}
+
+/** Related services from the same category first, then others. Deterministic. */
+export function relatedServices(slug: string, n = 4): ServiceData[] {
+  const me = SERVICES[slug];
+  if (!me) return Object.values(SERVICES).slice(0, n);
+  const same = Object.values(SERVICES).filter((s) => s.slug !== slug && s.category === me.category);
+  const others = Object.values(SERVICES).filter((s) => s.slug !== slug && s.category !== me.category);
+  return [...same, ...others].slice(0, n);
+}

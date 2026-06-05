@@ -12,15 +12,25 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
+import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
+import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
+import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
+import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
+import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
+import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as CidadesRouteImport } from './routes/cidades'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
@@ -38,6 +48,42 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
+  id: '/sitemap-services.xml',
+  path: '/sitemap-services.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
+  id: '/sitemap-pages.xml',
+  path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCityServicesDotxmlRoute =
+  SitemapCityServicesDotxmlRouteImport.update({
+    id: '/sitemap-city-services.xml',
+    path: '/sitemap-city-services.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SitemapCitiesDotxmlRoute = SitemapCitiesDotxmlRouteImport.update({
+  id: '/sitemap-cities.xml',
+  path: '/sitemap-cities.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCasesDotxmlRoute = SitemapCasesDotxmlRouteImport.update({
+  id: '/sitemap-cases.xml',
+  path: '/sitemap-cases.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
+  id: '/sitemap-blog.xml',
+  path: '/sitemap-blog.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RssDotxmlRoute = RssDotxmlRouteImport.update({
@@ -65,9 +111,19 @@ const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
   path: '/google-meu-negocio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EstadosRoute = EstadosRouteImport.update({
+  id: '/estados',
+  path: '/estados',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContatoRoute = ContatoRouteImport.update({
   id: '/contato',
   path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CidadesRoute = CidadesRouteImport.update({
+  id: '/cidades',
+  path: '/cidades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceRoute = ServiceRouteImport.update({
@@ -84,6 +140,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EstadosStateRoute = EstadosStateRouteImport.update({
+  id: '/$state',
+  path: '/$state',
+  getParentRoute: () => EstadosRoute,
 } as any)
 const CasesSlugRoute = CasesSlugRouteImport.update({
   id: '/cases/$slug',
@@ -104,53 +165,83 @@ const CityServiceRoute = CityServiceRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
+  '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
+  '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
+  '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
@@ -158,64 +249,103 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$service'
+    | '/cidades'
     | '/contato'
+    | '/estados'
     | '/google-meu-negocio'
     | '/painel'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
+    | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
     | '/$city/$service'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/estados/$state'
     | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$service'
+    | '/cidades'
     | '/contato'
+    | '/estados'
     | '/google-meu-negocio'
     | '/painel'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
+    | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
     | '/$city/$service'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/estados/$state'
     | '/blog'
   id:
     | '__root__'
     | '/'
     | '/$service'
+    | '/cidades'
     | '/contato'
+    | '/estados'
     | '/google-meu-negocio'
     | '/painel'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
+    | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
     | '/$city/$service'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/estados/$state'
     | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ServiceRoute: typeof ServiceRoute
+  CidadesRoute: typeof CidadesRoute
   ContatoRoute: typeof ContatoRoute
+  EstadosRoute: typeof EstadosRouteWithChildren
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   PainelRoute: typeof PainelRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
+  ServicosRoute: typeof ServicosRoute
+  SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
+  SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
+  SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
+  SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
+  SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
@@ -246,6 +376,55 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-services.xml': {
+      id: '/sitemap-services.xml'
+      path: '/sitemap-services.xml'
+      fullPath: '/sitemap-services.xml'
+      preLoaderRoute: typeof SitemapServicesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-pages.xml': {
+      id: '/sitemap-pages.xml'
+      path: '/sitemap-pages.xml'
+      fullPath: '/sitemap-pages.xml'
+      preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-city-services.xml': {
+      id: '/sitemap-city-services.xml'
+      path: '/sitemap-city-services.xml'
+      fullPath: '/sitemap-city-services.xml'
+      preLoaderRoute: typeof SitemapCityServicesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-cities.xml': {
+      id: '/sitemap-cities.xml'
+      path: '/sitemap-cities.xml'
+      fullPath: '/sitemap-cities.xml'
+      preLoaderRoute: typeof SitemapCitiesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-cases.xml': {
+      id: '/sitemap-cases.xml'
+      path: '/sitemap-cases.xml'
+      fullPath: '/sitemap-cases.xml'
+      preLoaderRoute: typeof SitemapCasesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-blog.xml': {
+      id: '/sitemap-blog.xml'
+      path: '/sitemap-blog.xml'
+      fullPath: '/sitemap-blog.xml'
+      preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rss.xml': {
@@ -283,11 +462,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoogleMeuNegocioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/estados': {
+      id: '/estados'
+      path: '/estados'
+      fullPath: '/estados'
+      preLoaderRoute: typeof EstadosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contato': {
       id: '/contato'
       path: '/contato'
       fullPath: '/contato'
       preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cidades': {
+      id: '/cidades'
+      path: '/cidades'
+      fullPath: '/cidades'
+      preLoaderRoute: typeof CidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$service': {
@@ -310,6 +503,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/estados/$state': {
+      id: '/estados/$state'
+      path: '/$state'
+      fullPath: '/estados/$state'
+      preLoaderRoute: typeof EstadosStateRouteImport
+      parentRoute: typeof EstadosRoute
     }
     '/cases/$slug': {
       id: '/cases/$slug'
@@ -335,15 +535,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EstadosRouteChildren {
+  EstadosStateRoute: typeof EstadosStateRoute
+}
+
+const EstadosRouteChildren: EstadosRouteChildren = {
+  EstadosStateRoute: EstadosStateRoute,
+}
+
+const EstadosRouteWithChildren =
+  EstadosRoute._addFileChildren(EstadosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ServiceRoute: ServiceRoute,
+  CidadesRoute: CidadesRoute,
   ContatoRoute: ContatoRoute,
+  EstadosRoute: EstadosRouteWithChildren,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   PainelRoute: PainelRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   RssDotxmlRoute: RssDotxmlRoute,
+  ServicosRoute: ServicosRoute,
+  SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
+  SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
+  SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
+  SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
+  SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
