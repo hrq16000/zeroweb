@@ -2514,6 +2514,60 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta_href: string
+          cta_label: string
+          description: string | null
+          features: Json
+          highlight: boolean
+          id: string
+          name: string
+          period: Database["public"]["Enums"]["plan_period"]
+          price_cents: number | null
+          price_label: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta_href?: string
+          cta_label?: string
+          description?: string | null
+          features?: Json
+          highlight?: boolean
+          id?: string
+          name: string
+          period?: Database["public"]["Enums"]["plan_period"]
+          price_cents?: number | null
+          price_label?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta_href?: string
+          cta_label?: string
+          description?: string | null
+          features?: Json
+          highlight?: boolean
+          id?: string
+          name?: string
+          period?: Database["public"]["Enums"]["plan_period"]
+          price_cents?: number | null
+          price_label?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       portal_companies: {
         Row: {
           company_id: string
@@ -3870,6 +3924,7 @@ export type Database = {
         | "agencia"
         | "franqueado"
       partner_status: "pendente" | "aprovado" | "suspenso" | "bloqueado"
+      plan_period: "month" | "year" | "project" | "custom"
       portal_role:
         | "super_admin"
         | "portal_admin"
@@ -4063,6 +4118,7 @@ export const Constants = {
         "franqueado",
       ],
       partner_status: ["pendente", "aprovado", "suspenso", "bloqueado"],
+      plan_period: ["month", "year", "project", "custom"],
       portal_role: [
         "super_admin",
         "portal_admin",

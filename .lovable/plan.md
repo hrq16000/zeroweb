@@ -1,61 +1,75 @@
-Plano sequencial — uma entrega por vez, validando antes da próxima.
 
-## Entrega 1 — Auto-linking de partners.user_id
+# Escopo aprovado
 
-Casar parceiros aprovados ao usuário recém-criado pelo email.
+Tudo gerenciável pelo painel admin. Hreflang fica fora (só pt-BR). Vou entregar em **4 lotes** para manter cada migração curta e auditável.
 
-- Migration: estender `handle_new_user_profile()` (trigger AFTER INSERT em `auth.users`) para também executar:
-  `UPDATE public.partners SET user_id = NEW.id WHERE LOWER(email) = LOWER(NEW.email) AND user_id IS NULL AND status = 'approved'`
-- Registrar em `partner_audit_log` (action: `auto_linked`) quando ocorrer.
-- Sem alteração de frontend.
+---
 
-## Entrega 2 — Attribution no formulário de orçamento
+## Lote 1 — CRUD de Planos (banco + painel + landing)
 
-Capturar `0web_partner` cookie e atribuir ao lead após sucesso.
+**Banco** (`plans` table):
+- Campos: slug, nome, preço (centavos), período (mês/ano/projeto/sob_consulta), descrição, lista de features (jsonb), destaque (bool), cta_label, cta_href, ordem, ativo.
+- RLS: leitura pública (`anon` + `authenticated`); escrita só `super_admin`/`admin` (`has_role`).
+- Trigger `updated_at`. Seed com os 4 planos atuais (Landing R$ 99,99, Start R$ 249, Pro R$ 649, Enterprise sob consulta).
 
-- Localizar o(s) formulário(s) de orçamento existente(s) (`/orcamento`, `/contato`, etc.).
-- No `onSubmit`, ler `document.cookie` por `0web_partner`.
-- Após sucesso do insert em `lead_submissions`, chamar `attachAttributionToLead({ leadId, code })`.
-- Fire-and-forget (não bloqueia UX); log silencioso se falhar.
+**Server functions** (`src/lib/plans.functions.ts`):
+- `listPlansPublic()` (público), `listPlansAdmin()`, `upsertPlan()`, `deletePlan()`, `reorderPlans()` com `requireSupabaseAuth` + checagem de role.
 
-## Entrega 3 — computeCommission
+**UI**:
+- `src/components/site/Plans.tsx` passa a ler do banco com `useSuspenseQuery` (mantém fallback estático se erro).
+- Nova aba **Planos** em `/painel`: tabela com criar/editar/excluir/duplicar/reordenar (drag handles), preview ao vivo.
 
-Calcular comissão a partir de `commission_rules` e persistir.
+---
 
-- Nova tabela `partner_commissions`: `partner_id`, `attribution_id`, `rule_id`, `base_amount`, `commission_amount`, `commission_type`, `status` (pending/approved/paid/cancelled), `period`, `notes`, timestamps.
-- Server fn `computeCommission({ attributionId, baseAmount })`:
-  - Busca regra ativa do `partner.kind` (ou regra default), aplica `percent`/`fixed`/`tiered`.
-  - Insere `partner_commissions` com status `pending`.
-- Botão no admin (PartnersTab) para "Calcular comissões pendentes" a partir de atribuições convertidas.
+## Lote 2 — Redirects 301 gerenciáveis
 
-## Entrega 4 — Sugestão por território
+**Banco** (`redirects` table):
+- Campos: from_path (unique), to_path, status_code (301/302/308), enabled, hits, last_hit_at, notas.
+- RLS: leitura `service_role` (consumida server-side), escrita admin.
 
-Sugerir representante ativo ao receber lead com city/state.
+**Middleware** (`src/start.ts` requestMiddleware):
+- Lookup em cache (TTL 60s) na entrada de cada request HTML; se match → `Response` 301/308.
+- Normalizações automáticas no mesmo middleware: força sem-trailing-slash (exceto `/`), e força host canônico (`0web.com.br`) quando vier de www/preview/custom.
 
-- Server fn `suggestPartnerForLead({ leadId, city, state })`:
-  - Query `partner_territories` por match (state obrigatório, city opcional), priorizando matches mais específicos.
-  - Filtra parceiros `status = 'approved'` e `kind` representativo.
-- Trigger DB ou hook server: ao inserir `lead_submission` sem `partner_attribution`, popular `partner_attributions` com o melhor match (registrar `source = 'territory'`).
-- Admin: badge "Sugerido por território" na lista de leads.
+**UI** em /painel → **Redirects**: tabela CRUD + métricas (hits, último acesso) + import CSV.
 
-## Entrega 5 — Anti-spam em /parceiros
+---
 
-Rate-limit por IP (janela deslizante) + honeypot, sem captcha externo.
+## Lote 3 — Validação de canônicos no build + paginação
 
-- Migration: tabela `rate_limit_buckets` (`scope` text, `ip_hash` text, `created_at` timestamptz). Index parcial em (scope, ip_hash, created_at).
-- Função SQL `check_and_record_rate_limit(scope, ip_hash, window_seconds, max_hits)` → boolean (true = permitido).
-- Form `/parceiros`: campo honeypot oculto (`website_url`) — se preenchido, descarta silenciosamente.
-- Server fn `applyAsPartner`: lê IP do header, faz SHA-256, chama RPC de rate-limit (10 req / 1h por IP em `partner_signup`). Valida com Zod estrita (email, telefone, max-lengths).
-- Cleanup: incluir purge de `rate_limit_buckets` antigos na rotina LGPD existente.
+**Script** `scripts/validate-canonicals.ts`:
+- Faz crawl do build (`dist/`) lendo o HTML SSR de cada rota do sitemap.
+- Verifica: exatamente 1 `<link rel=canonical>` por página; URL absoluta com host correto; canonical aponta para si mesmo (self-referential) OU para alvo declarado; nenhuma rota indexável aponta para 404.
+- Roda como `postbuild` no `package.json`; falha o build com lista clara de erros.
 
-## Detalhes Técnicos
+**Paginação consistente** (`blog.index`, `blog.cluster.$cluster`, `categoria.$slug`):
+- Página `?p=2` recebe canonical apontando para si mesma + `<link rel="prev/next">` (já que Google reverteu o comportamento mas Bing ainda usa). Sem paginação ⇒ canonical limpo.
+- Garantir que cluster e categoria nunca dupliquem listagem do `/blog` (canonical próprio + JSON-LD CollectionPage exclusivo).
 
-- Triggers: `SECURITY DEFINER`, `search_path = public`, sempre em DO blocks idempotentes.
-- Server fns sob `src/lib/*.functions.ts`; importar `client.server` apenas dentro do `.handler()` com `await import()`.
-- RLS: `partner_commissions` legível pelo dono (`user_id = auth.uid()` via partner_id) e por admin; `rate_limit_buckets` sem grant para anon/authenticated (apenas service_role).
-- Cookie `0web_partner` já é setado em `/r/$code` (60 dias) — não alterar.
-- Logs: `console.error` em falhas, sem expor PII.
+---
 
-## Ordem de execução
+## Lote 4 — Search Console gerenciável pelo painel
 
-1 → validação → 2 → validação → 3 → validação → 4 → validação → 5. Cada entrega = 1 migration (se aplicável) + arquivos de código + nota no chat antes de prosseguir.
+**Banco** (`gsc_settings` singleton + `gsc_coverage_snapshots`):
+- Settings: property_url, verification_meta_token, enabled.
+- Snapshots: coletados periodicamente — total_indexed, total_excluded, soft_404, errors, last_synced_at.
+
+**UI** em /painel → **Search Console**:
+- Passo 1: copiar meta verification (renderizada no `__root.tsx` quando configurada).
+- Passo 2: botão "Conectar GSC" → fluxo do connector Google Search Console.
+- Passo 3: dashboard com últimas métricas + botão "Sincronizar agora".
+
+**Server fn** `syncGscCoverage()` que chama `connector-gateway.lovable.dev/google_search_console/webmasters/v3/sites/.../urlInspection` e grava snapshot. Cron diário via pg_cron opcional.
+
+---
+
+## Sequência de execução
+
+Começo pelo **Lote 1** agora (migração + UI + landing dinâmica) porque é o que mais muda o site visível. Lotes 2/3/4 nas próximas mensagens — peço sua confirmação ao final do Lote 1 antes de seguir.
+
+## Decisões pendentes que assumo se não houver objeção
+
+- Preços armazenados em **centavos** (BIGINT) para evitar float.
+- Período como enum: `month` | `year` | `project` | `custom`.
+- Redirects: default **308** (preserva método; é o substituto moderno do 301 e Google trata igual).
+- Validador roda em `postbuild` mas pode ser desabilitado por env `SKIP_CANONICAL_CHECK=1` para hotfixes.
