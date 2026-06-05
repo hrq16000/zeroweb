@@ -1,6 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { posts } from "@/lib/blog-data";
+import { Picture } from "@/components/site/Picture";
 import blogSeo from "@/assets/blog-seo.webp";
 import blogIa from "@/assets/blog-ia.webp";
 import blogMarketing from "@/assets/blog-marketing.webp";
@@ -40,13 +41,11 @@ export function Blog() {
               className="group rounded-3xl bg-background border border-border overflow-hidden hover:shadow-elegant transition"
             >
               <div className="aspect-[16/10] relative overflow-hidden bg-muted">
-                <img
+                <Picture
                   src={p.cover || coverForCategory(p.category)}
                   alt={`Imagem ilustrativa: ${p.title}`}
                   width={1280}
                   height={800}
-                  loading="lazy"
-                  decoding="async"
                   sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
                 />

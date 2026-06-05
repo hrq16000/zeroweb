@@ -6,6 +6,7 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
+import { Picture } from "@/components/site/Picture";
 import { AuthorBio } from "@/components/site/AuthorBio";
 import { suggestLinksForArticle } from "@/lib/interlinking";
 
@@ -138,13 +139,12 @@ function PostPage() {
           </div>
 
           <div className="mt-10 aspect-[16/9] rounded-3xl overflow-hidden relative bg-muted">
-            <img
+            <Picture
               src={post.cover || coverForCategory(post.category)}
               alt={`Capa do artigo: ${post.title}`}
               width={1280}
               height={720}
-              fetchPriority="high"
-              decoding="async"
+              priority
               sizes="(min-width: 1024px) 960px, 100vw"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -156,13 +156,12 @@ function PostPage() {
 
           {inlineImages[post.slug as keyof typeof inlineImages] && (
             <figure className="mt-10">
-              <img
+              <Picture
                 src={inlineImages[post.slug as keyof typeof inlineImages]}
                 alt={`Ilustração complementar: ${post.title}`}
                 width={1280}
                 height={720}
-                loading="lazy"
-                decoding="async"
+                sizes="(min-width: 1024px) 720px, 100vw"
                 className="w-full rounded-3xl"
               />
               <figcaption className="mt-3 text-sm text-muted-foreground text-center">
