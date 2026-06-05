@@ -3934,6 +3934,7 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
+      normalize_phone: { Args: { p: string }; Returns: string }
       purge_ip_blocklist: { Args: never; Returns: number }
       purge_rate_limit_buckets: { Args: never; Returns: number }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
