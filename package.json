@@ -13,7 +13,8 @@
     "seo:images": "node scripts/validate-seo-images.mjs",
     "img:optimize": "node scripts/optimize-blog-images.mjs",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "node scripts/install-git-hooks.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
