@@ -44,6 +44,7 @@ import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/le
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
+import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
@@ -224,6 +225,11 @@ const AuthenticatedAppProjectsRoute =
     path: '/projects',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppDocumentsRoute =
   AuthenticatedAppDocumentsRouteImport.update({
     id: '/documents',
@@ -274,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -312,6 +319,7 @@ export interface FileRoutesByTo {
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -353,6 +361,7 @@ export interface FileRoutesById {
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -394,6 +403,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/blog/'
     | '/app/documents'
+    | '/app/profile'
     | '/app/projects'
     | '/app/reports'
     | '/app/support'
@@ -432,6 +442,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/blog'
     | '/app/documents'
+    | '/app/profile'
     | '/app/projects'
     | '/app/reports'
     | '/app/support'
@@ -472,6 +483,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/blog/'
     | '/_authenticated/app/documents'
+    | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
     | '/_authenticated/app/support'
@@ -760,6 +772,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/profile': {
+      id: '/_authenticated/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AuthenticatedAppProfileRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/documents': {
       id: '/_authenticated/app/documents'
       path: '/documents'
@@ -814,6 +833,7 @@ const AuthenticatedAppSupportRouteWithChildren =
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
@@ -822,6 +842,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
