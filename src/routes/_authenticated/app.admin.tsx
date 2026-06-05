@@ -17,6 +17,7 @@ import {
   rollbackSetting,
   listIntegrationStatus,
   testIntegration,
+  listIntegrationSchemas,
 } from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
@@ -49,21 +50,31 @@ function AdminPage() {
   );
 }
 
-// Group setting keys by integration prefix (e.g. "uazapi.token" → "uazapi").
-// "supabase" and "lovable_ai" appear in the status panel even without keys.
-const INTEGRATION_LABELS: Record<string, string> = {
-  uazapi: "uazapi (WhatsApp)",
-  supabase: "Lovable Cloud (banco)",
-  lovable_ai: "Lovable AI Gateway",
+// Schema-driven integration registry. Loaded from `integration_schemas` table.
+type SchemaField = {
+  key: string;
+  label?: string;
+  type?: "text" | "url" | "secret" | "number";
+  critical?: boolean;
+  required?: boolean;
+  placeholder?: string;
 };
-const TESTABLE = new Set(["uazapi", "supabase", "lovable_ai"]);
+type IntegrationSchema = {
+  key: string;
+  label: string;
+  description?: string | null;
+  testable?: boolean;
+  fields?: SchemaField[];
+};
 
 function SettingsTab() {
   const ls = useServerFn(listSettings);
   const us = useServerFn(upsertSetting);
   const lis = useServerFn(listIntegrationStatus);
   const ti = useServerFn(testIntegration);
+  const lsch = useServerFn(listIntegrationSchemas);
   const [rows, setRows] = useState<any[]>([]);
+  const [schemas, setSchemas] = useState<IntegrationSchema[]>([]);
   const [status, setStatus] = useState<Record<string, any>>({});
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [err, setErr] = useState<string | null>(null);
@@ -74,17 +85,17 @@ function SettingsTab() {
 
   const load = async () => {
     try {
-      const r = await ls();
+      const [r, st, sc] = await Promise.all([ls(), lis(), lsch()]);
       setRows(r.rows as any[]);
       const init: Record<string, string> = {};
       (r.rows as any[]).forEach((s) => {
         init[s.key] = s.is_secret ? "" : s.value ?? "";
       });
       setEdits(init);
-      const st = await lis();
       const map: Record<string, any> = {};
       (st.rows as any[]).forEach((x) => (map[x.key] = x));
       setStatus(map);
+      setSchemas((sc.rows as IntegrationSchema[]) ?? []);
     } catch (e: any) {
       setErr(e.message);
     }
@@ -101,13 +112,27 @@ function SettingsTab() {
       </p>
     );
 
-  const save = async (key: string, is_secret: boolean) => {
+  const settingMap = new Map(rows.map((r) => [r.key, r]));
+  const isCritical = (key: string, field?: SchemaField) =>
+    !!field?.critical || !!settingMap.get(key)?.is_critical;
+
+  const save = async (key: string, is_secret: boolean, critical: boolean) => {
+    let reason: string | null = null;
+    if (critical) {
+      reason = window.prompt(
+        `Chave crítica "${key}".\nDescreva o motivo da alteração (mín. 5 caracteres):`,
+      );
+      if (!reason || reason.trim().length < 5) {
+        setMsg("Alteração cancelada — motivo obrigatório.");
+        return;
+      }
+    }
     setSaving(key);
     setMsg(null);
     try {
       const value = edits[key] ?? "";
-      await us({ data: { key, value: value === "" ? null : value, is_secret } });
-      setMsg(`Salvo: ${key}`);
+      await us({ data: { key, value: value === "" ? null : value, is_secret, reason } });
+      setMsg(`Salvo: ${key}${reason ? ` (motivo registrado)` : ""}`);
       await load();
     } catch (e: any) {
       setErr(e.message);
@@ -116,7 +141,7 @@ function SettingsTab() {
     }
   };
 
-  const runTest = async (key: "uazapi" | "supabase" | "lovable_ai") => {
+  const runTest = async (key: string) => {
     setTesting(key);
     setMsg(null);
     try {
@@ -130,90 +155,95 @@ function SettingsTab() {
     }
   };
 
-  // Group settings by prefix before the first "."
-  const grouped: Record<string, any[]> = {};
-  rows.forEach((s) => {
-    const prefix = s.key.includes(".") ? s.key.split(".")[0] : s.key;
-    (grouped[prefix] ||= []).push(s);
-  });
-  // Ensure testable integrations show up even with no settings
-  TESTABLE.forEach((k) => {
-    if (!grouped[k]) grouped[k] = [];
-  });
-
   return (
     <div className="mt-5 space-y-4">
       <div className="rounded-xl border border-border bg-card p-4">
         <h2 className="font-semibold">Integrações</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Tudo gerenciável pelo painel. Cada alteração é registrada em histórico (auditoria + rollback).
-          Cache de leitura em runtime: 60s. Campos de segredo não exibem o valor após salvar.
+          Schema declarativo: novas integrações são registradas em <code>integration_schemas</code>.
+          Chaves marcadas como críticas exigem motivo na auditoria. Health-check automático a cada 15 min.
         </p>
       </div>
       {msg && <p className="text-xs text-primary">{msg}</p>}
-      {Object.entries(grouped)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([group, items]) => {
-          const st = status[group];
-          const testable = TESTABLE.has(group);
-          return (
-            <div key={group} className="rounded-xl border border-border bg-card p-4 space-y-3">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div>
-                  <div className="font-semibold text-sm">{INTEGRATION_LABELS[group] ?? group}</div>
-                  <div className="text-[11px] text-muted-foreground font-mono">{group}.*</div>
-                </div>
-                <div className="flex items-center gap-2 text-[11px]">
-                  {st && (
-                    <span
-                      className={`px-2 py-0.5 rounded ${
-                        st.last_status === "ok"
-                          ? "bg-emerald-500/10 text-emerald-600"
-                          : st.last_status === "error"
-                            ? "bg-destructive/10 text-destructive"
-                            : "bg-muted text-muted-foreground"
-                      }`}
-                      title={st.last_message ?? ""}
-                    >
-                      {st.last_status === "ok" ? "OK" : st.last_status === "error" ? "ERRO" : "—"}
-                    </span>
-                  )}
-                  {st?.last_tested_at && (
-                    <span className="text-muted-foreground">
-                      {new Date(st.last_tested_at).toLocaleString("pt-BR")}
-                    </span>
-                  )}
-                  {testable && (
-                    <button
-                      onClick={() => runTest(group as any)}
-                      disabled={testing === group}
-                      className="px-2 py-1 rounded border border-border hover:bg-accent disabled:opacity-50"
-                    >
-                      {testing === group ? "…" : "Testar conexão"}
-                    </button>
-                  )}
-                </div>
+      {schemas.map((sch) => {
+        const st = status[sch.key];
+        const fields = sch.fields ?? [];
+        return (
+          <div key={sch.key} className="rounded-xl border border-border bg-card p-4 space-y-3">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <div className="font-semibold text-sm">{sch.label}</div>
+                <div className="text-[11px] text-muted-foreground font-mono">{sch.key}.*</div>
+                {sch.description && (
+                  <div className="text-[11px] text-muted-foreground mt-0.5">{sch.description}</div>
+                )}
               </div>
-              {st?.last_message && (
-                <div className="text-[11px] text-muted-foreground font-mono break-all">
-                  {st.last_message}
-                </div>
-              )}
-              {items.length === 0 ? (
-                <div className="text-xs text-muted-foreground italic">
-                  Sem chaves configuráveis nesta integração.
-                </div>
-              ) : (
-                items.map((s: any) => (
-                  <div key={s.key} className="border-t border-border pt-3 space-y-2">
+              <div className="flex items-center gap-2 text-[11px]">
+                {st && (
+                  <span
+                    className={`px-2 py-0.5 rounded ${
+                      st.last_status === "ok"
+                        ? "bg-emerald-500/10 text-emerald-600"
+                        : st.last_status === "error"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                    title={st.last_message ?? ""}
+                  >
+                    {st.last_status === "ok" ? "OK" : st.last_status === "error" ? "ERRO" : "—"}
+                  </span>
+                )}
+                {st?.last_tested_at && (
+                  <span className="text-muted-foreground">
+                    {new Date(st.last_tested_at).toLocaleString("pt-BR")}
+                  </span>
+                )}
+                {sch.testable && (
+                  <button
+                    onClick={() => runTest(sch.key)}
+                    disabled={testing === sch.key}
+                    className="px-2 py-1 rounded border border-border hover:bg-accent disabled:opacity-50"
+                  >
+                    {testing === sch.key ? "…" : "Testar conexão"}
+                  </button>
+                )}
+              </div>
+            </div>
+            {st?.last_message && (
+              <div className="text-[11px] text-muted-foreground font-mono break-all">
+                {st.last_message}
+              </div>
+            )}
+            {fields.length === 0 ? (
+              <div className="text-xs text-muted-foreground italic">
+                Sem chaves configuráveis nesta integração.
+              </div>
+            ) : (
+              fields.map((f) => {
+                const s = settingMap.get(f.key) ?? {
+                  key: f.key,
+                  is_secret: f.type === "secret",
+                  has_value: false,
+                  description: f.label,
+                };
+                const critical = isCritical(f.key, f);
+                return (
+                  <div key={f.key} className="border-t border-border pt-3 space-y-2">
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div>
-                        <div className="font-mono text-xs">{s.key}</div>
-                        {s.description && (
-                          <div className="text-[11px] text-muted-foreground">{s.description}</div>
+                        <div className="font-mono text-xs">{f.key}</div>
+                        {(f.label || s.description) && (
+                          <div className="text-[11px] text-muted-foreground">
+                            {f.label ?? s.description}
+                          </div>
                         )}
                       </div>
                       <div className="flex items-center gap-1 text-[10px]">
+                        {critical && (
+                          <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                            crítica
+                          </span>
+                        )}
                         {s.is_secret && (
                           <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
                             segredo
@@ -229,51 +259,60 @@ function SettingsTab() {
                           {s.has_value ? "configurado" : "vazio"}
                         </span>
                         <button
-                          onClick={() => setOpenHistory(openHistory === s.key ? null : s.key)}
+                          onClick={() => setOpenHistory(openHistory === f.key ? null : f.key)}
                           className="px-2 py-0.5 rounded border border-border hover:bg-accent"
                         >
-                          {openHistory === s.key ? "Fechar" : "Histórico"}
+                          {openHistory === f.key ? "Fechar" : "Histórico"}
                         </button>
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <input
-                        type={s.is_secret ? "password" : "text"}
-                        value={edits[s.key] ?? ""}
-                        onChange={(e) => setEdits((p) => ({ ...p, [s.key]: e.target.value }))}
+                        type={s.is_secret ? "password" : f.type === "number" ? "number" : "text"}
+                        value={edits[f.key] ?? ""}
+                        onChange={(e) =>
+                          setEdits((p) => ({ ...p, [f.key]: e.target.value }))
+                        }
                         placeholder={
                           s.is_secret && s.has_value
                             ? "•••••••• (deixe em branco para manter)"
-                            : "valor"
+                            : f.placeholder ?? "valor"
                         }
                         className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
                       />
                       <button
-                        onClick={() => save(s.key, !!s.is_secret)}
-                        disabled={saving === s.key || (s.is_secret && (edits[s.key] ?? "") === "")}
+                        onClick={() => save(f.key, !!s.is_secret, critical)}
+                        disabled={saving === f.key || (s.is_secret && (edits[f.key] ?? "") === "")}
                         className="px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm disabled:opacity-50"
                       >
-                        {saving === s.key ? "…" : "Salvar"}
+                        {saving === f.key ? "…" : "Salvar"}
                       </button>
                     </div>
-                    {openHistory === s.key && (
-                      <HistoryPanel settingKey={s.key} onAfterRollback={load} />
+                    {openHistory === f.key && (
+                      <HistoryPanel
+                        settingKey={f.key}
+                        critical={critical}
+                        onAfterRollback={load}
+                      />
                     )}
                   </div>
-                ))
-              )}
-            </div>
-          );
-        })}
+                );
+              })
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 function HistoryPanel({
   settingKey,
+  critical,
   onAfterRollback,
 }: {
   settingKey: string;
+  critical: boolean;
   onAfterRollback: () => Promise<void>;
 }) {
   const lh = useServerFn(listSettingHistory);
@@ -281,6 +320,7 @@ function HistoryPanel({
   const [rows, setRows] = useState<any[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [openDiff, setOpenDiff] = useState<string | null>(null);
 
   const load = () =>
     lh({ data: { key: settingKey, limit: 20 } })
@@ -292,10 +332,18 @@ function HistoryPanel({
   }, [settingKey]);
 
   const doRollback = async (id: string) => {
-    if (!confirm("Reverter para esta versão? O valor atual também será preservado no histórico.")) return;
+    let reason: string | null = null;
+    if (critical) {
+      reason = window.prompt(
+        `Rollback de chave crítica "${settingKey}".\nMotivo (mín. 5 caracteres):`,
+      );
+      if (!reason || reason.trim().length < 5) return;
+    } else if (!confirm("Reverter para esta versão?")) {
+      return;
+    }
     setBusy(id);
     try {
-      await rb({ data: { history_id: id } });
+      await rb({ data: { history_id: id, reason } });
       await load();
       await onAfterRollback();
     } catch (e: any) {
@@ -313,38 +361,55 @@ function HistoryPanel({
       ) : (
         <ul className="space-y-1.5 text-xs">
           {rows.map((r) => (
-            <li key={r.id} className="flex items-start justify-between gap-3 border-b border-border/50 pb-1.5">
-              <div className="min-w-0 flex-1">
-                <div className="flex gap-2 items-center text-[10px]">
-                  <span
-                    className={`px-1.5 py-0.5 rounded uppercase ${
-                      r.action === "rollback"
-                        ? "bg-amber-500/10 text-amber-600"
-                        : r.action === "delete"
-                          ? "bg-destructive/10 text-destructive"
-                          : "bg-primary/10 text-primary"
-                    }`}
+            <li
+              key={r.id}
+              className="border-b border-border/50 pb-1.5 last:border-b-0"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex gap-2 items-center text-[10px] flex-wrap">
+                    <span
+                      className={`px-1.5 py-0.5 rounded uppercase ${
+                        r.action === "rollback"
+                          ? "bg-amber-500/10 text-amber-600"
+                          : r.action === "delete"
+                            ? "bg-destructive/10 text-destructive"
+                            : "bg-primary/10 text-primary"
+                      }`}
+                    >
+                      {r.action}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {new Date(r.changed_at).toLocaleString("pt-BR")}
+                    </span>
+                    {r.reason && (
+                      <span
+                        className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
+                        title={r.reason}
+                      >
+                        motivo: {String(r.reason).slice(0, 40)}
+                        {String(r.reason).length > 40 ? "…" : ""}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <button
+                    onClick={() => setOpenDiff(openDiff === r.id ? null : r.id)}
+                    className="px-2 py-1 rounded border border-border hover:bg-accent text-[10px]"
                   >
-                    {r.action}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {new Date(r.changed_at).toLocaleString("pt-BR")}
-                  </span>
-                </div>
-                <div className="font-mono text-[11px] mt-1 break-all">
-                  <span className="text-muted-foreground">antes:</span> {r.old_value ?? "—"}
-                </div>
-                <div className="font-mono text-[11px] break-all">
-                  <span className="text-muted-foreground">depois:</span> {r.new_value ?? "—"}
+                    {openDiff === r.id ? "Fechar diff" : "Ver diff"}
+                  </button>
+                  <button
+                    onClick={() => doRollback(r.id)}
+                    disabled={busy === r.id}
+                    className="px-2 py-1 rounded border border-border hover:bg-accent text-[10px] disabled:opacity-50"
+                  >
+                    {busy === r.id ? "…" : "Reverter"}
+                  </button>
                 </div>
               </div>
-              <button
-                onClick={() => doRollback(r.id)}
-                disabled={busy === r.id}
-                className="px-2 py-1 rounded border border-border hover:bg-accent text-[10px] disabled:opacity-50 shrink-0"
-              >
-                {busy === r.id ? "…" : "Reverter"}
-              </button>
+              {openDiff === r.id && <SideBySideDiff before={r.old_value} after={r.new_value} />}
             </li>
           ))}
         </ul>
@@ -352,6 +417,52 @@ function HistoryPanel({
     </div>
   );
 }
+
+function SideBySideDiff({ before, after }: { before: string | null; after: string | null }) {
+  const a = (before ?? "").split(/\r?\n/);
+  const b = (after ?? "").split(/\r?\n/);
+  const n = Math.max(a.length, b.length, 1);
+  return (
+    <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-mono">
+      <div className="rounded border border-border bg-destructive/5 p-2 overflow-x-auto">
+        <div className="text-[10px] uppercase text-muted-foreground mb-1">antes</div>
+        {Array.from({ length: n }).map((_, i) => {
+          const line = a[i] ?? "";
+          const changed = line !== (b[i] ?? "");
+          return (
+            <div
+              key={i}
+              className={`whitespace-pre-wrap break-all ${
+                changed && line ? "bg-destructive/15 text-destructive" : ""
+              }`}
+            >
+              {line || <span className="text-muted-foreground">·</span>}
+            </div>
+          );
+        })}
+      </div>
+      <div className="rounded border border-border bg-emerald-500/5 p-2 overflow-x-auto">
+        <div className="text-[10px] uppercase text-muted-foreground mb-1">depois</div>
+        {Array.from({ length: n }).map((_, i) => {
+          const line = b[i] ?? "";
+          const changed = line !== (a[i] ?? "");
+          return (
+            <div
+              key={i}
+              className={`whitespace-pre-wrap break-all ${
+                changed && line ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" : ""
+              }`}
+            >
+              {line || <span className="text-muted-foreground">·</span>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
 
 
 

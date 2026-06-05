@@ -136,6 +136,7 @@ export type Database = {
       app_settings: {
         Row: {
           description: string | null
+          is_critical: boolean
           is_secret: boolean
           key: string
           updated_at: string
@@ -144,6 +145,7 @@ export type Database = {
         }
         Insert: {
           description?: string | null
+          is_critical?: boolean
           is_secret?: boolean
           key: string
           updated_at?: string
@@ -152,6 +154,7 @@ export type Database = {
         }
         Update: {
           description?: string | null
+          is_critical?: boolean
           is_secret?: boolean
           key?: string
           updated_at?: string
@@ -169,6 +172,7 @@ export type Database = {
           key: string
           new_value: string | null
           old_value: string | null
+          reason: string | null
           rolled_back_from_id: string | null
         }
         Insert: {
@@ -179,6 +183,7 @@ export type Database = {
           key: string
           new_value?: string | null
           old_value?: string | null
+          reason?: string | null
           rolled_back_from_id?: string | null
         }
         Update: {
@@ -189,6 +194,7 @@ export type Database = {
           key?: string
           new_value?: string | null
           old_value?: string | null
+          reason?: string | null
           rolled_back_from_id?: string | null
         }
         Relationships: [
@@ -551,9 +557,43 @@ export type Database = {
           },
         ]
       }
+      integration_schemas: {
+        Row: {
+          description: string | null
+          enabled: boolean
+          fields: Json
+          key: string
+          label: string
+          sort_order: number
+          testable: boolean
+          updated_at: string
+        }
+        Insert: {
+          description?: string | null
+          enabled?: boolean
+          fields?: Json
+          key: string
+          label: string
+          sort_order?: number
+          testable?: boolean
+          updated_at?: string
+        }
+        Update: {
+          description?: string | null
+          enabled?: boolean
+          fields?: Json
+          key?: string
+          label?: string
+          sort_order?: number
+          testable?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       integration_status: {
         Row: {
           key: string
+          last_alert_at: string | null
           last_message: string | null
           last_status: string
           last_tested_at: string | null
@@ -562,6 +602,7 @@ export type Database = {
         }
         Insert: {
           key: string
+          last_alert_at?: string | null
           last_message?: string | null
           last_status?: string
           last_tested_at?: string | null
@@ -570,6 +611,7 @@ export type Database = {
         }
         Update: {
           key?: string
+          last_alert_at?: string | null
           last_message?: string | null
           last_status?: string
           last_tested_at?: string | null
