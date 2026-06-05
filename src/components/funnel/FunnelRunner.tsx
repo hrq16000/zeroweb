@@ -12,6 +12,17 @@ import {
   type FunnelDefinition,
   type FunnelQuestion,
 } from "@/lib/dynamic-funnel.functions";
+import { trackEvent, trackConversion } from "@/lib/analytics";
+
+function readUtm(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const utm: Record<string, string> = {};
+  const url = new URL(window.location.href);
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach((k) => {
+    const v = url.searchParams.get(k); if (v) utm[k] = v;
+  });
+  return utm;
+}
 
 type Answers = Record<string, string | string[] | number>;
 
