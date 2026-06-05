@@ -67,6 +67,9 @@ export function ContactFormWhatsApp({
         const msg = `${defaultMessage}\n\nNome: ${d.name}\nEmpresa: ${d.company || "—"}\nE-mail: ${d.email}\nWhatsApp: ${d.phone}\n\n${d.message}`;
         window.open(whatsappUrl(msg, ctx), "_blank", "noopener,noreferrer");
         setSent(true);
+        if (redirectTo) {
+          navigate({ to: redirectTo });
+        }
       }}
       className="rounded-2xl border border-border bg-card p-6 lg:p-8 space-y-3"
       aria-labelledby="contact-form-title"
