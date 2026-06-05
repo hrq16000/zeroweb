@@ -109,7 +109,7 @@ function ClusterHub() {
           <section className="mt-12">
             <h2 className="text-2xl font-bold">Tópicos cobertos</h2>
             <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cluster.subclusters.map((s) => (
+              {cluster.subclusters.map((s: typeof cluster.subclusters[number]) => (
                 <div
                   key={s.slug}
                   id={s.slug}
