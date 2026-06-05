@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://0web.com.br/" },
-      { rel: "preload", as: "image", href: heroDashboard, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroDashboard, fetchPriority: "high" },
     ],
     scripts: [
       {
