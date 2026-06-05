@@ -147,7 +147,7 @@ export const backfillIdentitiesFromLeads = createServerFn({ method: "POST" })
             entity_type: "lead",
             entity_id: l.id,
             link_source: l.source ?? "backfill",
-          },
+          } as never,
           { onConflict: "entity_type,entity_id" },
         );
       if (!linkErr) linked++;
@@ -157,7 +157,7 @@ export const backfillIdentitiesFromLeads = createServerFn({ method: "POST" })
         kind: "lead_submitted",
         title: `Lead via ${l.source ?? "site"}`,
         occurred_at: l.created_at,
-      });
+      } as never);
     }
     return { processed: leads?.length ?? 0, identities_touched: created, links: linked };
   });
