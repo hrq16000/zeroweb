@@ -42,6 +42,7 @@ import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
+import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
@@ -212,6 +213,11 @@ const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppReportsRoute = AuthenticatedAppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppProjectsRoute =
   AuthenticatedAppProjectsRouteImport.update({
     id: '/projects',
@@ -269,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/app/documents'
     | '/app/projects'
+    | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
     | '/app/'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/app/documents'
     | '/app/projects'
+    | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
     | '/app'
@@ -462,6 +473,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/_authenticated/app/documents'
     | '/_authenticated/app/projects'
+    | '/_authenticated/app/reports'
     | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
     | '/_authenticated/app/'
@@ -734,6 +746,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSupportRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/reports': {
+      id: '/_authenticated/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AuthenticatedAppReportsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/projects': {
       id: '/_authenticated/app/projects'
       path: '/projects'
@@ -796,6 +815,7 @@ const AuthenticatedAppSupportRouteWithChildren =
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
+  AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
@@ -803,6 +823,7 @@ interface AuthenticatedAppRouteChildren {
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
+  AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
