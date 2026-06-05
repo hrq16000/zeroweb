@@ -45,6 +45,12 @@ export function setConsent(next: Partial<ConsentState>) {
   if (typeof window === "undefined") return;
   const merged: ConsentState = { ...getConsent(), ...next, decided: true };
   localStorage.setItem(CONSENT_KEY, JSON.stringify(merged));
+  // Mirror consent into a cookie so the server-side tracking middleware can
+  // honor it on the very next navigation (1 year, SameSite=Lax, not HttpOnly).
+  try {
+    const encoded = encodeURIComponent(JSON.stringify(merged));
+    document.cookie = `${CONSENT_KEY}=${encoded}; Path=/; Max-Age=31536000; SameSite=Lax`;
+  } catch { /* noop */ }
   if (typeof window.gtag === "function") {
     window.gtag("consent", "update", {
       analytics_storage: merged.analytics_storage,
