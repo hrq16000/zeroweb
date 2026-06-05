@@ -1241,6 +1241,45 @@ export type Database = {
           },
         ]
       }
+      identity_stitch_log: {
+        Row: {
+          actor: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          source: string | null
+          status: string
+          stitched_count: number
+          user_id: string | null
+          user_ref: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          source?: string | null
+          status?: string
+          stitched_count?: number
+          user_id?: string | null
+          user_ref?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          source?: string | null
+          status?: string
+          stitched_count?: number
+          user_id?: string | null
+          user_ref?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       integration_health_checks: {
         Row: {
           checked_at: string
@@ -3735,6 +3774,10 @@ export type Database = {
           p_window_seconds: number
         }
         Returns: boolean
+      }
+      check_license_limit: {
+        Args: { p_portal_id: string; p_resource: string }
+        Returns: undefined
       }
       compute_lead_score: {
         Args: { p_row: Database["public"]["Tables"]["lead_submissions"]["Row"] }
