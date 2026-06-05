@@ -6,6 +6,7 @@ export type BlogPost = {
   date: string;
   readTime: string;
   content: string;
+  cover?: string;
 };
 
 export const categories = [
@@ -18,7 +19,26 @@ export const categories = [
   "Negócios",
 ];
 
+import chatgpt3PalavrasCover from "@/assets/blog-chatgpt-3-palavras.jpg";
+import chatgpt3PalavrasInline from "@/assets/blog-chatgpt-3-palavras-2.jpg";
+
+export const inlineImages = {
+  "3-palavras-chatgpt-respostas-inteligentes": chatgpt3PalavrasInline,
+} as const;
+
 export const posts: BlogPost[] = [
+  {
+    slug: "3-palavras-chatgpt-respostas-inteligentes",
+    title: "As 3 palavras mágicas que fazem o ChatGPT dar respostas muito mais inteligentes",
+    excerpt:
+      "Pesquisadores e especialistas em prompt engineering identificaram três palavras simples que destravam respostas mais profundas, precisas e úteis no ChatGPT. Veja como aplicar hoje.",
+    category: "Inteligência Artificial",
+    date: "2026-06-05",
+    readTime: "7 min",
+    cover: chatgpt3PalavrasCover,
+    content:
+      "Você usa o ChatGPT todos os dias, mas sente que as respostas ficam superficiais? Um padrão simples vem ganhando força entre profissionais que dependem de IA para trabalhar: três palavras adicionadas ao prompt transformam respostas genéricas em análises de nível especialista.\n\nAs 3 palavras: \"explique seu raciocínio\".\n\nQuando você acrescenta essa instrução, o modelo passa a usar uma técnica conhecida como chain-of-thought — ele detalha cada passo da resposta antes de chegar à conclusão. O resultado é mais preciso porque o próprio modelo audita o caminho que está tomando.\n\nPor que funciona\n\nModelos como o ChatGPT são otimizados para prever a próxima palavra mais provável. Quando obrigados a \"pensar em voz alta\", reduzem alucinações, organizam a lógica e revelam premissas erradas que normalmente ficariam escondidas. Pesquisas da Google e Anthropic mostram ganhos de até 35% em precisão em tarefas de raciocínio matemático e lógico.\n\nComo aplicar na prática\n\n1. Em decisões de negócio — \"Liste 3 estratégias de aquisição para uma empresa B2B SaaS no Brasil. Explique seu raciocínio para cada opção.\"\n\n2. Em código — \"Refatore esta função para reduzir complexidade. Explique seu raciocínio antes do código final.\"\n\n3. Em análises — \"Compare esses dois fornecedores com base no contrato anexo. Explique seu raciocínio passo a passo.\"\n\nOutras variações que potencializam o efeito: \"pense passo a passo\", \"justifique sua resposta\", \"considere prós e contras antes de concluir\".\n\nO que evitar\n\nNão peça explicação em tarefas triviais (resumir um e-mail, traduzir uma frase) — o ganho é mínimo e a resposta fica longa demais. O ganho real aparece em problemas que envolvem múltiplas variáveis, julgamento ou decisão.\n\nO próximo passo\n\nSe a sua empresa usa IA no atendimento, em vendas ou em automações internas, vale revisar seus prompts. Pequenas mudanças de instrução resultam em ganhos enormes de produtividade — e em uma IA que finalmente entrega o que você esperava.\n\nNa 0WEB ajudamos empresas a integrar agentes de IA no WhatsApp, no CRM e em fluxos comerciais com prompts validados em produção. Se quiser ver na prática, fale com a gente.",
+  },
   {
     slug: "google-meu-negocio-como-aparecer-no-google",
     title: "Sua empresa NÃO aparece no Google? Veja como mudar isso em 2026",
