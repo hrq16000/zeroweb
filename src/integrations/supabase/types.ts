@@ -214,6 +214,58 @@ export type Database = {
           },
         ]
       }
+      bi_snapshots: {
+        Row: {
+          created_at: string
+          ecosystem_id: string | null
+          id: string
+          kpis: Json
+          portal_id: string | null
+          scope: string
+          snapshot_date: string
+        }
+        Insert: {
+          created_at?: string
+          ecosystem_id?: string | null
+          id?: string
+          kpis?: Json
+          portal_id?: string | null
+          scope?: string
+          snapshot_date?: string
+        }
+        Update: {
+          created_at?: string
+          ecosystem_id?: string | null
+          id?: string
+          kpis?: Json
+          portal_id?: string | null
+          scope?: string
+          snapshot_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bi_snapshots_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bi_snapshots_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "bi_snapshots_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocked_asns: {
         Row: {
           asn: string
@@ -670,6 +722,423 @@ export type Database = {
         }
         Relationships: []
       }
+      cross_sell_opportunities: {
+        Row: {
+          created_at: string
+          ecosystem_id: string | null
+          from_portal_id: string | null
+          id: string
+          identity_id: string | null
+          metadata: Json
+          offer_slug: string | null
+          offer_title: string | null
+          reason: string | null
+          score: number
+          status: string
+          to_portal_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ecosystem_id?: string | null
+          from_portal_id?: string | null
+          id?: string
+          identity_id?: string | null
+          metadata?: Json
+          offer_slug?: string | null
+          offer_title?: string | null
+          reason?: string | null
+          score?: number
+          status?: string
+          to_portal_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ecosystem_id?: string | null
+          from_portal_id?: string | null
+          id?: string
+          identity_id?: string | null
+          metadata?: Json
+          offer_slug?: string | null
+          offer_title?: string | null
+          reason?: string | null
+          score?: number
+          status?: string
+          to_portal_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cross_sell_opportunities_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cross_sell_opportunities_from_portal_id_fkey"
+            columns: ["from_portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "cross_sell_opportunities_from_portal_id_fkey"
+            columns: ["from_portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cross_sell_opportunities_identity_id_fkey"
+            columns: ["identity_id"]
+            isOneToOne: false
+            referencedRelation: "customer_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cross_sell_opportunities_to_portal_id_fkey"
+            columns: ["to_portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "cross_sell_opportunities_to_portal_id_fkey"
+            columns: ["to_portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_identities: {
+        Row: {
+          created_at: string
+          document: string | null
+          ecosystem_id: string | null
+          first_seen_at: string
+          full_name: string | null
+          id: string
+          last_seen_at: string
+          metadata: Json
+          primary_email: string | null
+          primary_phone: string | null
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document?: string | null
+          ecosystem_id?: string | null
+          first_seen_at?: string
+          full_name?: string | null
+          id?: string
+          last_seen_at?: string
+          metadata?: Json
+          primary_email?: string | null
+          primary_phone?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document?: string | null
+          ecosystem_id?: string | null
+          first_seen_at?: string
+          full_name?: string | null
+          id?: string
+          last_seen_at?: string
+          metadata?: Json
+          primary_email?: string | null
+          primary_phone?: string | null
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_identities_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_identity_links: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          identity_id: string
+          link_source: string | null
+          portal_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          identity_id: string
+          link_source?: string | null
+          portal_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          identity_id?: string
+          link_source?: string | null
+          portal_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_identity_links_identity_id_fkey"
+            columns: ["identity_id"]
+            isOneToOne: false
+            referencedRelation: "customer_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_identity_links_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "customer_identity_links_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_touchpoints: {
+        Row: {
+          created_at: string
+          description: string | null
+          ecosystem_id: string | null
+          id: string
+          identity_id: string
+          kind: string
+          occurred_at: string
+          payload: Json
+          portal_id: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ecosystem_id?: string | null
+          id?: string
+          identity_id: string
+          kind: string
+          occurred_at?: string
+          payload?: Json
+          portal_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ecosystem_id?: string | null
+          id?: string
+          identity_id?: string
+          kind?: string
+          occurred_at?: string
+          payload?: Json
+          portal_id?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_touchpoints_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_touchpoints_identity_id_fkey"
+            columns: ["identity_id"]
+            isOneToOne: false
+            referencedRelation: "customer_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_touchpoints_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "customer_touchpoints_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dw_events: {
+        Row: {
+          created_at: string
+          ecosystem_id: string | null
+          entity_id: string | null
+          entity_type: string | null
+          event_type: string
+          id: string
+          identity_id: string | null
+          numeric_value: number | null
+          occurred_at: string
+          payload: Json
+          portal_id: string | null
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          ecosystem_id?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type: string
+          id?: string
+          identity_id?: string | null
+          numeric_value?: number | null
+          occurred_at?: string
+          payload?: Json
+          portal_id?: string | null
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          ecosystem_id?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: string
+          identity_id?: string | null
+          numeric_value?: number | null
+          occurred_at?: string
+          payload?: Json
+          portal_id?: string | null
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dw_events_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dw_events_identity_id_fkey"
+            columns: ["identity_id"]
+            isOneToOne: false
+            referencedRelation: "customer_identities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dw_events_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "dw_events_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ecosystem_portals: {
+        Row: {
+          created_at: string
+          ecosystem_id: string
+          id: string
+          portal_id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          ecosystem_id: string
+          id?: string
+          portal_id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          ecosystem_id?: string
+          id?: string
+          portal_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ecosystem_portals_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ecosystem_portals_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "ecosystem_portals_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ecosystems: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          settings: Json
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          settings?: Json
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          settings?: Json
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       editorial_calendar: {
         Row: {
           cluster_slug: string
@@ -935,6 +1404,135 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "lead_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_routing_log: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string | null
+          payload: Json
+          reason: string | null
+          rule_id: string | null
+          score: number | null
+          target_id: string | null
+          target_kind: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          payload?: Json
+          reason?: string | null
+          rule_id?: string | null
+          score?: number | null
+          target_id?: string | null
+          target_kind?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          payload?: Json
+          reason?: string | null
+          rule_id?: string | null
+          score?: number | null
+          target_id?: string | null
+          target_kind?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_routing_log_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "lead_routing_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_routing_rules: {
+        Row: {
+          created_at: string
+          ecosystem_id: string | null
+          enabled: boolean
+          id: string
+          match_category: string | null
+          match_city: string | null
+          match_source: string | null
+          match_specialty: string | null
+          match_state: string | null
+          name: string
+          notes: string | null
+          portal_id: string | null
+          priority: number
+          strategy: string
+          target_id: string | null
+          target_kind: string
+          target_pool: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ecosystem_id?: string | null
+          enabled?: boolean
+          id?: string
+          match_category?: string | null
+          match_city?: string | null
+          match_source?: string | null
+          match_specialty?: string | null
+          match_state?: string | null
+          name: string
+          notes?: string | null
+          portal_id?: string | null
+          priority?: number
+          strategy?: string
+          target_id?: string | null
+          target_kind: string
+          target_pool?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ecosystem_id?: string | null
+          enabled?: boolean
+          id?: string
+          match_category?: string | null
+          match_city?: string | null
+          match_source?: string | null
+          match_specialty?: string | null
+          match_state?: string | null
+          name?: string
+          notes?: string | null
+          portal_id?: string | null
+          priority?: number
+          strategy?: string
+          target_id?: string | null
+          target_kind?: string
+          target_pool?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_routing_rules_ecosystem_id_fkey"
+            columns: ["ecosystem_id"]
+            isOneToOne: false
+            referencedRelation: "ecosystems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_routing_rules_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "lead_routing_rules_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
             referencedColumns: ["id"]
           },
         ]
@@ -3060,6 +3658,15 @@ export type Database = {
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
       refresh_visitor_mvs: { Args: never; Returns: undefined }
+      resolve_or_create_identity: {
+        Args: {
+          p_ecosystem_id?: string
+          p_email: string
+          p_name: string
+          p_phone: string
+        }
+        Returns: string
+      }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
