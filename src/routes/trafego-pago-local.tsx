@@ -6,6 +6,8 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { whatsappUrl } from "@/lib/site-config";
 import { CheckCircle2, XCircle, MessageCircle, Phone, ShoppingCart, Rocket, AlertTriangle, ArrowRight, Sparkles, Target } from "lucide-react";
 import capa from "@/assets/trafego-pago-499-capa.png.asset.json";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 
 const URL = "https://0web.com.br/trafego-pago-local";
 const TITLE = "Tráfego Pago para Negócios Locais a partir de R$499/mês · 0WEB";
@@ -240,6 +242,25 @@ function TrafegoPagoLocalPage() {
             </div>
           </div>
         </section>
+
+        {/* FORMULÁRIO */}
+        <section className="py-16 px-6">
+          <div className="mx-auto max-w-3xl">
+            <ContactFormWhatsApp
+              source="trafego_pago_local_form"
+              ctx="lp_trafego_local"
+              title="Quero começar com tráfego pago"
+              defaultMessage="Olá! Quero começar com o tráfego pago da 0WEB a partir de R$499/mês."
+            />
+          </div>
+        </section>
+
+        {/* LINKS RELACIONADOS */}
+        <RelatedLinksGrid
+          title="Combine com outros serviços da 0WEB"
+          subtitle="Tráfego pago performa muito mais quando seu site, SEO e atendimento estão alinhados."
+          only={["/criacao-sites", "/seo", "/automacao", "/planos", "/cases", "/faq"]}
+        />
 
         {/* FINAL */}
         <section className="py-20 px-6 text-center">
