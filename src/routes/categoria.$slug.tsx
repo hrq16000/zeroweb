@@ -5,13 +5,38 @@ import { getCategoryBySlug } from "@/lib/marketplace.functions";
 import { ORIGIN } from "@/lib/seo";
 
 export const Route = createFileRoute("/categoria/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} | Categoria | Marketplace 0WEB` },
-      { name: "description", content: `Profissionais e empresas da categoria ${params.slug} no marketplace nacional 0WEB.` },
-      { rel: "canonical", href: `${ORIGIN}/categoria/${params.slug}` } as never,
-    ],
-  }),
+  head: ({ params }) => {
+    const url = `https://0web.com.br/categoria/${params.slug}`;
+    const title = `${params.slug} | Categoria | Marketplace 0WEB`;
+    const desc = `Profissionais e empresas da categoria ${params.slug} no marketplace nacional 0WEB.`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
+        { name: "robots", content: "index, follow, max-image-preview:large" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "@id": `${url}#collection`,
+            url,
+            name: title,
+            description: desc,
+            inLanguage: "pt-BR",
+            isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+          }),
+        },
+      ],
+    };
+  },
   component: CategoryPage,
 });
 
