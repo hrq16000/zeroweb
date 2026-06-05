@@ -2,6 +2,25 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { stitchVisitorIdentity } from "@/lib/identity-stitching.functions";
+
+function readVisitorIdCookie(): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const m = document.cookie.match(/(?:^|;\s*)0web_vid=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : undefined;
+}
+
+function fireAndForgetStitch() {
+  try {
+    const visitorId = readVisitorIdCookie();
+    // Dispara sem aguardar — não bloqueia o redirect para /app
+    void stitchVisitorIdentity({ data: { visitorId } }).catch((e) => {
+      console.warn("[identity-stitch] falhou:", e);
+    });
+  } catch {
+    /* noop */
+  }
+}
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
@@ -24,11 +43,15 @@ function AuthPage() {
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "USER_UPDATED") && session) {
+        fireAndForgetStitch();
         navigate({ to: "/app", replace: true });
       }
     });
     void supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/app", replace: true });
+      if (data.user) {
+        fireAndForgetStitch();
+        navigate({ to: "/app", replace: true });
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
