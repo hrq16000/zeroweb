@@ -7,7 +7,7 @@ import { ORIGIN } from "@/lib/seo";
 import { trackConversion } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
-import { getThankYouContent } from "@/lib/thank-you-content";
+import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
