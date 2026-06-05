@@ -31,12 +31,15 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CidadesRouteImport } from './routes/cidades'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 
 const TermosRoute = TermosRouteImport.update({
@@ -150,6 +153,10 @@ const ServiceRoute = ServiceRouteImport.update({
   path: '/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -175,10 +182,20 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const CityServiceRoute = CityServiceRouteImport.update({
   id: '/$city/$service',
   path: '/$city/$service',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   id: '/api/public/lead-webhook',
@@ -211,11 +228,13 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
+  '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -247,10 +266,12 @@ export interface FileRoutesByTo {
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/app': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$service': typeof ServiceRoute
   '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
@@ -274,11 +295,13 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -307,11 +330,13 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/termos'
     | '/$city/$service'
+    | '/app'
     | '/blog/$slug'
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
     | '/api/public/lead-webhook'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -343,9 +368,11 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/blog'
     | '/api/public/lead-webhook'
+    | '/app'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/$service'
     | '/auth'
     | '/cidades'
@@ -369,15 +396,18 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/termos'
     | '/$city/$service'
+    | '/_authenticated/app'
     | '/blog/$slug'
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
     | '/api/public/lead-webhook'
+    | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ServiceRoute: typeof ServiceRoute
   AuthRoute: typeof AuthRoute
   CidadesRoute: typeof CidadesRoute
@@ -563,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -598,12 +635,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/$city/$service': {
       id: '/$city/$service'
       path: '/$city/$service'
       fullPath: '/$city/$service'
       preLoaderRoute: typeof CityServiceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
     '/api/public/lead-webhook': {
       id: '/api/public/lead-webhook'
@@ -614,6 +665,28 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface EstadosRouteChildren {
   EstadosStateRoute: typeof EstadosStateRoute
@@ -628,6 +701,7 @@ const EstadosRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ServiceRoute: ServiceRoute,
   AuthRoute: AuthRoute,
   CidadesRoute: CidadesRoute,
@@ -659,3 +733,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
