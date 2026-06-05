@@ -4,6 +4,9 @@ export type LeadSource =
   | "trafego_pago_local_form"
   | string;
 
+export type Testimonial = { name: string; role: string; text: string };
+export type Stat = { n: string; l: string };
+
 export type ThankYouContent = {
   title: string;
   subtitle: string;
@@ -12,7 +15,22 @@ export type ThankYouContent = {
   finalCtaTo: "/solicitar-orcamento" | "/trafego-pago-local" | "/planos";
   finalCtaLabel: string;
   channel: "contato" | "servicos" | "trafego_pago_local" | "outro";
+  stats: Stat[];
+  testimonials: Testimonial[];
+  socialProofHeadline: string;
 };
+
+const DEFAULT_STATS: Stat[] = [
+  { n: "+200", l: "clientes ativos" },
+  { n: "R$ 28M+", l: "em vendas geradas" },
+  { n: "98%", l: "de satisfação" },
+];
+
+const DEFAULT_TESTIMONIALS: Testimonial[] = [
+  { name: "Carla M.", role: "Clínica de Estética · SP", text: "Em 45 dias dobramos os agendamentos com tráfego pago e site novo." },
+  { name: "Rafael T.", role: "Escritório de Advocacia · RJ", text: "A 0WEB nos colocou no topo do Google em buscas locais. Recomendo!" },
+  { name: "Juliana P.", role: "Loja de Móveis · MG", text: "Atendimento humano, relatórios claros e vendas reais todo mês." },
+];
 
 const DEFAULT: ThankYouContent = {
   title: "Recebemos seu contato!",
@@ -22,6 +40,9 @@ const DEFAULT: ThankYouContent = {
   finalCtaTo: "/solicitar-orcamento",
   finalCtaLabel: "Solicitar diagnóstico",
   channel: "outro",
+  stats: DEFAULT_STATS,
+  testimonials: DEFAULT_TESTIMONIALS,
+  socialProofHeadline: "Quem confia na 0WEB cresce todo mês",
 };
 
 const MAP: Record<string, ThankYouContent> = {
@@ -33,6 +54,12 @@ const MAP: Record<string, ThankYouContent> = {
     whatsappMessage: "Olá! Enviei um formulário no site e quero falar com um especialista da 0WEB.",
     finalCtaTo: "/solicitar-orcamento",
     finalCtaLabel: "Solicitar diagnóstico",
+    socialProofHeadline: "Empresas que escolheram a 0WEB como parceira",
+    stats: [
+      { n: "+200", l: "empresas atendidas" },
+      { n: "< 1h", l: "tempo médio de resposta" },
+      { n: "98%", l: "de satisfação" },
+    ],
   },
   servicos_form_whatsapp: {
     ...DEFAULT,
@@ -43,6 +70,17 @@ const MAP: Record<string, ThankYouContent> = {
     planosLabel: "Compare planos e pacotes",
     finalCtaTo: "/planos",
     finalCtaLabel: "Ver planos completos",
+    socialProofHeadline: "Pacotes completos que entregam resultado",
+    stats: [
+      { n: "+300", l: "sites entregues" },
+      { n: "+5x", l: "ROI médio em 6 meses" },
+      { n: "4.9/5", l: "nota dos clientes" },
+    ],
+    testimonials: [
+      { name: "Marcos R.", role: "Restaurante · Curitiba", text: "Novo site + SEO triplicou as reservas em 3 meses." },
+      { name: "Patrícia L.", role: "Estúdio de Pilates · BH", text: "Pacote completo, equipe presente. Vale cada centavo." },
+      { name: "Eduardo S.", role: "Clínica Odontológica · POA", text: "Em 90 dias, 70% dos novos pacientes vieram do Google." },
+    ],
   },
   trafego_pago_local_form: {
     ...DEFAULT,
@@ -53,6 +91,17 @@ const MAP: Record<string, ThankYouContent> = {
     planosLabel: "Tráfego pago a partir de R$499/mês",
     finalCtaTo: "/trafego-pago-local",
     finalCtaLabel: "Ver detalhes do pacote",
+    socialProofHeadline: "Negócios locais vendendo mais com tráfego pago",
+    stats: [
+      { n: "R$ 0,87", l: "custo médio por lead" },
+      { n: "+7x", l: "ROAS médio" },
+      { n: "72h", l: "para receber primeiros leads" },
+    ],
+    testimonials: [
+      { name: "Anderson G.", role: "Auto Center · Campinas", text: "Saí de 5 para 40 orçamentos por semana com Google Ads." },
+      { name: "Bruna F.", role: "Salão de Beleza · BSB", text: "Cada R$ 1 investido virou R$ 9 em serviços. Surreal." },
+      { name: "Igor M.", role: "Imobiliária · Floripa", text: "Tráfego pago bem feito mudou meu funil. 3 vendas no 1º mês." },
+    ],
   },
 };
 

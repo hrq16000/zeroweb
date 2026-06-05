@@ -5,11 +5,13 @@ import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, S
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { trackConversion } from "@/lib/analytics";
+import { trackConversion, trackEvent } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
+import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
@@ -55,34 +57,40 @@ export const Route = createFileRoute("/obrigado")({
   component: ObrigadoPage,
 });
 
-const TESTIMONIALS = [
-  { name: "Carla M.", role: "Clínica de Estética · SP", text: "Em 45 dias dobramos os agendamentos com tráfego pago e site novo." },
-  { name: "Rafael T.", role: "Escritório de Advocacia · RJ", text: "A 0WEB nos colocou no topo do Google em buscas locais. Recomendo!" },
-  { name: "Juliana P.", role: "Loja de Móveis · MG", text: "Atendimento humano, relatórios claros e vendas reais todo mês." },
-];
 
 function ObrigadoPage() {
   const { source } = Route.useSearch();
   const content = getThankYouContent(source);
+  const evtAttr = useMemo(() => {
+    if (typeof window === "undefined") return { source: source || "direct", channel: content.channel };
+    return attributionToEventParams(getLeadAttribution(source || "direct"));
+  }, [source, content.channel]);
 
   useEffect(() => {
     trackConversion("obrigado_page_view", {
+      ...evtAttr,
       page: "/obrigado",
-      source: source || "direct",
-      channel: content.channel,
+      surface: "page",
       event_category: "conversion",
     });
-  }, [source, content.channel]);
+  }, [evtAttr]);
 
-  const handleCta = (ctaId: string, label: string) => {
-    trackConversion("obrigado_cta_click", {
-      source: source || "direct",
-      channel: content.channel,
+  const handleCta = (ctaId: string, label: string, position: number, target: string) => {
+    const params = {
+      ...evtAttr,
       cta_id: ctaId,
       label,
+      position,
+      target,
       surface: "page",
-    });
+      event_category: "engagement",
+    };
+    trackConversion("obrigado_cta_click", params);
+    trackEvent(`obrigado_cta_${ctaId}`, params);
   };
+
+  const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
+  const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
 
   const ctaCards = [
     {
@@ -153,7 +161,7 @@ function ObrigadoPage() {
               href={whatsappUrl(content.whatsappMessage, `obrigado_page_${content.channel}`)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleCta("whatsapp", "Falar no WhatsApp agora")}
+              onClick={waHero.onClick}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-4 shadow-glow-primary"
             >
               <MessageCircle className="w-5 h-5" />
@@ -161,7 +169,7 @@ function ObrigadoPage() {
             </a>
             <Link
               to={content.finalCtaTo}
-              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel)}
+              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel, 0, content.finalCtaTo)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-6 py-4 font-semibold hover:border-primary transition-colors"
             >
               <Sparkles className="w-4 h-4 text-primary" />
@@ -188,7 +196,7 @@ function ObrigadoPage() {
                   <Link
                     to={card.to}
                     preload="render"
-                    onClick={() => handleCta(card.id, card.label)}
+                    onClick={() => handleCta(card.id, card.label, i + 1, card.to)}
                     className="group block h-full rounded-2xl border border-border bg-card p-6 hover:border-primary transition-colors text-left"
                   >
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -206,15 +214,12 @@ function ObrigadoPage() {
           </div>
         </section>
 
-        {/* Prova social */}
+        {/* Prova social personalizada por origem */}
         <section className="mt-20">
           <div className="mx-auto max-w-6xl px-5 lg:px-8">
+            <h2 className="text-center text-2xl font-bold font-display mb-8">{content.socialProofHeadline}</h2>
             <div className="grid sm:grid-cols-3 gap-4 mb-10">
-              {[
-                { n: "+200", l: "clientes ativos" },
-                { n: "R$ 28M+", l: "em vendas geradas" },
-                { n: "98%", l: "de satisfação" },
-              ].map((s) => (
+              {content.stats.map((s) => (
                 <div key={s.l} className="text-center rounded-2xl border border-border bg-card p-6">
                   <p className="text-3xl font-bold font-display text-primary">{s.n}</p>
                   <p className="text-sm text-muted-foreground mt-1">{s.l}</p>
@@ -222,7 +227,7 @@ function ObrigadoPage() {
               ))}
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
-              {TESTIMONIALS.map((t) => (
+              {content.testimonials.map((t) => (
                 <figure key={t.name} className="rounded-2xl border border-border bg-card p-5">
                   <div className="flex gap-0.5 mb-2 text-yellow-500" aria-label="5 estrelas">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -251,7 +256,7 @@ function ObrigadoPage() {
                 href={whatsappUrl("Quero agilizar minha proposta. Pode me atender agora?", `obrigado_cta_final_${content.channel}`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => handleCta("final_whatsapp", "Quero falar agora")}
+                onClick={waFinal.onClick}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-3 shadow-glow-primary"
               >
                 <MessageCircle className="w-5 h-5" />
@@ -259,7 +264,7 @@ function ObrigadoPage() {
               </a>
               <Link
                 to="/"
-                onClick={() => handleCta("home", "Voltar para o início")}
+                onClick={() => handleCta("home", "Voltar para o início", 100, "/")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold hover:bg-muted transition-colors"
               >
                 Voltar para o início
