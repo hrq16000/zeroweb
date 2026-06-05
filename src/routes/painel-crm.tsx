@@ -118,7 +118,7 @@ function CrmPage() {
       setRows(l.rows as LeadRow[]);
       setSummary(s);
       setSettings({
-        distribution_mode: st.distribution_mode,
+        distribution_mode: (st.distribution_mode as Settings["distribution_mode"]) ?? "manual",
         assignees: st.assignees ?? [],
         fixed_assignee: st.fixed_assignee ?? null,
       });

@@ -22,6 +22,7 @@ import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
 import { Route as EstadosRouteImport } from './routes/estados'
@@ -101,6 +102,11 @@ const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   path: '/politica-privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelCrmRoute = PainelCrmRouteImport.update({
+  id: '/painel-crm',
+  path: '/painel-crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -225,6 +233,7 @@ export interface FileRoutesById {
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/painel': typeof PainelRoute
+  '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/estados'
     | '/google-meu-negocio'
     | '/painel'
+    | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
     | '/rss.xml'
@@ -336,6 +348,7 @@ export interface RootRouteChildren {
   EstadosRoute: typeof EstadosRouteWithChildren
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   PainelRoute: typeof PainelRoute
+  PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -448,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel-crm': {
+      id: '/painel-crm'
+      path: '/painel-crm'
+      fullPath: '/painel-crm'
+      preLoaderRoute: typeof PainelCrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/painel': {
       id: '/painel'
       path: '/painel'
@@ -554,6 +574,7 @@ const rootRouteChildren: RootRouteChildren = {
   EstadosRoute: EstadosRouteWithChildren,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   PainelRoute: PainelRoute,
+  PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   RssDotxmlRoute: RssDotxmlRoute,
