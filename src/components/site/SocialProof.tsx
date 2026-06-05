@@ -53,10 +53,10 @@ export function SocialProof() {
     const cycle = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setIdx((i) => (i + 1) % POOL.length);
+        setIdx(() => Math.floor(Math.random() * POOL.length));
         setVisible(true);
       }, 500);
-    }, 8000);
+    }, 6500);
     const live = setInterval(() => {
       setOnline((n) => Math.max(80, Math.min(220, n + Math.floor(Math.random() * 9) - 4)));
     }, 4000);
