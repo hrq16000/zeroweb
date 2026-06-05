@@ -158,6 +158,7 @@ function ContatoPage() {
                   "_blank",
                 );
                 setSent(true);
+                navigate({ to: "/obrigado" });
               }}
               className="rounded-2xl border border-border bg-card p-6 lg:p-8 space-y-3"
             >
