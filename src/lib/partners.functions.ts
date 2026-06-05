@@ -186,3 +186,38 @@ export const attachAttributionToLead = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// Atribuição pública (sem auth) — chamada por formulários anônimos pós-conversão
+export const attachAttributionPublic = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        partner_code: z.string().trim().min(1).max(30),
+        lead_id: z.string().uuid().optional(),
+        landing_path: z.string().max(500).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: link } = await supabaseAdmin
+      .from("partner_links")
+      .select("id, partner_id, campaign")
+      .eq("code", data.partner_code)
+      .maybeSingle();
+    if (!link) return { ok: false, reason: "code_not_found" as const };
+    const { error } = await supabaseAdmin.from("partner_attributions").insert({
+      partner_id: link.partner_id,
+      link_id: link.id,
+      lead_id: data.lead_id ?? null,
+      conversion_type: "lead",
+      value_cents: 0,
+      campaign: link.campaign,
+      landing_path: data.landing_path,
+    });
+    if (error) {
+      console.error("[attachAttributionPublic]", error.message);
+      return { ok: false, reason: "insert_failed" as const };
+    }
+    return { ok: true as const };
+  });
