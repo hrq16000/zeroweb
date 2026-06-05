@@ -47,6 +47,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
+import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 
@@ -243,6 +244,11 @@ const AuthenticatedAppDocumentsRoute =
     path: '/documents',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppAdminRoute = AuthenticatedAppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppSupportIdRoute =
   AuthenticatedAppSupportIdRouteImport.update({
     id: '/$id',
@@ -286,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
@@ -326,6 +333,7 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
@@ -369,6 +377,7 @@ export interface FileRoutesById {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
@@ -412,6 +421,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/app/admin'
     | '/app/documents'
     | '/app/notifications'
     | '/app/profile'
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/app/admin'
     | '/app/documents'
     | '/app/notifications'
     | '/app/profile'
@@ -494,6 +505,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/_authenticated/app/admin'
     | '/_authenticated/app/documents'
     | '/_authenticated/app/notifications'
     | '/_authenticated/app/profile'
@@ -806,6 +818,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDocumentsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/admin': {
+      id: '/_authenticated/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AuthenticatedAppAdminRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/support/$id': {
       id: '/_authenticated/app/support/$id'
       path: '/$id'
@@ -852,6 +871,7 @@ const AuthenticatedAppSupportRouteWithChildren =
   )
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
@@ -862,6 +882,7 @@ interface AuthenticatedAppRouteChildren {
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
