@@ -161,11 +161,16 @@ function ContatoPage() {
               className="rounded-2xl border border-border bg-card p-6 lg:p-8 space-y-3"
             >
               <h2 className="text-xl font-bold font-display">Envie sua mensagem</h2>
-              <input name="name" required placeholder="Seu nome" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
-              <input name="company" placeholder="Empresa (opcional)" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
-              <input name="email" type="email" required placeholder="E-mail" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
-              <input name="phone" placeholder="WhatsApp" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
-              <textarea name="message" required rows={4} placeholder="Conte rapidamente seu projeto" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
+              <label htmlFor="contato-name" className="sr-only">Seu nome</label>
+              <input id="contato-name" name="name" required placeholder="Seu nome" aria-label="Seu nome" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
+              <label htmlFor="contato-company" className="sr-only">Empresa (opcional)</label>
+              <input id="contato-company" name="company" placeholder="Empresa (opcional)" aria-label="Empresa" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
+              <label htmlFor="contato-email" className="sr-only">E-mail</label>
+              <input id="contato-email" name="email" type="email" required placeholder="E-mail" aria-label="E-mail" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
+              <label htmlFor="contato-phone" className="sr-only">WhatsApp</label>
+              <input id="contato-phone" name="phone" placeholder="WhatsApp" aria-label="WhatsApp" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
+              <label htmlFor="contato-message" className="sr-only">Mensagem</label>
+              <textarea id="contato-message" name="message" required rows={4} placeholder="Conte rapidamente seu projeto" aria-label="Mensagem" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary" />
               <button type="submit" className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary">
                 Enviar mensagem <ArrowRight className="w-4 h-4" />
               </button>

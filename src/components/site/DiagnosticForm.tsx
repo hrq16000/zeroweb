@@ -69,12 +69,15 @@ export function DiagnosticForm() {
                   { name: "site", label: "Site atual (opcional)", req: false, full: true },
                 ].map((f) => (
                   <div key={f.name} className={f.full ? "sm:col-span-2" : ""}>
-                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <label htmlFor={`diag-${f.name}`} className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {f.label}
                     </label>
                     <input
+                      id={`diag-${f.name}`}
+                      name={f.name}
                       type={f.type || "text"}
                       required={f.req}
+                      aria-label={f.label}
                       value={(form as Record<string, string>)[f.name]}
                       onChange={(e) => setForm({ ...form, [f.name]: e.target.value })}
                       className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:border-primary"
