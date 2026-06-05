@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, MessageCircle } from "lucide-react";
+import { Menu, X, MessageCircle, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
@@ -77,6 +77,12 @@ export function Header() {
             <MessageCircle className="w-4 h-4 text-accent" />
             WhatsApp
           </button>
+          <Link
+            to="/auth"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground border border-border rounded-full px-4 py-2"
+          >
+            <LogIn className="w-4 h-4" /> Conectar
+          </Link>
           <a
             href="/#contato"
             onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
@@ -114,13 +120,20 @@ export function Header() {
                   {n.label}
                 </a>
               ))}
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="mt-2 text-center rounded-full border border-border font-medium px-5 py-2.5 inline-flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-4 h-4" /> Conectar
+              </Link>
               <a
                 href="/#contato"
                 onClick={() => {
                   trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
                   setOpen(false);
                 }}
-                className="mt-2 text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
+                className="text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
               >
                 Solicitar Diagnóstico
               </a>
