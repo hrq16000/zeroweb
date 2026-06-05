@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
@@ -19,8 +20,15 @@ import { ConsentBanner } from "@/components/site/ConsentBanner";
 import { SocialProof, TrustBar } from "@/components/site/SocialProof";
 import { ExitIntent } from "@/components/site/ExitIntent";
 import { DiagnosticForm } from "@/components/site/DiagnosticForm";
-// import { LossCalculator } from "@/components/site/LossCalculator"; // desabilitada
+import { LossCalculator } from "@/components/site/LossCalculator";
 import { SocialProofSection } from "@/components/site/SocialProofSection";
+import { getPageSections } from "@/lib/site-sections.functions";
+
+const homeSectionsQuery = queryOptions({
+  queryKey: ["site-sections", "home"],
+  queryFn: () => getPageSections({ data: { page: "home" } }),
+  staleTime: 60_000,
+});
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
 const DESC =
@@ -126,30 +134,32 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: Index,
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeSectionsQuery),
 });
 
 function Index() {
+  const { data } = useSuspenseQuery(homeSectionsQuery);
+  const on = (k: string) => data.map[k] !== false; // default ON if missing
   return (
     <div className="min-h-screen bg-background text-foreground">
       <ScrollTracker />
       <Header />
       <main>
-        <Hero />
-        <TrustBar />
-        <Problems />
-        {/* <LossCalculator /> — desabilitada via solicitação do admin (Sprint 18 fará toggle dinâmico) */}
-        <Solutions />
-        <AISection />
-        <DiagnosticForm />
-        <Differentials />
-        {/* Portfolio fake removido — substituído pela seção Cases (reais) */}
-        <Cases />
-        <Plans />
-        <Process />
-        <FAQ />
-        <Blog />
-        <SocialProofSection />
-        <CTA />
+        {on("hero") && <Hero />}
+        {on("trustbar") && <TrustBar />}
+        {on("problems") && <Problems />}
+        {on("loss_calculator") && <LossCalculator />}
+        {on("solutions") && <Solutions />}
+        {on("ai_section") && <AISection />}
+        {on("diagnostic_form") && <DiagnosticForm />}
+        {on("differentials") && <Differentials />}
+        {on("cases") && <Cases />}
+        {on("plans") && <Plans />}
+        {on("process") && <Process />}
+        {on("faq") && <FAQ />}
+        {on("blog") && <Blog />}
+        {on("social_proof") && <SocialProofSection />}
+        {on("cta") && <CTA />}
       </main>
       <Footer />
       <WhatsAppFloat />
