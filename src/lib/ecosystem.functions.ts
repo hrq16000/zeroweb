@@ -253,7 +253,7 @@ export const detectCrossSell = createServerFn({ method: "POST" })
         .from("customer_identity_links")
         .select("portal_id, entity_type")
         .eq("identity_id", idn.id);
-      const portals = new Set((links ?? []).map((l: { portal_id: string }) => l.portal_id).filter(Boolean));
+      const portals = new Set((links ?? []).map((l: { portal_id: string | null }) => l.portal_id).filter((p): p is string => !!p));
       if (portals.size === 0) continue;
 
       // simple heuristic: any identity present in <2 portals gets opp for the others
