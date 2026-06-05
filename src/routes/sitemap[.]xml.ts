@@ -31,7 +31,8 @@ interface SitemapEntry {
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
+        const BASE_URL = resolveBaseUrl(request);
         const today = new Date().toISOString().slice(0, 10);
         const serviceSlugs = Object.keys(SERVICES_DICT);
         const citySlugs = Object.keys(CITIES_DICT);
