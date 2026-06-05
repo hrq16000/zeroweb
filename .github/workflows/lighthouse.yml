@@ -1,0 +1,33 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "URL alvo (default: produção)"
+        required: false
+        default: "https://grow-evolution-engine.lovable.app"
+
+jobs:
+  lighthouse:
+    name: Performance + SEO Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Run Lighthouse CI
+        env:
+          LHCI_TARGET_URL: ${{ github.event.inputs.target_url || 'https://grow-evolution-engine.lovable.app' }}
+        run: bunx lhci autorun --config=.lighthouserc.cjs
