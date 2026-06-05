@@ -11,6 +11,7 @@ declare global {
 /** Client-only injector that loads GA4 + GTM scripts based on IDs in localStorage. */
 export function AnalyticsBootstrap() {
   useEffect(() => {
+    try { captureAttribution(); } catch { /* noop */ }
     const load = () => {
       const ga4 = getGa4Id();
       const gtm = getGtmId();
