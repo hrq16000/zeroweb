@@ -26,6 +26,7 @@ export type Database = {
           metadata_json: Json | null
           page: string | null
           path: string | null
+          portal_id: string | null
           referrer: string | null
           session_id: string | null
           utm_campaign: string | null
@@ -46,6 +47,7 @@ export type Database = {
           metadata_json?: Json | null
           page?: string | null
           path?: string | null
+          portal_id?: string | null
           referrer?: string | null
           session_id?: string | null
           utm_campaign?: string | null
@@ -66,6 +68,7 @@ export type Database = {
           metadata_json?: Json | null
           page?: string | null
           path?: string | null
+          portal_id?: string | null
           referrer?: string | null
           session_id?: string | null
           utm_campaign?: string | null
@@ -75,7 +78,15 @@ export type Database = {
           utm_term?: string | null
           visitor_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       companies: {
         Row: {
@@ -228,6 +239,7 @@ export type Database = {
           experiment_name: string
           id: string
           impressions: number
+          portal_id: string | null
           updated_at: string
           variant: string
         }
@@ -237,6 +249,7 @@ export type Database = {
           experiment_name: string
           id?: string
           impressions?: number
+          portal_id?: string | null
           updated_at?: string
           variant: string
         }
@@ -246,10 +259,19 @@ export type Database = {
           experiment_name?: string
           id?: string
           impressions?: number
+          portal_id?: string | null
           updated_at?: string
           variant?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "experiments_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lead_history: {
         Row: {
@@ -307,6 +329,7 @@ export type Database = {
           notes: string | null
           payload_json: Json | null
           phone: string | null
+          portal_id: string | null
           score: number
           score_label: string
           source: string | null
@@ -330,6 +353,7 @@ export type Database = {
           notes?: string | null
           payload_json?: Json | null
           phone?: string | null
+          portal_id?: string | null
           score?: number
           score_label?: string
           source?: string | null
@@ -353,6 +377,7 @@ export type Database = {
           notes?: string | null
           payload_json?: Json | null
           phone?: string | null
+          portal_id?: string | null
           score?: number
           score_label?: string
           source?: string | null
@@ -362,7 +387,15 @@ export type Database = {
           utm_medium?: string | null
           utm_source?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lead_submissions_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       marketplace_settings: {
         Row: {
@@ -491,6 +524,176 @@ export type Database = {
           reason?: string | null
           target_id?: string
           target_type?: string
+        }
+        Relationships: []
+      }
+      portal_companies: {
+        Row: {
+          company_id: string
+          created_at: string
+          featured: boolean
+          portal_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          featured?: boolean
+          portal_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          featured?: boolean
+          portal_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_companies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_companies_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_members: {
+        Row: {
+          created_at: string
+          id: string
+          permissions: Json
+          portal_id: string
+          role: Database["public"]["Enums"]["portal_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permissions?: Json
+          portal_id: string
+          role?: Database["public"]["Enums"]["portal_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permissions?: Json
+          portal_id?: string
+          role?: Database["public"]["Enums"]["portal_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_members_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_providers: {
+        Row: {
+          created_at: string
+          featured: boolean
+          portal_id: string
+          provider_id: string
+        }
+        Insert: {
+          created_at?: string
+          featured?: boolean
+          portal_id: string
+          provider_id: string
+        }
+        Update: {
+          created_at?: string
+          featured?: boolean
+          portal_id?: string
+          provider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_providers_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_providers_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portals: {
+        Row: {
+          accent_color: string | null
+          aliases: string[]
+          brand: Json
+          contact: Json
+          created_at: string
+          domain: string | null
+          id: string
+          is_default: boolean
+          logo_url: string | null
+          name: string
+          primary_color: string | null
+          seo: Json
+          settings: Json
+          slug: string
+          social: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          aliases?: string[]
+          brand?: Json
+          contact?: Json
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_default?: boolean
+          logo_url?: string | null
+          name: string
+          primary_color?: string | null
+          seo?: Json
+          settings?: Json
+          slug: string
+          social?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          aliases?: string[]
+          brand?: Json
+          contact?: Json
+          created_at?: string
+          domain?: string | null
+          id?: string
+          is_default?: boolean
+          logo_url?: string | null
+          name?: string
+          primary_color?: string | null
+          seo?: Json
+          settings?: Json
+          slug?: string
+          social?: Json
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -765,6 +968,7 @@ export type Database = {
           description: string | null
           id: string
           metadata: Json
+          portal_id: string | null
           requester_email: string | null
           requester_name: string
           requester_phone: string | null
@@ -782,6 +986,7 @@ export type Database = {
           description?: string | null
           id?: string
           metadata?: Json
+          portal_id?: string | null
           requester_email?: string | null
           requester_name: string
           requester_phone?: string | null
@@ -799,6 +1004,7 @@ export type Database = {
           description?: string | null
           id?: string
           metadata?: Json
+          portal_id?: string | null
           requester_email?: string | null
           requester_name?: string
           requester_phone?: string | null
@@ -808,7 +1014,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -842,6 +1056,7 @@ export type Database = {
           hero_variant: string | null
           id: string
           landing_page: string | null
+          portal_id: string | null
           session_id: string | null
           started_at: string | null
           total_steps: number
@@ -859,6 +1074,7 @@ export type Database = {
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
+          portal_id?: string | null
           session_id?: string | null
           started_at?: string | null
           total_steps?: number
@@ -876,6 +1092,7 @@ export type Database = {
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
+          portal_id?: string | null
           session_id?: string | null
           started_at?: string | null
           total_steps?: number
@@ -883,7 +1100,15 @@ export type Database = {
           utm_medium?: string | null
           utm_source?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "wa_funnel_sessions_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -907,6 +1132,15 @@ export type Database = {
           score: number
         }[]
       }
+      default_portal_id: { Args: never; Returns: string }
+      has_portal_role: {
+        Args: {
+          _portal: string
+          _role: Database["public"]["Enums"]["portal_role"]
+          _uid: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -914,9 +1148,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_super_admin: { Args: { _uid: string }; Returns: boolean }
+      user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "cliente" | "prestador" | "empresa" | "parceiro"
+      portal_role:
+        | "super_admin"
+        | "portal_admin"
+        | "operator"
+        | "commercial"
+        | "client"
+        | "provider"
+        | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1045,6 +1289,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "cliente", "prestador", "empresa", "parceiro"],
+      portal_role: [
+        "super_admin",
+        "portal_admin",
+        "operator",
+        "commercial",
+        "client",
+        "provider",
+        "partner",
+      ],
     },
   },
 } as const
