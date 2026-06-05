@@ -1,7 +1,14 @@
 // Sprint 13 — Server functions para rede de parceiros
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestIP, getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+async function hashIp(ip: string): Promise<string> {
+  const data = new TextEncoder().encode(ip);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const KINDS = ["afiliado", "representante", "parceiro_comercial", "agencia", "franqueado"] as const;
 const STATUSES = ["pendente", "aprovado", "suspenso", "bloqueado"] as const;
@@ -11,34 +18,66 @@ export const applyAsPartner = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z
       .object({
-        name: z.string().trim().min(2).max(120),
+        name: z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}\s.'-]+$/u, "Nome inválido"),
         company: z.string().trim().max(160).optional(),
         email: z.string().trim().email().max(160),
-        phone: z.string().trim().max(40).optional(),
+        phone: z.string().trim().max(40).regex(/^[\d\s+()-]*$/, "Telefone inválido").optional(),
         city: z.string().trim().max(120).optional(),
         state: z.string().trim().max(40).optional(),
         kind: z.enum(KINDS).default("afiliado"),
         areas: z.array(z.string().min(1).max(60)).max(20).default([]),
         specialties: z.array(z.string().min(1).max(60)).max(20).default([]),
         bio: z.string().max(800).optional(),
+        // Honeypot — bots tendem a preencher campos ocultos
+        website_url: z.string().max(200).optional(),
       })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    // Honeypot: silenciosamente retorna ok (não dá feedback ao bot)
+    if (data.website_url && data.website_url.trim().length > 0) {
+      console.warn("[applyAsPartner] honeypot tripped");
+      return { ok: true as const, id: "honeypot", duplicated: false };
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Rate-limit: 10 tentativas / 1h por IP
+    try {
+      const ip =
+        getRequestIP({ xForwardedFor: true }) ||
+        getRequestHeader("cf-connecting-ip") ||
+        getRequestHeader("x-real-ip") ||
+        "unknown";
+      const ipHash = await hashIp(ip);
+      const { data: allowed } = await supabaseAdmin.rpc("check_and_record_rate_limit", {
+        p_scope: "partner_signup",
+        p_ip_hash: ipHash,
+        p_window_seconds: 3600,
+        p_max_hits: 10,
+      });
+      if (allowed === false) {
+        throw new Error("Muitas tentativas. Tente novamente em 1 hora.");
+      }
+    } catch (e) {
+      if (e instanceof Error && e.message.startsWith("Muitas tentativas")) throw e;
+      console.error("[applyAsPartner] rate-limit check failed:", e);
+    }
+
+    const { website_url: _hp, ...payload } = data;
     const { data: existing } = await supabaseAdmin
       .from("partners")
       .select("id")
-      .ilike("email", data.email)
+      .ilike("email", payload.email)
       .maybeSingle();
-    if (existing) return { ok: true, id: existing.id, duplicated: true };
+    if (existing) return { ok: true as const, id: existing.id, duplicated: true };
     const { data: row, error } = await supabaseAdmin
       .from("partners")
-      .insert({ ...data, status: "pendente" })
+      .insert({ ...payload, status: "pendente" })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
-    return { ok: true, id: row.id, duplicated: false };
+    return { ok: true as const, id: row.id, duplicated: false };
   });
 
 // Painel do parceiro (self)
@@ -185,4 +224,245 @@ export const attachAttributionToLead = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+// Atribuição pública (sem auth) — chamada por formulários anônimos pós-conversão
+export const attachAttributionPublic = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        partner_code: z.string().trim().min(1).max(30),
+        lead_id: z.string().uuid().optional(),
+        landing_path: z.string().max(500).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: link } = await supabaseAdmin
+      .from("partner_links")
+      .select("id, partner_id, campaign")
+      .eq("code", data.partner_code)
+      .maybeSingle();
+    if (!link) return { ok: false, reason: "code_not_found" as const };
+    const { error } = await supabaseAdmin.from("partner_attributions").insert({
+      partner_id: link.partner_id,
+      link_id: link.id,
+      lead_id: data.lead_id ?? null,
+      conversion_type: "lead",
+      value_cents: 0,
+      campaign: link.campaign,
+      landing_path: data.landing_path,
+    });
+    if (error) {
+      console.error("[attachAttributionPublic]", error.message);
+      return { ok: false, reason: "insert_failed" as const };
+    }
+    return { ok: true as const };
+  });
+
+// computeCommission — aplica regras ativas a uma atribuição e registra partner_commissions
+export const computeCommission = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        attribution_id: z.string().uuid(),
+        base_amount_cents: z.number().int().min(0).max(1_000_000_000).optional(),
+        period: z.string().max(20).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Apenas administradores podem calcular comissões");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: attr, error: attrErr } = await supabaseAdmin
+      .from("partner_attributions")
+      .select("id, partner_id, value_cents, conversion_type")
+      .eq("id", data.attribution_id)
+      .maybeSingle();
+    if (attrErr || !attr) throw new Error("Atribuição não encontrada");
+
+    const { data: partner } = await supabaseAdmin
+      .from("partners")
+      .select("id, kind")
+      .eq("id", attr.partner_id)
+      .maybeSingle();
+    if (!partner) throw new Error("Parceiro não encontrado");
+
+    const { data: rules } = await supabaseAdmin
+      .from("commission_rules")
+      .select("*")
+      .eq("active", true)
+      .or(`partner_id.eq.${partner.id},partner_id.is.null`);
+
+    const candidate =
+      rules?.find((r) => r.partner_id === partner.id) ||
+      rules?.find((r) => r.kind_target === partner.kind) ||
+      rules?.find((r) => r.partner_id === null && r.kind_target === null);
+
+    if (!candidate) throw new Error("Nenhuma regra de comissão aplicável");
+
+    const base = data.base_amount_cents ?? attr.value_cents ?? 0;
+    let commission = 0;
+    switch (candidate.type) {
+      case "fixo":
+      case "recorrente":
+      case "vitalicio":
+      case "por_produto":
+      case "por_categoria":
+        commission = Math.round(Number(candidate.value) * 100);
+        break;
+      case "percentual":
+        commission = Math.round((base * Number(candidate.value)) / 100);
+        break;
+      default:
+        commission = 0;
+    }
+
+    const period = data.period ?? new Date().toISOString().slice(0, 7);
+
+    const { data: row, error } = await supabaseAdmin
+      .from("partner_commissions")
+      .upsert(
+        {
+          partner_id: partner.id,
+          attribution_id: attr.id,
+          rule_id: candidate.id,
+          base_amount_cents: base,
+          commission_amount_cents: commission,
+          commission_type: candidate.type,
+          period,
+          status: "pending",
+        },
+        { onConflict: "attribution_id" },
+      )
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return { ok: true, commission: row };
+  });
+
+// Computa em lote: todas atribuições "sale" sem commission ainda
+export const computePendingCommissions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!isAdmin) throw new Error("Apenas administradores");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pendingAttrs } = await supabaseAdmin
+      .from("partner_attributions")
+      .select("id")
+      .eq("conversion_type", "sale")
+      .gt("value_cents", 0)
+      .limit(500);
+
+    const ids = (pendingAttrs ?? []).map((a) => a.id);
+    if (!ids.length) return { processed: 0, errors: 0 };
+
+    const { data: existing } = await supabaseAdmin
+      .from("partner_commissions")
+      .select("attribution_id")
+      .in("attribution_id", ids);
+    const done = new Set((existing ?? []).map((e) => e.attribution_id));
+
+    let processed = 0;
+    let errors = 0;
+    for (const id of ids) {
+      if (done.has(id)) continue;
+      try {
+        await computeCommission({ data: { attribution_id: id } });
+        processed++;
+      } catch {
+        errors++;
+      }
+    }
+    return { processed, errors };
+  });
+
+// Sugere representante ativo com base em partner_territories (cidade > estado > nacional)
+// e registra atribuição de origem 'territory' se solicitado.
+export const suggestPartnerForLead = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        lead_id: z.string().uuid().optional(),
+        city: z.string().trim().max(120).optional(),
+        state: z.string().trim().max(40).optional(),
+        register_attribution: z.boolean().default(false),
+        kinds: z.array(z.enum(KINDS)).default(["representante", "franqueado"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!data.city && !data.state) {
+      return { suggested: null, candidates: [] as Array<{ partner_id: string; scope: string }> };
+    }
+
+    // Buscar territórios candidatos (city > state > nacional)
+    const orConditions: string[] = [];
+    if (data.city) orConditions.push(`and(scope.eq.cidade,value.ilike.${data.city})`);
+    if (data.state) orConditions.push(`and(scope.eq.estado,value.ilike.${data.state})`);
+    orConditions.push(`scope.eq.nacional`);
+
+    const { data: territories } = await supabaseAdmin
+      .from("partner_territories")
+      .select("partner_id, scope, value, exclusivity")
+      .or(orConditions.join(","));
+
+    if (!territories?.length) {
+      return { suggested: null, candidates: [] };
+    }
+
+    // Filtrar parceiros aprovados e tipo desejado
+    const partnerIds = Array.from(new Set(territories.map((t) => t.partner_id)));
+    const { data: partners } = await supabaseAdmin
+      .from("partners")
+      .select("id, name, kind, status, user_id")
+      .in("id", partnerIds)
+      .eq("status", "aprovado")
+      .in("kind", data.kinds);
+
+    const partnerSet = new Set((partners ?? []).map((p) => p.id));
+    const ranked = territories
+      .filter((t) => partnerSet.has(t.partner_id))
+      .sort((a, b) => {
+        const score = (s: string) => (s === "cidade" ? 3 : s === "estado" ? 2 : s === "regiao" ? 1 : 0);
+        return score(b.scope) - score(a.scope);
+      });
+
+    const best = ranked[0];
+    if (!best) return { suggested: null, candidates: [] };
+
+    const suggested = (partners ?? []).find((p) => p.id === best.partner_id) ?? null;
+
+    if (data.register_attribution && data.lead_id && suggested) {
+      const { error } = await supabaseAdmin.from("partner_attributions").insert({
+        partner_id: suggested.id,
+        lead_id: data.lead_id,
+        conversion_type: "lead",
+        value_cents: 0,
+        notes: `territory:${best.scope}:${best.value}`,
+      });
+      if (error) console.error("[suggestPartnerForLead] insert", error.message);
+    }
+
+    return {
+      suggested: suggested ? { id: suggested.id, name: suggested.name, kind: suggested.kind, matched_scope: best.scope, matched_value: best.value } : null,
+      candidates: ranked.slice(0, 5).map((t) => ({ partner_id: t.partner_id, scope: t.scope, value: t.value })),
+    };
   });

@@ -62,6 +62,7 @@ function ParceirosPage() {
         areas: String(fd.get("areas") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
         specialties: String(fd.get("specialties") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
         bio: String(fd.get("bio") ?? ""),
+        website_url: String(fd.get("website_url") ?? ""), // honeypot
       };
       await apply({ data: payload });
       setSent(true);
@@ -120,6 +121,15 @@ function ParceirosPage() {
 
           <form onSubmit={onSubmit} className="mt-16 grid sm:grid-cols-2 gap-4 max-w-3xl">
             <h2 className="sm:col-span-2 text-2xl font-bold">Quero ser parceiro</h2>
+            {/* Honeypot — invisível para usuários, capturado por bots */}
+            <input
+              type="text"
+              name="website_url"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+            />
             <Input name="name" label="Nome completo *" required />
             <Input name="email" label="E-mail *" type="email" required />
             <Input name="phone" label="Telefone / WhatsApp" />

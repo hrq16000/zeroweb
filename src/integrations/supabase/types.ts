@@ -2206,6 +2206,80 @@ export type Database = {
           },
         ]
       }
+      partner_commissions: {
+        Row: {
+          attribution_id: string | null
+          base_amount_cents: number
+          commission_amount_cents: number
+          commission_type: string
+          created_at: string
+          id: string
+          notes: string | null
+          partner_id: string
+          period: string | null
+          rule_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attribution_id?: string | null
+          base_amount_cents?: number
+          commission_amount_cents?: number
+          commission_type: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id: string
+          period?: string | null
+          rule_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attribution_id?: string | null
+          base_amount_cents?: number
+          commission_amount_cents?: number
+          commission_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          period?: string | null
+          rule_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_commissions_attribution_id_fkey"
+            columns: ["attribution_id"]
+            isOneToOne: true
+            referencedRelation: "partner_attributions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "commission_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_links: {
         Row: {
           active: boolean
@@ -2829,6 +2903,27 @@ export type Database = {
           verified?: boolean
           views_count?: number
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      rate_limit_buckets: {
+        Row: {
+          created_at: string
+          id: number
+          ip_hash: string
+          scope: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          ip_hash: string
+          scope: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          ip_hash?: string
+          scope?: string
         }
         Relationships: []
       }
@@ -3632,6 +3727,15 @@ export type Database = {
         Returns: undefined
       }
       can_manage_settings: { Args: { _uid: string }; Returns: boolean }
+      check_and_record_rate_limit: {
+        Args: {
+          p_ip_hash: string
+          p_max_hits: number
+          p_scope: string
+          p_window_seconds: number
+        }
+        Returns: boolean
+      }
       compute_lead_score: {
         Args: { p_row: Database["public"]["Tables"]["lead_submissions"]["Row"] }
         Returns: {
@@ -3662,6 +3766,7 @@ export type Database = {
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
       purge_ip_blocklist: { Args: never; Returns: number }
+      purge_rate_limit_buckets: { Args: never; Returns: number }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
       refresh_visitor_mvs: { Args: never; Returns: undefined }
