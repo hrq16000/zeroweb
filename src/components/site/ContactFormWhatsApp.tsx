@@ -84,7 +84,7 @@ export function ContactFormWhatsApp({
             },
           });
           // WhatsApp message includes a confirmation CTA matching the thank-you content.
-          const ctaUrl = `${SITE_URL}${content.finalCtaTo}`;
+          const ctaUrl = `${ORIGIN}${content.finalCtaTo}`;
           const msg = [
             defaultMessage,
             "",
