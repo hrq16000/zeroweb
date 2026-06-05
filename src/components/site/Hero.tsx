@@ -3,7 +3,7 @@ import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { useExperiment } from "@/lib/ab-testing";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
-import heroDashboard from "@/assets/hero-dashboard.jpg";
+import heroDashboard from "@/assets/hero-dashboard.webp";
 
 const stats = [
   { label: "Projetos", value: "+500" },

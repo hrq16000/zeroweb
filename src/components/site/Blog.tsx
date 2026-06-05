@@ -1,10 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { posts } from "@/lib/blog-data";
-import blogSeo from "@/assets/blog-seo.jpg";
-import blogIa from "@/assets/blog-ia.jpg";
-import blogMarketing from "@/assets/blog-marketing.jpg";
-import blogSites from "@/assets/blog-sites.jpg";
+import blogSeo from "@/assets/blog-seo.webp";
+import blogIa from "@/assets/blog-ia.webp";
+import blogMarketing from "@/assets/blog-marketing.webp";
+import blogSites from "@/assets/blog-sites.webp";
 
 export function coverForCategory(cat: string): string {
   const c = cat.toLowerCase();

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import heroDashboard from "@/assets/hero-dashboard.jpg";
+import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { Problems } from "@/components/site/Problems";

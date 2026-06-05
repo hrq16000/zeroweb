@@ -1,9 +1,9 @@
-import caseProfissional from "@/assets/case-precisodeumprofissional.jpg";
-import caseTecnico from "@/assets/case-precisodeumtecnico.jpg";
-import caseEmporio from "@/assets/case-emporio.jpg";
-import caseAutoescola from "@/assets/case-autoescola.jpg";
-import caseTecnicoCwb from "@/assets/case-tecnicocuritiba.jpg";
-import caseMestre from "@/assets/case-mestredosservicos.jpg";
+import caseProfissional from "@/assets/case-precisodeumprofissional.webp";
+import caseTecnico from "@/assets/case-precisodeumtecnico.webp";
+import caseEmporio from "@/assets/case-emporio.webp";
+import caseAutoescola from "@/assets/case-autoescola.webp";
+import caseTecnicoCwb from "@/assets/case-tecnicocuritiba.webp";
+import caseMestre from "@/assets/case-mestredosservicos.webp";
 
 export type CaseStudy = {
   slug: string;
