@@ -1431,6 +1431,114 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_events: {
+        Row: {
+          asn: string | null
+          block_reason: string | null
+          blocked: boolean
+          city: string | null
+          country: string | null
+          created_at: string
+          day: string
+          fbclid: string | null
+          gclid: string | null
+          id: number
+          ip_address: string | null
+          ip_hash: string | null
+          is_bot: boolean
+          landing_page: string | null
+          method: string | null
+          path: string | null
+          portal_id: string | null
+          query: string | null
+          referer: string | null
+          risk_score: number
+          session_id: string | null
+          status_code: number | null
+          tenant_slug: string | null
+          ua_browser: string | null
+          ua_device: string | null
+          ua_os: string | null
+          user_agent: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          asn?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          day?: string
+          fbclid?: string | null
+          gclid?: string | null
+          id?: number
+          ip_address?: string | null
+          ip_hash?: string | null
+          is_bot?: boolean
+          landing_page?: string | null
+          method?: string | null
+          path?: string | null
+          portal_id?: string | null
+          query?: string | null
+          referer?: string | null
+          risk_score?: number
+          session_id?: string | null
+          status_code?: number | null
+          tenant_slug?: string | null
+          ua_browser?: string | null
+          ua_device?: string | null
+          ua_os?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          asn?: string | null
+          block_reason?: string | null
+          blocked?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          day?: string
+          fbclid?: string | null
+          gclid?: string | null
+          id?: number
+          ip_address?: string | null
+          ip_hash?: string | null
+          is_bot?: boolean
+          landing_page?: string | null
+          method?: string | null
+          path?: string | null
+          portal_id?: string | null
+          query?: string | null
+          referer?: string | null
+          risk_score?: number
+          session_id?: string | null
+          status_code?: number | null
+          tenant_slug?: string | null
+          ua_browser?: string | null
+          ua_device?: string | null
+          ua_os?: string | null
+          user_agent?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       wa_funnel_sessions: {
         Row: {
           answers_json: Json | null
@@ -1540,6 +1648,7 @@ export type Database = {
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
+      purge_visitor_events_old: { Args: never; Returns: number }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
