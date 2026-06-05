@@ -52,15 +52,72 @@ export const DEFAULT_UTM = {
   utm_campaign: "diagnostico",
 };
 
+const ATTR_STORAGE = "0web_attr_v1";
+
+type StoredAttribution = Record<string, string>;
+
+function readStoredAttribution(): StoredAttribution {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(ATTR_STORAGE) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeStoredAttribution(attr: StoredAttribution) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(ATTR_STORAGE, JSON.stringify(attr));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Captures + persists 1st-touch attribution (utms + gclid/fbclid + referrer). */
+export function captureAttribution(): StoredAttribution {
+  if (typeof window === "undefined") return {};
+  const stored = readStoredAttribution();
+  const url = new URL(window.location.href);
+  const current: StoredAttribution = {};
+  ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid"].forEach((k) => {
+    const v = url.searchParams.get(k);
+    if (v) current[k] = v;
+  });
+  if (document.referrer && !stored.referrer) current.referrer = document.referrer;
+  if (!stored.landing_page) current.landing_page = window.location.pathname;
+  const merged = { ...current, ...stored }; // 1st-touch wins
+  if (Object.keys(current).length) writeStoredAttribution(merged);
+  return merged;
+}
+
 export function getActiveUtms(): Record<string, string> {
   if (typeof window === "undefined") return { ...DEFAULT_UTM };
+  const stored = readStoredAttribution();
   const url = new URL(window.location.href);
   const utms: Record<string, string> = { ...DEFAULT_UTM };
   ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"].forEach((k) => {
-    const v = url.searchParams.get(k);
+    const v = url.searchParams.get(k) || stored[k];
     if (v) utms[k] = v;
   });
   return utms;
+}
+
+export function getAttributionPayload(): Record<string, string | null> {
+  const stored = readStoredAttribution();
+  const url = typeof window !== "undefined" ? new URL(window.location.href) : null;
+  const pick = (k: string) => (url?.searchParams.get(k) || stored[k] || null);
+  return {
+    utm_source: pick("utm_source"),
+    utm_medium: pick("utm_medium"),
+    utm_campaign: pick("utm_campaign"),
+    utm_term: pick("utm_term"),
+    utm_content: pick("utm_content"),
+    gclid: pick("gclid"),
+    fbclid: pick("fbclid"),
+    referrer: stored.referrer || (typeof document !== "undefined" ? document.referrer || null : null),
+    landing_page: stored.landing_page || (typeof window !== "undefined" ? window.location.pathname : null),
+  };
 }
 
 export function withUtms(href: string, extra: Record<string, string> = {}) {
