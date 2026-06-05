@@ -17,7 +17,8 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!loaderData) return { meta: [{ title: "Artigo não encontrado · 0WEB" }] };
     const { post } = loaderData;
     const wordCount = post.content.split(/\s+/).filter(Boolean).length;
-    const url = `/blog/${params.slug}`;
+    const url = `https://0web.com.br/blog/${params.slug}`;
+    const image = "https://0web.com.br/og-default.png";
     return {
       meta: [
         { title: `${post.title} · Blog 0WEB` },
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: post.excerpt },
         { property: "og:type", content: "article" },
         { property: "og:url", content: url },
+        { property: "og:image", content: image },
         { property: "article:section", content: post.category },
         { property: "article:published_time", content: post.date },
         { property: "article:modified_time", content: post.date },
@@ -35,7 +37,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: post.excerpt },
-        // Google Discover prefers large, high-quality images (max-image-preview:large)
+        { name: "twitter:image", content: image },
         { name: "robots", content: "max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       ],
       links: [{ rel: "canonical", href: url }],
@@ -52,14 +54,12 @@ export const Route = createFileRoute("/blog/$slug")({
             articleSection: post.category,
             wordCount,
             inLanguage: "pt-BR",
+            image,
             author: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
             publisher: {
               "@type": "Organization",
               name: "0WEB",
-              logo: {
-                "@type": "ImageObject",
-                url: "https://0web.com.br/favicon.ico",
-              },
+              logo: { "@type": "ImageObject", url: "https://0web.com.br/favicon.ico" },
             },
             mainEntityOfPage: { "@type": "WebPage", "@id": url },
             keywords: post.category,
@@ -71,9 +71,9 @@ export const Route = createFileRoute("/blog/$slug")({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Início", item: "/" },
-              { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
-              { "@type": "ListItem", position: 3, name: post.category, item: `/blog?cat=${encodeURIComponent(post.category)}` },
+              { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+              { "@type": "ListItem", position: 2, name: "Blog", item: "https://0web.com.br/blog" },
+              { "@type": "ListItem", position: 3, name: post.category, item: `https://0web.com.br/blog?cat=${encodeURIComponent(post.category)}` },
               { "@type": "ListItem", position: 4, name: post.title, item: url },
             ],
           }),
