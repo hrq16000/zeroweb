@@ -67,7 +67,7 @@ export const adminListPages = createServerFn({ method: "GET" })
     const sb = await getAdmin();
     const { data, error } = await sb.from("site_sections").select("page");
     if (error) throw new Error(error.message);
-    const pages = Array.from(new Set((data ?? []).map((r: any) => r.page as string))).sort();
+    const pages = Array.from(new Set((data ?? []).map((r: any) => r.page as string))).sort() as string[];
     return { pages };
   });
 
