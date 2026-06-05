@@ -9,8 +9,9 @@ export const Route = createFileRoute("/profissional/$slug")({
     meta: [
       { title: `${params.slug} | Profissional verificado | 0WEB` },
       { name: "description", content: `Perfil profissional ${params.slug} no marketplace 0WEB. Veja portfólio, especialidades, avaliações e entre em contato.` },
-      { rel: "canonical", href: `${ORIGIN}/profissional/${params.slug}` } as never,
+      { property: "og:url", content: `${ORIGIN}/profissional/${params.slug}` },
     ],
+    links: [{ rel: "canonical", href: `${ORIGIN}/profissional/${params.slug}` }],
   }),
   component: ProviderPage,
 });
