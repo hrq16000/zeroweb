@@ -201,7 +201,7 @@ function ObrigadoPage() {
                   <Link
                     to={card.to}
                     preload="render"
-                    onClick={() => handleCta(card.id, card.label)}
+                    onClick={() => handleCta(card.id, card.label, i + 1, card.to)}
                     className="group block h-full rounded-2xl border border-border bg-card p-6 hover:border-primary transition-colors text-left"
                   >
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
