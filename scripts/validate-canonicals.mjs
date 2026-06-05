@@ -77,24 +77,22 @@ for (const file of files) {
     continue;
   }
 
-  // canonical-in-meta bug.
-  if (META_CANONICAL_RE.test(src)) {
-    errors.push(
-      `${rel}: encontrado { rel: "canonical" } dentro de meta:[]. Mova para links:[].`,
-    );
-  }
-
   const hrefs = [];
   let m;
   CANONICAL_RE.lastIndex = 0;
   while ((m = CANONICAL_RE.exec(src)) !== null) {
+    const owner = nearestArrayOwner(src, m.index);
+    if (owner === "meta") {
+      errors.push(
+        `${rel}: { rel: "canonical" } dentro de meta:[]. Mova para links:[] (linha ~${src.slice(0, m.index).split("\n").length}).`,
+      );
+      continue;
+    }
     hrefs.push(m[1].trim());
   }
 
   if (hrefs.length === 0) continue;
 
-  // Each file should have a single canonical declaration. Ramos condicionais
-  // (ex.: notFound vs success) podem produzir mais de um — limite generoso.
   if (hrefs.length > 3) {
     warnings.push(`${rel}: ${hrefs.length} declarações de canonical (>3) — revise duplicidade.`);
   }
@@ -102,19 +100,16 @@ for (const file of files) {
   for (const href of hrefs) {
     const unquoted = href.replace(/^["'`]/, "").replace(/["'`]$/, "");
 
-    // Dynamic template literal: must start with the canonical host.
+    // Dynamic template literal: must include canonical host or use ORIGIN constant.
     if (href.startsWith("`")) {
-      if (!href.includes(CANONICAL_HOST)) {
-        errors.push(`${rel}: canonical template não usa ${CANONICAL_HOST} → ${href}`);
+      if (!href.includes(CANONICAL_HOST) && !href.includes("${ORIGIN}") && !href.includes("${BASE_URL}")) {
+        errors.push(`${rel}: canonical template não usa ${CANONICAL_HOST} nem ORIGIN → ${href}`);
       }
       continue;
     }
 
-    // Computed expression (variable/function): ignore but warn once.
-    if (!href.startsWith('"') && !href.startsWith("'")) {
-      // OK — pode ser ORIGIN + path.
-      continue;
-    }
+    // Computed expression (variable/function): ignore.
+    if (!href.startsWith('"') && !href.startsWith("'")) continue;
 
     if (!unquoted.startsWith(CANONICAL_HOST + "/") && unquoted !== CANONICAL_HOST + "/" && unquoted !== CANONICAL_HOST) {
       errors.push(`${rel}: canonical não absoluto/host errado → ${unquoted}`);
@@ -126,8 +121,6 @@ for (const file of files) {
       errors.push(`${rel}: canonical com trailing slash → ${unquoted}`);
     }
 
-    // Rota dinâmica (filename com $param) usando canonical literal sem interpolação
-    // costuma significar que todas as variantes apontam para o mesmo URL.
     if (/\$[a-zA-Z]/.test(file) && !href.includes("${") && !href.includes("`")) {
       warnings.push(
         `${rel}: rota dinâmica com canonical literal "${unquoted}" — provavelmente deveria usar template com params.`,
