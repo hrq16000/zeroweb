@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
 import { ORIGIN } from "@/lib/seo";
 import { trackConversion } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { getIpGeo, requestGpsThenFallback, formatLocation, type GeoInfo } from "@/lib/geo-location";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
@@ -40,7 +41,21 @@ export function ContactFormWhatsApp({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [geo, setGeo] = useState<GeoInfo | null>(null);
+  const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
   const shouldUseModal = useModal ?? !redirectTo;
+
+  // Subliminal IP geo on mount
+  useEffect(() => {
+    void getIpGeo().then((g) => { if (g) setGeo(g); });
+  }, []);
+
+  const askGps = async () => {
+    setGpsStatus("asking");
+    const g = await requestGpsThenFallback();
+    if (g) { setGeo(g); setGpsStatus(g.source.includes("gps") ? "ok" : "denied"); }
+    else setGpsStatus("denied");
+  };
 
   return (
     <>
@@ -93,22 +108,32 @@ export function ContactFormWhatsApp({
               utm_content: attr.utm_content,
               gclid: attr.gclid,
               fbclid: attr.fbclid,
+              geo_city: geo?.city,
+              geo_region: geo?.region,
+              geo_country: geo?.country,
+              geo_lat: geo?.latitude,
+              geo_lng: geo?.longitude,
+              geo_source: geo?.source,
             },
           });
-          // WhatsApp message includes a confirmation CTA matching the thank-you content.
+          // WhatsApp message: only include non-empty lines, with name/city/interest.
           const ctaUrl = `${ORIGIN}${content.finalCtaTo}`;
-          const msg = [
-            defaultMessage,
-            "",
-            `Nome: ${d.name}`,
-            `Empresa: ${d.company || "—"}`,
-            `E-mail: ${d.email}`,
-            `WhatsApp: ${d.phone}`,
+          const loc = formatLocation(geo);
+          const interest = defaultMessage.replace(/\.$/, "");
+          const lines = [
+            `Olá! Sou ${d.name}.`,
+            loc ? `📍 ${loc}` : "",
+            `💡 Interesse: ${interest}`,
+            d.company ? `🏢 Empresa: ${d.company}` : "",
+            `✉️ E-mail: ${d.email}`,
+            `📱 WhatsApp: ${d.phone}`,
             "",
             d.message,
             "",
             `👉 Próximo passo: ${content.finalCtaLabel} — ${ctaUrl}`,
-          ].join("\n");
+          ].filter((l) => l !== "" || true).filter(Boolean);
+          // Remove falsy lines but preserve intentional blank separators
+          const msg = lines.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
           window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
           setSent(true);
           if (shouldUseModal) {
@@ -163,6 +188,18 @@ export function ContactFormWhatsApp({
           />
           {errors.message && (
             <p id="cf-message-err" className="mt-1 text-xs text-destructive">{errors.message}</p>
+          )}
+        </div>
+        <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-primary" />
+            {geo?.city ? <>Detectamos <strong className="text-foreground">{formatLocation(geo)}</strong></> : <>Localização não detectada</>}
+            {geo?.source.includes("gps") && <span className="ml-1 text-emerald-600">· confirmado por GPS</span>}
+          </span>
+          {gpsStatus !== "ok" && (
+            <button type="button" onClick={askGps} className="underline hover:text-primary" aria-label="Confirmar localização por GPS">
+              {gpsStatus === "asking" ? "Localizando…" : "Confirmar por GPS"}
+            </button>
           )}
         </div>
         <button

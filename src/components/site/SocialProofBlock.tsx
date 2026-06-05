@@ -37,8 +37,34 @@ const steps = [
 export function SocialProofBlock({ ctxId = "servicos_social_proof" }: { ctxId?: string }) {
   const ctaWa = whatsappUrl("Quero um diagnóstico gratuito da 0WEB.", ctxId);
 
+  const reviewLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://0web.com.br/#org",
+        name: "0WEB",
+        url: "https://0web.com.br",
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          bestRating: "5",
+          reviewCount: String(180),
+        },
+        review: testimonials.map((t) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: t.name },
+          reviewBody: t.text,
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+        })),
+      },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewLd) }} />
+
       {/* Números */}
       <section className="py-14 bg-muted/30 border-y border-border" aria-label="Resultados em números">
         <div className="mx-auto max-w-6xl px-5 lg:px-8 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
