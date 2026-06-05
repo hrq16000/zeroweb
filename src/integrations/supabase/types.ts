@@ -160,6 +160,47 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings_history: {
+        Row: {
+          action: string
+          changed_at: string
+          changed_by: string | null
+          id: string
+          key: string
+          new_value: string | null
+          old_value: string | null
+          rolled_back_from_id: string | null
+        }
+        Insert: {
+          action: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          key: string
+          new_value?: string | null
+          old_value?: string | null
+          rolled_back_from_id?: string | null
+        }
+        Update: {
+          action?: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          key?: string
+          new_value?: string | null
+          old_value?: string | null
+          rolled_back_from_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_settings_history_rolled_back_from_id_fkey"
+            columns: ["rolled_back_from_id"]
+            isOneToOne: false
+            referencedRelation: "app_settings_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocked_asns: {
         Row: {
           asn: string
@@ -509,6 +550,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integration_status: {
+        Row: {
+          key: string
+          last_message: string | null
+          last_status: string
+          last_tested_at: string | null
+          last_tested_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          key: string
+          last_message?: string | null
+          last_status?: string
+          last_tested_at?: string | null
+          last_tested_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          key?: string
+          last_message?: string | null
+          last_status?: string
+          last_tested_at?: string | null
+          last_tested_by?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       ip_blocklist: {
         Row: {
@@ -1849,6 +1917,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      can_manage_settings: { Args: { _uid: string }; Returns: boolean }
       compute_lead_score: {
         Args: { p_row: Database["public"]["Tables"]["lead_submissions"]["Row"] }
         Returns: {
