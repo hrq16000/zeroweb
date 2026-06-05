@@ -181,3 +181,59 @@ export const exportVisitorsCsv = createServerFn({ method: "POST" })
     );
     return { csv: [headers.join(","), ...body].join("\n"), error: null };
   });
+
+// ============ MV-backed fast series (reduces load) ============
+export const visitorsSeriesFast = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ days: z.number().int().min(1).max(90).optional() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const days = data.days ?? 30;
+    const since = new Date(Date.now() - days * 24 * 3600_000).toISOString().slice(0, 10);
+    const [{ data: daily }, { data: hourly }, { data: reasons }] = await Promise.all([
+      supabase.from("mv_visitors_daily").select("*").gte("day", since).order("day"),
+      supabase.from("mv_visitors_hourly").select("*").order("hour", { ascending: false }).limit(72),
+      supabase.from("mv_block_reasons_daily").select("*").gte("day", since).order("hits", { ascending: false }).limit(50),
+    ]);
+    return { daily: daily ?? [], hourly: (hourly ?? []).reverse(), reasons: reasons ?? [] };
+  });
+
+// ============ SAVED FILTERS CRUD ============
+const SavedFilterSchema = z.object({
+  name: z.string().min(1).max(120),
+  filters: z.record(z.string(), z.any()),
+  is_shared: z.boolean().optional(),
+});
+
+export const listSavedFilters = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data, error } = await supabase
+      .from("visitor_saved_filters")
+      .select("id,name,filters,is_shared,user_id,created_at,updated_at")
+      .order("updated_at", { ascending: false });
+    return { rows: data ?? [], error: error?.message ?? null };
+  });
+
+export const saveFilter = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => SavedFilterSchema.parse(i))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: row, error } = await supabase
+      .from("visitor_saved_filters")
+      .insert({ user_id: userId, name: data.name, filters: data.filters, is_shared: data.is_shared ?? false })
+      .select("id")
+      .single();
+    return { id: row?.id ?? null, error: error?.message ?? null };
+  });
+
+export const deleteSavedFilter = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { error } = await supabase.from("visitor_saved_filters").delete().eq("id", data.id);
+    return { ok: !error, error: error?.message ?? null };
+  });
