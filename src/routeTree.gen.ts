@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrafegoPagoRouteImport } from './routes/trafego-pago'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
 import { Route as SobreRouteImport } from './routes/sobre'
@@ -21,6 +22,7 @@ import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
@@ -65,6 +67,11 @@ import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './route
 import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes/_authenticated/app.marketplace.company'
 import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_authenticated/app.marketplace.admin'
 
+const TrafegoPagoRoute = TrafegoPagoRouteImport.update({
+  id: '/trafego-pago',
+  path: '/trafego-pago',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
   path: '/termos',
@@ -125,6 +132,11 @@ const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeoRoute = SeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RssDotxmlRoute = RssDotxmlRouteImport.update({
@@ -367,6 +379,7 @@ export interface FileRoutesByFullPath {
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -379,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
+  '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -423,6 +437,7 @@ export interface FileRoutesByTo {
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -435,6 +450,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
+  '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
@@ -480,6 +496,7 @@ export interface FileRoutesById {
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
+  '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -492,6 +509,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
+  '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -538,6 +556,7 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
+    | '/seo'
     | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
@@ -550,6 +569,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-orcamento'
     | '/termos'
+    | '/trafego-pago'
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
@@ -594,6 +614,7 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
+    | '/seo'
     | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
@@ -606,6 +627,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-orcamento'
     | '/termos'
+    | '/trafego-pago'
     | '/$city/$service'
     | '/blog/$slug'
     | '/cases/$slug'
@@ -650,6 +672,7 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
+    | '/seo'
     | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
@@ -662,6 +685,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-orcamento'
     | '/termos'
+    | '/trafego-pago'
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
@@ -708,6 +732,7 @@ export interface RootRouteChildren {
   QaEventsRoute: typeof QaEventsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
+  SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
@@ -720,6 +745,7 @@ export interface RootRouteChildren {
   SobreRoute: typeof SobreRoute
   SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
   TermosRoute: typeof TermosRoute
+  TrafegoPagoRoute: typeof TrafegoPagoRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CasesSlugRoute: typeof CasesSlugRoute
@@ -733,6 +759,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trafego-pago': {
+      id: '/trafego-pago'
+      path: '/trafego-pago'
+      fullPath: '/trafego-pago'
+      preLoaderRoute: typeof TrafegoPagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/termos': {
       id: '/termos'
       path: '/termos'
@@ -815,6 +848,13 @@ declare module '@tanstack/react-router' {
       path: '/servicos'
       fullPath: '/servicos'
       preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seo': {
+      id: '/seo'
+      path: '/seo'
+      fullPath: '/seo'
+      preLoaderRoute: typeof SeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rss.xml': {
@@ -1241,6 +1281,7 @@ const rootRouteChildren: RootRouteChildren = {
   QaEventsRoute: QaEventsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
+  SeoRoute: SeoRoute,
   ServicosRoute: ServicosRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
@@ -1253,6 +1294,7 @@ const rootRouteChildren: RootRouteChildren = {
   SobreRoute: SobreRoute,
   SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
   TermosRoute: TermosRoute,
+  TrafegoPagoRoute: TrafegoPagoRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
   CasesSlugRoute: CasesSlugRoute,
@@ -1266,3 +1308,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
