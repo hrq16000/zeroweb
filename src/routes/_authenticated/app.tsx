@@ -193,6 +193,17 @@ function AppShell() {
                 <Search className="w-4 h-4" />
                 Indexação SEO
               </Link>
+              <Link
+                to="/app/funis"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/funis")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <LayoutTemplate className="w-4 h-4" />
+                Funis dinâmicos
+              </Link>
             </>
 
           )}
