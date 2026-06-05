@@ -57,11 +57,6 @@ export const Route = createFileRoute("/obrigado")({
   component: ObrigadoPage,
 });
 
-const TESTIMONIALS = [
-  { name: "Carla M.", role: "Clínica de Estética · SP", text: "Em 45 dias dobramos os agendamentos com tráfego pago e site novo." },
-  { name: "Rafael T.", role: "Escritório de Advocacia · RJ", text: "A 0WEB nos colocou no topo do Google em buscas locais. Recomendo!" },
-  { name: "Juliana P.", role: "Loja de Móveis · MG", text: "Atendimento humano, relatórios claros e vendas reais todo mês." },
-];
 
 function ObrigadoPage() {
   const { source } = Route.useSearch();
