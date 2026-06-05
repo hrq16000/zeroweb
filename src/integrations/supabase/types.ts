@@ -2206,6 +2206,80 @@ export type Database = {
           },
         ]
       }
+      partner_commissions: {
+        Row: {
+          attribution_id: string | null
+          base_amount_cents: number
+          commission_amount_cents: number
+          commission_type: string
+          created_at: string
+          id: string
+          notes: string | null
+          partner_id: string
+          period: string | null
+          rule_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attribution_id?: string | null
+          base_amount_cents?: number
+          commission_amount_cents?: number
+          commission_type: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id: string
+          period?: string | null
+          rule_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attribution_id?: string | null
+          base_amount_cents?: number
+          commission_amount_cents?: number
+          commission_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          period?: string | null
+          rule_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_commissions_attribution_id_fkey"
+            columns: ["attribution_id"]
+            isOneToOne: true
+            referencedRelation: "partner_attributions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partner_ranking_30d"
+            referencedColumns: ["partner_id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_commissions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "commission_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       partner_links: {
         Row: {
           active: boolean
