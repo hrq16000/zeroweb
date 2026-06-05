@@ -52,7 +52,9 @@ import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
+import { Route as AuthenticatedAppPortalsRouteImport } from './routes/_authenticated/app.portals'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
+import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
@@ -279,12 +281,22 @@ const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppPortalsRoute = AuthenticatedAppPortalsRouteImport.update({
+  id: '/portals',
+  path: '/portals',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppNotificationsRoute =
   AuthenticatedAppNotificationsRouteImport.update({
     id: '/notifications',
     path: '/notifications',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppMasterRoute = AuthenticatedAppMasterRouteImport.update({
+  id: '/master',
+  path: '/master',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppMarketplaceRoute =
   AuthenticatedAppMarketplaceRouteImport.update({
     id: '/marketplace',
@@ -373,7 +385,9 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
+  '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
@@ -425,7 +439,9 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
+  '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
@@ -480,7 +496,9 @@ export interface FileRoutesById {
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
+  '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/_authenticated/app/portals': typeof AuthenticatedAppPortalsRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
@@ -535,7 +553,9 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/documents'
     | '/app/marketplace'
+    | '/app/master'
     | '/app/notifications'
+    | '/app/portals'
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
@@ -587,7 +607,9 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/documents'
     | '/app/marketplace'
+    | '/app/master'
     | '/app/notifications'
+    | '/app/portals'
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
@@ -641,7 +663,9 @@ export interface FileRouteTypes {
     | '/_authenticated/app/admin'
     | '/_authenticated/app/documents'
     | '/_authenticated/app/marketplace'
+    | '/_authenticated/app/master'
     | '/_authenticated/app/notifications'
+    | '/_authenticated/app/portals'
     | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
@@ -997,11 +1021,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppProfileRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/portals': {
+      id: '/_authenticated/app/portals'
+      path: '/portals'
+      fullPath: '/app/portals'
+      preLoaderRoute: typeof AuthenticatedAppPortalsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/notifications': {
       id: '/_authenticated/app/notifications'
       path: '/notifications'
       fullPath: '/app/notifications'
       preLoaderRoute: typeof AuthenticatedAppNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/master': {
+      id: '/_authenticated/app/master'
+      path: '/master'
+      fullPath: '/app/master'
+      preLoaderRoute: typeof AuthenticatedAppMasterRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/marketplace': {
@@ -1116,7 +1154,9 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
+  AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
+  AuthenticatedAppPortalsRoute: typeof AuthenticatedAppPortalsRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
@@ -1129,7 +1169,9 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,
+  AuthenticatedAppMasterRoute: AuthenticatedAppMasterRoute,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
+  AuthenticatedAppPortalsRoute: AuthenticatedAppPortalsRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
