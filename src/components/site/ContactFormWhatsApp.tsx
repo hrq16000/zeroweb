@@ -190,6 +190,18 @@ export function ContactFormWhatsApp({
             <p id="cf-message-err" className="mt-1 text-xs text-destructive">{errors.message}</p>
           )}
         </div>
+        <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-primary" />
+            {geo?.city ? <>Detectamos <strong className="text-foreground">{formatLocation(geo)}</strong></> : <>Localização não detectada</>}
+            {geo?.source.includes("gps") && <span className="ml-1 text-emerald-600">· confirmado por GPS</span>}
+          </span>
+          {gpsStatus !== "ok" && (
+            <button type="button" onClick={askGps} className="underline hover:text-primary" aria-label="Confirmar localização por GPS">
+              {gpsStatus === "asking" ? "Localizando…" : "Confirmar por GPS"}
+            </button>
+          )}
+        </div>
         <button
           type="submit"
           className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
