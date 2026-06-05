@@ -104,6 +104,17 @@ function AppShell() {
                 <Layers className="w-4 h-4" />
                 Portais
               </Link>
+              <Link
+                to="/app/campaigns"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/campaigns")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Target className="w-4 h-4" />
+                Campanhas
+              </Link>
             </>
           )}
         </nav>
