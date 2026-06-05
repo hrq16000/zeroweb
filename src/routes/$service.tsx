@@ -8,7 +8,7 @@ import { trackEvent, trackConversion } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-import { SERVICES, GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
+import { SERVICES, GEO_SERVICE_SLUGS, relatedServices, type ServiceData } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/$service")({
   beforeLoad: ({ params }) => {
     if (!SERVICES[params.service]) throw notFound();
   },
-  loader: ({ params }) => SERVICES[params.service],
+  loader: ({ params }) => SERVICES[params.service] as ServiceData,
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
     const url = absUrl(`/${params.service}`);
