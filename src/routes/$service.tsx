@@ -1,85 +1,17 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, HelpCircle, MapPin } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
-import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
-
-type ServiceData = {
-  title: string;
-  h1: string;
-  description: string;
-  benefits: string[];
-};
-
-const SERVICES: Record<string, ServiceData> = {
-  "criacao-de-sites": {
-    title: "Criação de Sites Profissionais · 0WEB",
-    h1: "Criação de sites que vendem",
-    description: "Sites institucionais rápidos, modernos e otimizados para Google. Conversão acima da média do mercado.",
-    benefits: ["Design premium", "Performance 95+", "SEO técnico embutido", "Painel para editar", "Hospedagem incluída"],
-  },
-  "landing-pages": {
-    title: "Landing Pages de Alta Conversão · 0WEB",
-    h1: "Landing pages que convertem visitantes em clientes",
-    description: "Páginas focadas em conversão para campanhas de Google Ads e Meta Ads. Taxa de conversão até 4x maior.",
-    benefits: ["Estrutura validada por CRO", "Integração com Ads", "A/B testing", "Tracking completo", "Entrega em 7 dias"],
-  },
-  "loja-virtual": {
-    title: "E-commerce e Lojas Virtuais · 0WEB",
-    h1: "Lojas virtuais prontas para escalar",
-    description: "E-commerce de alta performance integrado a meios de pagamento, frete e marketing.",
-    benefits: ["Checkout otimizado", "Integração de pagamentos", "Painel administrativo", "Recuperação de carrinho", "SEO de produto"],
-  },
-  "seo": {
-    title: "SEO Técnico e Estratégico · 0WEB",
-    h1: "SEO que posiciona sua empresa no topo do Google",
-    description: "Estratégia completa de SEO técnico, on-page e off-page para tráfego orgânico sustentável.",
-    benefits: ["Auditoria técnica", "Core Web Vitals", "Conteúdo otimizado", "Link building", "Relatórios mensais"],
-  },
-  "marketing-digital": {
-    title: "Marketing Digital com ROI · 0WEB",
-    h1: "Marketing digital que gera resultado",
-    description: "Estratégia 360° de tráfego pago, orgânico, social media e automação focada em ROI.",
-    benefits: ["Google Ads", "Meta Ads", "Funil completo", "Atribuição multicanal", "Otimização semanal"],
-  },
-  "automacao-com-ia": {
-    title: "Automação com IA · 0WEB",
-    h1: "Automações inteligentes que escalam sua operação",
-    description: "Agentes de IA, integrações e workflows que economizam horas e aumentam vendas.",
-    benefits: ["Agentes GPT customizados", "Integrações n8n / Make", "Qualificação automática", "Follow-up inteligente", "ROI mensurável"],
-  },
-  "chatbot-whatsapp": {
-    title: "Chatbot WhatsApp com IA · 0WEB",
-    h1: "Chatbot WhatsApp que vende 24/7",
-    description: "Atendimento e vendas automatizadas no WhatsApp com Inteligência Artificial.",
-    benefits: ["Resposta em segundos", "Treinado no seu negócio", "Integra com CRM", "Multi-atendente", "Métricas em tempo real"],
-  },
-  "desenvolvimento-saas": {
-    title: "Desenvolvimento de SaaS · 0WEB",
-    h1: "Desenvolvemos seu SaaS do MVP ao scale",
-    description: "Arquitetura moderna, escalável e segura para produtos SaaS B2B e B2C.",
-    benefits: ["Next.js + TypeScript", "Multi-tenant", "Billing integrado", "Painel admin", "Suporte contínuo"],
-  },
-  "sistemas-web": {
-    title: "Sistemas Web Sob Medida · 0WEB",
-    h1: "Sistemas web sob medida para sua operação",
-    description: "ERP, CRM, ordens de serviço, agendamento e dashboards customizados.",
-    benefits: ["Análise de processos", "Stack moderna", "Treinamento incluso", "Hospedagem dedicada", "Evolução contínua"],
-  },
-  "gestao-redes-sociais": {
-    title: "Gestão de Redes Sociais · 0WEB",
-    h1: "Gestão estratégica de redes sociais",
-    description: "Conteúdo, criativos, estratégia e métricas para Instagram, LinkedIn, TikTok e mais.",
-    benefits: ["Calendário editorial", "Criativos premium", "Copywriting persuasivo", "Engajamento real", "Relatórios mensais"],
-  },
-};
-
-import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd, SERVICES_DICT } from "@/lib/seo";
+import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { SERVICES, GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
+import { CITIES } from "@/lib/geo-data";
+
+const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
 export const Route = createFileRoute("/$service")({
   beforeLoad: ({ params }) => {
@@ -89,12 +21,11 @@ export const Route = createFileRoute("/$service")({
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
     const url = absUrl(`/${params.service}`);
-    const info = SERVICES_DICT[params.service];
-    const serviceType = info?.serviceType ?? "Digital Services";
     return {
       meta: [
         { title: loaderData.title },
         { name: "description", content: loaderData.description },
+        { name: "keywords", content: loaderData.keywords.join(", ") },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: loaderData.description },
         { property: "og:type", content: "website" },
@@ -117,10 +48,20 @@ export const Route = createFileRoute("/$service")({
                 "@id": `${url}#service`,
                 name: loaderData.h1,
                 description: loaderData.description,
-                serviceType,
+                serviceType: loaderData.serviceType,
+                category: loaderData.category,
                 url,
                 areaServed: { "@type": "Country", name: "BR" },
                 provider: ORG_REF,
+              },
+              {
+                "@type": "FAQPage",
+                "@id": `${url}#faq`,
+                mainEntity: loaderData.faq.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
               },
               {
                 "@type": "WebPage",
@@ -132,8 +73,8 @@ export const Route = createFileRoute("/$service")({
                 isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
               },
               breadcrumbLd([
-                { name: "Serviços", path: "/#solutions" },
-                { name: info?.name ?? loaderData.h1, path: `/${params.service}` },
+                { name: "Serviços", path: "/servicos" },
+                { name: loaderData.name, path: `/${params.service}` },
               ]),
             ],
           }),
@@ -153,16 +94,18 @@ function ServicePage() {
   const data = Route.useLoaderData();
   const { service } = Route.useParams();
   const { open: openFunnel } = useWaFunnel();
+  const otherSvcs = relatedServices(service, 4);
+  const hasGeo = GEO_SET.has(service);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs items={[{ name: "Serviços", path: "/#solutions" }, { name: (SERVICES_DICT[service]?.name ?? data.h1), path: `/${service}` }]} />
+      <Breadcrumbs items={[{ name: "Serviços", path: "/servicos" }, { name: data.name, path: `/${service}` }]} />
       <main className="pt-6">
-
+        {/* HERO */}
         <section className="py-16 bg-hero">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
-            <p className="text-xs uppercase tracking-wider text-primary font-semibold">Serviço</p>
+            <p className="text-xs uppercase tracking-wider text-primary font-semibold">{data.category}</p>
             <h1 className="mt-3 text-4xl lg:text-6xl font-bold tracking-tight">
               {data.h1.split(" ").slice(0, -2).join(" ")}{" "}
               <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
@@ -177,20 +120,123 @@ function ServicePage() {
               }}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
             >
-              Falar com especialista <ArrowRight className="w-4 h-4" />
+              {data.ctaLabel} <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </section>
 
-        <section className="py-20">
+        {/* PROBLEMS */}
+        <section className="py-12 bg-muted/30">
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
-            <h2 className="text-2xl font-bold mb-8">Benefícios incluídos</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {data.benefits.map((b: string) => (
-                <div key={b} className="flex items-start gap-3 p-5 rounded-2xl border border-border bg-card">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-6">O que costuma travar o resultado</h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {data.problems.map((p) => (
+                <div key={p} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
+                  <XCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                  <span>{p}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* BENEFITS */}
+        <section className="py-16">
+          <div className="mx-auto max-w-4xl px-5 lg:px-8">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-6">Benefícios incluídos</h2>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {data.benefits.map((b) => (
+                <div key={b} className="flex items-start gap-3 p-4 rounded-2xl border border-border bg-card">
                   <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="font-medium">{b}</span>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PROCESS */}
+        <section className="py-16 bg-muted/30">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-8">Como entregamos</h2>
+            <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {data.process.map((p, i) => (
+                <li key={p.step} className="p-5 rounded-2xl border border-border bg-card">
+                  <span className="text-xs font-mono text-primary">0{i + 1}</span>
+                  <h3 className="mt-2 font-semibold text-lg">{p.step}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-16">
+          <div className="mx-auto max-w-3xl px-5 lg:px-8">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-3">
+              <HelpCircle className="w-7 h-7 text-primary" /> Perguntas frequentes
+            </h2>
+            <div className="space-y-3">
+              {data.faq.map((f) => (
+                <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
+                  <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
+                    {f.q}
+                    <span className="text-primary group-open:rotate-45 transition-transform">+</span>
+                  </summary>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CITIES SERVED */}
+        {hasGeo && (
+          <section className="py-16 bg-muted/30">
+            <div className="mx-auto max-w-5xl px-5 lg:px-8">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-2 flex items-center gap-3">
+                <MapPin className="w-6 h-6 text-primary" /> {data.name} por cidade
+              </h2>
+              <p className="text-muted-foreground mb-6">Páginas dedicadas com contexto local para empresas em cada região.</p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Object.values(CITIES).map((c) => (
+                  <Link
+                    key={c.slug}
+                    to="/$city/$service"
+                    params={{ city: c.slug, service }}
+                    className="flex items-center justify-between p-4 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
+                  >
+                    <div>
+                      <p className="font-semibold">{data.name} em {c.name}</p>
+                      <p className="text-xs text-muted-foreground">{c.state} · {c.region}</p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-primary" />
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-6 text-sm">
+                <Link to="/cidades" className="text-primary story-link">Ver todas as cidades</Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* RELATED SERVICES */}
+        <section className="py-16">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-6">Serviços relacionados</h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {otherSvcs.map((s) => (
+                <Link
+                  key={s.slug}
+                  to="/$service"
+                  params={{ service: s.slug }}
+                  className="block p-4 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
+                >
+                  <p className="text-xs uppercase tracking-wider text-primary font-semibold">{s.category}</p>
+                  <h3 className="mt-1 font-semibold">{s.name}</h3>
+                </Link>
               ))}
             </div>
           </div>
