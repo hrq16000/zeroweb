@@ -35,6 +35,7 @@ import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
+import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -167,6 +168,11 @@ const CityServiceRoute = CityServiceRouteImport.update({
   path: '/$city/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
+  id: '/api/public/lead-webhook',
+  path: '/api/public/lead-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/api/public/lead-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/api/public/lead-webhook'
   id:
     | '__root__'
     | '/'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/api/public/lead-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   CasesSlugRoute: typeof CasesSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -552,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CityServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/lead-webhook': {
+      id: '/api/public/lead-webhook'
+      path: '/api/public/lead-webhook'
+      fullPath: '/api/public/lead-webhook'
+      preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -592,7 +612,18 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   CasesSlugRoute: CasesSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
