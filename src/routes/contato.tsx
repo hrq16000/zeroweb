@@ -66,6 +66,7 @@ export const Route = createFileRoute("/contato")({
 });
 
 function ContatoPage() {
+  const navigate = useNavigate();
   const [sent, setSent] = useState(false);
   return (
     <div className="min-h-screen bg-background text-foreground">
