@@ -34,6 +34,7 @@ import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as ObrigadoRouteImport } from './routes/obrigado'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as IaRouteImport } from './routes/ia'
@@ -233,6 +234,11 @@ const PainelCrmRoute = PainelCrmRouteImport.update({
 const PainelRoute = PainelRouteImport.update({
   id: '/painel',
   path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObrigadoRoute = ObrigadoRouteImport.update({
+  id: '/obrigado',
+  path: '/obrigado',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -641,6 +647,7 @@ export interface FileRoutesByFullPath {
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
+  '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
@@ -740,6 +747,7 @@ export interface FileRoutesByTo {
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
+  '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
@@ -840,6 +848,7 @@ export interface FileRoutesById {
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
   '/marketplace': typeof MarketplaceRoute
+  '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
@@ -941,6 +950,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/landing-pages'
     | '/marketplace'
+    | '/obrigado'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
@@ -1040,6 +1050,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/landing-pages'
     | '/marketplace'
+    | '/obrigado'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
@@ -1139,6 +1150,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/landing-pages'
     | '/marketplace'
+    | '/obrigado'
     | '/painel'
     | '/painel-crm'
     | '/parceiros'
@@ -1240,6 +1252,7 @@ export interface RootRouteChildren {
   IaRoute: typeof IaRoute
   LandingPagesRoute: typeof LandingPagesRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  ObrigadoRoute: typeof ObrigadoRoute
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
   ParceirosRoute: typeof ParceirosRoute
@@ -1472,6 +1485,13 @@ declare module '@tanstack/react-router' {
       path: '/painel'
       fullPath: '/painel'
       preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/obrigado': {
+      id: '/obrigado'
+      path: '/obrigado'
+      fullPath: '/obrigado'
+      preLoaderRoute: typeof ObrigadoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -2127,6 +2147,7 @@ const rootRouteChildren: RootRouteChildren = {
   IaRoute: IaRoute,
   LandingPagesRoute: LandingPagesRoute,
   MarketplaceRoute: MarketplaceRoute,
+  ObrigadoRoute: ObrigadoRoute,
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
   ParceirosRoute: ParceirosRoute,
@@ -2188,13 +2209,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
