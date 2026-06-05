@@ -39,7 +39,7 @@ export function PlansAdmin() {
     queryFn: () => fetchAll(),
   });
 
-  const plans = useMemo(() => data?.plans ?? [], [data]);
+  const plans = useMemo<PlanRow[]>(() => (data?.plans ?? []) as PlanRow[], [data]);
   const [editing, setEditing] = useState<(Partial<PlanRow> & { id?: string }) | null>(null);
 
   const invalidate = () => {
