@@ -54,11 +54,11 @@ export const visitorsAggregate = createServerFn({ method: "POST" })
     const { supabase } = context;
     let q = supabase
       .from("visitantes_rastreio")
-      .select("portal_id,utm_source,utm_campaign,gclid,fbclid,country,is_bot,blocked,landing_page,path,day", { count: "exact" })
+      .select("portal_id,utm_source,utm_campaign,gclid,fbclid,country,is_bot,blocked,landing_page,path,day,created_at", { count: "exact" })
       .limit(10000);
     q = applyFilters(q, data);
     const { data: rows, error } = await q;
-    if (error) return { funnel: null, sources: [], portals: [], campaigns: [], countries: [], error: error.message };
+    if (error) return { funnel: null, sources: [], portals: [], campaigns: [], countries: [], series: [], error: error.message };
 
     const total = rows?.length ?? 0;
     const bots = rows?.filter((r: any) => r.is_bot).length ?? 0;
@@ -76,8 +76,21 @@ export const visitorsAggregate = createServerFn({ method: "POST" })
       return Array.from(map.entries())
         .map(([k, v]) => ({ key: k, count: v }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 20);
+        .slice(0, 25);
     };
+
+    // Time series by day
+    const dayMap = new Map<string, { day: string; total: number; bots: number; blocked: number }>();
+    for (const r of rows ?? []) {
+      const d = (r as any).day || ((r as any).created_at || "").slice(0, 10);
+      if (!d) continue;
+      const cur = dayMap.get(d) ?? { day: d, total: 0, bots: 0, blocked: 0 };
+      cur.total += 1;
+      if ((r as any).is_bot) cur.bots += 1;
+      if ((r as any).blocked) cur.blocked += 1;
+      dayMap.set(d, cur);
+    }
+    const series = Array.from(dayMap.values()).sort((a, b) => a.day.localeCompare(b.day));
 
     return {
       funnel: {
@@ -94,8 +107,49 @@ export const visitorsAggregate = createServerFn({ method: "POST" })
       portals: group("portal_id"),
       countries: group("country"),
       landing: group("landing_page"),
+      series,
       error: null,
     };
+  });
+
+// Histogram per hour from append-only visitor_events (attack peaks)
+export const visitorEventsHistogram = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i) => FilterSchema.parse(i))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    let q = supabase
+      .from("visitor_events")
+      .select("created_at,blocked,is_bot,block_reason,country")
+      .order("created_at", { ascending: false })
+      .limit(20000);
+    q = applyFilters(q, data);
+    const { data: rows, error } = await q;
+    if (error) return { hours: [], reasons: [], error: error.message };
+
+    const hourMap = new Map<string, { hour: string; total: number; blocked: number; bots: number }>();
+    for (const r of rows ?? []) {
+      const t = new Date((r as any).created_at);
+      const k = `${t.toISOString().slice(0, 13)}:00`;
+      const cur = hourMap.get(k) ?? { hour: k, total: 0, blocked: 0, bots: 0 };
+      cur.total += 1;
+      if ((r as any).blocked) cur.blocked += 1;
+      if ((r as any).is_bot) cur.bots += 1;
+      hourMap.set(k, cur);
+    }
+    const hours = Array.from(hourMap.values()).sort((a, b) => a.hour.localeCompare(b.hour));
+
+    const reasonMap = new Map<string, number>();
+    for (const r of rows ?? []) {
+      if (!(r as any).blocked) continue;
+      const k = (r as any).block_reason || "unknown";
+      reasonMap.set(k, (reasonMap.get(k) ?? 0) + 1);
+    }
+    const reasons = Array.from(reasonMap.entries())
+      .map(([key, count]) => ({ key, count }))
+      .sort((a, b) => b.count - a.count);
+
+    return { hours, reasons, error: null };
   });
 
 function csvEscape(v: unknown) {
