@@ -20,6 +20,7 @@ import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
@@ -28,14 +29,27 @@ import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negoci
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CidadesRouteImport } from './routes/cidades'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
+import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
+import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
+import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
+import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
+import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
+import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
+import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
+import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
+import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -93,6 +107,11 @@ const RssDotxmlRoute = RssDotxmlRouteImport.update({
   path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QaEventsRoute = QaEventsRouteImport.update({
   id: '/qa-events',
   path: '/qa-events',
@@ -133,9 +152,18 @@ const CidadesRoute = CidadesRouteImport.update({
   path: '/cidades',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServiceRoute = ServiceRouteImport.update({
   id: '/$service',
   path: '/$service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -163,20 +191,81 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const CityServiceRoute = CityServiceRouteImport.update({
   id: '/$city/$service',
   path: '/$city/$service',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   id: '/api/public/lead-webhook',
   path: '/api/public/lead-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppReportsRoute = AuthenticatedAppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppProjectsRoute =
+  AuthenticatedAppProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppNotificationsRoute =
+  AuthenticatedAppNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDocumentsRoute =
+  AuthenticatedAppDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppAdminRoute = AuthenticatedAppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppSupportIdRoute =
+  AuthenticatedAppSupportIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAppSupportRoute,
+  } as any)
+const AuthenticatedAppProjectsIdRoute =
+  AuthenticatedAppProjectsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAppProjectsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -185,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -197,15 +287,27 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
+  '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -214,6 +316,7 @@ export interface FileRoutesByTo {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -230,12 +333,24 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/app': typeof AuthenticatedAppIndexRoute
+  '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$service': typeof ServiceRoute
+  '/auth': typeof AuthRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
@@ -244,6 +359,7 @@ export interface FileRoutesById {
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
@@ -256,17 +372,29 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
+  '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
+  '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
+  '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
+  '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -275,6 +403,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -287,15 +416,27 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/termos'
     | '/$city/$service'
+    | '/app'
     | '/blog/$slug'
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/app/admin'
+    | '/app/documents'
+    | '/app/notifications'
+    | '/app/profile'
+    | '/app/projects'
+    | '/app/reports'
+    | '/app/support'
     | '/api/public/lead-webhook'
+    | '/app/'
+    | '/app/projects/$id'
+    | '/app/support/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -304,6 +445,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -320,11 +462,23 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/app/admin'
+    | '/app/documents'
+    | '/app/notifications'
+    | '/app/profile'
+    | '/app/projects'
+    | '/app/reports'
+    | '/app/support'
     | '/api/public/lead-webhook'
+    | '/app'
+    | '/app/projects/$id'
+    | '/app/support/$id'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/$service'
+    | '/auth'
     | '/cidades'
     | '/contato'
     | '/estados'
@@ -333,6 +487,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/politica-privacidade'
     | '/qa-events'
+    | '/reset-password'
     | '/rss.xml'
     | '/servicos'
     | '/sitemap-blog.xml'
@@ -345,16 +500,29 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/termos'
     | '/$city/$service'
+    | '/_authenticated/app'
     | '/blog/$slug'
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/_authenticated/app/admin'
+    | '/_authenticated/app/documents'
+    | '/_authenticated/app/notifications'
+    | '/_authenticated/app/profile'
+    | '/_authenticated/app/projects'
+    | '/_authenticated/app/reports'
+    | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
+    | '/_authenticated/app/'
+    | '/_authenticated/app/projects/$id'
+    | '/_authenticated/app/support/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ServiceRoute: typeof ServiceRoute
+  AuthRoute: typeof AuthRoute
   CidadesRoute: typeof CidadesRoute
   ContatoRoute: typeof ContatoRoute
   EstadosRoute: typeof EstadosRouteWithChildren
@@ -363,6 +531,7 @@ export interface RootRouteChildren {
   PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   ServicosRoute: typeof ServicosRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
@@ -460,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/qa-events': {
       id: '/qa-events'
       path: '/qa-events'
@@ -516,11 +692,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$service': {
       id: '/$service'
       path: '/$service'
       fullPath: '/$service'
       preLoaderRoute: typeof ServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -558,12 +748,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/$city/$service': {
       id: '/$city/$service'
       path: '/$city/$service'
       fullPath: '/$city/$service'
       preLoaderRoute: typeof CityServiceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
     '/api/public/lead-webhook': {
       id: '/api/public/lead-webhook'
@@ -572,8 +776,135 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/support': {
+      id: '/_authenticated/app/support'
+      path: '/support'
+      fullPath: '/app/support'
+      preLoaderRoute: typeof AuthenticatedAppSupportRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/reports': {
+      id: '/_authenticated/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AuthenticatedAppReportsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/projects': {
+      id: '/_authenticated/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/profile': {
+      id: '/_authenticated/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AuthenticatedAppProfileRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/notifications': {
+      id: '/_authenticated/app/notifications'
+      path: '/notifications'
+      fullPath: '/app/notifications'
+      preLoaderRoute: typeof AuthenticatedAppNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/documents': {
+      id: '/_authenticated/app/documents'
+      path: '/documents'
+      fullPath: '/app/documents'
+      preLoaderRoute: typeof AuthenticatedAppDocumentsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/admin': {
+      id: '/_authenticated/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AuthenticatedAppAdminRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/support/$id': {
+      id: '/_authenticated/app/support/$id'
+      path: '/$id'
+      fullPath: '/app/support/$id'
+      preLoaderRoute: typeof AuthenticatedAppSupportIdRouteImport
+      parentRoute: typeof AuthenticatedAppSupportRoute
+    }
+    '/_authenticated/app/projects/$id': {
+      id: '/_authenticated/app/projects/$id'
+      path: '/$id'
+      fullPath: '/app/projects/$id'
+      preLoaderRoute: typeof AuthenticatedAppProjectsIdRouteImport
+      parentRoute: typeof AuthenticatedAppProjectsRoute
+    }
   }
 }
+
+interface AuthenticatedAppProjectsRouteChildren {
+  AuthenticatedAppProjectsIdRoute: typeof AuthenticatedAppProjectsIdRoute
+}
+
+const AuthenticatedAppProjectsRouteChildren: AuthenticatedAppProjectsRouteChildren =
+  {
+    AuthenticatedAppProjectsIdRoute: AuthenticatedAppProjectsIdRoute,
+  }
+
+const AuthenticatedAppProjectsRouteWithChildren =
+  AuthenticatedAppProjectsRoute._addFileChildren(
+    AuthenticatedAppProjectsRouteChildren,
+  )
+
+interface AuthenticatedAppSupportRouteChildren {
+  AuthenticatedAppSupportIdRoute: typeof AuthenticatedAppSupportIdRoute
+}
+
+const AuthenticatedAppSupportRouteChildren: AuthenticatedAppSupportRouteChildren =
+  {
+    AuthenticatedAppSupportIdRoute: AuthenticatedAppSupportIdRoute,
+  }
+
+const AuthenticatedAppSupportRouteWithChildren =
+  AuthenticatedAppSupportRoute._addFileChildren(
+    AuthenticatedAppSupportRouteChildren,
+  )
+
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
+  AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
+  AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
+  AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
+  AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
+  AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
+  AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
+  AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
+  AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
+  AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
+  AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface EstadosRouteChildren {
   EstadosStateRoute: typeof EstadosStateRoute
@@ -588,7 +919,9 @@ const EstadosRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ServiceRoute: ServiceRoute,
+  AuthRoute: AuthRoute,
   CidadesRoute: CidadesRoute,
   ContatoRoute: ContatoRoute,
   EstadosRoute: EstadosRouteWithChildren,
@@ -597,6 +930,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   ServicosRoute: ServicosRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
