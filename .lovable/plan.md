@@ -1,79 +1,61 @@
+Plano sequencial — uma entrega por vez, validando antes da próxima.
 
-# Plano de implementação
+## Entrega 1 — Auto-linking de partners.user_id
 
-## Sprint atual — Tracking server-side (executar agora)
+Casar parceiros aprovados ao usuário recém-criado pelo email.
 
-### 1. Middleware global em `src/start.ts`
-Adicionar `visitorTrackingMiddleware` que roda **depois** de `globalBlockMiddleware`:
+- Migration: estender `handle_new_user_profile()` (trigger AFTER INSERT em `auth.users`) para também executar:
+  `UPDATE public.partners SET user_id = NEW.id WHERE LOWER(email) = LOWER(NEW.email) AND user_id IS NULL AND status = 'approved'`
+- Registrar em `partner_audit_log` (action: `auto_linked`) quando ocorrer.
+- Sem alteração de frontend.
 
-- Reusa o `shouldSkip(pathname)` existente (já filtra `.png/.jpg/.css/.js/.svg/_build/_server/assets/...`) → retorna `next()` imediato para assets.
-- Lê cookie `0web_vid`. Se ausente, gera `crypto.randomUUID()` e seta:
-  ```
-  Set-Cookie: 0web_vid=<uuid>; Path=/; Max-Age=63072000; HttpOnly; Secure; SameSite=Lax
-  ```
-- Lê cookie `0web_consent_v1` (server-side). Se `analytics_storage !== "granted"` → usa `visitor_id` efêmero por request (não persiste cookie, não escreve no banco — apenas conta agregado opcional). Decisão: **pular o insert** quando consentimento negado.
-- Extrai `cf-connecting-ip`, `cf-ipcountry`, `cf-ipcity`, `cf-ip-asn`, `user-agent`, `referer`, UTMs da query.
-- Calcula `ip_hash` (sha256 com salt diário, mesmo padrão de `trackVisit`).
-- Dispara `ctx.waitUntil(insertPromise)` via `getEvent().context.cloudflare?.ctx?.waitUntil(...)` (fallback: `void promise` se não disponível em dev local).
-- Insert usa **upsert com chave composta** `onConflict: "ip_hash,day,path"` para 1 registro por (visitante × dia × pathname).
+## Entrega 2 — Attribution no formulário de orçamento
 
-### 2. Migration — índice único para dedup por página
-```sql
-CREATE UNIQUE INDEX IF NOT EXISTS visitantes_rastreio_dedup_page
-  ON public.visitantes_rastreio (ip_hash, day, path);
-```
-(complementa o índice existente `ip_hash,day` que dedup por visitante/dia inteiro)
+Capturar `0web_partner` cookie e atribuir ao lead após sucesso.
 
-### 3. Remover duplicação no client
-- `src/components/site/AnalyticsBootstrap.tsx`: remover o bloco `void track({...})` e o `useServerFn(trackVisit)` — manter apenas a parte de GA4/GTM/consent.
-- `trackVisit` server fn permanece (usada por outras rotas / fallback), mas não é mais chamada no bootstrap.
+- Localizar o(s) formulário(s) de orçamento existente(s) (`/orcamento`, `/contato`, etc.).
+- No `onSubmit`, ler `document.cookie` por `0web_partner`.
+- Após sucesso do insert em `lead_submissions`, chamar `attachAttributionToLead({ leadId, code })`.
+- Fire-and-forget (não bloqueia UX); log silencioso se falhar.
 
-### 4. Consentimento
-- Cookie `0web_consent_v1` já é gravado pelo `ConsentBanner` → expor via `document.cookie` (não-HttpOnly) para o middleware ler.
-- Middleware: se negado, gera UUID efêmero (não persiste) e **não** insere.
+## Entrega 3 — computeCommission
 
----
+Calcular comissão a partir de `commission_rules` e persistir.
 
-## Próximos sprints sugeridos
+- Nova tabela `partner_commissions`: `partner_id`, `attribution_id`, `rule_id`, `base_amount`, `commission_amount`, `commission_type`, `status` (pending/approved/paid/cancelled), `period`, `notes`, timestamps.
+- Server fn `computeCommission({ attributionId, baseAmount })`:
+  - Busca regra ativa do `partner.kind` (ou regra default), aplica `percent`/`fixed`/`tiered`.
+  - Insere `partner_commissions` com status `pending`.
+- Botão no admin (PartnersTab) para "Calcular comissões pendentes" a partir de atribuições convertidas.
 
-### Sprint 20 — SEO Remoto (após autorizar Search Console)
-- Sync diário de coverage/sitemap via cron `/api/public/hooks/seo-monitor`
-- Painel admin com erros de indexação, CTR/posição por URL, alertas de queda
-- Sitemap auto-submit ao Search Console
+## Entrega 4 — Sugestão por território
 
-### Sprint 21 — Anti-bot reforçado
-- Fingerprint client-side (canvas/WebGL hash) cruzado com `visitor_id`
-- Blocklist por ASN datacenter (já tem base em `blocked_asns`) → UI admin para curar
-- Rate-limit por fingerprint + IP combinado
-- Challenge JS leve (proof-of-work) para IPs suspeitos
+Sugerir representante ativo ao receber lead com city/state.
 
-### Sprint 22 — CRM Kanban + Propostas PDF
-- Drag-and-drop em `/app/crm` com colunas por `status`
-- Gerador de proposta PDF a partir de `lead_submissions` + template
-- Assinatura digital embutida (link único, audit trail)
-- Disparo automático ao mudar status para "proposta_enviada"
+- Server fn `suggestPartnerForLead({ leadId, city, state })`:
+  - Query `partner_territories` por match (state obrigatório, city opcional), priorizando matches mais específicos.
+  - Filtra parceiros `status = 'approved'` e `kind` representativo.
+- Trigger DB ou hook server: ao inserir `lead_submission` sem `partner_attribution`, popular `partner_attributions` com o melhor match (registrar `source = 'territory'`).
+- Admin: badge "Sugerido por território" na lista de leads.
 
-### Sprint 23 — Alertas e webhooks
-- TOTP real (QR + recovery codes) — completar Sprint 19
-- Webhooks Slack/Discord para: anomalias, uptime <99%, leads quentes
-- Digest diário por e-mail/WhatsApp do estado das integrações
+## Entrega 5 — Anti-spam em /parceiros
 
-### Sprint 24 — Performance & SEO técnico
-- Preload da imagem LCP via `head().links` em rotas-chave
-- Conversão de imagens bundled para AVIF/WebP via `vite-imagetools`
-- Schema.org LD-JSON dinâmico (Organization, LocalBusiness, Service, Article)
-- Core Web Vitals tracking dedicado em `visitor_events`
+Rate-limit por IP (janela deslizante) + honeypot, sem captcha externo.
 
-### Sprint 25 — Multi-tenant / White-label
-- Aproveitar `portals` existente → tema/domínio por portal
-- Admin por portal isolado via RLS (`has_portal_role`)
-- Faturamento por portal (Stripe Connect)
+- Migration: tabela `rate_limit_buckets` (`scope` text, `ip_hash` text, `created_at` timestamptz). Index parcial em (scope, ip_hash, created_at).
+- Função SQL `check_and_record_rate_limit(scope, ip_hash, window_seconds, max_hits)` → boolean (true = permitido).
+- Form `/parceiros`: campo honeypot oculto (`website_url`) — se preenchido, descarta silenciosamente.
+- Server fn `applyAsPartner`: lê IP do header, faz SHA-256, chama RPC de rate-limit (10 req / 1h por IP em `partner_signup`). Valida com Zod estrita (email, telefone, max-lengths).
+- Cleanup: incluir purge de `rate_limit_buckets` antigos na rotina LGPD existente.
 
----
+## Detalhes Técnicos
 
-## Decisões abertas
-1. **Consentimento**: pular insert totalmente quando negado, ou inserir versão anonimizada (sem `ip_hash`, sem UTMs)? Recomendo pular.
-2. **Dedup**: chave `(ip_hash, day, path)` vs `(visitor_id_cookie, day, path)`? Cookie é mais estável (sobrevive a mudança de IP no mobile). Recomendo migrar para `visitor_id` do cookie.
-3. **Ordem dos próximos sprints**: confirmar prioridade — sugiro 20 (SEO) → 22 (CRM/PDF) → 21 (anti-bot) → 23 → 24.
+- Triggers: `SECURITY DEFINER`, `search_path = public`, sempre em DO blocks idempotentes.
+- Server fns sob `src/lib/*.functions.ts`; importar `client.server` apenas dentro do `.handler()` com `await import()`.
+- RLS: `partner_commissions` legível pelo dono (`user_id = auth.uid()` via partner_id) e por admin; `rate_limit_buckets` sem grant para anon/authenticated (apenas service_role).
+- Cookie `0web_partner` já é setado em `/r/$code` (60 dias) — não alterar.
+- Logs: `console.error` em falhas, sem expor PII.
 
-Aprove para eu executar o Sprint atual e me diga qual dos próximos atacar em seguida.
+## Ordem de execução
+
+1 → validação → 2 → validação → 3 → validação → 4 → validação → 5. Cada entrega = 1 migration (se aplicável) + arquivos de código + nota no chat antes de prosseguir.
