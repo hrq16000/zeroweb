@@ -57,17 +57,29 @@ export function PartnersTab() {
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-bold">Parceiros</h2>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            <option value="">Todos</option>
-            <option value="pendente">Pendentes</option>
-            <option value="aprovado">Aprovados</option>
-            <option value="suspenso">Suspensos</option>
-            <option value="bloqueado">Bloqueados</option>
-          </select>
+          <div className="flex gap-2 items-center">
+            <button
+              type="button"
+              onClick={async () => {
+                const r = await computePendingCommissions();
+                alert(`Comissões calculadas: ${r.processed} ok, ${r.errors} erros`);
+              }}
+              className="rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm"
+            >
+              Calcular comissões pendentes
+            </button>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Todos</option>
+              <option value="pendente">Pendentes</option>
+              <option value="aprovado">Aprovados</option>
+              <option value="suspenso">Suspensos</option>
+              <option value="bloqueado">Bloqueados</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (
