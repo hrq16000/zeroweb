@@ -72,6 +72,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authenticated/app.visitantes'
+import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
@@ -89,6 +90,7 @@ import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
+import { Route as ApiPublicHooksLicenseUsageSnapshotRouteImport } from './routes/api/public/hooks/license-usage-snapshot'
 import { Route as ApiPublicHooksLgpdMaintenanceRouteImport } from './routes/api/public/hooks/lgpd-maintenance'
 import { Route as ApiPublicHooksIntegrationHealthcheckRouteImport } from './routes/api/public/hooks/integration-healthcheck'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
@@ -97,6 +99,7 @@ import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
 import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes/_authenticated/app.marketplace.company'
 import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_authenticated/app.marketplace.admin'
+import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
 
 const TrafegoPagoRoute = TrafegoPagoRouteImport.update({
   id: '/trafego-pago',
@@ -415,6 +418,12 @@ const AuthenticatedAppVisitantesRoute =
     path: '/visitantes',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppTemplatesRoute =
+  AuthenticatedAppTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -511,6 +520,12 @@ const ApiPublicHooksSeoMonitorRoute =
     path: '/api/public/hooks/seo-monitor',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLicenseUsageSnapshotRoute =
+  ApiPublicHooksLicenseUsageSnapshotRouteImport.update({
+    id: '/api/public/hooks/license-usage-snapshot',
+    path: '/api/public/hooks/license-usage-snapshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksLgpdMaintenanceRoute =
   ApiPublicHooksLgpdMaintenanceRouteImport.update({
     id: '/api/public/hooks/lgpd-maintenance',
@@ -558,6 +573,12 @@ const AuthenticatedAppMarketplaceAdminRoute =
     id: '/admin',
     path: '/admin',
     getParentRoute: () => AuthenticatedAppMarketplaceRoute,
+  } as any)
+const AuthenticatedAppAuditoriaIdentidadeRoute =
+  AuthenticatedAppAuditoriaIdentidadeRouteImport.update({
+    id: '/auditoria/identidade',
+    path: '/auditoria/identidade',
+    getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -634,10 +655,12 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
+  '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
@@ -646,6 +669,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -722,10 +746,12 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
+  '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
@@ -734,6 +760,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -813,10 +840,12 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
+  '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
@@ -825,6 +854,7 @@ export interface FileRoutesById {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -904,10 +934,12 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reports'
     | '/app/support'
+    | '/app/templates'
     | '/app/visitantes'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/app/'
+    | '/app/auditoria/identidade'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
@@ -916,6 +948,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesByTo: FileRoutesByTo
@@ -992,10 +1025,12 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reports'
     | '/app/support'
+    | '/app/templates'
     | '/app/visitantes'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/app'
+    | '/app/auditoria/identidade'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
@@ -1004,6 +1039,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   id:
@@ -1082,10 +1118,12 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
     | '/_authenticated/app/support'
+    | '/_authenticated/app/templates'
     | '/_authenticated/app/visitantes'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/_authenticated/app/'
+    | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/marketplace/admin'
     | '/_authenticated/app/marketplace/company'
     | '/_authenticated/app/marketplace/provider'
@@ -1094,6 +1132,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesById: FileRoutesById
@@ -1161,6 +1200,7 @@ export interface RootRouteChildren {
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
   ApiPublicHooksIntegrationHealthcheckRoute: typeof ApiPublicHooksIntegrationHealthcheckRoute
   ApiPublicHooksLgpdMaintenanceRoute: typeof ApiPublicHooksLgpdMaintenanceRoute
+  ApiPublicHooksLicenseUsageSnapshotRoute: typeof ApiPublicHooksLicenseUsageSnapshotRoute
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -1608,6 +1648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppVisitantesRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/templates': {
+      id: '/_authenticated/app/templates'
+      path: '/templates'
+      fullPath: '/app/templates'
+      preLoaderRoute: typeof AuthenticatedAppTemplatesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/support': {
       id: '/_authenticated/app/support'
       path: '/support'
@@ -1727,6 +1774,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/license-usage-snapshot': {
+      id: '/api/public/hooks/license-usage-snapshot'
+      path: '/api/public/hooks/license-usage-snapshot'
+      fullPath: '/api/public/hooks/license-usage-snapshot'
+      preLoaderRoute: typeof ApiPublicHooksLicenseUsageSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/lgpd-maintenance': {
       id: '/api/public/hooks/lgpd-maintenance'
       path: '/api/public/hooks/lgpd-maintenance'
@@ -1782,6 +1836,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/marketplace/admin'
       preLoaderRoute: typeof AuthenticatedAppMarketplaceAdminRouteImport
       parentRoute: typeof AuthenticatedAppMarketplaceRoute
+    }
+    '/_authenticated/app/auditoria/identidade': {
+      id: '/_authenticated/app/auditoria/identidade'
+      path: '/auditoria/identidade'
+      fullPath: '/app/auditoria/identidade'
+      preLoaderRoute: typeof AuthenticatedAppAuditoriaIdentidadeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
   }
 }
@@ -1851,8 +1912,10 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
+  AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppVisitantesRoute: typeof AuthenticatedAppVisitantesRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+  AuthenticatedAppAuditoriaIdentidadeRoute: typeof AuthenticatedAppAuditoriaIdentidadeRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
@@ -1872,8 +1935,11 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
+  AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppVisitantesRoute: AuthenticatedAppVisitantesRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+  AuthenticatedAppAuditoriaIdentidadeRoute:
+    AuthenticatedAppAuditoriaIdentidadeRoute,
 }
 
 const AuthenticatedAppRouteWithChildren =
@@ -1965,6 +2031,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksIntegrationHealthcheckRoute:
     ApiPublicHooksIntegrationHealthcheckRoute,
   ApiPublicHooksLgpdMaintenanceRoute: ApiPublicHooksLgpdMaintenanceRoute,
+  ApiPublicHooksLicenseUsageSnapshotRoute:
+    ApiPublicHooksLicenseUsageSnapshotRoute,
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }
