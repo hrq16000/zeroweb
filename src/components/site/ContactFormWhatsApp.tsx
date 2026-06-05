@@ -27,7 +27,9 @@ export function ContactFormWhatsApp({
   ctx = "contact_form",
   title = "Fale com a 0WEB e receba uma proposta",
   defaultMessage = "Quero uma proposta da 0WEB.",
+  redirectTo,
 }: Props) {
+  const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
 
