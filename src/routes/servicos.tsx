@@ -6,6 +6,9 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { SERVICES, type ServiceCategory, type ServiceData } from "@/lib/services-data";
+import { SocialProofBlock } from "@/components/site/SocialProofBlock";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 
 export const Route = createFileRoute("/servicos")({
   head: () => {
@@ -97,6 +100,25 @@ function ServicosHub() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <SocialProofBlock ctxId="servicos_page" />
+
+        <RelatedLinksGrid
+          title="Continue explorando a 0WEB"
+          subtitle="Páginas pensadas para responder dúvidas e acelerar sua decisão."
+          only={["/planos", "/faq", "/cases", "/trafego-pago-local", "/seo", "/contato"]}
+        />
+
+        <section className="py-16">
+          <div className="mx-auto max-w-3xl px-5 lg:px-8">
+            <ContactFormWhatsApp
+              source="servicos_form_whatsapp"
+              ctx="servicos_page"
+              title="Receba uma proposta personalizada"
+              defaultMessage="Olá! Vi os serviços da 0WEB e quero uma proposta personalizada."
+            />
           </div>
         </section>
 
