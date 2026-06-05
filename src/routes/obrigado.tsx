@@ -166,7 +166,7 @@ function ObrigadoPage() {
               href={whatsappUrl(content.whatsappMessage, `obrigado_page_${content.channel}`)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleCta("whatsapp", "Falar no WhatsApp agora")}
+              onClick={waHero.onClick}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-4 shadow-glow-primary"
             >
               <MessageCircle className="w-5 h-5" />
@@ -174,7 +174,7 @@ function ObrigadoPage() {
             </a>
             <Link
               to={content.finalCtaTo}
-              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel)}
+              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel, 0, content.finalCtaTo)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-6 py-4 font-semibold hover:border-primary transition-colors"
             >
               <Sparkles className="w-4 h-4 text-primary" />
