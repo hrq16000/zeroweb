@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrafegoPagoLocalRouteImport } from './routes/trafego-pago-local'
 import { Route as TrafegoPagoRouteImport } from './routes/trafego-pago'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
@@ -107,6 +108,11 @@ import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes
 import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_authenticated/app.marketplace.admin'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
 
+const TrafegoPagoLocalRoute = TrafegoPagoLocalRouteImport.update({
+  id: '/trafego-pago-local',
+  path: '/trafego-pago-local',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrafegoPagoRoute = TrafegoPagoRouteImport.update({
   id: '/trafego-pago',
   path: '/trafego-pago',
@@ -659,6 +665,7 @@ export interface FileRoutesByFullPath {
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
+  '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -757,6 +764,7 @@ export interface FileRoutesByTo {
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
+  '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
@@ -856,6 +864,7 @@ export interface FileRoutesById {
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
+  '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
@@ -956,6 +965,7 @@ export interface FileRouteTypes {
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
+    | '/trafego-pago-local'
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
@@ -1054,6 +1064,7 @@ export interface FileRouteTypes {
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
+    | '/trafego-pago-local'
     | '/$city/$service'
     | '/blog/$slug'
     | '/blog/automacao'
@@ -1152,6 +1163,7 @@ export interface FileRouteTypes {
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
+    | '/trafego-pago-local'
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
@@ -1252,6 +1264,7 @@ export interface RootRouteChildren {
   SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
   TermosRoute: typeof TermosRoute
   TrafegoPagoRoute: typeof TrafegoPagoRoute
+  TrafegoPagoLocalRoute: typeof TrafegoPagoLocalRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogAutomacaoRoute: typeof BlogAutomacaoRoute
@@ -1286,6 +1299,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trafego-pago-local': {
+      id: '/trafego-pago-local'
+      path: '/trafego-pago-local'
+      fullPath: '/trafego-pago-local'
+      preLoaderRoute: typeof TrafegoPagoLocalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trafego-pago': {
       id: '/trafego-pago'
       path: '/trafego-pago'
@@ -2131,6 +2151,7 @@ const rootRouteChildren: RootRouteChildren = {
   SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
   TermosRoute: TermosRoute,
   TrafegoPagoRoute: TrafegoPagoRoute,
+  TrafegoPagoLocalRoute: TrafegoPagoLocalRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogAutomacaoRoute: BlogAutomacaoRoute,

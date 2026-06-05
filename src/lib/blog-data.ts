@@ -21,12 +21,25 @@ export const categories = [
 
 import chatgpt3PalavrasCover from "@/assets/blog-chatgpt-3-palavras.jpg";
 import chatgpt3PalavrasInline from "@/assets/blog-chatgpt-3-palavras-2.jpg";
+import trafegoPago499Capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 
 export const inlineImages = {
   "3-palavras-chatgpt-respostas-inteligentes": chatgpt3PalavrasInline,
 } as const;
 
 export const posts: BlogPost[] = [
+  {
+    slug: "trafego-pago-local-499-mais-clientes-mais-vendas",
+    title: "Tráfego Pago para Negócios Locais: como ter mais clientes e mais vendas a partir de R$499/mês",
+    excerpt:
+      "Enquanto você espera indicações, seus concorrentes aparecem na frente de quem já quer comprar. Veja como o tráfego pago local da 0WEB gera mensagens, ligações e vendas reais — sem contrato e sem fidelidade.",
+    category: "Marketing Digital",
+    date: "2026-06-05",
+    readTime: "8 min",
+    cover: trafegoPago499Capa.url,
+    content:
+      "🚨 SEU NEGÓCIO ESTÁ PERDENDO CLIENTES TODOS OS DIAS 🚨\n\nEnquanto você espera indicações ou faz posts que ninguém vê, seus concorrentes estão aparecendo na frente de quem JÁ quer comprar. Isso não é sorte. É tráfego pago bem feito.\n\n## Pare de torcer. Comece a vender.\n\nTráfego pago para negócios locais é o caminho mais rápido para colocar sua empresa na frente do cliente certo, na hora certa, todos os dias. Não é sobre alcançar milhões — é sobre alcançar as pessoas que estão pesquisando o seu serviço agora mesmo, no seu bairro, na sua cidade.\n\nA diferença entre quem cresce e quem fica parado em 2026 não é talento, é visibilidade paga e bem segmentada.\n\n## O que muda quando você ativa tráfego pago local\n\n- 📲 Mais mensagens no WhatsApp e Direct de pessoas prontas para fechar\n- 📞 Mais ligações de clientes locais procurando o que você vende\n- 🛒 Mais vendas reais — não vaidade de curtidas e seguidores\n- 📍 Aparecer no Google Maps, no Instagram e no Facebook ao mesmo tempo\n- 📊 Relatórios claros mostrando exatamente para onde cada real foi\n\n## Planos a partir de R$499/mês\n\nNa 0WEB acreditamos que tráfego pago não pode ser refém de contrato longo. Por isso:\n\n- ❌ Sem contrato\n- ❌ Sem fidelidade\n- ❌ Sem conversa fiada\n\nVocê entra porque quer vender mais. Sai quando quiser.\n\n## O que está incluso\n\n- ✅ Anúncios no Instagram, Facebook e Google\n- ✅ Foco total em gerar clientes, não curtidas\n- ✅ Suporte humano de verdade — ninguém te abandona\n- ✅ Relatórios claros — você vê pra onde cada real vai\n- ✅ Criativos prontos para performance (imagem, vídeo curto e copy)\n- ✅ Públicos locais com segmentação cirúrgica (raio, idade, intenção)\n\n## Por que negócios locais ganham mais com tráfego pago\n\nEmpresas locais competem em um raio pequeno. Quando você ativa anúncios geolocalizados, sua marca aparece para quem está literalmente a poucos quilômetros de você — e que já está com a intenção de compra ativada. O custo por contato cai, a taxa de conversão sobe e o retorno é mensurável semana a semana.\n\nGoogle Ads cobre intenção (\"pizzaria perto de mim\"), Instagram e Facebook cobrem descoberta e remarketing (lembrar quem visitou seu perfil). Juntos, eles cercam o cliente em toda a jornada de decisão.\n\n## ⚠️ Se você não anuncia, seu concorrente anuncia\n\nE ele fica com seus clientes. É simples assim.\n\nEm 2026, o cliente local pesquisa antes de comprar — e clica no primeiro que aparece com boa proposta. Se sua empresa não estiver lá, alguém estará.\n\n## Comece a receber clientes ainda esta semana\n\nAs campanhas da 0WEB entram no ar em até 72h após o briefing. A maioria dos clientes começa a receber mensagens, ligações e pedidos na primeira semana de veiculação.\n\n💥 Ou você aparece.\n💥 Ou você desaparece.\n\nFale com a 0WEB no WhatsApp e comece com planos a partir de R$499/mês — sem contrato, sem fidelidade e com suporte humano de verdade.",
+  },
   {
     slug: "3-palavras-chatgpt-respostas-inteligentes",
     title: "As 3 palavras mágicas que fazem o ChatGPT dar respostas muito mais inteligentes",
