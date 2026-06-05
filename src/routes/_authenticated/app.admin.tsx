@@ -49,32 +49,57 @@ function AdminPage() {
   );
 }
 
+// Group setting keys by integration prefix (e.g. "uazapi.token" → "uazapi").
+// "supabase" and "lovable_ai" appear in the status panel even without keys.
+const INTEGRATION_LABELS: Record<string, string> = {
+  uazapi: "uazapi (WhatsApp)",
+  supabase: "Lovable Cloud (banco)",
+  lovable_ai: "Lovable AI Gateway",
+};
+const TESTABLE = new Set(["uazapi", "supabase", "lovable_ai"]);
+
 function SettingsTab() {
   const ls = useServerFn(listSettings);
   const us = useServerFn(upsertSetting);
+  const lis = useServerFn(listIntegrationStatus);
+  const ti = useServerFn(testIntegration);
   const [rows, setRows] = useState<any[]>([]);
+  const [status, setStatus] = useState<Record<string, any>>({});
   const [edits, setEdits] = useState<Record<string, string>>({});
   const [err, setErr] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
+  const [testing, setTesting] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [openHistory, setOpenHistory] = useState<string | null>(null);
 
-  const load = () =>
-    ls()
-      .then((r) => {
-        setRows(r.rows as any[]);
-        const init: Record<string, string> = {};
-        (r.rows as any[]).forEach((s) => {
-          init[s.key] = s.is_secret ? "" : s.value ?? "";
-        });
-        setEdits(init);
-      })
-      .catch((e) => setErr(e.message));
+  const load = async () => {
+    try {
+      const r = await ls();
+      setRows(r.rows as any[]);
+      const init: Record<string, string> = {};
+      (r.rows as any[]).forEach((s) => {
+        init[s.key] = s.is_secret ? "" : s.value ?? "";
+      });
+      setEdits(init);
+      const st = await lis();
+      const map: Record<string, any> = {};
+      (st.rows as any[]).forEach((x) => (map[x.key] = x));
+      setStatus(map);
+    } catch (e: any) {
+      setErr(e.message);
+    }
+  };
   useEffect(() => {
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (err) return <p className="text-sm text-destructive mt-5">{err}. (Sua conta precisa do papel admin.)</p>;
+  if (err)
+    return (
+      <p className="text-sm text-destructive mt-5">
+        {err}. (Sua conta precisa do papel <code>admin</code> ou <code>admin_integrations</code>.)
+      </p>
+    );
 
   const save = async (key: string, is_secret: boolean) => {
     setSaving(key);
@@ -91,60 +116,243 @@ function SettingsTab() {
     }
   };
 
+  const runTest = async (key: "uazapi" | "supabase" | "lovable_ai") => {
+    setTesting(key);
+    setMsg(null);
+    try {
+      const r = await ti({ data: { key } });
+      setMsg(`${key}: ${r.ok ? "OK" : "FALHA"} — ${r.message}`);
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setTesting(null);
+    }
+  };
+
+  // Group settings by prefix before the first "."
+  const grouped: Record<string, any[]> = {};
+  rows.forEach((s) => {
+    const prefix = s.key.includes(".") ? s.key.split(".")[0] : s.key;
+    (grouped[prefix] ||= []).push(s);
+  });
+  // Ensure testable integrations show up even with no settings
+  TESTABLE.forEach((k) => {
+    if (!grouped[k]) grouped[k] = [];
+  });
+
   return (
     <div className="mt-5 space-y-4">
       <div className="rounded-xl border border-border bg-card p-4">
         <h2 className="font-semibold">Integrações</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Configurações usadas em runtime (cache de 60s). Campos marcados como segredo não exibem o valor atual após salvo.
+          Tudo gerenciável pelo painel. Cada alteração é registrada em histórico (auditoria + rollback).
+          Cache de leitura em runtime: 60s. Campos de segredo não exibem o valor após salvar.
         </p>
       </div>
       {msg && <p className="text-xs text-primary">{msg}</p>}
-      <div className="space-y-2">
-        {rows.map((s) => (
-          <div key={s.key} className="rounded-xl border border-border bg-card p-4 space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="font-mono text-sm">{s.key}</div>
-                {s.description && <div className="text-xs text-muted-foreground">{s.description}</div>}
+      {Object.entries(grouped)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([group, items]) => {
+          const st = status[group];
+          const testable = TESTABLE.has(group);
+          return (
+            <div key={group} className="rounded-xl border border-border bg-card p-4 space-y-3">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <div className="font-semibold text-sm">{INTEGRATION_LABELS[group] ?? group}</div>
+                  <div className="text-[11px] text-muted-foreground font-mono">{group}.*</div>
+                </div>
+                <div className="flex items-center gap-2 text-[11px]">
+                  {st && (
+                    <span
+                      className={`px-2 py-0.5 rounded ${
+                        st.last_status === "ok"
+                          ? "bg-emerald-500/10 text-emerald-600"
+                          : st.last_status === "error"
+                            ? "bg-destructive/10 text-destructive"
+                            : "bg-muted text-muted-foreground"
+                      }`}
+                      title={st.last_message ?? ""}
+                    >
+                      {st.last_status === "ok" ? "OK" : st.last_status === "error" ? "ERRO" : "—"}
+                    </span>
+                  )}
+                  {st?.last_tested_at && (
+                    <span className="text-muted-foreground">
+                      {new Date(st.last_tested_at).toLocaleString("pt-BR")}
+                    </span>
+                  )}
+                  {testable && (
+                    <button
+                      onClick={() => runTest(group as any)}
+                      disabled={testing === group}
+                      className="px-2 py-1 rounded border border-border hover:bg-accent disabled:opacity-50"
+                    >
+                      {testing === group ? "…" : "Testar conexão"}
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-[10px]">
-                {s.is_secret && (
-                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                    segredo
-                  </span>
-                )}
-                <span
-                  className={`px-2 py-0.5 rounded ${
-                    s.has_value ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {s.has_value ? "configurado" : "vazio"}
-                </span>
-              </div>
+              {st?.last_message && (
+                <div className="text-[11px] text-muted-foreground font-mono break-all">
+                  {st.last_message}
+                </div>
+              )}
+              {items.length === 0 ? (
+                <div className="text-xs text-muted-foreground italic">
+                  Sem chaves configuráveis nesta integração.
+                </div>
+              ) : (
+                items.map((s: any) => (
+                  <div key={s.key} className="border-t border-border pt-3 space-y-2">
+                    <div className="flex items-center justify-between gap-3 flex-wrap">
+                      <div>
+                        <div className="font-mono text-xs">{s.key}</div>
+                        {s.description && (
+                          <div className="text-[11px] text-muted-foreground">{s.description}</div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 text-[10px]">
+                        {s.is_secret && (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                            segredo
+                          </span>
+                        )}
+                        <span
+                          className={`px-2 py-0.5 rounded ${
+                            s.has_value
+                              ? "bg-emerald-500/10 text-emerald-600"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {s.has_value ? "configurado" : "vazio"}
+                        </span>
+                        <button
+                          onClick={() => setOpenHistory(openHistory === s.key ? null : s.key)}
+                          className="px-2 py-0.5 rounded border border-border hover:bg-accent"
+                        >
+                          {openHistory === s.key ? "Fechar" : "Histórico"}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type={s.is_secret ? "password" : "text"}
+                        value={edits[s.key] ?? ""}
+                        onChange={(e) => setEdits((p) => ({ ...p, [s.key]: e.target.value }))}
+                        placeholder={
+                          s.is_secret && s.has_value
+                            ? "•••••••• (deixe em branco para manter)"
+                            : "valor"
+                        }
+                        className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
+                      />
+                      <button
+                        onClick={() => save(s.key, !!s.is_secret)}
+                        disabled={saving === s.key || (s.is_secret && (edits[s.key] ?? "") === "")}
+                        className="px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm disabled:opacity-50"
+                      >
+                        {saving === s.key ? "…" : "Salvar"}
+                      </button>
+                    </div>
+                    {openHistory === s.key && (
+                      <HistoryPanel settingKey={s.key} onAfterRollback={load} />
+                    )}
+                  </div>
+                ))
+              )}
             </div>
-            <div className="flex gap-2">
-              <input
-                type={s.is_secret ? "password" : "text"}
-                value={edits[s.key] ?? ""}
-                onChange={(e) => setEdits((p) => ({ ...p, [s.key]: e.target.value }))}
-                placeholder={s.is_secret && s.has_value ? "•••••••• (deixe em branco para manter)" : "valor"}
-                className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
-              />
-              <button
-                onClick={() => save(s.key, !!s.is_secret)}
-                disabled={saving === s.key || (s.is_secret && (edits[s.key] ?? "") === "")}
-                className="px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm disabled:opacity-50"
-              >
-                {saving === s.key ? "…" : "Salvar"}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          );
+        })}
     </div>
   );
 }
+
+function HistoryPanel({
+  settingKey,
+  onAfterRollback,
+}: {
+  settingKey: string;
+  onAfterRollback: () => Promise<void>;
+}) {
+  const lh = useServerFn(listSettingHistory);
+  const rb = useServerFn(rollbackSetting);
+  const [rows, setRows] = useState<any[]>([]);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const load = () =>
+    lh({ data: { key: settingKey, limit: 20 } })
+      .then((r) => setRows(r.rows as any[]))
+      .catch((e) => setErr(e.message));
+  useEffect(() => {
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settingKey]);
+
+  const doRollback = async (id: string) => {
+    if (!confirm("Reverter para esta versão? O valor atual também será preservado no histórico.")) return;
+    setBusy(id);
+    try {
+      await rb({ data: { history_id: id } });
+      await load();
+      await onAfterRollback();
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div className="mt-2 rounded-lg border border-border bg-background/50 p-3 space-y-2">
+      {err && <p className="text-xs text-destructive">{err}</p>}
+      {rows.length === 0 ? (
+        <p className="text-xs text-muted-foreground italic">Sem histórico.</p>
+      ) : (
+        <ul className="space-y-1.5 text-xs">
+          {rows.map((r) => (
+            <li key={r.id} className="flex items-start justify-between gap-3 border-b border-border/50 pb-1.5">
+              <div className="min-w-0 flex-1">
+                <div className="flex gap-2 items-center text-[10px]">
+                  <span
+                    className={`px-1.5 py-0.5 rounded uppercase ${
+                      r.action === "rollback"
+                        ? "bg-amber-500/10 text-amber-600"
+                        : r.action === "delete"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    {r.action}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {new Date(r.changed_at).toLocaleString("pt-BR")}
+                  </span>
+                </div>
+                <div className="font-mono text-[11px] mt-1 break-all">
+                  <span className="text-muted-foreground">antes:</span> {r.old_value ?? "—"}
+                </div>
+                <div className="font-mono text-[11px] break-all">
+                  <span className="text-muted-foreground">depois:</span> {r.new_value ?? "—"}
+                </div>
+              </div>
+              <button
+                onClick={() => doRollback(r.id)}
+                disabled={busy === r.id}
+                className="px-2 py-1 rounded border border-border hover:bg-accent text-[10px] disabled:opacity-50 shrink-0"
+              >
+                {busy === r.id ? "…" : "Reverter"}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 
 
 
