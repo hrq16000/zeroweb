@@ -1,7 +1,7 @@
 // Sprint 13 — Aba admin de parceiros
 import { useEffect, useState, useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { listPartnersAdmin, setPartnerStatus, getPartnerRanking } from "@/lib/partners.functions";
+import { listPartnersAdmin, setPartnerStatus, getPartnerRanking, computePendingCommissions } from "@/lib/partners.functions";
 import { Check, Ban, PauseCircle } from "lucide-react";
 
 type Partner = {
