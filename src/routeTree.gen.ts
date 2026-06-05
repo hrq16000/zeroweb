@@ -17,6 +17,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
+import { Route as SitemapEditorialDotxmlRouteImport } from './routes/sitemap-editorial[.]xml'
 import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
@@ -65,6 +66,7 @@ import { Route as AuthenticatedAppPortalsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
+import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
@@ -115,6 +117,11 @@ const SitemapMarketplaceDotxmlRoute =
     path: '/sitemap-marketplace.xml',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SitemapEditorialDotxmlRoute = SitemapEditorialDotxmlRouteImport.update({
+  id: '/sitemap-editorial.xml',
+  path: '/sitemap-editorial.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapCityServicesDotxmlRoute =
   SitemapCityServicesDotxmlRouteImport.update({
     id: '/sitemap-city-services.xml',
@@ -358,6 +365,12 @@ const AuthenticatedAppMarketplaceRoute =
     path: '/marketplace',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppEditorialRoute =
+  AuthenticatedAppEditorialRouteImport.update({
+    id: '/editorial',
+    path: '/editorial',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppDocumentsRoute =
   AuthenticatedAppDocumentsRouteImport.update({
     id: '/documents',
@@ -432,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -454,6 +468,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -497,6 +512,7 @@ export interface FileRoutesByTo {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -518,6 +534,7 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -563,6 +580,7 @@ export interface FileRoutesById {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -585,6 +603,7 @@ export interface FileRoutesById {
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -630,6 +649,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -652,6 +672,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/editorial'
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
@@ -695,6 +716,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -716,6 +738,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/editorial'
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
@@ -760,6 +783,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -782,6 +806,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
+    | '/_authenticated/app/editorial'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
     | '/_authenticated/app/notifications'
@@ -827,6 +852,7 @@ export interface RootRouteChildren {
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
   SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapEditorialDotxmlRoute: typeof SitemapEditorialDotxmlRoute
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
@@ -904,6 +930,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-marketplace.xml'
       fullPath: '/sitemap-marketplace.xml'
       preLoaderRoute: typeof SitemapMarketplaceDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-editorial.xml': {
+      id: '/sitemap-editorial.xml'
+      path: '/sitemap-editorial.xml'
+      fullPath: '/sitemap-editorial.xml'
+      preLoaderRoute: typeof SitemapEditorialDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-city-services.xml': {
@@ -1242,6 +1275,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppMarketplaceRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/editorial': {
+      id: '/_authenticated/app/editorial'
+      path: '/editorial'
+      fullPath: '/app/editorial'
+      preLoaderRoute: typeof AuthenticatedAppEditorialRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/documents': {
       id: '/_authenticated/app/documents'
       path: '/documents'
@@ -1354,6 +1394,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
@@ -1369,6 +1410,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,
   AuthenticatedAppMasterRoute: AuthenticatedAppMasterRoute,
@@ -1433,6 +1475,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
   SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapEditorialDotxmlRoute: SitemapEditorialDotxmlRoute,
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
