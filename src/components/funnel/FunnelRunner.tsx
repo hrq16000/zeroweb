@@ -12,6 +12,17 @@ import {
   type FunnelDefinition,
   type FunnelQuestion,
 } from "@/lib/dynamic-funnel.functions";
+import { trackEvent, trackConversion } from "@/lib/analytics";
+
+function readUtm(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const utm: Record<string, string> = {};
+  const url = new URL(window.location.href);
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach((k) => {
+    const v = url.searchParams.get(k); if (v) utm[k] = v;
+  });
+  return utm;
+}
 
 type Answers = Record<string, string | string[] | number>;
 
@@ -78,14 +89,28 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
   const progress = Math.round(((currentIdx + 1) / total) * 100);
   const autoAdvanceMs = Number((funnel.config as { auto_advance_ms?: number }).auto_advance_ms ?? 400);
 
+  // Track question view whenever the current question changes
+  useEffect(() => {
+    if (!current || done) return;
+    const utm = readUtm();
+    trackEvent("funnel_question_view", {
+      funnel_slug: funnel.slug,
+      funnel_id: funnel.id,
+      question_key: current.key,
+      question_type: current.type,
+      question_index: currentIdx,
+      total_questions: total,
+      utm_source: utm.utm_source,
+      utm_medium: utm.utm_medium,
+      utm_campaign: utm.utm_campaign,
+    });
+  }, [current, currentIdx, done, funnel.id, funnel.slug, total]);
+
   const finalize = useCallback(async (finalAnswers: Answers) => {
     setSubmitting(true);
     try {
+      const utm = readUtm();
       const url = new URL(window.location.href);
-      const utm: Record<string, string> = {};
-      ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach((k) => {
-        const v = url.searchParams.get(k); if (v) utm[k] = v;
-      });
       const result = await submit({
         data: {
           form_id: funnel.id,
@@ -100,6 +125,15 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
           },
         },
       });
+      trackConversion("funnel_complete", {
+        funnel_slug: funnel.slug,
+        funnel_id: funnel.id,
+        total_questions: total,
+        utm_source: utm.utm_source,
+        utm_medium: utm.utm_medium,
+        utm_campaign: utm.utm_campaign,
+        whatsapp_redirect: result.whatsapp_user_url ? true : false,
+      });
       setDone({ whatsapp: result.whatsapp_user_url });
       if (result.whatsapp_user_url) {
         // Open after a short beat so the success state can render.
@@ -109,7 +143,7 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
       setError(e instanceof Error ? e.message : "Erro ao enviar. Tente novamente.");
       setSubmitting(false);
     }
-  }, [funnel.id, submit, startedAt]);
+  }, [funnel.id, funnel.slug, submit, startedAt, total]);
 
   const goNext = useCallback((overrideValue?: unknown) => {
     setError(null);
@@ -120,6 +154,20 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
       ? { ...answers, [current.key]: overrideValue as Answers[string] }
       : answers;
     if (overrideValue !== undefined) setAnswers(nextAnswers);
+
+    // Track answer
+    const utm = readUtm();
+    trackEvent("funnel_answer", {
+      funnel_slug: funnel.slug,
+      funnel_id: funnel.id,
+      question_key: current.key,
+      question_type: current.type,
+      question_index: currentIdx,
+      answer_preview: Array.isArray(value) ? value.join(",").slice(0, 80) : String(value ?? "").slice(0, 80),
+      utm_source: utm.utm_source,
+      utm_medium: utm.utm_medium,
+      utm_campaign: utm.utm_campaign,
+    });
 
     const cond = evaluateCondition(current, nextAnswers, funnel);
     if (cond.end) { void finalize(nextAnswers); return; }
