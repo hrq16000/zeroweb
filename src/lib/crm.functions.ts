@@ -127,7 +127,12 @@ export const updateLead = createServerFn({ method: "POST" })
   .inputValidator((i) => UpdateSchema.parse(i))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      status?: string;
+      assignee?: string | null;
+      notes?: string | null;
+      company?: string | null;
+    } = {};
     if (data.status !== undefined) patch.status = data.status;
     if (data.assignee !== undefined) patch.assignee = data.assignee;
     if (data.notes !== undefined) patch.notes = data.notes;
