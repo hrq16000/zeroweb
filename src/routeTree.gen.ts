@@ -50,10 +50,12 @@ import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadeSlugRouteImport } from './routes/cidade.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
+import { Route as BlogMapaRouteImport } from './routes/blog.mapa'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
@@ -278,6 +280,11 @@ const CasesSlugRoute = CasesSlugRouteImport.update({
   path: '/cases/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogMapaRoute = BlogMapaRouteImport.update({
+  id: '/blog/mapa',
+  path: '/blog/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -297,6 +304,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const BlogClusterClusterRoute = BlogClusterClusterRouteImport.update({
+  id: '/blog/cluster/$cluster',
+  path: '/blog/cluster/$cluster',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   id: '/api/public/lead-webhook',
@@ -431,6 +443,7 @@ export interface FileRoutesByFullPath {
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -450,6 +463,7 @@ export interface FileRoutesByFullPath {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -493,6 +507,7 @@ export interface FileRoutesByTo {
   '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -512,6 +527,7 @@ export interface FileRoutesByTo {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -558,6 +574,7 @@ export interface FileRoutesById {
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -577,6 +594,7 @@ export interface FileRoutesById {
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -623,6 +641,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -642,6 +661,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/app/'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
@@ -685,6 +705,7 @@ export interface FileRouteTypes {
     | '/trafego-pago'
     | '/$city/$service'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -704,6 +725,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/app'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
@@ -749,6 +771,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -768,6 +791,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/reports'
     | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/_authenticated/app/'
     | '/_authenticated/app/marketplace/admin'
     | '/_authenticated/app/marketplace/company'
@@ -813,6 +837,7 @@ export interface RootRouteChildren {
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogMapaRoute: typeof BlogMapaRoute
   CasesSlugRoute: typeof CasesSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadeSlugRoute: typeof CidadeSlugRoute
@@ -820,6 +845,7 @@ export interface RootRouteChildren {
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
+  BlogClusterClusterRoute: typeof BlogClusterClusterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1111,6 +1137,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CasesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/mapa': {
+      id: '/blog/mapa'
+      path: '/blog/mapa'
+      fullPath: '/blog/mapa'
+      preLoaderRoute: typeof BlogMapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -1138,6 +1171,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/blog/cluster/$cluster': {
+      id: '/blog/cluster/$cluster'
+      path: '/blog/cluster/$cluster'
+      fullPath: '/blog/cluster/$cluster'
+      preLoaderRoute: typeof BlogClusterClusterRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/lead-webhook': {
       id: '/api/public/lead-webhook'
@@ -1403,6 +1443,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrafegoPagoRoute: TrafegoPagoRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BlogMapaRoute: BlogMapaRoute,
   CasesSlugRoute: CasesSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadeSlugRoute: CidadeSlugRoute,
@@ -1410,6 +1451,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
+  BlogClusterClusterRoute: BlogClusterClusterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
