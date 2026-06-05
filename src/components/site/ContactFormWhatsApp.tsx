@@ -41,7 +41,21 @@ export function ContactFormWhatsApp({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [geo, setGeo] = useState<GeoInfo | null>(null);
+  const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
   const shouldUseModal = useModal ?? !redirectTo;
+
+  // Subliminal IP geo on mount
+  useEffect(() => {
+    void getIpGeo().then((g) => { if (g) setGeo(g); });
+  }, []);
+
+  const askGps = async () => {
+    setGpsStatus("asking");
+    const g = await requestGpsThenFallback();
+    if (g) { setGeo(g); setGpsStatus(g.source.includes("gps") ? "ok" : "denied"); }
+    else setGpsStatus("denied");
+  };
 
   return (
     <>
