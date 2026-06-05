@@ -90,6 +90,7 @@ import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppLicensesRouteImport } from './routes/_authenticated/app.licenses'
 import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
+import { Route as AuthenticatedAppIndexacaoRouteImport } from './routes/_authenticated/app.indexacao'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppEcosystemRouteImport } from './routes/_authenticated/app.ecosystem'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
@@ -523,6 +524,12 @@ const AuthenticatedAppIntegracoesRoute =
     path: '/integracoes',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppIndexacaoRoute =
+  AuthenticatedAppIndexacaoRouteImport.update({
+    id: '/indexacao',
+    path: '/indexacao',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppEditorialRoute =
   AuthenticatedAppEditorialRouteImport.update({
     id: '/editorial',
@@ -701,6 +708,7 @@ export interface FileRoutesByFullPath {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -800,6 +808,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -902,6 +911,7 @@ export interface FileRoutesById {
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -1004,6 +1014,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/indexacao'
     | '/app/integracoes'
     | '/app/licenses'
     | '/app/marketplace'
@@ -1103,6 +1114,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/indexacao'
     | '/app/integracoes'
     | '/app/licenses'
     | '/app/marketplace'
@@ -1204,6 +1216,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/documents'
     | '/_authenticated/app/ecosystem'
     | '/_authenticated/app/editorial'
+    | '/_authenticated/app/indexacao'
     | '/_authenticated/app/integracoes'
     | '/_authenticated/app/licenses'
     | '/_authenticated/app/marketplace'
@@ -1879,6 +1892,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIntegracoesRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/indexacao': {
+      id: '/_authenticated/app/indexacao'
+      path: '/indexacao'
+      fullPath: '/app/indexacao'
+      preLoaderRoute: typeof AuthenticatedAppIndexacaoRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/editorial': {
       id: '/_authenticated/app/editorial'
       path: '/editorial'
@@ -2063,6 +2083,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
+  AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRoute
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -2086,6 +2107,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
+  AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRoute,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
