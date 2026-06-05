@@ -9,8 +9,9 @@ export const Route = createFileRoute("/empresa/$slug")({
     meta: [
       { title: `${params.slug} | Empresa verificada | 0WEB` },
       { name: "description", content: `Perfil da empresa ${params.slug} no marketplace 0WEB. Categorias, áreas atendidas, avaliações e contato.` },
-      { rel: "canonical", href: `${ORIGIN}/empresa/${params.slug}` } as never,
+      { property: "og:url", content: `${ORIGIN}/empresa/${params.slug}` },
     ],
+    links: [{ rel: "canonical", href: `${ORIGIN}/empresa/${params.slug}` }],
   }),
   component: CompanyPage,
 });

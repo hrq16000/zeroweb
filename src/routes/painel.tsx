@@ -15,6 +15,7 @@ import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { AnalyticsIdsAdmin } from "@/components/site/AnalyticsIdsAdmin";
 import { PainelGate } from "@/components/site/PainelGate";
 import { PlansAdmin } from "@/components/site/PlansAdmin";
+import { RedirectsAdmin } from "@/components/site/RedirectsAdmin";
 import { LhciAdmin } from "@/components/site/LhciAdmin";
 import { SeoThresholdsAdmin } from "@/components/site/SeoThresholdsAdmin";
 import { ExecutiveDashboard } from "@/components/site/ExecutiveDashboard";
@@ -178,6 +179,10 @@ function PainelPage() {
 
           <div className="mt-10">
             <PlansAdmin />
+          </div>
+
+          <div className="mt-10">
+            <RedirectsAdmin />
           </div>
 
           <div className="mt-10">

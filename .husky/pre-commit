@@ -27,4 +27,17 @@ if [ "$SKIP_SCHEMA_VALIDATION" != "1" ]; then
   fi
 fi
 
+# Validate canonical tags in route files.
+if [ "$SKIP_CANONICAL_CHECK" != "1" ]; then
+  echo "[pre-commit] validating canonicals..."
+  node scripts/validate-canonicals.mjs
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo ""
+    echo "✖ Pre-commit bloqueado: canonicals inconsistentes."
+    echo "  Corrija os links rel=canonical ou rode com SKIP_CANONICAL_CHECK=1 para pular."
+    exit $status
+  fi
+fi
+
 exit 0

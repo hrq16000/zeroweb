@@ -45,6 +45,128 @@ function shouldSkip(pathname: string): boolean {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Canonical / redirect middleware.
+// - Force canonical host (apex 0web.com.br, no www, https).
+// - Strip trailing slash (except root).
+// - Lookup custom redirects table (cached in-memory for 60s) and 301/308.
+// Runs FIRST in the chain so blocked/tracked rows are recorded against the
+// final URL, not the redirected one.
+// ---------------------------------------------------------------------------
+
+const CANONICAL_HOST = "0web.com.br";
+type RedirectHit = { to: string; status: number };
+const redirectCache = new Map<string, RedirectHit | null>();
+let redirectCacheAt = 0;
+const REDIRECT_CACHE_TTL_MS = 60_000;
+
+async function loadRedirectsIntoCache(): Promise<void> {
+  const now = Date.now();
+  if (redirectCache.size > 0 && now - redirectCacheAt < REDIRECT_CACHE_TTL_MS) return;
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("redirects")
+      .select("from_path,to_path,status_code,enabled")
+      .eq("enabled", true)
+      .limit(2000);
+    redirectCache.clear();
+    for (const r of (data ?? []) as Array<{
+      from_path: string;
+      to_path: string;
+      status_code: number;
+    }>) {
+      redirectCache.set(r.from_path, { to: r.to_path, status: r.status_code });
+    }
+    redirectCacheAt = now;
+  } catch (e) {
+    console.warn("[redirects cache]", e);
+  }
+}
+
+function recordRedirectHit(fromPath: string): void {
+  // Fire-and-forget hit counter (best-effort, ignore errors).
+  (async () => {
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data } = await supabaseAdmin
+        .from("redirects")
+        .select("hits")
+        .eq("from_path", fromPath)
+        .maybeSingle();
+      const next = (data?.hits ?? 0) + 1;
+      await supabaseAdmin
+        .from("redirects")
+        .update({ hits: next, last_hit_at: new Date().toISOString() })
+        .eq("from_path", fromPath);
+    } catch {
+      /* noop */
+    }
+  })();
+}
+
+const canonicalRedirectMiddleware = createMiddleware().server(async ({ next, request }) => {
+  try {
+    if (request.method !== "GET" && request.method !== "HEAD") return next();
+    const url = new URL(request.url);
+    if (shouldSkip(url.pathname)) return next();
+
+    // 1) Host normalization: force apex + https.
+    let host = url.host;
+    let proto = request.headers.get("x-forwarded-proto") || url.protocol.replace(":", "");
+    let needsRedirect = false;
+    if (host.startsWith("www.")) {
+      host = host.slice(4);
+      needsRedirect = true;
+    }
+    // Only enforce canonical host when serving the production domain
+    // (avoids breaking preview/sandbox URLs).
+    const isProdHost = host === CANONICAL_HOST || host === `www.${CANONICAL_HOST}`;
+    if (isProdHost && host !== CANONICAL_HOST) {
+      host = CANONICAL_HOST;
+      needsRedirect = true;
+    }
+    if (isProdHost && proto !== "https") {
+      proto = "https";
+      needsRedirect = true;
+    }
+
+    // 2) Trailing slash: strip except root.
+    let pathname = url.pathname;
+    if (pathname.length > 1 && pathname.endsWith("/")) {
+      pathname = pathname.replace(/\/+$/, "");
+      needsRedirect = true;
+    }
+
+    // 3) Custom redirects table.
+    await loadRedirectsIntoCache();
+    const hit = redirectCache.get(pathname);
+    if (hit) {
+      recordRedirectHit(pathname);
+      const target = /^https?:\/\//i.test(hit.to)
+        ? hit.to
+        : `${proto}://${host}${hit.to}${url.search}`;
+      return new Response(null, {
+        status: hit.status,
+        headers: { Location: target, "Cache-Control": "public, max-age=300" },
+      });
+    }
+
+    if (needsRedirect) {
+      const target = `${proto}://${host}${pathname}${url.search}`;
+      return new Response(null, {
+        status: 308,
+        headers: { Location: target, "Cache-Control": "public, max-age=3600" },
+      });
+    }
+  } catch (e) {
+    console.warn("[canonicalRedirectMiddleware]", e);
+  }
+  return next();
+});
+
+
+
 const globalBlockMiddleware = createMiddleware().server(async ({ next, request }) => {
   try {
     const url = new URL(request.url);
@@ -216,5 +338,5 @@ const visitorTrackingMiddleware = createMiddleware().server(async ({ next, reque
 
 export const startInstance = createStart(() => ({
   functionMiddleware: [attachSupabaseAuth],
-  requestMiddleware: [globalBlockMiddleware, visitorTrackingMiddleware, errorMiddleware],
+  requestMiddleware: [canonicalRedirectMiddleware, globalBlockMiddleware, visitorTrackingMiddleware, errorMiddleware],
 }));

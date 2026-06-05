@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build && bun run postbuild",
     "build:dev": "vite build --mode development && bun run postbuild",
-    "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs",
+    "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs && node scripts/validate-canonicals.mjs",
     "preview": "vite preview",
     "lhci": "lhci autorun --config=.lighthouserc.cjs",
     "seo:images": "node scripts/validate-seo-images.mjs",

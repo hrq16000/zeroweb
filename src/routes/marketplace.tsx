@@ -11,8 +11,9 @@ export const Route = createFileRoute("/marketplace")({
       { name: "description", content: "Encontre profissionais e empresas verificadas em todo o Brasil para sites, SEO, Google Meu Negócio, tráfego pago e automação." },
       { property: "og:title", content: "Marketplace 0WEB" },
       { property: "og:description", content: "Catálogo nacional de prestadores e empresas verificadas." },
-      { rel: "canonical", href: `${ORIGIN}/marketplace` } as never,
+      { property: "og:url", content: `${ORIGIN}/marketplace` },
     ],
+    links: [{ rel: "canonical", href: `${ORIGIN}/marketplace` }],
   }),
   component: MarketplacePage,
 });

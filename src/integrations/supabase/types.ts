@@ -3370,6 +3370,45 @@ export type Database = {
         }
         Relationships: []
       }
+      redirects: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          from_path: string
+          hits: number
+          id: string
+          last_hit_at: string | null
+          notes: string | null
+          status_code: number
+          to_path: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          from_path: string
+          hits?: number
+          id?: string
+          last_hit_at?: string | null
+          notes?: string | null
+          status_code?: number
+          to_path: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          from_path?: string
+          hits?: number
+          id?: string
+          last_hit_at?: string | null
+          notes?: string | null
+          status_code?: number
+          to_path?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       remarketing_audiences: {
         Row: {
           active: boolean
