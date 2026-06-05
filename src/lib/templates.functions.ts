@@ -22,7 +22,7 @@ export const listTemplates = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let q = supabaseAdmin.from("content_templates").select("*").order("updated_at", { ascending: false });
-    if (data.kind) q = q.eq("kind", data.kind);
+    if (data.kind) q = q.eq("kind", data.kind as "landing_page" | "funnel" | "page" | "email" | "material" | "config");
     if (data.portal_id) q = q.or(`portal_id.eq.${data.portal_id},is_global.eq.true`);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
@@ -35,7 +35,7 @@ export const upsertTemplate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const payload: Record<string, unknown> = { ...data, created_by: userId };
+    const payload = { ...data, created_by: userId } as never;
     const q = supabaseAdmin.from("content_templates");
     const { data: row, error } = data.id
       ? await q.update(payload).eq("id", data.id).select().single()

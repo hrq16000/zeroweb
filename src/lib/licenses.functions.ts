@@ -49,7 +49,7 @@ export const upsertLicense = createServerFn({ method: "POST" })
     const userId = (context as { userId: string }).userId;
     await requireSuper(userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const payload: Record<string, unknown> = { ...data, created_by: userId };
+    const payload = { ...data, created_by: userId } as never;
     const q = supabaseAdmin.from("licenses");
     const { data: row, error } = data.id
       ? await q.update(payload).eq("id", data.id).select().single()
