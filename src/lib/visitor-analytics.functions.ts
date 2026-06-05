@@ -10,16 +10,12 @@ const FilterSchema = z.object({
   limit: z.number().int().min(1).max(500).default(100),
 });
 
-async function requireAdmin(supabase: Awaited<ReturnType<typeof getAuthedSupabase>>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function requireAdmin(supabase: any) {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("Unauthorized");
   const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
-  if (!roles?.some((r) => r.role === "admin")) throw new Error("Forbidden: admin only");
-}
-type AuthedSupabase = Awaited<ReturnType<typeof getAuthedSupabase>>;
-async function getAuthedSupabase(): Promise<AuthedSupabase> {
-  // helper for typing only — actual client comes from middleware context
-  throw new Error("unused");
+  if (!roles?.some((r: { role: string }) => r.role === "admin")) throw new Error("Forbidden: admin only");
 }
 
 /** Aggregated visits by page within a date range. */
