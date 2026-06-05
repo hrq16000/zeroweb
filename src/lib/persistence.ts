@@ -4,7 +4,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { getVisitorId, getSessionId, getDeviceType } from "./visitor";
-import { getActiveUtms } from "./site-config";
+import { getActiveUtms, getAttributionPayload } from "./site-config";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Json = any;
