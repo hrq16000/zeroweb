@@ -83,6 +83,13 @@ export type Database = {
             foreignKeyName: "analytics_events_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "analytics_events_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
             referencedRelation: "portals"
             referencedColumns: ["id"]
           },
@@ -567,6 +574,72 @@ export type Database = {
         }
         Relationships: []
       }
+      content_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_global: boolean
+          kind: Database["public"]["Enums"]["template_kind"]
+          name: string
+          payload: Json
+          portal_id: string | null
+          preview_url: string | null
+          slug: string
+          status: string
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_global?: boolean
+          kind: Database["public"]["Enums"]["template_kind"]
+          name: string
+          payload?: Json
+          portal_id?: string | null
+          preview_url?: string | null
+          slug: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_global?: boolean
+          kind?: Database["public"]["Enums"]["template_kind"]
+          name?: string
+          payload?: Json
+          portal_id?: string | null
+          preview_url?: string | null
+          slug?: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_templates_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "content_templates_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_settings: {
         Row: {
           assignees: string[]
@@ -683,6 +756,13 @@ export type Database = {
           variant?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "experiments_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
           {
             foreignKeyName: "experiments_portal_id_fkey"
             columns: ["portal_id"]
@@ -959,6 +1039,238 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "lead_submissions_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "lead_submissions_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      license_audit_log: {
+        Row: {
+          action: string
+          actor: string | null
+          created_at: string
+          id: string
+          ip_hash: string | null
+          license_id: string | null
+          payload: Json
+          portal_id: string | null
+          target: string | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          license_id?: string | null
+          payload?: Json
+          portal_id?: string | null
+          target?: string | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          license_id?: string | null
+          payload?: Json
+          portal_id?: string | null
+          target?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_audit_log_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_audit_log_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_audit_log_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "license_audit_log_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      license_usage_metrics: {
+        Row: {
+          created_at: string
+          custom: Json
+          day: string
+          id: string
+          leads_count: number
+          license_id: string
+          portal_id: string
+          projects_count: number
+          storage_mb: number
+          users_count: number
+          visits_count: number
+        }
+        Insert: {
+          created_at?: string
+          custom?: Json
+          day?: string
+          id?: string
+          leads_count?: number
+          license_id: string
+          portal_id: string
+          projects_count?: number
+          storage_mb?: number
+          users_count?: number
+          visits_count?: number
+        }
+        Update: {
+          created_at?: string
+          custom?: Json
+          day?: string
+          id?: string
+          leads_count?: number
+          license_id?: string
+          portal_id?: string
+          projects_count?: number
+          storage_mb?: number
+          users_count?: number
+          visits_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "license_usage_metrics_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_usage_metrics_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "license_usage_metrics_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "license_usage_metrics_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licenses: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          features: Json
+          id: string
+          limits: Json
+          metadata: Json
+          notes: string | null
+          parent_license_id: string | null
+          plan: string
+          portal_id: string
+          renews_at: string | null
+          starts_at: string
+          status: Database["public"]["Enums"]["license_status"]
+          type: Database["public"]["Enums"]["license_type"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          features?: Json
+          id?: string
+          limits?: Json
+          metadata?: Json
+          notes?: string | null
+          parent_license_id?: string | null
+          plan?: string
+          portal_id: string
+          renews_at?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["license_status"]
+          type?: Database["public"]["Enums"]["license_type"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          features?: Json
+          id?: string
+          limits?: Json
+          metadata?: Json
+          notes?: string | null
+          parent_license_id?: string | null
+          plan?: string
+          portal_id?: string
+          renews_at?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["license_status"]
+          type?: Database["public"]["Enums"]["license_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenses_parent_license_id_fkey"
+            columns: ["parent_license_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenses_parent_license_id_fkey"
+            columns: ["parent_license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenses_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "licenses_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
             referencedRelation: "portals"
@@ -1522,6 +1834,13 @@ export type Database = {
             foreignKeyName: "portal_companies_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "portal_companies_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
             referencedRelation: "portals"
             referencedColumns: ["id"]
           },
@@ -1560,6 +1879,13 @@ export type Database = {
             foreignKeyName: "portal_members_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "portal_members_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
             referencedRelation: "portals"
             referencedColumns: ["id"]
           },
@@ -1589,6 +1915,13 @@ export type Database = {
             foreignKeyName: "portal_providers_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "portal_providers_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
             referencedRelation: "portals"
             referencedColumns: ["id"]
           },
@@ -1597,6 +1930,58 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_services: {
+        Row: {
+          custom_name: string | null
+          custom_payload: Json
+          custom_price: number | null
+          enabled: boolean
+          portal_id: string
+          service_id: string
+          updated_at: string
+        }
+        Insert: {
+          custom_name?: string | null
+          custom_payload?: Json
+          custom_price?: number | null
+          enabled?: boolean
+          portal_id: string
+          service_id: string
+          updated_at?: string
+        }
+        Update: {
+          custom_name?: string | null
+          custom_payload?: Json
+          custom_price?: number | null
+          enabled?: boolean
+          portal_id?: string
+          service_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_services_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "portal_services_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_services_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service_catalog"
             referencedColumns: ["id"]
           },
         ]
@@ -2001,6 +2386,45 @@ export type Database = {
         }
         Relationships: []
       }
+      service_catalog: {
+        Row: {
+          active: boolean
+          category: string | null
+          code: string
+          created_at: string
+          default_price: number | null
+          description: string | null
+          id: string
+          metadata: Json
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string | null
+          code: string
+          created_at?: string
+          default_price?: number | null
+          description?: string | null
+          id?: string
+          metadata?: Json
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string | null
+          code?: string
+          created_at?: string
+          default_price?: number | null
+          description?: string | null
+          id?: string
+          metadata?: Json
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       service_requests: {
         Row: {
           budget_range: string | null
@@ -2057,6 +2481,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "service_requests_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
           {
             foreignKeyName: "service_requests_portal_id_fkey"
             columns: ["portal_id"]
@@ -2260,6 +2691,13 @@ export type Database = {
           visitor_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "visitantes_rastreio_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
           {
             foreignKeyName: "visitantes_rastreio_portal_id_fkey"
             columns: ["portal_id"]
@@ -2500,6 +2938,13 @@ export type Database = {
             foreignKeyName: "wa_funnel_sessions_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["portal_id"]
+          },
+          {
+            foreignKeyName: "wa_funnel_sessions_portal_id_fkey"
+            columns: ["portal_id"]
+            isOneToOne: false
             referencedRelation: "portals"
             referencedColumns: ["id"]
           },
@@ -2507,6 +2952,26 @@ export type Database = {
       }
     }
     Views: {
+      license_overview: {
+        Row: {
+          code: string | null
+          domain: string | null
+          expires_at: string | null
+          id: string | null
+          leads_count: number | null
+          limits: Json | null
+          plan: string | null
+          portal_id: string | null
+          portal_name: string | null
+          portal_slug: string | null
+          renews_at: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["license_status"] | null
+          type: Database["public"]["Enums"]["license_type"] | null
+          users_count: number | null
+        }
+        Relationships: []
+      }
       mv_block_reasons_daily: {
         Row: {
           day: string | null
@@ -2612,6 +3077,19 @@ export type Database = {
         | "vitalicio"
         | "por_produto"
         | "por_categoria"
+      license_status:
+        | "active"
+        | "suspended"
+        | "expired"
+        | "cancelled"
+        | "trial"
+        | "pending"
+      license_type:
+        | "master"
+        | "franqueadora"
+        | "licenciado"
+        | "white_label"
+        | "trial"
       material_kind:
         | "apresentacao"
         | "proposta"
@@ -2634,6 +3112,15 @@ export type Database = {
         | "client"
         | "provider"
         | "partner"
+        | "franqueadora"
+        | "gestor"
+      template_kind:
+        | "landing_page"
+        | "funnel"
+        | "page"
+        | "email"
+        | "material"
+        | "config"
       territory_exclusivity: "exclusivo" | "compartilhado"
       territory_scope: "cidade" | "regiao" | "estado" | "nacional"
     }
@@ -2779,6 +3266,21 @@ export const Constants = {
         "por_produto",
         "por_categoria",
       ],
+      license_status: [
+        "active",
+        "suspended",
+        "expired",
+        "cancelled",
+        "trial",
+        "pending",
+      ],
+      license_type: [
+        "master",
+        "franqueadora",
+        "licenciado",
+        "white_label",
+        "trial",
+      ],
       material_kind: [
         "apresentacao",
         "proposta",
@@ -2803,6 +3305,16 @@ export const Constants = {
         "client",
         "provider",
         "partner",
+        "franqueadora",
+        "gestor",
+      ],
+      template_kind: [
+        "landing_page",
+        "funnel",
+        "page",
+        "email",
+        "material",
+        "config",
       ],
       territory_exclusivity: ["exclusivo", "compartilhado"],
       territory_scope: ["cidade", "regiao", "estado", "nacional"],
