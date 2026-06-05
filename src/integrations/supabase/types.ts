@@ -1884,7 +1884,13 @@ export type Database = {
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
-      app_role: "admin" | "cliente" | "prestador" | "empresa" | "parceiro"
+      app_role:
+        | "admin"
+        | "cliente"
+        | "prestador"
+        | "empresa"
+        | "parceiro"
+        | "admin_integrations"
       portal_role:
         | "super_admin"
         | "portal_admin"
@@ -2020,7 +2026,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "cliente", "prestador", "empresa", "parceiro"],
+      app_role: [
+        "admin",
+        "cliente",
+        "prestador",
+        "empresa",
+        "parceiro",
+        "admin_integrations",
+      ],
       portal_role: [
         "super_admin",
         "portal_admin",
