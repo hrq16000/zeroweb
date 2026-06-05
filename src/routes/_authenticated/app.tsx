@@ -182,6 +182,17 @@ function AppShell() {
                 <Fingerprint className="w-4 h-4" />
                 Auditoria Identidade
               </Link>
+              <Link
+                to="/app/indexacao"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/indexacao")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Search className="w-4 h-4" />
+                Indexação SEO
+              </Link>
             </>
 
           )}
