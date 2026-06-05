@@ -19,7 +19,7 @@ import { ConsentBanner } from "@/components/site/ConsentBanner";
 import { SocialProof, TrustBar } from "@/components/site/SocialProof";
 import { ExitIntent } from "@/components/site/ExitIntent";
 import { DiagnosticForm } from "@/components/site/DiagnosticForm";
-import { LossCalculator } from "@/components/site/LossCalculator";
+// import { LossCalculator } from "@/components/site/LossCalculator"; // desabilitada
 import { SocialProofSection } from "@/components/site/SocialProofSection";
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
