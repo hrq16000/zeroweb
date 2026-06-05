@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText } from "lucide-react";
+import { z } from "zod";
+import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, Star, Sparkles } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -8,11 +9,17 @@ import { trackConversion } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
 import { useEffect } from "react";
 import { whatsappUrl } from "@/lib/site-config";
+import { getThankYouContent } from "@/lib/thank-you-content";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
 
+const searchSchema = z.object({
+  source: z.string().max(80).optional(),
+});
+
 export const Route = createFileRoute("/obrigado")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: TITLE },
@@ -39,9 +46,7 @@ export const Route = createFileRoute("/obrigado")({
               inLanguage: "pt-BR",
               isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
             },
-            breadcrumbLd([
-              { name: "Obrigado", path: "/obrigado" },
-            ]),
+            breadcrumbLd([{ name: "Obrigado", path: "/obrigado" }]),
           ],
         }),
       },
@@ -50,32 +55,59 @@ export const Route = createFileRoute("/obrigado")({
   component: ObrigadoPage,
 });
 
+const TESTIMONIALS = [
+  { name: "Carla M.", role: "Clínica de Estética · SP", text: "Em 45 dias dobramos os agendamentos com tráfego pago e site novo." },
+  { name: "Rafael T.", role: "Escritório de Advocacia · RJ", text: "A 0WEB nos colocou no topo do Google em buscas locais. Recomendo!" },
+  { name: "Juliana P.", role: "Loja de Móveis · MG", text: "Atendimento humano, relatórios claros e vendas reais todo mês." },
+];
+
 function ObrigadoPage() {
+  const { source } = Route.useSearch();
+  const content = getThankYouContent(source);
+
   useEffect(() => {
-    trackConversion("obrigado_page_view", { page: "/obrigado", event_category: "conversion" });
-  }, []);
+    trackConversion("obrigado_page_view", {
+      page: "/obrigado",
+      source: source || "direct",
+      channel: content.channel,
+      event_category: "conversion",
+    });
+  }, [source, content.channel]);
+
+  const handleCta = (ctaId: string, label: string) => {
+    trackConversion("obrigado_cta_click", {
+      source: source || "direct",
+      channel: content.channel,
+      cta_id: ctaId,
+      label,
+      surface: "page",
+    });
+  };
 
   const ctaCards = [
     {
       icon: <Layers className="w-6 h-6 text-primary" />,
       title: "Conheça nossos planos",
-      desc: "Escolha o pacote ideal para acelerar seu crescimento digital.",
-      to: "/planos",
+      desc: content.planosLabel,
+      to: "/planos" as const,
       label: "Ver planos",
+      id: "planos",
     },
     {
       icon: <HelpCircle className="w-6 h-6 text-primary" />,
       title: "Dúvidas frequentes",
       desc: "Veja respostas sobre prazos, contratos e entregáveis.",
-      to: "/faq",
+      to: "/faq" as const,
       label: "Ir para FAQ",
+      id: "faq",
     },
     {
       icon: <FileText className="w-6 h-6 text-primary" />,
-      title: "Cases de sucesso",
-      desc: "Leia histórias reais de empresas que cresceram com a 0WEB.",
-      to: "/cases",
-      label: "Ver cases",
+      title: "Solicitar diagnóstico",
+      desc: "Receba uma análise gratuita do seu site e estratégia digital.",
+      to: "/solicitar-orcamento" as const,
+      label: "Pedir diagnóstico",
+      id: "diagnostico",
     },
   ];
 
@@ -99,7 +131,7 @@ function ObrigadoPage() {
             transition={{ delay: 0.15, duration: 0.5 }}
             className="text-4xl sm:text-5xl font-bold font-display tracking-tight"
           >
-            Mensagem enviada com sucesso!
+            {content.title}
           </motion.h1>
 
           <motion.p
@@ -108,33 +140,40 @@ function ObrigadoPage() {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            Recebemos seus dados e já abrimos o WhatsApp com sua mensagem.
-            <br className="hidden sm:block" />
-            Nossa equipe responde em até <strong>1 hora útil</strong>.
+            {content.subtitle}
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45, duration: 0.5 }}
-            className="mt-8"
+            className="mt-8 flex flex-wrap justify-center gap-3"
           >
             <a
-              href={whatsappUrl(undefined, "obrigado_page")}
+              href={whatsappUrl(content.whatsappMessage, `obrigado_page_${content.channel}`)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackConversion("whatsapp_click", { location: "obrigado_page" })}
+              onClick={() => handleCta("whatsapp", "Falar no WhatsApp agora")}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-4 shadow-glow-primary"
             >
               <MessageCircle className="w-5 h-5" />
               Falar no WhatsApp agora
             </a>
+            <Link
+              to={content.finalCtaTo}
+              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel)}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-6 py-4 font-semibold hover:border-primary transition-colors"
+            >
+              <Sparkles className="w-4 h-4 text-primary" />
+              {content.finalCtaLabel}
+            </Link>
           </motion.div>
         </section>
 
+        {/* Próximos passos */}
         <section className="mt-20">
           <div className="mx-auto max-w-6xl px-5 lg:px-8">
-            <h2 className="text-center text-2xl font-bold font-display mb-2">O que fazer agora?</h2>
+            <h2 className="text-center text-2xl font-bold font-display mb-2">Próximos passos</h2>
             <p className="text-center text-muted-foreground mb-10 max-w-xl mx-auto">
               Aproveite para conhecer melhor a 0WEB enquanto preparamos sua proposta.
             </p>
@@ -144,11 +183,12 @@ function ObrigadoPage() {
                   key={card.to}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1, duration: 0.4 }}
+                  transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
                 >
                   <Link
                     to={card.to}
                     preload="render"
+                    onClick={() => handleCta(card.id, card.label)}
                     className="group block h-full rounded-2xl border border-border bg-card p-6 hover:border-primary transition-colors text-left"
                   >
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -166,6 +206,40 @@ function ObrigadoPage() {
           </div>
         </section>
 
+        {/* Prova social */}
+        <section className="mt-20">
+          <div className="mx-auto max-w-6xl px-5 lg:px-8">
+            <div className="grid sm:grid-cols-3 gap-4 mb-10">
+              {[
+                { n: "+200", l: "clientes ativos" },
+                { n: "R$ 28M+", l: "em vendas geradas" },
+                { n: "98%", l: "de satisfação" },
+              ].map((s) => (
+                <div key={s.l} className="text-center rounded-2xl border border-border bg-card p-6">
+                  <p className="text-3xl font-bold font-display text-primary">{s.n}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{s.l}</p>
+                </div>
+              ))}
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {TESTIMONIALS.map((t) => (
+                <figure key={t.name} className="rounded-2xl border border-border bg-card p-5">
+                  <div className="flex gap-0.5 mb-2 text-yellow-500" aria-label="5 estrelas">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
+                  <blockquote className="text-sm text-foreground">"{t.text}"</blockquote>
+                  <figcaption className="mt-3 text-xs text-muted-foreground">
+                    <strong className="text-foreground">{t.name}</strong> · {t.role}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA final */}
         <section className="mt-20">
           <div className="mx-auto max-w-3xl px-5 lg:px-8 text-center rounded-3xl border border-border bg-card p-8 lg:p-12">
             <h2 className="text-2xl font-bold font-display">Não quer esperar?</h2>
@@ -174,10 +248,10 @@ function ObrigadoPage() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
-                href={whatsappUrl("Quero agilizar minha proposta. Pode me atender agora?", "obrigado_cta_final")}
+                href={whatsappUrl("Quero agilizar minha proposta. Pode me atender agora?", `obrigado_cta_final_${content.channel}`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "obrigado_cta_final" })}
+                onClick={() => handleCta("final_whatsapp", "Quero falar agora")}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-3 shadow-glow-primary"
               >
                 <MessageCircle className="w-5 h-5" />
@@ -185,6 +259,7 @@ function ObrigadoPage() {
               </a>
               <Link
                 to="/"
+                onClick={() => handleCta("home", "Voltar para o início")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold hover:bg-muted transition-colors"
               >
                 Voltar para o início
