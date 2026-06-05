@@ -14,6 +14,7 @@ import { Footer } from "@/components/site/Footer";
 import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { AnalyticsIdsAdmin } from "@/components/site/AnalyticsIdsAdmin";
 import { PainelGate } from "@/components/site/PainelGate";
+import { PlansAdmin } from "@/components/site/PlansAdmin";
 import { ExecutiveDashboard } from "@/components/site/ExecutiveDashboard";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
 import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
