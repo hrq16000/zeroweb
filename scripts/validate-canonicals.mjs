@@ -41,13 +41,21 @@ function walk(dir) {
   return out;
 }
 
-/** Match every `{ rel: "canonical", href: <expr> }` in source. */
+/** Match every `{ rel: "canonical", href: <expr> }` in source, capturing href and index. */
 const CANONICAL_RE =
   /\{\s*rel\s*:\s*["']canonical["']\s*,\s*href\s*:\s*([^,}\n]+?)\s*[,}]/g;
 
-/** Match canonical inside `meta:` array (a common mistake). */
-const META_CANONICAL_RE =
-  /meta\s*:\s*\[[\s\S]*?\{\s*rel\s*:\s*["']canonical["']/m;
+/**
+ * For a given canonical match index, walk backwards to find the nearest
+ * `links:` or `meta:` array opener. Returns "links", "meta" or "unknown".
+ */
+function nearestArrayOwner(src, idx) {
+  const before = src.slice(0, idx);
+  const linksIdx = before.lastIndexOf("links:");
+  const metaIdx = before.lastIndexOf("meta:");
+  if (linksIdx === -1 && metaIdx === -1) return "unknown";
+  return linksIdx > metaIdx ? "links" : "meta";
+}
 
 const errors = [];
 const warnings = [];
