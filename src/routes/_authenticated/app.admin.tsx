@@ -750,3 +750,155 @@ function TicketsTab() {
     </ul>
   );
 }
+
+// ── Site sections management ──────────────────────────────────────────
+function SiteSectionsTab() {
+  const lp = useServerFn(adminListPages);
+  const ls = useServerFn(adminListSections);
+  const tog = useServerFn(adminToggleSection);
+  const ups = useServerFn(adminUpsertSection);
+  const del = useServerFn(adminDeleteSection);
+  const reo = useServerFn(adminReorderSections);
+
+  const [pages, setPages] = useState<string[]>([]);
+  const [page, setPage] = useState<string>("home");
+  const [rows, setRows] = useState<any[]>([]);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [newRow, setNewRow] = useState({ key: "", label: "", sort_order: 999 });
+
+  const loadPages = async () => {
+    try {
+      const r: any = await lp();
+      const ps = r.pages?.length ? r.pages : ["home"];
+      setPages(ps);
+      if (!ps.includes(page)) setPage(ps[0]);
+    } catch (e: any) {
+      setErr(e?.message ?? "Falha ao carregar páginas");
+    }
+  };
+  const loadRows = async () => {
+    try {
+      const r: any = await ls({ data: { page } });
+      setRows(r.rows ?? []);
+    } catch (e: any) {
+      setErr(e?.message ?? "Falha ao carregar seções");
+    }
+  };
+  useEffect(() => { loadPages(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { loadRows(); /* eslint-disable-next-line */ }, [page]);
+
+  const toggle = async (id: string, enabled: boolean) => {
+    setBusy(true); setErr(null);
+    try { await tog({ data: { id, enabled } }); await loadRows(); }
+    catch (e: any) { setErr(e?.message ?? "Falha"); }
+    finally { setBusy(false); }
+  };
+  const move = async (idx: number, dir: -1 | 1) => {
+    const next = idx + dir;
+    if (next < 0 || next >= rows.length) return;
+    const a = rows[idx], b = rows[next];
+    setBusy(true);
+    try {
+      await reo({ data: { items: [
+        { id: a.id, sort_order: b.sort_order },
+        { id: b.id, sort_order: a.sort_order },
+      ] } });
+      await loadRows();
+    } catch (e: any) { setErr(e?.message ?? "Falha"); }
+    finally { setBusy(false); }
+  };
+  const remove = async (id: string) => {
+    if (!confirm("Excluir esta seção?")) return;
+    setBusy(true);
+    try { await del({ data: { id } }); await loadRows(); }
+    catch (e: any) { setErr(e?.message ?? "Falha"); }
+    finally { setBusy(false); }
+  };
+  const create = async () => {
+    if (!newRow.key || !newRow.label) return;
+    setBusy(true); setErr(null);
+    try {
+      await ups({ data: { page, key: newRow.key, label: newRow.label, sort_order: newRow.sort_order, enabled: true } });
+      setNewRow({ key: "", label: "", sort_order: 999 });
+      await loadRows();
+    } catch (e: any) { setErr(e?.message ?? "Falha"); }
+    finally { setBusy(false); }
+  };
+
+  return (
+    <div className="mt-6 space-y-4">
+      <div className="flex items-center gap-3">
+        <label className="text-sm text-muted-foreground">Página:</label>
+        <select
+          value={page}
+          onChange={(e) => setPage(e.target.value)}
+          className="px-3 py-1.5 rounded border border-border bg-background text-sm"
+        >
+          {pages.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
+        <button onClick={loadRows} className="text-xs text-primary underline">Recarregar</button>
+      </div>
+
+      {err && <div className="rounded border border-destructive/30 bg-destructive/10 text-destructive text-sm px-3 py-2">{err}</div>}
+
+      <div className="rounded-xl border border-border divide-y">
+        {rows.map((r, idx) => (
+          <div key={r.id} className="flex items-center gap-3 px-4 py-3">
+            <span className="font-mono text-xs text-muted-foreground w-12">{r.sort_order}</span>
+            <div className="flex-1 min-w-0">
+              <div className="font-medium">{r.label}</div>
+              <div className="text-xs text-muted-foreground font-mono">{r.key}</div>
+            </div>
+            <button disabled={busy} onClick={() => move(idx, -1)} className="px-2 py-1 text-xs rounded border border-border">↑</button>
+            <button disabled={busy} onClick={() => move(idx, +1)} className="px-2 py-1 text-xs rounded border border-border">↓</button>
+            <button
+              disabled={busy}
+              onClick={() => toggle(r.id, !r.enabled)}
+              className={`px-3 py-1 text-xs rounded-full font-medium ${r.enabled ? "bg-emerald-500/15 text-emerald-700" : "bg-muted text-muted-foreground"}`}
+            >
+              {r.enabled ? "Ativa" : "Desativada"}
+            </button>
+            <button disabled={busy} onClick={() => remove(r.id)} className="px-2 py-1 text-xs text-destructive">Excluir</button>
+          </div>
+        ))}
+        {rows.length === 0 && <div className="px-4 py-6 text-sm text-muted-foreground">Nenhuma seção cadastrada para esta página.</div>}
+      </div>
+
+      <div className="rounded-xl border border-border p-4 space-y-2">
+        <div className="text-sm font-medium">Adicionar seção</div>
+        <div className="grid sm:grid-cols-4 gap-2">
+          <input
+            placeholder="chave (ex: faq)"
+            value={newRow.key}
+            onChange={(e) => setNewRow({ ...newRow, key: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_") })}
+            className="px-3 py-1.5 rounded border border-border bg-background text-sm font-mono"
+          />
+          <input
+            placeholder="Rótulo"
+            value={newRow.label}
+            onChange={(e) => setNewRow({ ...newRow, label: e.target.value })}
+            className="px-3 py-1.5 rounded border border-border bg-background text-sm sm:col-span-2"
+          />
+          <input
+            type="number"
+            placeholder="Ordem"
+            value={newRow.sort_order}
+            onChange={(e) => setNewRow({ ...newRow, sort_order: Number(e.target.value) || 0 })}
+            className="px-3 py-1.5 rounded border border-border bg-background text-sm"
+          />
+        </div>
+        <button
+          onClick={create}
+          disabled={busy || !newRow.key || !newRow.label}
+          className="px-4 py-1.5 rounded bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50"
+        >
+          Adicionar
+        </button>
+        <p className="text-xs text-muted-foreground">
+          Após adicionar, registre a renderização da seção no código da página correspondente (verificando <code>on("&lt;chave&gt;")</code>).
+        </p>
+      </div>
+    </div>
+  );
+}
