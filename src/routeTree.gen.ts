@@ -64,6 +64,7 @@ import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
+import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
@@ -351,6 +352,12 @@ const AuthenticatedAppDocumentsRoute =
     path: '/documents',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCampaignsRoute =
+  AuthenticatedAppCampaignsRouteImport.update({
+    id: '/campaigns',
+    path: '/campaigns',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppAdminRoute = AuthenticatedAppAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -432,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -493,6 +501,7 @@ export interface FileRoutesByTo {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
+  '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -557,6 +566,7 @@ export interface FileRoutesById {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
+  '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
@@ -621,6 +631,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/blog/'
     | '/app/admin'
+    | '/app/campaigns'
     | '/app/documents'
     | '/app/marketplace'
     | '/app/master'
@@ -682,6 +693,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/blog'
     | '/app/admin'
+    | '/app/campaigns'
     | '/app/documents'
     | '/app/marketplace'
     | '/app/master'
@@ -745,6 +757,7 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/blog/'
     | '/_authenticated/app/admin'
+    | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
@@ -1196,6 +1209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDocumentsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/campaigns': {
+      id: '/_authenticated/app/campaigns'
+      path: '/campaigns'
+      fullPath: '/app/campaigns'
+      preLoaderRoute: typeof AuthenticatedAppCampaignsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/admin': {
       id: '/_authenticated/app/admin'
       path: '/admin'
@@ -1292,6 +1312,7 @@ const AuthenticatedAppSupportRouteWithChildren =
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
+  AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
@@ -1306,6 +1327,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
+  AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,
