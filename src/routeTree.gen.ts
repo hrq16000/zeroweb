@@ -41,6 +41,7 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/ap
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
+import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
@@ -202,6 +203,12 @@ const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   path: '/api/public/lead-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppProjectsRoute =
+  AuthenticatedAppProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -265,6 +273,7 @@ export interface FileRoutesByTo {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog': typeof BlogIndexRoute
+  '/app/projects': typeof AuthenticatedAppProjectsRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
 }
@@ -300,6 +309,7 @@ export interface FileRoutesById {
   '/cases/$slug': typeof CasesSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/blog/': typeof BlogIndexRoute
+  '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -335,6 +345,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/app/projects'
     | '/api/public/lead-webhook'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog'
+    | '/app/projects'
     | '/api/public/lead-webhook'
     | '/app'
   id:
@@ -401,6 +413,7 @@ export interface FileRouteTypes {
     | '/cases/$slug'
     | '/estados/$state'
     | '/blog/'
+    | '/_authenticated/app/projects'
     | '/api/public/lead-webhook'
     | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
@@ -663,14 +676,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app/projects': {
+      id: '/_authenticated/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AuthenticatedAppProjectsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
   }
 }
 
 interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
