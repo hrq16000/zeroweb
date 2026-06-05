@@ -9,6 +9,7 @@ import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
 import { getIpGeo, requestGpsThenFallback, formatLocation, type GeoInfo } from "@/lib/geo-location";
+import { GpsConsentModal, getStoredGpsDecision } from "@/components/site/GpsConsentModal";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Informe seu nome").max(120),
