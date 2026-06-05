@@ -226,6 +226,12 @@ export function ContactFormWhatsApp({
       {shouldUseModal && (
         <ThankYouModal open={modalOpen} onOpenChange={setModalOpen} source={source} />
       )}
+      <GpsConsentModal
+        open={gpsConsentOpen}
+        onAccept={() => { setGpsConsentOpen(false); void performGps(); }}
+        onDecline={() => { setGpsConsentOpen(false); setGpsStatus("denied"); }}
+        onDismiss={() => setGpsConsentOpen(false)}
+      />
     </>
   );
 }
