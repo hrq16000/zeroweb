@@ -88,6 +88,54 @@ export type Database = {
           },
         ]
       }
+      campaigns: {
+        Row: {
+          budget_monthly: number | null
+          cpa_target: number | null
+          created_at: string
+          id: string
+          landing_page: string | null
+          name: string
+          notes: string | null
+          platform: string
+          roas_target: number | null
+          slug: string
+          status: string
+          updated_at: string
+          utm_campaign: string | null
+        }
+        Insert: {
+          budget_monthly?: number | null
+          cpa_target?: number | null
+          created_at?: string
+          id?: string
+          landing_page?: string | null
+          name: string
+          notes?: string | null
+          platform?: string
+          roas_target?: number | null
+          slug: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+        }
+        Update: {
+          budget_monthly?: number | null
+          cpa_target?: number | null
+          created_at?: string
+          id?: string
+          landing_page?: string | null
+          name?: string
+          notes?: string | null
+          platform?: string
+          roas_target?: number | null
+          slug?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           categories: string[]
@@ -317,75 +365,99 @@ export type Database = {
       lead_submissions: {
         Row: {
           assignee: string | null
+          audience_tag: string | null
           company: string | null
           created_at: string
           cta_variant: string | null
           email: string | null
+          fbclid: string | null
+          gclid: string | null
           hero_variant: string | null
           id: string
           landing_page: string | null
           last_interaction: string | null
           name: string | null
           notes: string | null
+          offer_slug: string | null
           payload_json: Json | null
           phone: string | null
           portal_id: string | null
+          referrer: string | null
           score: number
           score_label: string
           source: string | null
           status: string
+          temperature: string | null
           updated_at: string
           utm_campaign: string | null
+          utm_content: string | null
           utm_medium: string | null
           utm_source: string | null
+          utm_term: string | null
         }
         Insert: {
           assignee?: string | null
+          audience_tag?: string | null
           company?: string | null
           created_at?: string
           cta_variant?: string | null
           email?: string | null
+          fbclid?: string | null
+          gclid?: string | null
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
           last_interaction?: string | null
           name?: string | null
           notes?: string | null
+          offer_slug?: string | null
           payload_json?: Json | null
           phone?: string | null
           portal_id?: string | null
+          referrer?: string | null
           score?: number
           score_label?: string
           source?: string | null
           status?: string
+          temperature?: string | null
           updated_at?: string
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
         }
         Update: {
           assignee?: string | null
+          audience_tag?: string | null
           company?: string | null
           created_at?: string
           cta_variant?: string | null
           email?: string | null
+          fbclid?: string | null
+          gclid?: string | null
           hero_variant?: string | null
           id?: string
           landing_page?: string | null
           last_interaction?: string | null
           name?: string | null
           notes?: string | null
+          offer_slug?: string | null
           payload_json?: Json | null
           phone?: string | null
           portal_id?: string | null
+          referrer?: string | null
           score?: number
           score_label?: string
           source?: string | null
           status?: string
+          temperature?: string | null
           updated_at?: string
           utm_campaign?: string | null
+          utm_content?: string | null
           utm_medium?: string | null
           utm_source?: string | null
+          utm_term?: string | null
         }
         Relationships: [
           {
@@ -524,6 +596,42 @@ export type Database = {
           reason?: string | null
           target_id?: string
           target_type?: string
+        }
+        Relationships: []
+      }
+      offers: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta: string
+          description: string | null
+          id: string
+          landing_page: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta?: string
+          description?: string | null
+          id?: string
+          landing_page?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta?: string
+          description?: string | null
+          id?: string
+          landing_page?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -873,6 +981,39 @@ export type Database = {
           verified?: boolean
           views_count?: number
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      remarketing_audiences: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          rule: Json
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          rule?: Json
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          rule?: Json
+          slug?: string
+          updated_at?: string
         }
         Relationships: []
       }

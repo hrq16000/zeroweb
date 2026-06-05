@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getGa4Id, getGtmId, isValidGa4, isValidGtm } from "@/lib/site-config";
+import { getGa4Id, getGtmId, isValidGa4, isValidGtm, captureAttribution } from "@/lib/site-config";
 
 declare global {
   interface Window {
@@ -11,6 +11,7 @@ declare global {
 /** Client-only injector that loads GA4 + GTM scripts based on IDs in localStorage. */
 export function AnalyticsBootstrap() {
   useEffect(() => {
+    try { captureAttribution(); } catch { /* noop */ }
     const load = () => {
       const ga4 = getGa4Id();
       const gtm = getGtmId();

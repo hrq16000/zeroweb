@@ -4,7 +4,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { getVisitorId, getSessionId, getDeviceType } from "./visitor";
-import { getActiveUtms } from "./site-config";
+import { getActiveUtms, getAttributionPayload } from "./site-config";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Json = any;
@@ -63,24 +63,36 @@ export async function persistLead(input: {
   name?: string;
   email?: string;
   phone?: string;
+  company?: string;
   source?: string;
+  offer_slug?: string;
+  audience_tag?: string;
   payload?: Json;
 }) {
   if (typeof window === "undefined") return;
   try {
     const c = ctx();
     const ab = abState();
+    const attr = getAttributionPayload();
     await supabase.from("lead_submissions").insert({
       name: input.name ?? null,
       email: input.email ?? null,
       phone: input.phone ?? null,
+      company: input.company ?? null,
       source: input.source ?? null,
-      landing_page: c.path,
+      landing_page: attr.landing_page ?? c.path,
       hero_variant: ab.hero,
       cta_variant: ab.cta,
-      utm_source: c.utms.utm_source ?? null,
-      utm_medium: c.utms.utm_medium ?? null,
-      utm_campaign: c.utms.utm_campaign ?? null,
+      utm_source: attr.utm_source,
+      utm_medium: attr.utm_medium,
+      utm_campaign: attr.utm_campaign,
+      utm_term: attr.utm_term,
+      utm_content: attr.utm_content,
+      gclid: attr.gclid,
+      fbclid: attr.fbclid,
+      referrer: attr.referrer,
+      offer_slug: input.offer_slug ?? null,
+      audience_tag: input.audience_tag ?? null,
       payload_json: input.payload ?? null,
     });
   } catch {
