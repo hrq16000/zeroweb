@@ -29,6 +29,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
@@ -46,6 +47,7 @@ import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
@@ -75,6 +77,7 @@ import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppPortalsRouteImport } from './routes/_authenticated/app.portals'
+import { Route as AuthenticatedAppParceiroRouteImport } from './routes/_authenticated/app.parceiro'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
@@ -195,6 +198,11 @@ const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   path: '/politica-privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParceirosRoute = ParceirosRouteImport.update({
+  id: '/parceiros',
+  path: '/parceiros',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PainelCrmRoute = PainelCrmRouteImport.update({
   id: '/painel-crm',
   path: '/painel-crm',
@@ -277,6 +285,11 @@ const IndexRoute = IndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RCodeRoute = RCodeRouteImport.update({
+  id: '/r/$code',
+  path: '/r/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
@@ -426,6 +439,12 @@ const AuthenticatedAppPortalsRoute = AuthenticatedAppPortalsRouteImport.update({
   path: '/portals',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppParceiroRoute =
+  AuthenticatedAppParceiroRouteImport.update({
+    id: '/parceiro',
+    path: '/parceiro',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppNotificationsRoute =
   AuthenticatedAppNotificationsRouteImport.update({
     id: '/notifications',
@@ -543,6 +562,7 @@ export interface FileRoutesByFullPath {
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
+  '/parceiros': typeof ParceirosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -583,6 +603,7 @@ export interface FileRoutesByFullPath {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -591,6 +612,7 @@ export interface FileRoutesByFullPath {
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -627,6 +649,7 @@ export interface FileRoutesByTo {
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
+  '/parceiros': typeof ParceirosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -666,6 +689,7 @@ export interface FileRoutesByTo {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/blog': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -674,6 +698,7 @@ export interface FileRoutesByTo {
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -712,6 +737,7 @@ export interface FileRoutesById {
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
+  '/parceiros': typeof ParceirosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -752,6 +778,7 @@ export interface FileRoutesById {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -760,6 +787,7 @@ export interface FileRoutesById {
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/_authenticated/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/_authenticated/app/portals': typeof AuthenticatedAppPortalsRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -798,6 +826,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
+    | '/parceiros'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
@@ -838,6 +867,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/profissional/$slug'
+    | '/r/$code'
     | '/blog/'
     | '/app/admin'
     | '/app/campaigns'
@@ -846,6 +876,7 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
+    | '/app/parceiro'
     | '/app/portals'
     | '/app/profile'
     | '/app/projects'
@@ -882,6 +913,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
+    | '/parceiros'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
@@ -921,6 +953,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/profissional/$slug'
+    | '/r/$code'
     | '/blog'
     | '/app/admin'
     | '/app/campaigns'
@@ -929,6 +962,7 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
+    | '/app/parceiro'
     | '/app/portals'
     | '/app/profile'
     | '/app/projects'
@@ -966,6 +1000,7 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
+    | '/parceiros'
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
@@ -1006,6 +1041,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/profissional/$slug'
+    | '/r/$code'
     | '/blog/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
@@ -1014,6 +1050,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
     | '/_authenticated/app/notifications'
+    | '/_authenticated/app/parceiro'
     | '/_authenticated/app/portals'
     | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
@@ -1052,6 +1089,7 @@ export interface RootRouteChildren {
   MarketplaceRoute: typeof MarketplaceRoute
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
+  ParceirosRoute: typeof ParceirosRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
@@ -1090,6 +1128,7 @@ export interface RootRouteChildren {
   CidadeSlugRoute: typeof CidadeSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
+  RCodeRoute: typeof RCodeRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
@@ -1242,6 +1281,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parceiros': {
+      id: '/parceiros'
+      path: '/parceiros'
+      fullPath: '/parceiros'
+      preLoaderRoute: typeof ParceirosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/painel-crm': {
       id: '/painel-crm'
       path: '/painel-crm'
@@ -1359,6 +1405,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/r/$code': {
+      id: '/r/$code'
+      path: '/r/$code'
+      fullPath: '/r/$code'
+      preLoaderRoute: typeof RCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profissional/$slug': {
@@ -1564,6 +1617,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppPortalsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/parceiro': {
+      id: '/_authenticated/app/parceiro'
+      path: '/parceiro'
+      fullPath: '/app/parceiro'
+      preLoaderRoute: typeof AuthenticatedAppParceiroRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/notifications': {
       id: '/_authenticated/app/notifications'
       path: '/notifications'
@@ -1743,6 +1803,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
+  AuthenticatedAppParceiroRoute: typeof AuthenticatedAppParceiroRoute
   AuthenticatedAppPortalsRoute: typeof AuthenticatedAppPortalsRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
@@ -1761,6 +1822,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
     AuthenticatedAppMarketplaceRouteWithChildren,
   AuthenticatedAppMasterRoute: AuthenticatedAppMasterRoute,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
+  AuthenticatedAppParceiroRoute: AuthenticatedAppParceiroRoute,
   AuthenticatedAppPortalsRoute: AuthenticatedAppPortalsRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
@@ -1812,6 +1874,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceRoute: MarketplaceRoute,
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
+  ParceirosRoute: ParceirosRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
@@ -1850,6 +1913,7 @@ const rootRouteChildren: RootRouteChildren = {
   CidadeSlugRoute: CidadeSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
+  RCodeRoute: RCodeRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,

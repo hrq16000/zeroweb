@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PartnersTab } from "@/components/admin/PartnersTab";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -42,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
-type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security" | "visits";
+type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security" | "visits" | "partners";
 
 function AdminPage() {
   const [tab, setTab] = useState<Tab>("clients");
@@ -54,11 +55,12 @@ function AdminPage() {
     observ: "Observabilidade",
     security: "Segurança",
     visits: "Visitas & LGPD",
+    partners: "Parceiros",
   };
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade, segurança e privacidade.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade, segurança, privacidade e rede de parceiros.</p>
       <div className="mt-5 flex gap-1 border-b border-border flex-wrap">
         {(Object.keys(labels) as Tab[]).map((t) => (
           <button
@@ -78,6 +80,7 @@ function AdminPage() {
         tab === "site" ? <SiteSectionsTab /> :
         tab === "observ" ? <ObservabilityTab /> :
         tab === "visits" ? <VisitsLgpdTab /> :
+        tab === "partners" ? <PartnersTab /> :
         <SecurityTab />}
     </div>
   );
