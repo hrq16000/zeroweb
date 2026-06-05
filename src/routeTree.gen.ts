@@ -12,6 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
+import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
+import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
+import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
+import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
@@ -42,6 +48,37 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
+  id: '/sitemap-services.xml',
+  path: '/sitemap-services.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
+  id: '/sitemap-pages.xml',
+  path: '/sitemap-pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCityServicesDotxmlRoute =
+  SitemapCityServicesDotxmlRouteImport.update({
+    id: '/sitemap-city-services.xml',
+    path: '/sitemap-city-services.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SitemapCitiesDotxmlRoute = SitemapCitiesDotxmlRouteImport.update({
+  id: '/sitemap-cities.xml',
+  path: '/sitemap-cities.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapCasesDotxmlRoute = SitemapCasesDotxmlRouteImport.update({
+  id: '/sitemap-cases.xml',
+  path: '/sitemap-cases.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
+  id: '/sitemap-blog.xml',
+  path: '/sitemap-blog.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -137,6 +174,12 @@ export interface FileRoutesByFullPath {
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
@@ -158,6 +201,12 @@ export interface FileRoutesByTo {
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
@@ -180,6 +229,12 @@ export interface FileRoutesById {
   '/qa-events': typeof QaEventsRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
+  '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
+  '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
+  '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
+  '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
@@ -203,6 +258,12 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/rss.xml'
     | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
@@ -224,6 +285,12 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/rss.xml'
     | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
@@ -245,6 +312,12 @@ export interface FileRouteTypes {
     | '/qa-events'
     | '/rss.xml'
     | '/servicos'
+    | '/sitemap-blog.xml'
+    | '/sitemap-cases.xml'
+    | '/sitemap-cities.xml'
+    | '/sitemap-city-services.xml'
+    | '/sitemap-pages.xml'
+    | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/termos'
@@ -267,6 +340,12 @@ export interface RootRouteChildren {
   QaEventsRoute: typeof QaEventsRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   ServicosRoute: typeof ServicosRoute
+  SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
+  SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
+  SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
+  SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
+  SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
@@ -297,6 +376,48 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-services.xml': {
+      id: '/sitemap-services.xml'
+      path: '/sitemap-services.xml'
+      fullPath: '/sitemap-services.xml'
+      preLoaderRoute: typeof SitemapServicesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-pages.xml': {
+      id: '/sitemap-pages.xml'
+      path: '/sitemap-pages.xml'
+      fullPath: '/sitemap-pages.xml'
+      preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-city-services.xml': {
+      id: '/sitemap-city-services.xml'
+      path: '/sitemap-city-services.xml'
+      fullPath: '/sitemap-city-services.xml'
+      preLoaderRoute: typeof SitemapCityServicesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-cities.xml': {
+      id: '/sitemap-cities.xml'
+      path: '/sitemap-cities.xml'
+      fullPath: '/sitemap-cities.xml'
+      preLoaderRoute: typeof SitemapCitiesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-cases.xml': {
+      id: '/sitemap-cases.xml'
+      path: '/sitemap-cases.xml'
+      fullPath: '/sitemap-cases.xml'
+      preLoaderRoute: typeof SitemapCasesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-blog.xml': {
+      id: '/sitemap-blog.xml'
+      path: '/sitemap-blog.xml'
+      fullPath: '/sitemap-blog.xml'
+      preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -437,6 +558,12 @@ const rootRouteChildren: RootRouteChildren = {
   QaEventsRoute: QaEventsRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   ServicosRoute: ServicosRoute,
+  SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
+  SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
+  SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
+  SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
+  SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
