@@ -174,6 +174,10 @@ function PainelPage() {
             <WaFunnelAdmin />
           </div>
 
+          <div className="mt-10">
+            <PlansAdmin />
+          </div>
+
           <div className="mt-10 rounded-2xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
             <div className="flex items-center gap-2 font-medium text-foreground">
               <TrendingUp className="w-4 h-4 text-primary" /> Como validar no GA4 / GTM
