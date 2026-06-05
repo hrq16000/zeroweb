@@ -110,7 +110,13 @@ function GeoPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32">
+      <Breadcrumbs items={[
+        { name: "Serviços", path: "/#solutions" },
+        { name: service, path: `/${serviceSlug}` },
+        { name: city, path: `/${citySlug}/${serviceSlug}` },
+      ]} />
+      <main className="pt-6">
+
         <section className="py-16 bg-hero">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
             <p className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary font-semibold">
