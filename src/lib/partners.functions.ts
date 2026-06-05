@@ -352,3 +352,78 @@ export const computePendingCommissions = createServerFn({ method: "POST" })
     }
     return { processed, errors };
   });
+
+// Sugere representante ativo com base em partner_territories (cidade > estado > nacional)
+// e registra atribuição de origem 'territory' se solicitado.
+export const suggestPartnerForLead = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        lead_id: z.string().uuid().optional(),
+        city: z.string().trim().max(120).optional(),
+        state: z.string().trim().max(40).optional(),
+        register_attribution: z.boolean().default(false),
+        kinds: z.array(z.enum(KINDS)).default(["representante", "franqueado"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    if (!data.city && !data.state) {
+      return { suggested: null, candidates: [] as Array<{ partner_id: string; scope: string }> };
+    }
+
+    // Buscar territórios candidatos (city > state > nacional)
+    const orConditions: string[] = [];
+    if (data.city) orConditions.push(`and(scope.eq.cidade,value.ilike.${data.city})`);
+    if (data.state) orConditions.push(`and(scope.eq.estado,value.ilike.${data.state})`);
+    orConditions.push(`scope.eq.nacional`);
+
+    const { data: territories } = await supabaseAdmin
+      .from("partner_territories")
+      .select("partner_id, scope, value, exclusivity")
+      .or(orConditions.join(","));
+
+    if (!territories?.length) {
+      return { suggested: null, candidates: [] };
+    }
+
+    // Filtrar parceiros aprovados e tipo desejado
+    const partnerIds = Array.from(new Set(territories.map((t) => t.partner_id)));
+    const { data: partners } = await supabaseAdmin
+      .from("partners")
+      .select("id, name, kind, status, user_id")
+      .in("id", partnerIds)
+      .eq("status", "aprovado")
+      .in("kind", data.kinds);
+
+    const partnerSet = new Set((partners ?? []).map((p) => p.id));
+    const ranked = territories
+      .filter((t) => partnerSet.has(t.partner_id))
+      .sort((a, b) => {
+        const score = (s: string) => (s === "cidade" ? 3 : s === "estado" ? 2 : s === "regiao" ? 1 : 0);
+        return score(b.scope) - score(a.scope);
+      });
+
+    const best = ranked[0];
+    if (!best) return { suggested: null, candidates: [] };
+
+    const suggested = (partners ?? []).find((p) => p.id === best.partner_id) ?? null;
+
+    if (data.register_attribution && data.lead_id && suggested) {
+      const { error } = await supabaseAdmin.from("partner_attributions").insert({
+        partner_id: suggested.id,
+        lead_id: data.lead_id,
+        conversion_type: "lead",
+        value_cents: 0,
+        notes: `territory:${best.scope}:${best.value}`,
+      });
+      if (error) console.error("[suggestPartnerForLead] insert", error.message);
+    }
+
+    return {
+      suggested: suggested ? { id: suggested.id, name: suggested.name, kind: suggested.kind, matched_scope: best.scope, matched_value: best.value } : null,
+      candidates: ranked.slice(0, 5).map((t) => ({ partner_id: t.partner_id, scope: t.scope, value: t.value })),
+    };
+  });
