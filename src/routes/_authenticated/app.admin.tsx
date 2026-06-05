@@ -17,6 +17,7 @@ import {
   rollbackSetting,
   listIntegrationStatus,
   testIntegration,
+  listIntegrationSchemas,
 } from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
