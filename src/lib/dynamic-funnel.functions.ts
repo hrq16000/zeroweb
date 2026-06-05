@@ -33,7 +33,7 @@ export interface FunnelDefinition {
   slug: string;
   name: string;
   description: string | null;
-  config: Record<string, unknown>;
+  config: Record<string, any>;
   whatsapp_enabled: boolean;
   questions: FunnelQuestion[];
   conditions: FunnelCondition[];
@@ -74,7 +74,7 @@ export const getPublicFunnel = createServerFn({ method: "GET" })
       slug: form.slug,
       name: form.name,
       description: form.description,
-      config: (form.config_json ?? {}) as Record<string, unknown>,
+      config: (form.config_json ?? {}) as Record<string, any>,
       whatsapp_enabled: Boolean(wa.enabled) && Boolean(wa.redirect_phone),
       questions: (qs ?? []).map((q) => ({
         id: q.id,
@@ -85,7 +85,7 @@ export const getPublicFunnel = createServerFn({ method: "GET" })
         placeholder: q.placeholder,
         required: q.required,
         order_index: q.order_index,
-        options: Array.isArray(q.options_json) ? (q.options_json as FunnelOption[]) : [],
+        options: Array.isArray(q.options_json) ? (q.options_json as unknown as FunnelOption[]) : [],
       })),
       conditions: (cs ?? []).map((c) => ({
         id: c.id,
@@ -183,7 +183,7 @@ export const submitFunnel = createServerFn({ method: "POST" })
       .order("order_index", { ascending: true });
     const questions = (qs ?? []).map((q) => ({
       key: q.key, label: q.label, type: q.type,
-      options: Array.isArray(q.options_json) ? (q.options_json as FunnelOption[]) : [],
+      options: Array.isArray(q.options_json) ? (q.options_json as unknown as FunnelOption[]) : [],
     }));
 
     // ---- metadata ----
@@ -232,7 +232,7 @@ export const submitFunnel = createServerFn({ method: "POST" })
       .insert({
         form_id: form.id,
         answers_json: data.answers,
-        metadata_json: metadata,
+        metadata_json: metadata as any,
         contact_name, contact_email, contact_phone,
         whatsapp_user_url,
         whatsapp_alert_status: wa.enabled && wa.alert_phone ? "pending" : "disabled",
