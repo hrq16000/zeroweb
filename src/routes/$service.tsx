@@ -78,8 +78,10 @@ const SERVICES: Record<string, ServiceData> = {
   },
 };
 
-import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd, SERVICES_DICT } from "@/lib/seo";
+import { absUrl, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd, SERVICES_DICT } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+
+const ORIGIN_HOST = "https://0web.com.br";
 
 export const Route = createFileRoute("/$service")({
   beforeLoad: ({ params }) => {
