@@ -124,10 +124,11 @@ function PostPage() {
           </h1>
           <div className="mt-4 text-sm text-muted-foreground flex items-center gap-3">
             <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString("pt-BR", {
+              {new Date(post.date + "T12:00:00Z").toLocaleDateString("pt-BR", {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
+                timeZone: "UTC",
               })}
             </time>
             <span>·</span>
