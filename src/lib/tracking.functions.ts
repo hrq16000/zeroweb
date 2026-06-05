@@ -20,6 +20,17 @@ const VisitInput = z.object({
 });
 
 const RL_WINDOW_SEC = 10;
+
+let _asnCache: { at: number; map: Map<string, { org: string }> } | null = null;
+async function getBlockedAsns(admin: any): Promise<Map<string, { org: string }>> {
+  const now = Date.now();
+  if (_asnCache && now - _asnCache.at < 10 * 60_000) return _asnCache.map;
+  const { data } = await admin.from("blocked_asns").select("asn,org").eq("enabled", true);
+  const map = new Map<string, { org: string }>();
+  for (const r of data ?? []) map.set(r.asn, { org: r.org });
+  _asnCache = { at: now, map };
+  return map;
+}
 const RL_MAX_HITS = 15;
 const RL_BLOCK_MAX = 40;
 
@@ -98,6 +109,20 @@ export const trackVisit = createServerFn({ method: "POST" })
       } else if (hits >= RL_MAX_HITS) {
         block_reason = "rate_limit_warn";
         risk_score = 60;
+      }
+    } catch {}
+
+    // ASN datacenter blocklist (cached in module memory, refreshed every 10 min)
+    try {
+      const asnNormalized = asn ? (asn.startsWith("AS") ? asn : `AS${asn}`) : null;
+      if (asnNormalized) {
+        const list = await getBlockedAsns(supabaseAdmin);
+        const hit = list.get(asnNormalized);
+        if (hit) {
+          blocked = true;
+          risk_score = Math.max(risk_score, 85);
+          block_reason = `datacenter_asn:${hit.org}`;
+        }
       }
     } catch {}
 

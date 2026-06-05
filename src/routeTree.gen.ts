@@ -72,6 +72,8 @@ import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
+import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
+import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
@@ -402,6 +404,18 @@ const ApiPublicHooksVisitorsCleanupRoute =
     path: '/api/public/hooks/visitors-cleanup',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksSeoMonitorRoute =
+  ApiPublicHooksSeoMonitorRouteImport.update({
+    id: '/api/public/hooks/seo-monitor',
+    path: '/api/public/hooks/seo-monitor',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksAnomalyScanRoute =
+  ApiPublicHooksAnomalyScanRouteImport.update({
+    id: '/api/public/hooks/anomaly-scan',
+    path: '/api/public/hooks/anomaly-scan',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAppSupportIdRoute =
   AuthenticatedAppSupportIdRouteImport.update({
     id: '/$id',
@@ -500,6 +514,8 @@ export interface FileRoutesByFullPath {
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRoutesByTo {
@@ -568,6 +584,8 @@ export interface FileRoutesByTo {
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRoutesById {
@@ -639,6 +657,8 @@ export interface FileRoutesById {
   '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
+  '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
 export interface FileRouteTypes {
@@ -710,6 +730,8 @@ export interface FileRouteTypes {
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
+    | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -778,6 +800,8 @@ export interface FileRouteTypes {
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
+    | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   id:
     | '__root__'
@@ -848,6 +872,8 @@ export interface FileRouteTypes {
     | '/_authenticated/app/marketplace/provider'
     | '/_authenticated/app/projects/$id'
     | '/_authenticated/app/support/$id'
+    | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesById: FileRoutesById
 }
@@ -898,6 +924,8 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
+  ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
+  ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
 
@@ -1344,6 +1372,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksVisitorsCleanupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/seo-monitor': {
+      id: '/api/public/hooks/seo-monitor'
+      path: '/api/public/hooks/seo-monitor'
+      fullPath: '/api/public/hooks/seo-monitor'
+      preLoaderRoute: typeof ApiPublicHooksSeoMonitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/anomaly-scan': {
+      id: '/api/public/hooks/anomaly-scan'
+      path: '/api/public/hooks/anomaly-scan'
+      fullPath: '/api/public/hooks/anomaly-scan'
+      preLoaderRoute: typeof ApiPublicHooksAnomalyScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/support/$id': {
       id: '/_authenticated/app/support/$id'
       path: '/$id'
@@ -1538,6 +1580,8 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
+  ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
+  ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }
 export const routeTree = rootRouteImport
