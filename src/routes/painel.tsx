@@ -14,6 +14,7 @@ import { Footer } from "@/components/site/Footer";
 import { WaFunnelAdmin } from "@/components/site/WaFunnelAdmin";
 import { AnalyticsIdsAdmin } from "@/components/site/AnalyticsIdsAdmin";
 import { PainelGate } from "@/components/site/PainelGate";
+import { ExecutiveDashboard } from "@/components/site/ExecutiveDashboard";
 import { getFunnel, resetFunnel } from "@/lib/analytics";
 import { computeWinners, getOverrides, setOverrides, clearOverrides } from "@/lib/ab-testing";
 import { fetchRemoteFunnel } from "@/lib/analytics-remote";
@@ -112,6 +113,8 @@ function PainelPage() {
               <RefreshCcw className="w-3.5 h-3.5" /> Resetar
             </button>
           </div>
+
+          <ExecutiveDashboard />
 
           {/* Funnel cards */}
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
