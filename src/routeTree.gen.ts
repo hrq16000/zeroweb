@@ -27,6 +27,7 @@ import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
@@ -171,6 +172,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const QaEventsRoute = QaEventsRouteImport.update({
   id: '/qa-events',
   path: '/qa-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
@@ -471,6 +477,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -543,6 +550,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -616,6 +624,7 @@ export interface FileRoutesById {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -690,6 +699,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -762,6 +772,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -834,6 +845,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -908,6 +920,7 @@ export interface RootRouteChildren {
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -1069,6 +1082,13 @@ declare module '@tanstack/react-router' {
       path: '/qa-events'
       fullPath: '/qa-events'
       preLoaderRoute: typeof QaEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-privacidade': {
@@ -1572,6 +1592,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
