@@ -101,6 +101,20 @@ export const trackVisit = createServerFn({ method: "POST" })
       }
     } catch {}
 
+    // ASN datacenter blocklist (cached in module memory, refreshed every 10 min)
+    try {
+      const asnNormalized = asn ? (asn.startsWith("AS") ? asn : `AS${asn}`) : null;
+      if (asnNormalized) {
+        const list = await getBlockedAsns(supabaseAdmin);
+        const hit = list.get(asnNormalized);
+        if (hit) {
+          blocked = true;
+          risk_score = Math.max(risk_score, 85);
+          block_reason = `datacenter_asn:${hit.org}`;
+        }
+      }
+    } catch {}
+
     if (meta.is_bot) {
       risk_score = Math.max(risk_score, 50);
       if (!block_reason) block_reason = "bot_signature";
