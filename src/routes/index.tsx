@@ -134,30 +134,32 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: Index,
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeSectionsQuery),
 });
 
 function Index() {
+  const { data } = useSuspenseQuery(homeSectionsQuery);
+  const on = (k: string) => data.map[k] !== false; // default ON if missing
   return (
     <div className="min-h-screen bg-background text-foreground">
       <ScrollTracker />
       <Header />
       <main>
-        <Hero />
-        <TrustBar />
-        <Problems />
-        {/* <LossCalculator /> — desabilitada via solicitação do admin (Sprint 18 fará toggle dinâmico) */}
-        <Solutions />
-        <AISection />
-        <DiagnosticForm />
-        <Differentials />
-        {/* Portfolio fake removido — substituído pela seção Cases (reais) */}
-        <Cases />
-        <Plans />
-        <Process />
-        <FAQ />
-        <Blog />
-        <SocialProofSection />
-        <CTA />
+        {on("hero") && <Hero />}
+        {on("trustbar") && <TrustBar />}
+        {on("problems") && <Problems />}
+        {on("loss_calculator") && <LossCalculator />}
+        {on("solutions") && <Solutions />}
+        {on("ai_section") && <AISection />}
+        {on("diagnostic_form") && <DiagnosticForm />}
+        {on("differentials") && <Differentials />}
+        {on("cases") && <Cases />}
+        {on("plans") && <Plans />}
+        {on("process") && <Process />}
+        {on("faq") && <FAQ />}
+        {on("blog") && <Blog />}
+        {on("social_proof") && <SocialProofSection />}
+        {on("cta") && <CTA />}
       </main>
       <Footer />
       <WhatsAppFloat />
