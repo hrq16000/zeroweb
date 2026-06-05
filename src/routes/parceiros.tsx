@@ -62,6 +62,7 @@ function ParceirosPage() {
         areas: String(fd.get("areas") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
         specialties: String(fd.get("specialties") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
         bio: String(fd.get("bio") ?? ""),
+        website_url: String(fd.get("website_url") ?? ""), // honeypot
       };
       await apply({ data: payload });
       setSent(true);
