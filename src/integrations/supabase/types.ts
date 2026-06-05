@@ -77,6 +77,120 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          categories: string[]
+          city: string | null
+          cnpj: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          legal_name: string | null
+          logo_url: string | null
+          phone: string | null
+          rating_avg: number
+          rating_count: number
+          service_regions: string[]
+          slug: string
+          social: Json
+          state: string | null
+          status: string
+          trade_name: string
+          updated_at: string
+          user_id: string | null
+          verified: boolean
+          views_count: number
+          website: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          categories?: string[]
+          city?: string | null
+          cnpj?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          legal_name?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          rating_avg?: number
+          rating_count?: number
+          service_regions?: string[]
+          slug: string
+          social?: Json
+          state?: string | null
+          status?: string
+          trade_name: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean
+          views_count?: number
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          categories?: string[]
+          city?: string | null
+          cnpj?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          legal_name?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          rating_avg?: number
+          rating_count?: number
+          service_regions?: string[]
+          slug?: string
+          social?: Json
+          state?: string | null
+          status?: string
+          trade_name?: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean
+          views_count?: number
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      company_categories: {
+        Row: {
+          category_id: string
+          company_id: string
+        }
+        Insert: {
+          category_id: string
+          company_id: string
+        }
+        Update: {
+          category_id?: string
+          company_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "mk_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_categories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_settings: {
         Row: {
           assignees: string[]
@@ -250,6 +364,473 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_settings: {
+        Row: {
+          auto_distribute_limit: number
+          distribution_mode: string
+          rr_pointer: number
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          auto_distribute_limit?: number
+          distribution_mode?: string
+          rr_pointer?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          auto_distribute_limit?: number
+          distribution_mode?: string
+          rr_pointer?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mk_categories: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          parent_id: string | null
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          parent_id?: string | null
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mk_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "mk_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mk_specialties: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mk_specialties_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "mk_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moderation_actions: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          id: string
+          reason: string | null
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          phone: string | null
+          slug: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          phone?: string | null
+          slug?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          phone?: string | null
+          slug?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      provider_categories: {
+        Row: {
+          category_id: string
+          provider_id: string
+        }
+        Insert: {
+          category_id: string
+          provider_id: string
+        }
+        Update: {
+          category_id?: string
+          provider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "mk_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_categories_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_portfolio: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          link: string | null
+          provider_id: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          provider_id: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          provider_id?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_portfolio_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      providers: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          cover_url: string | null
+          created_at: string
+          display_name: string
+          email: string | null
+          headline: string | null
+          id: string
+          phone: string | null
+          rating_avg: number
+          rating_count: number
+          service_regions: string[]
+          slug: string
+          social: Json
+          specialties: string[]
+          state: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+          verified: boolean
+          views_count: number
+          whatsapp: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          display_name: string
+          email?: string | null
+          headline?: string | null
+          id?: string
+          phone?: string | null
+          rating_avg?: number
+          rating_count?: number
+          service_regions?: string[]
+          slug: string
+          social?: Json
+          specialties?: string[]
+          state?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean
+          views_count?: number
+          whatsapp?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          display_name?: string
+          email?: string | null
+          headline?: string | null
+          id?: string
+          phone?: string | null
+          rating_avg?: number
+          rating_count?: number
+          service_regions?: string[]
+          slug?: string
+          social?: Json
+          specialties?: string[]
+          state?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          verified?: boolean
+          views_count?: number
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      request_distributions: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          request_id: string
+          status: string
+          target_id: string
+          target_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          request_id: string
+          status?: string
+          target_id: string
+          target_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          request_id?: string
+          status?: string
+          target_id?: string
+          target_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_distributions_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          author_email: string | null
+          author_name: string | null
+          author_user_id: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          status: string
+          target_id: string
+          target_type: string
+          updated_at: string
+        }
+        Insert: {
+          author_email?: string | null
+          author_name?: string | null
+          author_user_id?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          status?: string
+          target_id: string
+          target_type: string
+          updated_at?: string
+        }
+        Update: {
+          author_email?: string | null
+          author_name?: string | null
+          author_user_id?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          status?: string
+          target_id?: string
+          target_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          budget_range: string | null
+          category_slug: string | null
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json
+          requester_email: string | null
+          requester_name: string
+          requester_phone: string | null
+          requester_user_id: string | null
+          state: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget_range?: string | null
+          category_slug?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          requester_email?: string | null
+          requester_name: string
+          requester_phone?: string | null
+          requester_user_id?: string | null
+          state?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget_range?: string | null
+          category_slug?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          requester_email?: string | null
+          requester_name?: string
+          requester_phone?: string | null
+          requester_user_id?: string | null
+          state?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       wa_funnel_sessions: {
         Row: {
           answers_json: Json | null
@@ -326,9 +907,16 @@ export type Database = {
           score: number
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "cliente" | "prestador" | "empresa" | "parceiro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -455,6 +1043,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "cliente", "prestador", "empresa", "parceiro"],
+    },
   },
 } as const

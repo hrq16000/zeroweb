@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
+import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
 import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
@@ -25,6 +27,7 @@ import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
+import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -34,7 +37,11 @@ import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
+import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
+import { Route as CidadeSlugRouteImport } from './routes/cidade.$slug'
+import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
@@ -46,14 +53,23 @@ import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
+import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
+import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
+import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes/_authenticated/app.marketplace.company'
+import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_authenticated/app.marketplace.admin'
 
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
   path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolicitarOrcamentoRoute = SolicitarOrcamentoRouteImport.update({
+  id: '/solicitar-orcamento',
+  path: '/solicitar-orcamento',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SobreRoute = SobreRouteImport.update({
@@ -76,6 +92,12 @@ const SitemapPagesDotxmlRoute = SitemapPagesDotxmlRouteImport.update({
   path: '/sitemap-pages.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapMarketplaceDotxmlRoute =
+  SitemapMarketplaceDotxmlRouteImport.update({
+    id: '/sitemap-marketplace.xml',
+    path: '/sitemap-marketplace.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SitemapCityServicesDotxmlRoute =
   SitemapCityServicesDotxmlRouteImport.update({
     id: '/sitemap-city-services.xml',
@@ -132,6 +154,11 @@ const PainelRoute = PainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketplaceRoute = MarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
   id: '/google-meu-negocio',
   path: '/google-meu-negocio',
@@ -176,10 +203,30 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
+  id: '/profissional/$slug',
+  path: '/profissional/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EstadosStateRoute = EstadosStateRouteImport.update({
   id: '/$state',
   path: '/$state',
   getParentRoute: () => EstadosRoute,
+} as any)
+const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
+  id: '/empresa/$slug',
+  path: '/empresa/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CidadeSlugRoute = CidadeSlugRouteImport.update({
+  id: '/cidade/$slug',
+  path: '/cidade/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CasesSlugRoute = CasesSlugRouteImport.update({
   id: '/cases/$slug',
@@ -238,6 +285,12 @@ const AuthenticatedAppNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppMarketplaceRoute =
+  AuthenticatedAppMarketplaceRouteImport.update({
+    id: '/marketplace',
+    path: '/marketplace',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppDocumentsRoute =
   AuthenticatedAppDocumentsRouteImport.update({
     id: '/documents',
@@ -261,6 +314,24 @@ const AuthenticatedAppProjectsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedAppProjectsRoute,
   } as any)
+const AuthenticatedAppMarketplaceProviderRoute =
+  AuthenticatedAppMarketplaceProviderRouteImport.update({
+    id: '/provider',
+    path: '/provider',
+    getParentRoute: () => AuthenticatedAppMarketplaceRoute,
+  } as any)
+const AuthenticatedAppMarketplaceCompanyRoute =
+  AuthenticatedAppMarketplaceCompanyRouteImport.update({
+    id: '/company',
+    path: '/company',
+    getParentRoute: () => AuthenticatedAppMarketplaceRoute,
+  } as any)
+const AuthenticatedAppMarketplaceAdminRoute =
+  AuthenticatedAppMarketplaceAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => AuthenticatedAppMarketplaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -270,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
@@ -281,19 +353,26 @@ export interface FileRoutesByFullPath {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/cidade/$slug': typeof CidadeSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -301,6 +380,9 @@ export interface FileRoutesByFullPath {
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
+  '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
+  '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
@@ -312,6 +394,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
@@ -323,18 +406,25 @@ export interface FileRoutesByTo {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/cidade/$slug': typeof CidadeSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog': typeof BlogIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -342,6 +432,9 @@ export interface FileRoutesByTo {
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
+  '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
+  '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
@@ -355,6 +448,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
@@ -366,19 +460,26 @@ export interface FileRoutesById {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/cases/$slug': typeof CasesSlugRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/cidade/$slug': typeof CidadeSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/profissional/$slug': typeof ProfissionalSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
@@ -386,6 +487,9 @@ export interface FileRoutesById {
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
+  '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
+  '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
 }
@@ -399,6 +503,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/estados'
     | '/google-meu-negocio'
+    | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
@@ -410,19 +515,26 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-orcamento'
     | '/termos'
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/categoria/$slug'
+    | '/cidade/$slug'
+    | '/empresa/$slug'
     | '/estados/$state'
+    | '/profissional/$slug'
     | '/blog/'
     | '/app/admin'
     | '/app/documents'
+    | '/app/marketplace'
     | '/app/notifications'
     | '/app/profile'
     | '/app/projects'
@@ -430,6 +542,9 @@ export interface FileRouteTypes {
     | '/app/support'
     | '/api/public/lead-webhook'
     | '/app/'
+    | '/app/marketplace/admin'
+    | '/app/marketplace/company'
+    | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -441,6 +556,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/estados'
     | '/google-meu-negocio'
+    | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
@@ -452,18 +568,25 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-orcamento'
     | '/termos'
     | '/$city/$service'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/categoria/$slug'
+    | '/cidade/$slug'
+    | '/empresa/$slug'
     | '/estados/$state'
+    | '/profissional/$slug'
     | '/blog'
     | '/app/admin'
     | '/app/documents'
+    | '/app/marketplace'
     | '/app/notifications'
     | '/app/profile'
     | '/app/projects'
@@ -471,6 +594,9 @@ export interface FileRouteTypes {
     | '/app/support'
     | '/api/public/lead-webhook'
     | '/app'
+    | '/app/marketplace/admin'
+    | '/app/marketplace/company'
+    | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
   id:
@@ -483,6 +609,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/estados'
     | '/google-meu-negocio'
+    | '/marketplace'
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
@@ -494,19 +621,26 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-orcamento'
     | '/termos'
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
     | '/cases/$slug'
+    | '/categoria/$slug'
+    | '/cidade/$slug'
+    | '/empresa/$slug'
     | '/estados/$state'
+    | '/profissional/$slug'
     | '/blog/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/documents'
+    | '/_authenticated/app/marketplace'
     | '/_authenticated/app/notifications'
     | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
@@ -514,6 +648,9 @@ export interface FileRouteTypes {
     | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
     | '/_authenticated/app/'
+    | '/_authenticated/app/marketplace/admin'
+    | '/_authenticated/app/marketplace/company'
+    | '/_authenticated/app/marketplace/provider'
     | '/_authenticated/app/projects/$id'
     | '/_authenticated/app/support/$id'
   fileRoutesById: FileRoutesById
@@ -527,6 +664,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   EstadosRoute: typeof EstadosRouteWithChildren
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
+  MarketplaceRoute: typeof MarketplaceRoute
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
@@ -538,14 +676,20 @@ export interface RootRouteChildren {
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
   SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
   TermosRoute: typeof TermosRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CasesSlugRoute: typeof CasesSlugRoute
+  CategoriaSlugRoute: typeof CategoriaSlugRoute
+  CidadeSlugRoute: typeof CidadeSlugRoute
+  EmpresaSlugRoute: typeof EmpresaSlugRoute
+  ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
 }
@@ -557,6 +701,13 @@ declare module '@tanstack/react-router' {
       path: '/termos'
       fullPath: '/termos'
       preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solicitar-orcamento': {
+      id: '/solicitar-orcamento'
+      path: '/solicitar-orcamento'
+      fullPath: '/solicitar-orcamento'
+      preLoaderRoute: typeof SolicitarOrcamentoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -585,6 +736,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-pages.xml'
       fullPath: '/sitemap-pages.xml'
       preLoaderRoute: typeof SitemapPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-marketplace.xml': {
+      id: '/sitemap-marketplace.xml'
+      path: '/sitemap-marketplace.xml'
+      fullPath: '/sitemap-marketplace.xml'
+      preLoaderRoute: typeof SitemapMarketplaceDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-city-services.xml': {
@@ -664,6 +822,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PainelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketplace': {
+      id: '/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/google-meu-negocio': {
       id: '/google-meu-negocio'
       path: '/google-meu-negocio'
@@ -727,12 +892,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profissional/$slug': {
+      id: '/profissional/$slug'
+      path: '/profissional/$slug'
+      fullPath: '/profissional/$slug'
+      preLoaderRoute: typeof ProfissionalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/estados/$state': {
       id: '/estados/$state'
       path: '/$state'
       fullPath: '/estados/$state'
       preLoaderRoute: typeof EstadosStateRouteImport
       parentRoute: typeof EstadosRoute
+    }
+    '/empresa/$slug': {
+      id: '/empresa/$slug'
+      path: '/empresa/$slug'
+      fullPath: '/empresa/$slug'
+      preLoaderRoute: typeof EmpresaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cidade/$slug': {
+      id: '/cidade/$slug'
+      path: '/cidade/$slug'
+      fullPath: '/cidade/$slug'
+      preLoaderRoute: typeof CidadeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categoria/$slug': {
+      id: '/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/categoria/$slug'
+      preLoaderRoute: typeof CategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/cases/$slug': {
       id: '/cases/$slug'
@@ -811,6 +1004,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppNotificationsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/marketplace': {
+      id: '/_authenticated/app/marketplace'
+      path: '/marketplace'
+      fullPath: '/app/marketplace'
+      preLoaderRoute: typeof AuthenticatedAppMarketplaceRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/documents': {
       id: '/_authenticated/app/documents'
       path: '/documents'
@@ -839,8 +1039,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppProjectsIdRouteImport
       parentRoute: typeof AuthenticatedAppProjectsRoute
     }
+    '/_authenticated/app/marketplace/provider': {
+      id: '/_authenticated/app/marketplace/provider'
+      path: '/provider'
+      fullPath: '/app/marketplace/provider'
+      preLoaderRoute: typeof AuthenticatedAppMarketplaceProviderRouteImport
+      parentRoute: typeof AuthenticatedAppMarketplaceRoute
+    }
+    '/_authenticated/app/marketplace/company': {
+      id: '/_authenticated/app/marketplace/company'
+      path: '/company'
+      fullPath: '/app/marketplace/company'
+      preLoaderRoute: typeof AuthenticatedAppMarketplaceCompanyRouteImport
+      parentRoute: typeof AuthenticatedAppMarketplaceRoute
+    }
+    '/_authenticated/app/marketplace/admin': {
+      id: '/_authenticated/app/marketplace/admin'
+      path: '/admin'
+      fullPath: '/app/marketplace/admin'
+      preLoaderRoute: typeof AuthenticatedAppMarketplaceAdminRouteImport
+      parentRoute: typeof AuthenticatedAppMarketplaceRoute
+    }
   }
 }
+
+interface AuthenticatedAppMarketplaceRouteChildren {
+  AuthenticatedAppMarketplaceAdminRoute: typeof AuthenticatedAppMarketplaceAdminRoute
+  AuthenticatedAppMarketplaceCompanyRoute: typeof AuthenticatedAppMarketplaceCompanyRoute
+  AuthenticatedAppMarketplaceProviderRoute: typeof AuthenticatedAppMarketplaceProviderRoute
+}
+
+const AuthenticatedAppMarketplaceRouteChildren: AuthenticatedAppMarketplaceRouteChildren =
+  {
+    AuthenticatedAppMarketplaceAdminRoute:
+      AuthenticatedAppMarketplaceAdminRoute,
+    AuthenticatedAppMarketplaceCompanyRoute:
+      AuthenticatedAppMarketplaceCompanyRoute,
+    AuthenticatedAppMarketplaceProviderRoute:
+      AuthenticatedAppMarketplaceProviderRoute,
+  }
+
+const AuthenticatedAppMarketplaceRouteWithChildren =
+  AuthenticatedAppMarketplaceRoute._addFileChildren(
+    AuthenticatedAppMarketplaceRouteChildren,
+  )
 
 interface AuthenticatedAppProjectsRouteChildren {
   AuthenticatedAppProjectsIdRoute: typeof AuthenticatedAppProjectsIdRoute
@@ -873,6 +1115,7 @@ const AuthenticatedAppSupportRouteWithChildren =
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
@@ -884,6 +1127,8 @@ interface AuthenticatedAppRouteChildren {
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppMarketplaceRoute:
+    AuthenticatedAppMarketplaceRouteWithChildren,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
@@ -926,6 +1171,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   EstadosRoute: EstadosRouteWithChildren,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
+  MarketplaceRoute: MarketplaceRoute,
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
@@ -937,14 +1183,20 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
   SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
   TermosRoute: TermosRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
   CasesSlugRoute: CasesSlugRoute,
+  CategoriaSlugRoute: CategoriaSlugRoute,
+  CidadeSlugRoute: CidadeSlugRoute,
+  EmpresaSlugRoute: EmpresaSlugRoute,
+  ProfissionalSlugRoute: ProfissionalSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
 }
