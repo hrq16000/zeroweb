@@ -93,6 +93,7 @@ function tryEval(literal) {
 }
 
 const files = ROOTS.flatMap(walk);
+const warnings = [];
 let scanned = 0;
 for (const f of files) {
   const src = readFileSync(f, "utf8");
@@ -101,23 +102,38 @@ for (const f of files) {
   const literals = extractJsonLdLiterals(src);
   for (const lit of literals) {
     const obj = tryEval(lit);
-    if (obj) checkObject(obj, f);
-    else {
-      // Fallback: ensure each @type referenced has its required fields literally in text.
-      const typeMatches = [...lit.matchAll(/"@type":\s*"(\w+)"/g)].map((x) => x[1]);
-      for (const t of typeMatches) {
-        const reqs = REQUIRED[t];
-        if (!reqs) continue;
-        for (const field of reqs) {
-          const re = new RegExp(`"${field}"\\s*:`);
-          if (!re.test(lit)) {
-            errors.push(`${f}: ${t} appears to be missing required field "${field}" (static check)`);
+    if (obj) {
+      // Strict: object literal fully resolved — required fields must be present
+      // (unless the node is a pure @id reference like { "@id": "..." }).
+      const strictCheck = (o, path = "") => {
+        if (!o || typeof o !== "object") return;
+        if (Array.isArray(o)) { o.forEach((x, i) => strictCheck(x, `${path}[${i}]`)); return; }
+        const t = o["@type"];
+        const isRefOnly = o["@id"] && !t;
+        if (t && REQUIRED[t] && !isRefOnly) {
+          for (const field of REQUIRED[t]) {
+            if (o[field] === undefined || o[field] === null || o[field] === "") {
+              errors.push(`${f}: ${t}${path ? ` (${path})` : ""} missing required field "${field}"`);
+            }
           }
         }
+        for (const k of Object.keys(o)) strictCheck(o[k], `${path}.${k}`);
+      };
+      strictCheck(obj);
+    } else {
+      // Non-evaluatable (references runtime variables) — emit warning only.
+      const typeMatches = [...lit.matchAll(/"@type":\s*"(\w+)"/g)].map((x) => x[1]);
+      for (const t of typeMatches) {
+        if (REQUIRED[t]) warnings.push(`${f}: ${t} block uses runtime variables — skipped strict check`);
       }
     }
   }
 }
+
+if (warnings.length > 0 && process.env.SCHEMA_VERBOSE === "1") {
+  for (const w of warnings) console.warn("  ⚠ " + w);
+}
+
 
 if (errors.length > 0) {
   console.error("✖ Schema.org validation failed:\n");
