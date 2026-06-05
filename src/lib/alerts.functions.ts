@@ -1,20 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getSettingValue } from "@/lib/settings.functions";
 
 /**
- * WhatsApp (uazapi) alert adapter.
- * Env vars expected:
- *   UAZAPI_BASE_URL    e.g. https://free.uazapi.com
- *   UAZAPI_TOKEN       instance token
- *   UAZAPI_ALERT_NUMBER  destination phone (E.164, no +)
+ * WhatsApp (uazapi) alert adapter. Settings are loaded from the admin
+ * panel (app_settings table), with env vars as a legacy fallback.
  */
 export async function sendWhatsAppAlert(message: string): Promise<{ ok: boolean; error?: string }> {
-  const base = process.env.UAZAPI_BASE_URL;
-  const token = process.env.UAZAPI_TOKEN;
-  const number = process.env.UAZAPI_ALERT_NUMBER;
+  const base = (await getSettingValue("uazapi.base_url")) || process.env.UAZAPI_BASE_URL;
+  const token = (await getSettingValue("uazapi.token")) || process.env.UAZAPI_TOKEN;
+  const number = (await getSettingValue("uazapi.alert_number")) || process.env.UAZAPI_ALERT_NUMBER;
   if (!base || !token || !number) {
-    return { ok: false, error: "uazapi env not configured" };
+    return { ok: false, error: "uazapi não configurado (defina em /app/admin → Integrações)" };
   }
   try {
     const res = await fetch(`${base.replace(/\/$/, "")}/send/text`, {
