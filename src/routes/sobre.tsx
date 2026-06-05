@@ -25,16 +25,32 @@ export const Route = createFileRoute("/sobre")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "AboutPage",
-          name: TITLE,
-          description: DESC,
-          mainEntity: {
-            "@type": "Organization",
-            name: "0WEB",
-            foundingDate: "2006",
-            taxID: "41.723.708/0001-58",
-            url: "https://0web.com.br/",
-          },
+          "@graph": [
+            {
+              "@type": "AboutPage",
+              "@id": "https://0web.com.br/sobre#aboutpage",
+              url: "https://0web.com.br/sobre",
+              name: TITLE,
+              description: DESC,
+              inLanguage: "pt-BR",
+              mainEntity: {
+                "@type": "Organization",
+                name: "0WEB",
+                foundingDate: "2006",
+                taxID: "41.723.708/0001-58",
+                url: "https://0web.com.br/",
+                logo: "https://0web.com.br/favicon.ico",
+                telephone: "+55-41-99745-2053",
+              },
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+                { "@type": "ListItem", position: 2, name: "Sobre", item: "https://0web.com.br/sobre" },
+              ],
+            },
+          ],
         }),
       },
     ],
