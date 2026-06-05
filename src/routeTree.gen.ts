@@ -55,6 +55,7 @@ import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
+import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadeSlugRouteImport } from './routes/cidade.$slug'
@@ -339,6 +340,11 @@ const RCodeRoute = RCodeRouteImport.update({
 const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
   id: '/profissional/$slug',
   path: '/profissional/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FSlugRoute = FSlugRouteImport.update({
+  id: '/f/$slug',
+  path: '/f/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EstadosStateRoute = EstadosStateRouteImport.update({
@@ -699,6 +705,7 @@ export interface FileRoutesByFullPath {
   '/cidade/$slug': typeof CidadeSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
@@ -799,6 +806,7 @@ export interface FileRoutesByTo {
   '/cidade/$slug': typeof CidadeSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog': typeof BlogIndexRoute
@@ -902,6 +910,7 @@ export interface FileRoutesById {
   '/cidade/$slug': typeof CidadeSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
+  '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/blog/': typeof BlogIndexRoute
@@ -1005,6 +1014,7 @@ export interface FileRouteTypes {
     | '/cidade/$slug'
     | '/empresa/$slug'
     | '/estados/$state'
+    | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog/'
@@ -1105,6 +1115,7 @@ export interface FileRouteTypes {
     | '/cidade/$slug'
     | '/empresa/$slug'
     | '/estados/$state'
+    | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog'
@@ -1207,6 +1218,7 @@ export interface FileRouteTypes {
     | '/cidade/$slug'
     | '/empresa/$slug'
     | '/estados/$state'
+    | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
     | '/blog/'
@@ -1308,6 +1320,7 @@ export interface RootRouteChildren {
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadeSlugRoute: typeof CidadeSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
+  FSlugRoute: typeof FSlugRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -1645,6 +1658,13 @@ declare module '@tanstack/react-router' {
       path: '/profissional/$slug'
       fullPath: '/profissional/$slug'
       preLoaderRoute: typeof ProfissionalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/f/$slug': {
+      id: '/f/$slug'
+      path: '/f/$slug'
+      fullPath: '/f/$slug'
+      preLoaderRoute: typeof FSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/estados/$state': {
@@ -2212,6 +2232,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadeSlugRoute: CidadeSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
+  FSlugRoute: FSlugRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
   BlogIndexRoute: BlogIndexRoute,

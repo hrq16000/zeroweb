@@ -1060,6 +1060,212 @@ export type Database = {
           },
         ]
       }
+      dynamic_form_conditions: {
+        Row: {
+          action: string
+          created_at: string
+          form_id: string
+          from_question_id: string
+          id: string
+          operator: string
+          priority: number
+          target_question_id: string | null
+          value: Json
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          form_id: string
+          from_question_id: string
+          id?: string
+          operator: string
+          priority?: number
+          target_question_id?: string | null
+          value?: Json
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          form_id?: string
+          from_question_id?: string
+          id?: string
+          operator?: string
+          priority?: number
+          target_question_id?: string | null
+          value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_form_conditions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dynamic_form_conditions_from_question_id_fkey"
+            columns: ["from_question_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dynamic_form_conditions_target_question_id_fkey"
+            columns: ["target_question_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dynamic_form_leads: {
+        Row: {
+          answers_json: Json
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          form_id: string
+          id: string
+          metadata_json: Json
+          whatsapp_alert_error: string | null
+          whatsapp_alert_sent_at: string | null
+          whatsapp_alert_status: string | null
+          whatsapp_user_url: string | null
+        }
+        Insert: {
+          answers_json?: Json
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          form_id: string
+          id?: string
+          metadata_json?: Json
+          whatsapp_alert_error?: string | null
+          whatsapp_alert_sent_at?: string | null
+          whatsapp_alert_status?: string | null
+          whatsapp_user_url?: string | null
+        }
+        Update: {
+          answers_json?: Json
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          form_id?: string
+          id?: string
+          metadata_json?: Json
+          whatsapp_alert_error?: string | null
+          whatsapp_alert_sent_at?: string | null
+          whatsapp_alert_status?: string | null
+          whatsapp_user_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_form_leads_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dynamic_form_questions: {
+        Row: {
+          created_at: string
+          form_id: string
+          hint: string | null
+          id: string
+          key: string
+          label: string
+          options_json: Json
+          order_index: number
+          placeholder: string | null
+          required: boolean
+          type: string
+          updated_at: string
+          validation_json: Json
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          hint?: string | null
+          id?: string
+          key: string
+          label: string
+          options_json?: Json
+          order_index?: number
+          placeholder?: string | null
+          required?: boolean
+          type: string
+          updated_at?: string
+          validation_json?: Json
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          hint?: string | null
+          id?: string
+          key?: string
+          label?: string
+          options_json?: Json
+          order_index?: number
+          placeholder?: string | null
+          required?: boolean
+          type?: string
+          updated_at?: string
+          validation_json?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_form_questions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dynamic_forms: {
+        Row: {
+          config_json: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          status: string
+          updated_at: string
+          whatsapp_config: Json
+        }
+        Insert: {
+          config_json?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          status?: string
+          updated_at?: string
+          whatsapp_config?: Json
+        }
+        Update: {
+          config_json?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          status?: string
+          updated_at?: string
+          whatsapp_config?: Json
+        }
+        Relationships: []
+      }
       ecosystem_portals: {
         Row: {
           created_at: string
