@@ -91,6 +91,7 @@ import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticat
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
 import { Route as ApiPublicHooksLicenseUsageSnapshotRouteImport } from './routes/api/public/hooks/license-usage-snapshot'
+import { Route as ApiPublicHooksLhciIngestRouteImport } from './routes/api/public/hooks/lhci-ingest'
 import { Route as ApiPublicHooksLgpdMaintenanceRouteImport } from './routes/api/public/hooks/lgpd-maintenance'
 import { Route as ApiPublicHooksIntegrationHealthcheckRouteImport } from './routes/api/public/hooks/integration-healthcheck'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
@@ -527,6 +528,12 @@ const ApiPublicHooksLicenseUsageSnapshotRoute =
     path: '/api/public/hooks/license-usage-snapshot',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLhciIngestRoute =
+  ApiPublicHooksLhciIngestRouteImport.update({
+    id: '/api/public/hooks/lhci-ingest',
+    path: '/api/public/hooks/lhci-ingest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksLgpdMaintenanceRoute =
   ApiPublicHooksLgpdMaintenanceRouteImport.update({
     id: '/api/public/hooks/lgpd-maintenance',
@@ -670,6 +677,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
@@ -761,6 +769,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
@@ -855,6 +864,7 @@ export interface FileRoutesById {
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
+  '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
@@ -949,6 +959,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
@@ -1040,6 +1051,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
@@ -1133,6 +1145,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
+    | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
@@ -1200,6 +1213,7 @@ export interface RootRouteChildren {
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
   ApiPublicHooksIntegrationHealthcheckRoute: typeof ApiPublicHooksIntegrationHealthcheckRoute
   ApiPublicHooksLgpdMaintenanceRoute: typeof ApiPublicHooksLgpdMaintenanceRoute
+  ApiPublicHooksLhciIngestRoute: typeof ApiPublicHooksLhciIngestRoute
   ApiPublicHooksLicenseUsageSnapshotRoute: typeof ApiPublicHooksLicenseUsageSnapshotRoute
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
@@ -1781,6 +1795,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksLicenseUsageSnapshotRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/lhci-ingest': {
+      id: '/api/public/hooks/lhci-ingest'
+      path: '/api/public/hooks/lhci-ingest'
+      fullPath: '/api/public/hooks/lhci-ingest'
+      preLoaderRoute: typeof ApiPublicHooksLhciIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/lgpd-maintenance': {
       id: '/api/public/hooks/lgpd-maintenance'
       path: '/api/public/hooks/lgpd-maintenance'
@@ -2032,6 +2053,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksIntegrationHealthcheckRoute:
     ApiPublicHooksIntegrationHealthcheckRoute,
   ApiPublicHooksLgpdMaintenanceRoute: ApiPublicHooksLgpdMaintenanceRoute,
+  ApiPublicHooksLhciIngestRoute: ApiPublicHooksLhciIngestRoute,
   ApiPublicHooksLicenseUsageSnapshotRoute:
     ApiPublicHooksLicenseUsageSnapshotRoute,
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
