@@ -27,21 +27,39 @@ import {
   adminDeleteSection,
   adminReorderSections,
 } from "@/lib/site-sections.functions";
+import {
+  getUptimeMetrics,
+  listCronHistory,
+  exportCronHistoryCsv,
+  get2faStatus,
+  set2faEnabled,
+  requestBreakGlass,
+  revealSecretWithGrant,
+  listBreakGlassGrants,
+} from "@/lib/observability.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
-type Tab = "clients" | "tickets" | "settings" | "site";
+type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security";
 
 function AdminPage() {
   const [tab, setTab] = useState<Tab>("clients");
+  const labels: Record<Tab, string> = {
+    clients: "Clientes & Projetos",
+    tickets: "Tickets",
+    settings: "Integrações",
+    site: "Seções do site",
+    observ: "Observabilidade",
+    security: "Segurança",
+  };
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações e seções do site.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade e segurança.</p>
       <div className="mt-5 flex gap-1 border-b border-border flex-wrap">
-        {(["clients", "tickets", "settings", "site"] as const).map((t) => (
+        {(Object.keys(labels) as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -49,14 +67,20 @@ function AdminPage() {
               tab === t ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground"
             }`}
           >
-            {t === "clients" ? "Clientes & Projetos" : t === "tickets" ? "Tickets" : t === "settings" ? "Integrações" : "Seções do site"}
+            {labels[t]}
           </button>
         ))}
       </div>
-      {tab === "clients" ? <ClientsTab /> : tab === "tickets" ? <TicketsTab /> : tab === "settings" ? <SettingsTab /> : <SiteSectionsTab />}
+      {tab === "clients" ? <ClientsTab /> :
+        tab === "tickets" ? <TicketsTab /> :
+        tab === "settings" ? <SettingsTab /> :
+        tab === "site" ? <SiteSectionsTab /> :
+        tab === "observ" ? <ObservabilityTab /> :
+        <SecurityTab />}
     </div>
   );
 }
+
 
 // Schema-driven integration registry. Loaded from `integration_schemas` table.
 type SchemaField = {
@@ -899,6 +923,266 @@ function SiteSectionsTab() {
           Após adicionar, registre a renderização da seção no código da página correspondente (verificando <code>on("&lt;chave&gt;")</code>).
         </p>
       </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Sprint 18 — Observabilidade
+// ─────────────────────────────────────────────────────────────
+function ObservabilityTab() {
+  const um = useServerFn(getUptimeMetrics);
+  const lh = useServerFn(listCronHistory);
+  const ex = useServerFn(exportCronHistoryCsv);
+  const [metrics, setMetrics] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+  const [filterKey, setFilterKey] = useState<string>("");
+  const [from, setFrom] = useState<string>("");
+  const [to, setTo] = useState<string>("");
+  const [limit, setLimit] = useState<number>(100);
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const toIso = (d: string) => (d ? new Date(d).toISOString() : undefined);
+
+  const reload = async () => {
+    setLoading(true);
+    setErr(null);
+    try {
+      const [m, h] = await Promise.all([
+        um(),
+        lh({ data: { key: filterKey || undefined, from: toIso(from), to: toIso(to), limit } }),
+      ]);
+      setMetrics(m.metrics as any[]);
+      setHistory(h.rows as any[]);
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => { void reload(); /* eslint-disable-next-line */ }, []);
+
+  const doExport = async () => {
+    setExporting(true);
+    try {
+      const r = await ex({ data: { key: filterKey || undefined, from: toIso(from), to: toIso(to), limit: Math.max(limit, 1000) } });
+      const blob = new Blob([r.csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cron-history-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  if (err) return <p className="text-sm text-destructive mt-5">{err}</p>;
+
+  return (
+    <div className="mt-6 space-y-6">
+      <section>
+        <h2 className="text-lg font-semibold">Uptime por integração</h2>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {metrics.length === 0 && <p className="text-sm text-muted-foreground">Nenhuma execução do health-check ainda. O cron roda a cada 15 min.</p>}
+          {metrics.map((m) => (
+            <div key={m.key} className="rounded-lg border border-border p-4">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">{m.key}</span>
+                <span className={`text-xs px-2 py-0.5 rounded ${m.uptime_24h == null ? "bg-muted text-muted-foreground" : m.uptime_24h >= 99 ? "bg-emerald-500/15 text-emerald-700" : m.uptime_24h >= 90 ? "bg-amber-500/15 text-amber-700" : "bg-destructive/15 text-destructive"}`}>
+                  {m.uptime_24h == null ? "—" : `${m.uptime_24h}%`} 24h
+                </span>
+              </div>
+              <dl className="mt-2 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div><dt>7d</dt><dd className="text-foreground">{m.uptime_7d ?? "—"}%</dd></div>
+                <div><dt>Checks 24h</dt><dd className="text-foreground">{m.checks_24h}</dd></div>
+                <div><dt>Checks 7d</dt><dd className="text-foreground">{m.checks_7d}</dd></div>
+                <div><dt>Latência média</dt><dd className="text-foreground">{m.avg_latency_ms ?? "—"} ms</dd></div>
+              </dl>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold">Últimas execuções do cron</h2>
+        <div className="mt-3 flex flex-wrap gap-2 items-end">
+          <label className="text-xs text-muted-foreground flex flex-col">
+            Integração
+            <input value={filterKey} onChange={(e) => setFilterKey(e.target.value)} placeholder="ex.: uazapi" className="mt-1 h-8 px-2 rounded border border-input bg-background text-sm" />
+          </label>
+          <label className="text-xs text-muted-foreground flex flex-col">
+            De
+            <input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} className="mt-1 h-8 px-2 rounded border border-input bg-background text-sm" />
+          </label>
+          <label className="text-xs text-muted-foreground flex flex-col">
+            Até
+            <input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} className="mt-1 h-8 px-2 rounded border border-input bg-background text-sm" />
+          </label>
+          <label className="text-xs text-muted-foreground flex flex-col">
+            Limite
+            <input type="number" min={1} max={500} value={limit} onChange={(e) => setLimit(Number(e.target.value) || 100)} className="mt-1 h-8 px-2 rounded border border-input bg-background text-sm w-24" />
+          </label>
+          <button onClick={() => void reload()} disabled={loading} className="h-8 px-3 rounded bg-primary text-primary-foreground text-sm">
+            {loading ? "Carregando…" : "Aplicar filtros"}
+          </button>
+          <button onClick={() => void doExport()} disabled={exporting} className="h-8 px-3 rounded border border-border text-sm">
+            {exporting ? "Exportando…" : "Exportar CSV"}
+          </button>
+        </div>
+        <div className="mt-3 rounded-lg border border-border overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left">
+              <tr><th className="px-3 py-2">Quando</th><th className="px-3 py-2">Integração</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Latência</th><th className="px-3 py-2">Origem</th><th className="px-3 py-2">Mensagem</th></tr>
+            </thead>
+            <tbody>
+              {history.length === 0 && <tr><td colSpan={6} className="px-3 py-4 text-muted-foreground text-center">Sem execuções no período.</td></tr>}
+              {history.map((r) => (
+                <tr key={r.id} className="border-t border-border">
+                  <td className="px-3 py-2 whitespace-nowrap">{new Date(r.checked_at).toLocaleString("pt-BR")}</td>
+                  <td className="px-3 py-2">{r.key}</td>
+                  <td className="px-3 py-2"><span className={`px-1.5 py-0.5 rounded text-xs ${r.status === "ok" ? "bg-emerald-500/15 text-emerald-700" : "bg-destructive/15 text-destructive"}`}>{r.status}</span></td>
+                  <td className="px-3 py-2">{r.latency_ms ?? "—"} ms</td>
+                  <td className="px-3 py-2 text-muted-foreground">{r.source}</td>
+                  <td className="px-3 py-2 text-xs text-muted-foreground truncate max-w-[300px]" title={r.message}>{r.message}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Sprint 19 — Segurança (2FA + Break-glass)
+// ─────────────────────────────────────────────────────────────
+function SecurityTab() {
+  const get2 = useServerFn(get2faStatus);
+  const set2 = useServerFn(set2faEnabled);
+  const req = useServerFn(requestBreakGlass);
+  const rev = useServerFn(revealSecretWithGrant);
+  const lst = useServerFn(listBreakGlassGrants);
+
+  const [twofa, setTwofa] = useState<any>(null);
+  const [grants, setGrants] = useState<any[]>([]);
+  const [err, setErr] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const [bgKey, setBgKey] = useState("");
+  const [bgReason, setBgReason] = useState("");
+  const [bgMinutes, setBgMinutes] = useState(10);
+  const [revealed, setRevealed] = useState<Record<string, string>>({});
+
+  const load = async () => {
+    try {
+      const [a, b] = await Promise.all([get2(), lst()]);
+      setTwofa(a);
+      setGrants(b.rows as any[]);
+    } catch (e: any) { setErr(e.message); }
+  };
+  useEffect(() => { void load(); /* eslint-disable-next-line */ }, []);
+
+  const toggle2fa = async () => {
+    setMsg(null); setErr(null);
+    try {
+      await set2({ data: { enabled: !twofa?.enabled } });
+      await load();
+      setMsg(twofa?.enabled ? "2FA desativado." : "2FA ativado.");
+    } catch (e: any) { setErr(e.message); }
+  };
+
+  const createGrant = async () => {
+    setMsg(null); setErr(null);
+    try {
+      const r = await req({ data: { setting_key: bgKey.trim(), reason: bgReason.trim(), minutes: bgMinutes } });
+      setMsg(`Grant criado. Expira em ${new Date(r.expires_at).toLocaleString("pt-BR")}.`);
+      setBgKey(""); setBgReason("");
+      await load();
+    } catch (e: any) { setErr(e.message); }
+  };
+
+  const reveal = async (id: string) => {
+    setErr(null);
+    try {
+      const r = await rev({ data: { grant_id: id } });
+      setRevealed((m) => ({ ...m, [id]: r.value ?? "(vazio)" }));
+      await load();
+    } catch (e: any) { setErr(e.message); }
+  };
+
+  if (err && !twofa) return <p className="text-sm text-destructive mt-5">{err}</p>;
+
+  return (
+    <div className="mt-6 space-y-8">
+      <section>
+        <h2 className="text-lg font-semibold">Autenticação em dois fatores</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Obrigatório para o papel <code>admin</code> ao alterar configurações. (TOTP completo: roadmap.)
+        </p>
+        <div className="mt-3 flex items-center gap-3">
+          <span className={`inline-block px-2 py-0.5 rounded text-xs ${twofa?.enabled ? "bg-emerald-500/15 text-emerald-700" : "bg-amber-500/15 text-amber-700"}`}>
+            {twofa?.enabled ? "Ativado" : "Desativado"}
+          </span>
+          {twofa?.enabled_at && <span className="text-xs text-muted-foreground">desde {new Date(twofa.enabled_at).toLocaleString("pt-BR")}</span>}
+          <button onClick={() => void toggle2fa()} className="h-8 px-3 rounded border border-border text-sm">
+            {twofa?.enabled ? "Desativar" : "Ativar"}
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold">Break-glass — revelar segredo</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Concede a si mesmo (admin) acesso temporário para revelar uma chave secreta. Toda concessão e revelação ficam auditadas.
+        </p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_2fr_120px_auto]">
+          <input value={bgKey} onChange={(e) => setBgKey(e.target.value)} placeholder="ex.: uazapi.token" className="h-9 px-3 rounded border border-input bg-background text-sm" />
+          <input value={bgReason} onChange={(e) => setBgReason(e.target.value)} placeholder="Motivo (mín. 10 caracteres)" className="h-9 px-3 rounded border border-input bg-background text-sm" />
+          <input type="number" min={1} max={60} value={bgMinutes} onChange={(e) => setBgMinutes(Number(e.target.value) || 10)} className="h-9 px-3 rounded border border-input bg-background text-sm" />
+          <button onClick={() => void createGrant()} className="h-9 px-3 rounded bg-primary text-primary-foreground text-sm">Solicitar</button>
+        </div>
+        {msg && <p className="mt-2 text-xs text-emerald-700">{msg}</p>}
+        {err && <p className="mt-2 text-xs text-destructive">{err}</p>}
+
+        <div className="mt-4 rounded-lg border border-border overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left">
+              <tr><th className="px-3 py-2">Chave</th><th className="px-3 py-2">Motivo</th><th className="px-3 py-2">Concedido</th><th className="px-3 py-2">Expira</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Ação</th></tr>
+            </thead>
+            <tbody>
+              {grants.length === 0 && <tr><td colSpan={6} className="px-3 py-4 text-muted-foreground text-center">Nenhum break-glass registrado.</td></tr>}
+              {grants.map((g) => {
+                const expired = new Date(g.expires_at).getTime() < Date.now();
+                const status = g.revoked_at ? "revogado" : g.revealed_at ? "usado" : expired ? "expirado" : "ativo";
+                return (
+                  <tr key={g.id} className="border-t border-border">
+                    <td className="px-3 py-2 font-mono text-xs">{g.setting_key}</td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground truncate max-w-[260px]" title={g.reason}>{g.reason}</td>
+                    <td className="px-3 py-2 whitespace-nowrap text-xs">{new Date(g.granted_at).toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2 whitespace-nowrap text-xs">{new Date(g.expires_at).toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2"><span className={`px-1.5 py-0.5 rounded text-xs ${status === "ativo" ? "bg-emerald-500/15 text-emerald-700" : status === "usado" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}>{status}</span></td>
+                    <td className="px-3 py-2">
+                      {status === "ativo" && (
+                        <button onClick={() => void reveal(g.id)} className="h-7 px-2 rounded border border-border text-xs">Revelar</button>
+                      )}
+                      {revealed[g.id] && (
+                        <code className="ml-2 px-2 py-0.5 rounded bg-muted text-xs break-all">{revealed[g.id]}</code>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }

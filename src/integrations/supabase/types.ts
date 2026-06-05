@@ -234,6 +234,39 @@ export type Database = {
         }
         Relationships: []
       }
+      break_glass_grants: {
+        Row: {
+          expires_at: string
+          granted_at: string
+          id: string
+          reason: string
+          revealed_at: string | null
+          revoked_at: string | null
+          setting_key: string
+          user_id: string
+        }
+        Insert: {
+          expires_at: string
+          granted_at?: string
+          id?: string
+          reason: string
+          revealed_at?: string | null
+          revoked_at?: string | null
+          setting_key: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string
+          granted_at?: string
+          id?: string
+          reason?: string
+          revealed_at?: string | null
+          revoked_at?: string | null
+          setting_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       campaigns: {
         Row: {
           budget_monthly: number | null
@@ -556,6 +589,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integration_health_checks: {
+        Row: {
+          checked_at: string
+          id: string
+          key: string
+          latency_ms: number | null
+          message: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          checked_at?: string
+          id?: string
+          key: string
+          latency_ms?: number | null
+          message?: string | null
+          source?: string
+          status: string
+        }
+        Update: {
+          checked_at?: string
+          id?: string
+          key?: string
+          latency_ms?: number | null
+          message?: string | null
+          source?: string
+          status?: string
+        }
+        Relationships: []
       }
       integration_schemas: {
         Row: {
@@ -1145,6 +1208,8 @@ export type Database = {
           id: string
           phone: string | null
           slug: string | null
+          twofa_enabled: boolean
+          twofa_enabled_at: string | null
           updated_at: string
         }
         Insert: {
@@ -1154,6 +1219,8 @@ export type Database = {
           id: string
           phone?: string | null
           slug?: string | null
+          twofa_enabled?: boolean
+          twofa_enabled_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -1163,6 +1230,8 @@ export type Database = {
           id?: string
           phone?: string | null
           slug?: string | null
+          twofa_enabled?: boolean
+          twofa_enabled_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1535,6 +1604,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      settings_change_log: {
+        Row: {
+          action: string
+          at: string
+          id: string
+          key: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          at?: string
+          id?: string
+          key?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          at?: string
+          id?: string
+          key?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       site_sections: {
         Row: {

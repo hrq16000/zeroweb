@@ -122,6 +122,11 @@ export const upsertSetting = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const { enforceSettingsRateLimit, require2faIfAdmin } = await import(
+      "@/lib/observability.functions"
+    );
+    await require2faIfAdmin(context.userId);
+    await enforceSettingsRateLimit(context.userId);
     const sb = await getAdmin();
     await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     const { error } = await sb.from("app_settings").upsert(
@@ -149,6 +154,11 @@ export const deleteSetting = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const { enforceSettingsRateLimit, require2faIfAdmin } = await import(
+      "@/lib/observability.functions"
+    );
+    await require2faIfAdmin(context.userId);
+    await enforceSettingsRateLimit(context.userId);
     const sb = await getAdmin();
     await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     await sb.from("app_settings").delete().eq("key", data.key);
@@ -156,6 +166,7 @@ export const deleteSetting = createServerFn({ method: "POST" })
     invalidateSettingsCache([data.key]);
     return { ok: true };
   });
+
 
 // ── History / rollback ────────────────────────────────────────────────
 
@@ -417,8 +428,9 @@ export const testIntegration = createServerFn({ method: "POST" })
  * an integration transitions to / stays in error — dedup window: 1h.
  */
 export async function runHealthChecks(): Promise<
-  { key: string; ok: boolean; message: string; alerted: boolean }[]
+  { key: string; ok: boolean; message: string; alerted: boolean; latency_ms: number }[]
 > {
+
   const sb = await getAdmin();
   const { data: schemas } = await sb
     .from("integration_schemas")
@@ -427,10 +439,19 @@ export async function runHealthChecks(): Promise<
     .eq("testable", true);
   const keys = (schemas ?? []).map((r: any) => r.key as string).filter((k: string) => !!TESTERS[k]);
 
-  const out: { key: string; ok: boolean; message: string; alerted: boolean }[] = [];
+  const out: { key: string; ok: boolean; message: string; alerted: boolean; latency_ms: number }[] = [];
   for (const key of keys) {
+    const t0 = Date.now();
     const r = await TESTERS[key]();
+    const latency = Date.now() - t0;
     await writeStatus(key, r.ok ? "ok" : "error", r.message, null);
+    await sb.from("integration_health_checks").insert({
+      key,
+      status: r.ok ? "ok" : "error",
+      message: r.message.slice(0, 500),
+      latency_ms: latency,
+      source: "cron",
+    });
     let alerted = false;
     if (!r.ok) {
       const { data: st } = await sb
@@ -453,7 +474,8 @@ export async function runHealthChecks(): Promise<
         }
       }
     }
-    out.push({ key, ...r, alerted });
+    out.push({ key, ...r, alerted, latency_ms: latency });
   }
   return out;
 }
+
