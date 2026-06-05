@@ -27,21 +27,39 @@ import {
   adminDeleteSection,
   adminReorderSections,
 } from "@/lib/site-sections.functions";
+import {
+  getUptimeMetrics,
+  listCronHistory,
+  exportCronHistoryCsv,
+  get2faStatus,
+  set2faEnabled,
+  requestBreakGlass,
+  revealSecretWithGrant,
+  listBreakGlassGrants,
+} from "@/lib/observability.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
-type Tab = "clients" | "tickets" | "settings" | "site";
+type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security";
 
 function AdminPage() {
   const [tab, setTab] = useState<Tab>("clients");
+  const labels: Record<Tab, string> = {
+    clients: "Clientes & Projetos",
+    tickets: "Tickets",
+    settings: "Integrações",
+    site: "Seções do site",
+    observ: "Observabilidade",
+    security: "Segurança",
+  };
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações e seções do site.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade e segurança.</p>
       <div className="mt-5 flex gap-1 border-b border-border flex-wrap">
-        {(["clients", "tickets", "settings", "site"] as const).map((t) => (
+        {(Object.keys(labels) as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -49,14 +67,20 @@ function AdminPage() {
               tab === t ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground"
             }`}
           >
-            {t === "clients" ? "Clientes & Projetos" : t === "tickets" ? "Tickets" : t === "settings" ? "Integrações" : "Seções do site"}
+            {labels[t]}
           </button>
         ))}
       </div>
-      {tab === "clients" ? <ClientsTab /> : tab === "tickets" ? <TicketsTab /> : tab === "settings" ? <SettingsTab /> : <SiteSectionsTab />}
+      {tab === "clients" ? <ClientsTab /> :
+        tab === "tickets" ? <TicketsTab /> :
+        tab === "settings" ? <SettingsTab /> :
+        tab === "site" ? <SiteSectionsTab /> :
+        tab === "observ" ? <ObservabilityTab /> :
+        <SecurityTab />}
     </div>
   );
 }
+
 
 // Schema-driven integration registry. Loaded from `integration_schemas` table.
 type SchemaField = {
