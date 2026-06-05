@@ -43,11 +43,15 @@ function AuthPage() {
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if ((event === "SIGNED_IN" || event === "USER_UPDATED") && session) {
+        fireAndForgetStitch();
         navigate({ to: "/app", replace: true });
       }
     });
     void supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/app", replace: true });
+      if (data.user) {
+        fireAndForgetStitch();
+        navigate({ to: "/app", replace: true });
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
