@@ -122,6 +122,11 @@ export const upsertSetting = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const { enforceSettingsRateLimit, require2faIfAdmin } = await import(
+      "@/lib/observability.functions"
+    );
+    await require2faIfAdmin(context.userId);
+    await enforceSettingsRateLimit(context.userId);
     const sb = await getAdmin();
     await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     const { error } = await sb.from("app_settings").upsert(
@@ -149,6 +154,11 @@ export const deleteSetting = createServerFn({ method: "POST" })
   )
   .handler(async ({ context, data }) => {
     if (!(await canManage(context.userId))) throw new Error("Acesso negado");
+    const { enforceSettingsRateLimit, require2faIfAdmin } = await import(
+      "@/lib/observability.functions"
+    );
+    await require2faIfAdmin(context.userId);
+    await enforceSettingsRateLimit(context.userId);
     const sb = await getAdmin();
     await requireReasonIfCritical(sb, data.key, data.reason ?? null);
     await sb.from("app_settings").delete().eq("key", data.key);
@@ -156,6 +166,7 @@ export const deleteSetting = createServerFn({ method: "POST" })
     invalidateSettingsCache([data.key]);
     return { ok: true };
   });
+
 
 // ── History / rollback ────────────────────────────────────────────────
 
