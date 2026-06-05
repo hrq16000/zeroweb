@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import heroDashboard from "@/assets/hero-dashboard.jpg";
+import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { Problems } from "@/components/site/Problems";
@@ -38,11 +38,11 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://0web.com.br/" },
       { property: "og:site_name", content: "0WEB" },
       { property: "og:locale", content: "pt_BR" },
-      { property: "og:image", content: "https://0web.com.br/og-default.png" },
+      { property: "og:image", content: "https://0web.com.br/og-default.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: "https://0web.com.br/og-default.png" },
+      { name: "twitter:image", content: "https://0web.com.br/og-default.jpg" },
     ],
     links: [
       { rel: "canonical", href: "https://0web.com.br/" },

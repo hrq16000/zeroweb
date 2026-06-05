@@ -18,7 +18,7 @@ export const Route = createFileRoute("/blog/$slug")({
     const { post } = loaderData;
     const wordCount = post.content.split(/\s+/).filter(Boolean).length;
     const url = `https://0web.com.br/blog/${params.slug}`;
-    const image = "https://0web.com.br/og-default.png";
+    const image = "https://0web.com.br/og-default.jpg";
     return {
       meta: [
         { title: `${post.title} · Blog 0WEB` },

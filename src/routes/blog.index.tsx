@@ -20,11 +20,11 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://0web.com.br/blog" },
-      { property: "og:image", content: "https://0web.com.br/og-default.png" },
+      { property: "og:image", content: "https://0web.com.br/og-default.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: "https://0web.com.br/og-default.png" },
+      { name: "twitter:image", content: "https://0web.com.br/og-default.jpg" },
       { name: "robots", content: "max-image-preview:large, max-snippet:-1" },
     ],
     links: [

@@ -1,12 +1,12 @@
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import nexa from "@/assets/portfolio-nexa.jpg";
-import lumen from "@/assets/portfolio-lumen.jpg";
-import pulse from "@/assets/portfolio-pulse.jpg";
-import orbita from "@/assets/portfolio-orbita.jpg";
-import volt from "@/assets/portfolio-volt.jpg";
-import mira from "@/assets/portfolio-mira.jpg";
+import nexa from "@/assets/portfolio-nexa.webp";
+import lumen from "@/assets/portfolio-lumen.webp";
+import pulse from "@/assets/portfolio-pulse.webp";
+import orbita from "@/assets/portfolio-orbita.webp";
+import volt from "@/assets/portfolio-volt.webp";
+import mira from "@/assets/portfolio-mira.webp";
 
 const projects = [
   { title: "Nexa Health", cat: "Sistema", img: nexa, href: "/contato" },

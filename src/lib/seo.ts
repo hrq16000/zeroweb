@@ -11,7 +11,7 @@ export function absUrl(path: string): string {
 
 // Default brand share image (fallback when route has no real image).
 // Lives at /favicon.png via the favicon asset; safe absolute URL.
-export const DEFAULT_OG_IMAGE = `${ORIGIN}/og-default.png`;
+export const DEFAULT_OG_IMAGE = `${ORIGIN}/og-default.jpg`;
 
 export function breadcrumbLd(items: { name: string; path: string }[]) {
   return {
