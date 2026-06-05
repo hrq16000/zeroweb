@@ -438,10 +438,19 @@ export async function runHealthChecks(): Promise<
     .eq("testable", true);
   const keys = (schemas ?? []).map((r: any) => r.key as string).filter((k: string) => !!TESTERS[k]);
 
-  const out: { key: string; ok: boolean; message: string; alerted: boolean }[] = [];
+  const out: { key: string; ok: boolean; message: string; alerted: boolean; latency_ms: number }[] = [];
   for (const key of keys) {
+    const t0 = Date.now();
     const r = await TESTERS[key]();
+    const latency = Date.now() - t0;
     await writeStatus(key, r.ok ? "ok" : "error", r.message, null);
+    await sb.from("integration_health_checks").insert({
+      key,
+      status: r.ok ? "ok" : "error",
+      message: r.message.slice(0, 500),
+      latency_ms: latency,
+      source: "cron",
+    });
     let alerted = false;
     if (!r.ok) {
       const { data: st } = await sb
@@ -464,7 +473,8 @@ export async function runHealthChecks(): Promise<
         }
       }
     }
-    out.push({ key, ...r, alerted });
+    out.push({ key, ...r, alerted, latency_ms: latency });
   }
   return out;
 }
+
