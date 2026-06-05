@@ -133,6 +133,33 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings: {
+        Row: {
+          description: string | null
+          is_secret: boolean
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: string | null
+        }
+        Insert: {
+          description?: string | null
+          is_secret?: boolean
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Update: {
+          description?: string | null
+          is_secret?: boolean
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
       blocked_asns: {
         Row: {
           asn: string
