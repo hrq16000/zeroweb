@@ -86,17 +86,16 @@ export function SeoThresholdsAdmin() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl border border-border bg-muted/30 p-4">
-        <div className="text-xs uppercase tracking-wider font-semibold">Token de ingestão LHCI</div>
-        <Row
-          k="lhci.ingest_token"
-          label="Header X-Ingest-Token"
-          def=""
-          value={values["lhci.ingest_token"] ?? ""}
-          onChange={setVal}
-          onSave={() => save("lhci.ingest_token", "")}
-          saving={saving === "lhci.ingest_token"}
-        />
+      <div className="mt-4 rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+        <div className="text-xs uppercase tracking-wider font-semibold">Ingestão LHCI & Alertas</div>
+        <Row k="lhci.hmac_secret" label="HMAC secret (X-Signature: sha256=…)" def="" value={values["lhci.hmac_secret"] ?? ""}
+          onChange={setVal} onSave={() => save("lhci.hmac_secret", "")} saving={saving === "lhci.hmac_secret"} />
+        <Row k="lhci.ingest_token" label="Legacy X-Ingest-Token (opcional)" def="" value={values["lhci.ingest_token"] ?? ""}
+          onChange={setVal} onSave={() => save("lhci.ingest_token", "")} saving={saving === "lhci.ingest_token"} />
+        <Row k="alerts.slack_webhook_url" label="Slack webhook URL (aprovar/reprovar)" def="" value={values["alerts.slack_webhook_url"] ?? ""}
+          onChange={setVal} onSave={() => save("alerts.slack_webhook_url", "")} saving={saving === "alerts.slack_webhook_url"} />
+        <Row k="alerts.email_to" label="Email para notificações (Resend)" def="" value={values["alerts.email_to"] ?? ""}
+          onChange={setVal} onSave={() => save("alerts.email_to", "")} saving={saving === "alerts.email_to"} />
       </div>
     </div>
   );
