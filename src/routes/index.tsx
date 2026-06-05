@@ -137,7 +137,7 @@ function Index() {
         <Hero />
         <TrustBar />
         <Problems />
-        <LossCalculator />
+        {/* <LossCalculator /> — desabilitada via solicitação do admin (Sprint 18 fará toggle dinâmico) */}
         <Solutions />
         <AISection />
         <DiagnosticForm />
