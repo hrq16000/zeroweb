@@ -7,14 +7,14 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { AuthorBio } from "@/components/site/AuthorBio";
 import { CLUSTERS, CLUSTER_RELATIONS, type Cluster } from "@/lib/content-taxonomy";
-import { getPostsByCategory } from "@/lib/blog-data";
+import { posts as ALL_POSTS } from "@/lib/blog-data";
 
 export function HubPage({ cluster }: { cluster: Cluster }) {
   const related = (CLUSTER_RELATIONS[cluster.slug] ?? [])
     .map((s) => CLUSTERS.find((c) => c.slug === s))
     .filter(Boolean) as Cluster[];
 
-  const posts = getPostsByCategory(cluster.title).slice(0, 6);
+  const posts = ALL_POSTS.filter((p) => p.category.toLowerCase() === cluster.title.toLowerCase()).slice(0, 6);
   const bofu = cluster.subclusters.filter((s) => s.funnel === "bofu");
   const mofu = cluster.subclusters.filter((s) => s.funnel === "mofu");
   const tofu = cluster.subclusters.filter((s) => s.funnel === "tofu");
