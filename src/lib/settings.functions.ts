@@ -428,8 +428,9 @@ export const testIntegration = createServerFn({ method: "POST" })
  * an integration transitions to / stays in error — dedup window: 1h.
  */
 export async function runHealthChecks(): Promise<
-  { key: string; ok: boolean; message: string; alerted: boolean }[]
+  { key: string; ok: boolean; message: string; alerted: boolean; latency_ms: number }[]
 > {
+
   const sb = await getAdmin();
   const { data: schemas } = await sb
     .from("integration_schemas")
