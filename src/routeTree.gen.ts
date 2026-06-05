@@ -74,6 +74,7 @@ import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
+import { Route as ApiPublicHooksLgpdMaintenanceRouteImport } from './routes/api/public/hooks/lgpd-maintenance'
 import { Route as ApiPublicHooksIntegrationHealthcheckRouteImport } from './routes/api/public/hooks/integration-healthcheck'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
@@ -417,6 +418,12 @@ const ApiPublicHooksSeoMonitorRoute =
     path: '/api/public/hooks/seo-monitor',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLgpdMaintenanceRoute =
+  ApiPublicHooksLgpdMaintenanceRouteImport.update({
+    id: '/api/public/hooks/lgpd-maintenance',
+    path: '/api/public/hooks/lgpd-maintenance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksIntegrationHealthcheckRoute =
   ApiPublicHooksIntegrationHealthcheckRouteImport.update({
     id: '/api/public/hooks/integration-healthcheck',
@@ -530,6 +537,7 @@ export interface FileRoutesByFullPath {
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -602,6 +610,7 @@ export interface FileRoutesByTo {
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -677,6 +686,7 @@ export interface FileRoutesById {
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -752,6 +762,7 @@ export interface FileRouteTypes {
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesByTo: FileRoutesByTo
@@ -824,6 +835,7 @@ export interface FileRouteTypes {
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   id:
@@ -898,6 +910,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesById: FileRoutesById
@@ -952,6 +965,7 @@ export interface RootRouteChildren {
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
   ApiPublicHooksIntegrationHealthcheckRoute: typeof ApiPublicHooksIntegrationHealthcheckRoute
+  ApiPublicHooksLgpdMaintenanceRoute: typeof ApiPublicHooksLgpdMaintenanceRoute
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -1413,6 +1427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/lgpd-maintenance': {
+      id: '/api/public/hooks/lgpd-maintenance'
+      path: '/api/public/hooks/lgpd-maintenance'
+      fullPath: '/api/public/hooks/lgpd-maintenance'
+      preLoaderRoute: typeof ApiPublicHooksLgpdMaintenanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/integration-healthcheck': {
       id: '/api/public/hooks/integration-healthcheck'
       path: '/api/public/hooks/integration-healthcheck'
@@ -1625,6 +1646,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
   ApiPublicHooksIntegrationHealthcheckRoute:
     ApiPublicHooksIntegrationHealthcheckRoute,
+  ApiPublicHooksLgpdMaintenanceRoute: ApiPublicHooksLgpdMaintenanceRoute,
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }
