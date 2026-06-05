@@ -4,7 +4,22 @@ import { posts } from "@/lib/blog-data";
 import { cases } from "@/lib/cases-data";
 import { SERVICES_DICT, CITIES_DICT } from "@/lib/seo";
 
-const BASE_URL = "https://0web.com.br";
+const DEFAULT_BASE_URL = "https://0web.com.br";
+
+function resolveBaseUrl(request: Request): string {
+  try {
+    const host = request.headers.get("host") ?? "";
+    const proto = request.headers.get("x-forwarded-proto") ?? "https";
+    // Use the request host for lovable preview/published domains so the
+    // sitemap validates on whichever domain is crawling it. Fall back to the
+    // canonical production domain otherwise.
+    if (host.endsWith("lovable.app") || host.startsWith("localhost")) {
+      return `${proto}://${host}`;
+    }
+    if (host) return `${proto}://${host}`;
+  } catch {}
+  return DEFAULT_BASE_URL;
+}
 
 interface SitemapEntry {
   path: string;
