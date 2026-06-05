@@ -19,6 +19,14 @@ import {
   testIntegration,
   listIntegrationSchemas,
 } from "@/lib/settings.functions";
+import {
+  adminListSections,
+  adminListPages,
+  adminToggleSection,
+  adminUpsertSection,
+  adminDeleteSection,
+  adminReorderSections,
+} from "@/lib/site-sections.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
