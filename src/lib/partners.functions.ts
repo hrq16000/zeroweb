@@ -18,34 +18,66 @@ export const applyAsPartner = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z
       .object({
-        name: z.string().trim().min(2).max(120),
+        name: z.string().trim().min(2).max(120).regex(/^[\p{L}\p{N}\s.'-]+$/u, "Nome inválido"),
         company: z.string().trim().max(160).optional(),
         email: z.string().trim().email().max(160),
-        phone: z.string().trim().max(40).optional(),
+        phone: z.string().trim().max(40).regex(/^[\d\s+()-]*$/, "Telefone inválido").optional(),
         city: z.string().trim().max(120).optional(),
         state: z.string().trim().max(40).optional(),
         kind: z.enum(KINDS).default("afiliado"),
         areas: z.array(z.string().min(1).max(60)).max(20).default([]),
         specialties: z.array(z.string().min(1).max(60)).max(20).default([]),
         bio: z.string().max(800).optional(),
+        // Honeypot — bots tendem a preencher campos ocultos
+        website_url: z.string().max(200).optional(),
       })
       .parse(input),
   )
   .handler(async ({ data }) => {
+    // Honeypot: silenciosamente retorna ok (não dá feedback ao bot)
+    if (data.website_url && data.website_url.trim().length > 0) {
+      console.warn("[applyAsPartner] honeypot tripped");
+      return { ok: true as const, id: "honeypot", duplicated: false };
+    }
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Rate-limit: 10 tentativas / 1h por IP
+    try {
+      const ip =
+        getRequestIP({ xForwardedFor: true }) ||
+        getRequestHeader("cf-connecting-ip") ||
+        getRequestHeader("x-real-ip") ||
+        "unknown";
+      const ipHash = await hashIp(ip);
+      const { data: allowed } = await supabaseAdmin.rpc("check_and_record_rate_limit", {
+        p_scope: "partner_signup",
+        p_ip_hash: ipHash,
+        p_window_seconds: 3600,
+        p_max_hits: 10,
+      });
+      if (allowed === false) {
+        throw new Error("Muitas tentativas. Tente novamente em 1 hora.");
+      }
+    } catch (e) {
+      if (e instanceof Error && e.message.startsWith("Muitas tentativas")) throw e;
+      console.error("[applyAsPartner] rate-limit check failed:", e);
+    }
+
+    const { website_url: _hp, ...payload } = data;
     const { data: existing } = await supabaseAdmin
       .from("partners")
       .select("id")
-      .ilike("email", data.email)
+      .ilike("email", payload.email)
       .maybeSingle();
-    if (existing) return { ok: true, id: existing.id, duplicated: true };
+    if (existing) return { ok: true as const, id: existing.id, duplicated: true };
     const { data: row, error } = await supabaseAdmin
       .from("partners")
-      .insert({ ...data, status: "pendente" })
+      .insert({ ...payload, status: "pendente" })
       .select("id")
       .single();
     if (error) throw new Error(error.message);
-    return { ok: true, id: row.id, duplicated: false };
+    return { ok: true as const, id: row.id, duplicated: false };
   });
 
 // Painel do parceiro (self)
