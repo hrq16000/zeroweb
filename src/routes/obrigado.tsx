@@ -219,15 +219,12 @@ function ObrigadoPage() {
           </div>
         </section>
 
-        {/* Prova social */}
+        {/* Prova social personalizada por origem */}
         <section className="mt-20">
           <div className="mx-auto max-w-6xl px-5 lg:px-8">
+            <h2 className="text-center text-2xl font-bold font-display mb-8">{content.socialProofHeadline}</h2>
             <div className="grid sm:grid-cols-3 gap-4 mb-10">
-              {[
-                { n: "+200", l: "clientes ativos" },
-                { n: "R$ 28M+", l: "em vendas geradas" },
-                { n: "98%", l: "de satisfação" },
-              ].map((s) => (
+              {content.stats.map((s) => (
                 <div key={s.l} className="text-center rounded-2xl border border-border bg-card p-6">
                   <p className="text-3xl font-bold font-display text-primary">{s.n}</p>
                   <p className="text-sm text-muted-foreground mt-1">{s.l}</p>
@@ -235,7 +232,7 @@ function ObrigadoPage() {
               ))}
             </div>
             <div className="grid sm:grid-cols-3 gap-4">
-              {TESTIMONIALS.map((t) => (
+              {content.testimonials.map((t) => (
                 <figure key={t.name} className="rounded-2xl border border-border bg-card p-5">
                   <div className="flex gap-0.5 mb-2 text-yellow-500" aria-label="5 estrelas">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -264,7 +261,7 @@ function ObrigadoPage() {
                 href={whatsappUrl("Quero agilizar minha proposta. Pode me atender agora?", `obrigado_cta_final_${content.channel}`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => handleCta("final_whatsapp", "Quero falar agora")}
+                onClick={waFinal.onClick}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-3 shadow-glow-primary"
               >
                 <MessageCircle className="w-5 h-5" />
@@ -272,7 +269,7 @@ function ObrigadoPage() {
               </a>
               <Link
                 to="/"
-                onClick={() => handleCta("home", "Voltar para o início")}
+                onClick={() => handleCta("home", "Voltar para o início", 100, "/")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold hover:bg-muted transition-colors"
               >
                 Voltar para o início
