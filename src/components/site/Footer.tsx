@@ -96,7 +96,6 @@ export function Footer() {
                   <li key={l.label}>
                     <Link
                       to={l.to}
-                      hash={l.hash}
                       className="text-background/80 hover:text-accent transition"
                     >
                       {l.label}
