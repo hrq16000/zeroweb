@@ -6,8 +6,9 @@
 
 \set ON_ERROR_STOP on
 BEGIN;
--- Bypass FK to auth.users for ephemeral test fixtures (rolled back at end)
-SET LOCAL session_replication_role = 'replica';
+-- Temporarily drop FK to auth.users so we can simulate users (rolled back at end)
+ALTER TABLE public.portal_members DROP CONSTRAINT IF EXISTS portal_members_user_id_fkey;
+
 
 
 -- 1) Fixtures: create two portals + two users + memberships
