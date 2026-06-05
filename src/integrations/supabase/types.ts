@@ -1690,6 +1690,78 @@ export type Database = {
           },
         ]
       }
+      lhci_runs: {
+        Row: {
+          accessibility: number | null
+          best_practices: number | null
+          branch: string | null
+          cls: number | null
+          commit_sha: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision: string | null
+          decision_reason: string | null
+          environment: string
+          fcp_ms: number | null
+          id: string
+          lcp_ms: number | null
+          logs: Json | null
+          performance: number | null
+          raw: Json | null
+          seo: number | null
+          status: string
+          tbt_ms: number | null
+          url: string
+        }
+        Insert: {
+          accessibility?: number | null
+          best_practices?: number | null
+          branch?: string | null
+          cls?: number | null
+          commit_sha?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision?: string | null
+          decision_reason?: string | null
+          environment?: string
+          fcp_ms?: number | null
+          id?: string
+          lcp_ms?: number | null
+          logs?: Json | null
+          performance?: number | null
+          raw?: Json | null
+          seo?: number | null
+          status?: string
+          tbt_ms?: number | null
+          url: string
+        }
+        Update: {
+          accessibility?: number | null
+          best_practices?: number | null
+          branch?: string | null
+          cls?: number | null
+          commit_sha?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision?: string | null
+          decision_reason?: string | null
+          environment?: string
+          fcp_ms?: number | null
+          id?: string
+          lcp_ms?: number | null
+          logs?: Json | null
+          performance?: number | null
+          raw?: Json | null
+          seo?: number | null
+          status?: string
+          tbt_ms?: number | null
+          url?: string
+        }
+        Relationships: []
+      }
       license_audit_log: {
         Row: {
           action: string
