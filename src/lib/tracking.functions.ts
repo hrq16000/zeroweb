@@ -19,14 +19,17 @@ const VisitInput = z.object({
   landing_page: z.string().max(2048).optional().nullable(),
 });
 
+// Rate-limit thresholds (per ip_hash)
+const RL_WINDOW_SEC = 10;
+const RL_MAX_HITS = 15; // > 15 hits in 10s => suspect
+const RL_BLOCK_MAX = 40; // > 40 hits in 10s => block
+
 function anonymizeIp(ip: string | null): string | null {
   if (!ip) return null;
-  // IPv4: zero last octet
   if (ip.includes(".")) {
     const parts = ip.split(".");
     if (parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.0`;
   }
-  // IPv6: keep /48
   if (ip.includes(":")) {
     const segs = ip.split(":");
     return segs.slice(0, 3).join(":") + "::";
@@ -43,9 +46,9 @@ async function sha256(text: string): Promise<string> {
 }
 
 function parseUA(ua: string | null) {
-  if (!ua) return { ua_browser: null, ua_os: null, ua_device: null, is_bot: false };
+  if (!ua) return { ua_browser: null, ua_os: null, ua_device: null, is_bot: true };
   const u = ua.toLowerCase();
-  const is_bot = /bot|crawl|spider|slurp|preview|monitor|axios|curl|wget|headless|lighthouse/i.test(ua);
+  const is_bot = /bot|crawl|spider|slurp|preview|monitor|axios|curl|wget|headless|lighthouse|python-requests|scrapy|java\//i.test(ua);
   const ua_browser = /edg/i.test(ua) ? "Edge" : /chrome/i.test(ua) ? "Chrome" : /safari/i.test(ua) ? "Safari" : /firefox/i.test(ua) ? "Firefox" : "Other";
   const ua_os = /windows/i.test(ua) ? "Windows" : /android/i.test(ua) ? "Android" : /iphone|ipad|ios/i.test(ua) ? "iOS" : /mac os/i.test(ua) ? "macOS" : /linux/i.test(ua) ? "Linux" : "Other";
   const ua_device = /mobile|iphone|android.*mobile/i.test(u) ? "mobile" : /tablet|ipad/i.test(u) ? "tablet" : "desktop";
@@ -77,6 +80,41 @@ export const trackVisit = createServerFn({ method: "POST" })
     const ipHash = await sha256(`${ipRaw || "unknown"}|${day}|${salt}`);
     const meta = parseUA(ua);
 
+    // ----- Rate limit / blocking -----
+    let blocked = false;
+    let block_reason: string | null = null;
+    let risk_score = 0;
+
+    try {
+      const sinceIso = new Date(Date.now() - RL_WINDOW_SEC * 1000).toISOString();
+      const { count } = await supabaseAdmin
+        .from("visitantes_rastreio")
+        .select("id", { count: "exact", head: true })
+        .eq("ip_hash", ipHash)
+        .gte("created_at", sinceIso);
+      const hits = count ?? 0;
+      if (hits >= RL_BLOCK_MAX) {
+        blocked = true;
+        block_reason = "rate_limit_block";
+        risk_score = 90;
+      } else if (hits >= RL_MAX_HITS) {
+        block_reason = "rate_limit_warn";
+        risk_score = 60;
+      }
+    } catch {
+      // soft-fail rate-limit check
+    }
+
+    if (meta.is_bot) {
+      risk_score = Math.max(risk_score, 50);
+      if (!block_reason) block_reason = "bot_signature";
+    }
+    if (!ua || ua.length < 8) {
+      risk_score = Math.max(risk_score, 70);
+      blocked = blocked || risk_score >= 70;
+      if (!block_reason) block_reason = "missing_ua";
+    }
+
     const row = {
       day,
       visitor_id: data.visitor_id || null,
@@ -104,16 +142,18 @@ export const trackVisit = createServerFn({ method: "POST" })
       gclid: data.gclid || null,
       fbclid: data.fbclid || null,
       tenant_slug: data.tenant_slug || null,
+      blocked,
+      block_reason,
+      risk_score,
     };
 
-    // Upsert on (ip_hash, day) — first visit per visitor per day
     const { error } = await supabaseAdmin
       .from("visitantes_rastreio")
       .upsert(row, { onConflict: "ip_hash,day", ignoreDuplicates: true });
 
     if (error) {
       console.error("trackVisit error:", error.message);
-      return { ok: false };
+      return { ok: false, blocked };
     }
-    return { ok: true };
+    return { ok: true, blocked };
   });

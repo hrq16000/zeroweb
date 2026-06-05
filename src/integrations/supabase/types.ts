@@ -1398,6 +1398,39 @@ export type Database = {
           },
         ]
       }
+      visitantes_rastreio_daily_agg: {
+        Row: {
+          blocked_count: number
+          bot_count: number
+          created_at: string
+          day: string
+          top_country: string | null
+          top_utm_source: string | null
+          total_visits: number
+          unique_visitors: number
+        }
+        Insert: {
+          blocked_count?: number
+          bot_count?: number
+          created_at?: string
+          day: string
+          top_country?: string | null
+          top_utm_source?: string | null
+          total_visits?: number
+          unique_visitors?: number
+        }
+        Update: {
+          blocked_count?: number
+          bot_count?: number
+          created_at?: string
+          day?: string
+          top_country?: string | null
+          top_utm_source?: string | null
+          total_visits?: number
+          unique_visitors?: number
+        }
+        Relationships: []
+      }
       wa_funnel_sessions: {
         Row: {
           answers_json: Json | null
@@ -1506,6 +1539,7 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
+      purge_visitantes_rastreio_old: { Args: never; Returns: number }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
