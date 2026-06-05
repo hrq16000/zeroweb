@@ -131,11 +131,11 @@ export const backfillIdentitiesFromLeads = createServerFn({ method: "POST" })
     let linked = 0;
     for (const l of leads ?? []) {
       const { data: idRes } = await admin.rpc("resolve_or_create_identity", {
-        p_email: l.email,
-        p_phone: l.phone,
-        p_name: l.name,
-        p_ecosystem_id: null,
-      });
+        p_email: l.email ?? undefined,
+        p_phone: l.phone ?? undefined,
+        p_name: l.name ?? undefined,
+        p_ecosystem_id: undefined,
+      } as never);
       if (!idRes) continue;
       created++;
       const { error: linkErr } = await admin
