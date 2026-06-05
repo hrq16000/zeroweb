@@ -7,8 +7,11 @@ export const listIdentityStitchLog = createServerFn({ method: "GET" })
   .inputValidator((d) =>
     z
       .object({
-        limit: z.number().min(1).max(500).default(200),
+        limit: z.number().min(1).max(5000).default(300),
         status: z.enum(["ok", "noop", "error", "all"]).default("all"),
+        dateFrom: z.string().datetime().optional(),
+        dateTo: z.string().datetime().optional(),
+        search: z.string().max(128).optional(),
       })
       .parse(d ?? {}),
   )
@@ -24,6 +27,12 @@ export const listIdentityStitchLog = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(data.limit);
     if (data.status !== "all") q = q.eq("status", data.status);
+    if (data.dateFrom) q = q.gte("created_at", data.dateFrom);
+    if (data.dateTo) q = q.lte("created_at", data.dateTo);
+    if (data.search) {
+      const s = data.search.replace(/[%,]/g, "");
+      q = q.or(`visitor_id.ilike.%${s}%,user_ref.ilike.%${s}%`);
+    }
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { rows: rows ?? [] };
