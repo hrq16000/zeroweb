@@ -4,7 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
-import { getPost, posts } from "@/lib/blog-data";
+import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
 import { AuthorBio } from "@/components/site/AuthorBio";
 import { suggestLinksForArticle } from "@/lib/interlinking";
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/blog/$slug")({
     const { post } = loaderData;
     const wordCount = post.content.split(/\s+/).filter(Boolean).length;
     const url = `https://0web.com.br/blog/${params.slug}`;
-    const image = "https://0web.com.br/og-default.jpg";
+    const image = post.cover ? `https://0web.com.br${post.cover}` : "https://0web.com.br/og-default.jpg";
     return {
       meta: [
         { title: `${post.title} · Blog 0WEB` },
@@ -139,7 +139,7 @@ function PostPage() {
 
           <div className="mt-10 aspect-[16/9] rounded-3xl overflow-hidden relative bg-muted">
             <img
-              src={coverForCategory(post.category)}
+              src={post.cover || coverForCategory(post.category)}
               alt={`Capa do artigo: ${post.title}`}
               width={1280}
               height={720}
@@ -153,6 +153,23 @@ function PostPage() {
           <div className="mt-10 text-lg leading-relaxed text-foreground/90 whitespace-pre-line">
             {post.content}
           </div>
+
+          {inlineImages[post.slug as keyof typeof inlineImages] && (
+            <figure className="mt-10">
+              <img
+                src={inlineImages[post.slug as keyof typeof inlineImages]}
+                alt={`Ilustração complementar: ${post.title}`}
+                width={1280}
+                height={720}
+                loading="lazy"
+                decoding="async"
+                className="w-full rounded-3xl"
+              />
+              <figcaption className="mt-3 text-sm text-muted-foreground text-center">
+                Prompts bem desenhados destravam respostas muito mais úteis no ChatGPT.
+              </figcaption>
+            </figure>
+          )}
 
           <AuthorBio className="mt-12" />
 
