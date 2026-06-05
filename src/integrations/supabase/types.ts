@@ -429,6 +429,48 @@ export type Database = {
           },
         ]
       }
+      consent_audit_log: {
+        Row: {
+          ad_storage: string | null
+          analytics_storage: string | null
+          created_at: string
+          decision: string
+          id: string
+          ip_hash: string | null
+          meta: Json
+          path: string | null
+          source: string
+          user_agent: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          ad_storage?: string | null
+          analytics_storage?: string | null
+          created_at?: string
+          decision: string
+          id?: string
+          ip_hash?: string | null
+          meta?: Json
+          path?: string | null
+          source?: string
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          ad_storage?: string | null
+          analytics_storage?: string | null
+          created_at?: string
+          decision?: string
+          id?: string
+          ip_hash?: string | null
+          meta?: Json
+          path?: string | null
+          source?: string
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       content_metrics: {
         Row: {
           clicks: number | null
@@ -2078,6 +2120,7 @@ export type Database = {
       }
     }
     Functions: {
+      anonymize_visitantes_rastreio_old: { Args: never; Returns: number }
       bump_experiment: {
         Args: {
           p_clicks?: number

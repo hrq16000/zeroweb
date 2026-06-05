@@ -27,6 +27,7 @@ import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
@@ -73,6 +74,7 @@ import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
+import { Route as ApiPublicHooksLgpdMaintenanceRouteImport } from './routes/api/public/hooks/lgpd-maintenance'
 import { Route as ApiPublicHooksIntegrationHealthcheckRouteImport } from './routes/api/public/hooks/integration-healthcheck'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
@@ -171,6 +173,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const QaEventsRoute = QaEventsRouteImport.update({
   id: '/qa-events',
   path: '/qa-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
@@ -411,6 +418,12 @@ const ApiPublicHooksSeoMonitorRoute =
     path: '/api/public/hooks/seo-monitor',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksLgpdMaintenanceRoute =
+  ApiPublicHooksLgpdMaintenanceRouteImport.update({
+    id: '/api/public/hooks/lgpd-maintenance',
+    path: '/api/public/hooks/lgpd-maintenance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksIntegrationHealthcheckRoute =
   ApiPublicHooksIntegrationHealthcheckRouteImport.update({
     id: '/api/public/hooks/integration-healthcheck',
@@ -471,6 +484,7 @@ export interface FileRoutesByFullPath {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -523,6 +537,7 @@ export interface FileRoutesByFullPath {
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -543,6 +558,7 @@ export interface FileRoutesByTo {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -594,6 +610,7 @@ export interface FileRoutesByTo {
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -616,6 +633,7 @@ export interface FileRoutesById {
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -668,6 +686,7 @@ export interface FileRoutesById {
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
+  '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -690,6 +709,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -742,6 +762,7 @@ export interface FileRouteTypes {
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesByTo: FileRoutesByTo
@@ -762,6 +783,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -813,6 +835,7 @@ export interface FileRouteTypes {
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   id:
@@ -834,6 +857,7 @@ export interface FileRouteTypes {
     | '/painel'
     | '/painel-crm'
     | '/politica-privacidade'
+    | '/privacidade'
     | '/qa-events'
     | '/reset-password'
     | '/rss.xml'
@@ -886,6 +910,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/integration-healthcheck'
+    | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
   fileRoutesById: FileRoutesById
@@ -908,6 +933,7 @@ export interface RootRouteChildren {
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -939,6 +965,7 @@ export interface RootRouteChildren {
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
   ApiPublicHooksIntegrationHealthcheckRoute: typeof ApiPublicHooksIntegrationHealthcheckRoute
+  ApiPublicHooksLgpdMaintenanceRoute: typeof ApiPublicHooksLgpdMaintenanceRoute
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
@@ -1069,6 +1096,13 @@ declare module '@tanstack/react-router' {
       path: '/qa-events'
       fullPath: '/qa-events'
       preLoaderRoute: typeof QaEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-privacidade': {
@@ -1393,6 +1427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSeoMonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/lgpd-maintenance': {
+      id: '/api/public/hooks/lgpd-maintenance'
+      path: '/api/public/hooks/lgpd-maintenance'
+      fullPath: '/api/public/hooks/lgpd-maintenance'
+      preLoaderRoute: typeof ApiPublicHooksLgpdMaintenanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/integration-healthcheck': {
       id: '/api/public/hooks/integration-healthcheck'
       path: '/api/public/hooks/integration-healthcheck'
@@ -1572,6 +1613,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
@@ -1604,6 +1646,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
   ApiPublicHooksIntegrationHealthcheckRoute:
     ApiPublicHooksIntegrationHealthcheckRoute,
+  ApiPublicHooksLgpdMaintenanceRoute: ApiPublicHooksLgpdMaintenanceRoute,
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }

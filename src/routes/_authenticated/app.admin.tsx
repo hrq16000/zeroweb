@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
-type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security";
+type Tab = "clients" | "tickets" | "settings" | "site" | "observ" | "security" | "visits";
 
 function AdminPage() {
   const [tab, setTab] = useState<Tab>("clients");
@@ -53,11 +53,12 @@ function AdminPage() {
     site: "Seções do site",
     observ: "Observabilidade",
     security: "Segurança",
+    visits: "Visitas & LGPD",
   };
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade e segurança.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações, observabilidade, segurança e privacidade.</p>
       <div className="mt-5 flex gap-1 border-b border-border flex-wrap">
         {(Object.keys(labels) as Tab[]).map((t) => (
           <button
@@ -76,6 +77,7 @@ function AdminPage() {
         tab === "settings" ? <SettingsTab /> :
         tab === "site" ? <SiteSectionsTab /> :
         tab === "observ" ? <ObservabilityTab /> :
+        tab === "visits" ? <VisitsLgpdTab /> :
         <SecurityTab />}
     </div>
   );
@@ -1182,6 +1184,206 @@ function SecurityTab() {
             </tbody>
           </table>
         </div>
+      </section>
+    </div>
+  );
+}
+
+// ===========================================================================
+// Visits & LGPD tab — visit analytics by page + retention controls
+// ===========================================================================
+import {
+  getVisitsByPage,
+  exportVisitsCsv,
+  getRecentConsentLogs,
+  runLgpdMaintenance,
+  getLgpdSettings,
+} from "@/lib/visitor-analytics.functions";
+
+function VisitsLgpdTab() {
+  const gv = useServerFn(getVisitsByPage);
+  const ex = useServerFn(exportVisitsCsv);
+  const gc = useServerFn(getRecentConsentLogs);
+  const rm = useServerFn(runLgpdMaintenance);
+  const gs = useServerFn(getLgpdSettings);
+  const us = useServerFn(upsertSetting);
+
+  const today = new Date().toISOString().slice(0, 10);
+  const past = new Date(Date.now() - 30 * 86400_000).toISOString().slice(0, 10);
+  const [startDate, setStartDate] = useState(past);
+  const [endDate, setEndDate] = useState(today);
+  const [pathLike, setPathLike] = useState("");
+  const [utmSource, setUtmSource] = useState("");
+  const [pages, setPages] = useState<{ path: string; visits: number; uniqueVisitors: number; daysSeen: number }[]>([]);
+  const [timeline, setTimeline] = useState<{ day: string; visits: number }[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [consentRows, setConsentRows] = useState<{ created_at: string; decision: string; source: string; path: string | null }[]>([]);
+  const [consentStats, setConsentStats] = useState<{ total: number; granted: number; denied: number }>({ total: 0, granted: 0, denied: 0 });
+  const [lgpd, setLgpd] = useState<{ anonymizeAfterDays: number; purgeAfterDays: number; contactEmail: string }>({ anonymizeAfterDays: 30, purgeAfterDays: 180, contactEmail: "" });
+  const [maintMsg, setMaintMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function refresh() {
+    setBusy(true); setErr(null);
+    try {
+      const r = await gv({ data: { startDate, endDate, pathLike: pathLike || null, utmSource: utmSource || null, limit: 100 } });
+      setPages(r.pages); setTimeline(r.timeline);
+    } catch (e) { setErr((e as Error).message); }
+    finally { setBusy(false); }
+  }
+  async function loadAux() {
+    try {
+      const [c, s] = await Promise.all([gc(), gs()]);
+      setConsentRows(c.rows); setConsentStats({ total: c.total, granted: c.granted, denied: c.denied });
+      setLgpd(s);
+    } catch (e) { console.warn(e); }
+  }
+  useEffect(() => { refresh(); loadAux(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+
+  async function download() {
+    setBusy(true);
+    try {
+      const r = await ex({ data: { startDate, endDate, pathLike: pathLike || null, utmSource: utmSource || null, limit: 100 } });
+      const blob = new Blob([r.csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `visitas-${startDate}-a-${endDate}.csv`;
+      a.click(); URL.revokeObjectURL(url);
+    } catch (e) { setErr((e as Error).message); }
+    finally { setBusy(false); }
+  }
+
+  async function runMaint() {
+    setMaintMsg("Executando…");
+    try {
+      const r = await rm();
+      setMaintMsg(`Anonimizados: ${r.anonymized} · Apagados: ${r.purged}`);
+    } catch (e) { setMaintMsg(`Erro: ${(e as Error).message}`); }
+  }
+
+  async function saveLgpdSetting(key: string, value: string) {
+    try {
+      await us({ data: { key, value, reason: "Atualização painel LGPD" } });
+      setMaintMsg("Configuração salva.");
+      await loadAux();
+    } catch (e) { setMaintMsg(`Erro: ${(e as Error).message}`); }
+  }
+
+  const maxTl = Math.max(1, ...timeline.map((d) => d.visits));
+
+  return (
+    <div className="mt-6 space-y-8">
+      {/* Filters */}
+      <section className="border border-border rounded-lg p-4">
+        <h2 className="text-sm font-semibold mb-3">Filtros</h2>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <label className="text-xs">De
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="mt-1 w-full text-sm border border-border rounded px-2 py-1 bg-background"/>
+          </label>
+          <label className="text-xs">Até
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="mt-1 w-full text-sm border border-border rounded px-2 py-1 bg-background"/>
+          </label>
+          <label className="text-xs">Path contém
+            <input value={pathLike} onChange={(e) => setPathLike(e.target.value)} placeholder="/blog" className="mt-1 w-full text-sm border border-border rounded px-2 py-1 bg-background"/>
+          </label>
+          <label className="text-xs">UTM source
+            <input value={utmSource} onChange={(e) => setUtmSource(e.target.value)} placeholder="google" className="mt-1 w-full text-sm border border-border rounded px-2 py-1 bg-background"/>
+          </label>
+          <div className="flex items-end gap-2">
+            <button onClick={refresh} disabled={busy} className="px-3 py-2 text-sm bg-primary text-primary-foreground rounded disabled:opacity-50">Atualizar</button>
+            <button onClick={download} disabled={busy} className="px-3 py-2 text-sm border border-border rounded disabled:opacity-50">CSV</button>
+          </div>
+        </div>
+        {err && <p className="mt-2 text-sm text-destructive">{err}</p>}
+      </section>
+
+      {/* Timeline sparkline */}
+      <section>
+        <h2 className="text-sm font-semibold mb-2">Visitas por dia</h2>
+        {timeline.length === 0 ? <p className="text-sm text-muted-foreground">Sem dados no período.</p> : (
+          <div className="flex items-end gap-1 h-24 border border-border rounded p-2">
+            {timeline.map((d) => (
+              <div key={d.day} title={`${d.day}: ${d.visits} visitas`} className="flex-1 bg-primary rounded-t" style={{ height: `${(d.visits / maxTl) * 100}%`, minHeight: 2 }}/>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Pages table */}
+      <section>
+        <h2 className="text-sm font-semibold mb-2">Top páginas</h2>
+        <div className="border border-border rounded overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/40 text-left text-xs uppercase">
+              <tr><th className="p-2">Path</th><th className="p-2 text-right">Visitas</th><th className="p-2 text-right">Únicos</th><th className="p-2 text-right">Dias</th></tr>
+            </thead>
+            <tbody>
+              {pages.length === 0 ? <tr><td colSpan={4} className="p-4 text-center text-muted-foreground">Sem dados.</td></tr>
+                : pages.map((p) => (
+                  <tr key={p.path} className="border-t border-border">
+                    <td className="p-2 font-mono truncate max-w-md">{p.path}</td>
+                    <td className="p-2 text-right">{p.visits}</td>
+                    <td className="p-2 text-right">{p.uniqueVisitors}</td>
+                    <td className="p-2 text-right">{p.daysSeen}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Consent audit */}
+      <section className="border border-border rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold">Auditoria de consentimento</h2>
+          <div className="text-xs text-muted-foreground">
+            Últimos 100: <strong>{consentStats.granted}</strong> aceitos · <strong>{consentStats.denied}</strong> negados
+          </div>
+        </div>
+        <div className="mt-3 max-h-64 overflow-auto">
+          <table className="w-full text-xs">
+            <thead className="text-left text-muted-foreground"><tr><th className="p-1">Quando</th><th className="p-1">Decisão</th><th className="p-1">Origem</th><th className="p-1">Path</th></tr></thead>
+            <tbody>
+              {consentRows.length === 0 ? <tr><td colSpan={4} className="p-3 text-center text-muted-foreground">Sem registros ainda.</td></tr>
+                : consentRows.map((r, i) => (
+                  <tr key={i} className="border-t border-border">
+                    <td className="p-1">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
+                    <td className="p-1"><span className={r.decision === "granted" ? "text-emerald-600" : "text-destructive"}>{r.decision}</span></td>
+                    <td className="p-1">{r.source}</td>
+                    <td className="p-1 font-mono">{r.path || "—"}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* LGPD retention controls */}
+      <section className="border border-border rounded-lg p-4">
+        <h2 className="text-sm font-semibold mb-3">Retenção LGPD (gerenciada pelo painel)</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+          <div>
+            <label className="text-xs text-muted-foreground">Anonimizar após (dias)</label>
+            <div className="flex gap-2 mt-1">
+              <input type="number" min={1} max={365} defaultValue={lgpd.anonymizeAfterDays} onBlur={(e) => saveLgpdSetting("lgpd_anonymize_after_days", e.target.value)} className="w-full border border-border rounded px-2 py-1 bg-background"/>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground">Apagar após (dias)</label>
+            <input type="number" min={1} max={3650} defaultValue={lgpd.purgeAfterDays} onBlur={(e) => saveLgpdSetting("lgpd_purge_after_days", e.target.value)} className="mt-1 w-full border border-border rounded px-2 py-1 bg-background"/>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground">E-mail de contato LGPD</label>
+            <input type="email" defaultValue={lgpd.contactEmail} onBlur={(e) => saveLgpdSetting("lgpd_privacy_contact", JSON.stringify(e.target.value))} className="mt-1 w-full border border-border rounded px-2 py-1 bg-background"/>
+          </div>
+        </div>
+        <div className="mt-4 flex items-center gap-3">
+          <button onClick={runMaint} className="px-3 py-2 text-sm bg-primary text-primary-foreground rounded">Executar anonimização + purga agora</button>
+          {maintMsg && <span className="text-xs text-muted-foreground">{maintMsg}</span>}
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Os mesmos prazos são publicados em <a href="/privacidade" className="underline">/privacidade</a>. Um cron diário também executa essa rotina automaticamente.
+        </p>
       </section>
     </div>
   );
