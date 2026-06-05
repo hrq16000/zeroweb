@@ -2906,6 +2906,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_buckets: {
+        Row: {
+          created_at: string
+          id: number
+          ip_hash: string
+          scope: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          ip_hash: string
+          scope: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          ip_hash?: string
+          scope?: string
+        }
+        Relationships: []
+      }
       remarketing_audiences: {
         Row: {
           active: boolean
@@ -3706,6 +3727,15 @@ export type Database = {
         Returns: undefined
       }
       can_manage_settings: { Args: { _uid: string }; Returns: boolean }
+      check_and_record_rate_limit: {
+        Args: {
+          p_ip_hash: string
+          p_max_hits: number
+          p_scope: string
+          p_window_seconds: number
+        }
+        Returns: boolean
+      }
       compute_lead_score: {
         Args: { p_row: Database["public"]["Tables"]["lead_submissions"]["Row"] }
         Returns: {
@@ -3736,6 +3766,7 @@ export type Database = {
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
       purge_ip_blocklist: { Args: never; Returns: number }
+      purge_rate_limit_buckets: { Args: never; Returns: number }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
       refresh_visitor_mvs: { Args: never; Returns: undefined }
