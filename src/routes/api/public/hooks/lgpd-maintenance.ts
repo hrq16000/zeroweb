@@ -15,11 +15,12 @@ export const Route = createFileRoute("/api/public/hooks/lgpd-maintenance")({
         }
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-          const [{ data: anon }, { data: purged }] = await Promise.all([
+          const [{ data: anon }, { data: purged }, { data: rl }] = await Promise.all([
             supabaseAdmin.rpc("anonymize_visitantes_rastreio_old"),
             supabaseAdmin.rpc("purge_visitantes_rastreio_old"),
+            supabaseAdmin.rpc("purge_rate_limit_buckets"),
           ]);
-          return Response.json({ ok: true, anonymized: Number(anon ?? 0), purged: Number(purged ?? 0) });
+          return Response.json({ ok: true, anonymized: Number(anon ?? 0), purged: Number(purged ?? 0), rate_limit_purged: Number(rl ?? 0) });
         } catch (e) {
           return Response.json({ ok: false, error: (e as Error).message }, { status: 500 });
         }
