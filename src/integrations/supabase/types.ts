@@ -2655,6 +2655,7 @@ export type Database = {
           twofa_enabled: boolean
           twofa_enabled_at: string | null
           updated_at: string
+          user_ref: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -2666,6 +2667,7 @@ export type Database = {
           twofa_enabled?: boolean
           twofa_enabled_at?: string | null
           updated_at?: string
+          user_ref?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -2677,6 +2679,7 @@ export type Database = {
           twofa_enabled?: boolean
           twofa_enabled_at?: string | null
           updated_at?: string
+          user_ref?: string | null
         }
         Relationships: []
       }
@@ -3207,6 +3210,7 @@ export type Database = {
           ua_os: string | null
           user_agent: string | null
           user_id: string | null
+          user_ref: string | null
           utm_campaign: string | null
           utm_content: string | null
           utm_medium: string | null
@@ -3244,6 +3248,7 @@ export type Database = {
           ua_os?: string | null
           user_agent?: string | null
           user_id?: string | null
+          user_ref?: string | null
           utm_campaign?: string | null
           utm_content?: string | null
           utm_medium?: string | null
@@ -3281,6 +3286,7 @@ export type Database = {
           ua_os?: string | null
           user_agent?: string | null
           user_id?: string | null
+          user_ref?: string | null
           utm_campaign?: string | null
           utm_content?: string | null
           utm_medium?: string | null
@@ -3634,6 +3640,7 @@ export type Database = {
         }[]
       }
       default_portal_id: { Args: never; Returns: string }
+      generate_user_ref: { Args: never; Returns: string }
       has_portal_role: {
         Args: {
           _portal: string
@@ -3666,6 +3673,10 @@ export type Database = {
           p_phone: string
         }
         Returns: string
+      }
+      stitch_visitor_identity: {
+        Args: { p_user_id: string; p_visitor_id: string }
+        Returns: number
       }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
