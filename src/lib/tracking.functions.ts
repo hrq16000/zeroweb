@@ -19,10 +19,9 @@ const VisitInput = z.object({
   landing_page: z.string().max(2048).optional().nullable(),
 });
 
-// Rate-limit thresholds (per ip_hash)
 const RL_WINDOW_SEC = 10;
-const RL_MAX_HITS = 15; // > 15 hits in 10s => suspect
-const RL_BLOCK_MAX = 40; // > 40 hits in 10s => block
+const RL_MAX_HITS = 15;
+const RL_BLOCK_MAX = 40;
 
 function anonymizeIp(ip: string | null): string | null {
   if (!ip) return null;
@@ -58,7 +57,7 @@ function parseUA(ua: string | null) {
 export const trackVisit = createServerFn({ method: "POST" })
   .inputValidator((input) => VisitInput.parse(input))
   .handler(async ({ data }) => {
-    const { getRequest } = await import("@tanstack/react-start/server");
+    const { getRequest, setResponseStatus, setResponseHeader } = await import("@tanstack/react-start/server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const req = getRequest();
     const headers = req.headers;
@@ -80,7 +79,6 @@ export const trackVisit = createServerFn({ method: "POST" })
     const ipHash = await sha256(`${ipRaw || "unknown"}|${day}|${salt}`);
     const meta = parseUA(ua);
 
-    // ----- Rate limit / blocking -----
     let blocked = false;
     let block_reason: string | null = null;
     let risk_score = 0;
@@ -88,7 +86,7 @@ export const trackVisit = createServerFn({ method: "POST" })
     try {
       const sinceIso = new Date(Date.now() - RL_WINDOW_SEC * 1000).toISOString();
       const { count } = await supabaseAdmin
-        .from("visitantes_rastreio")
+        .from("visitor_events")
         .select("id", { count: "exact", head: true })
         .eq("ip_hash", ipHash)
         .gte("created_at", sinceIso);
@@ -101,9 +99,7 @@ export const trackVisit = createServerFn({ method: "POST" })
         block_reason = "rate_limit_warn";
         risk_score = 60;
       }
-    } catch {
-      // soft-fail rate-limit check
-    }
+    } catch {}
 
     if (meta.is_bot) {
       risk_score = Math.max(risk_score, 50);
@@ -115,7 +111,9 @@ export const trackVisit = createServerFn({ method: "POST" })
       if (!block_reason) block_reason = "missing_ua";
     }
 
-    const row = {
+    const status_code = blocked ? 429 : 200;
+
+    const baseRow = {
       day,
       visitor_id: data.visitor_id || null,
       session_id: data.session_id || null,
@@ -147,13 +145,26 @@ export const trackVisit = createServerFn({ method: "POST" })
       risk_score,
     };
 
-    const { error } = await supabaseAdmin
-      .from("visitantes_rastreio")
-      .upsert(row, { onConflict: "ip_hash,day", ignoreDuplicates: true });
-
-    if (error) {
-      console.error("trackVisit error:", error.message);
-      return { ok: false, blocked };
+    // Append-only event log (every attempt, including duplicates and blocks)
+    try {
+      await supabaseAdmin.from("visitor_events").insert({ ...baseRow, status_code });
+    } catch (e) {
+      console.error("visitor_events insert error", e);
     }
-    return { ok: true, blocked };
+
+    // Dedup table for analytics (1 row per ip_hash/day)
+    if (!blocked) {
+      const { error } = await supabaseAdmin
+        .from("visitantes_rastreio")
+        .upsert(baseRow, { onConflict: "ip_hash,day", ignoreDuplicates: true });
+      if (error) console.error("trackVisit error:", error.message);
+    }
+
+    if (blocked) {
+      setResponseStatus(429);
+      setResponseHeader("retry-after", "30");
+      setResponseHeader("x-block-reason", block_reason || "blocked");
+      return { ok: false, blocked: true, block_reason, status: 429 };
+    }
+    return { ok: true, blocked: false, status: 200 };
   });
