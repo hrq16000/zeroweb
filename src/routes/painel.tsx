@@ -26,7 +26,7 @@ export const Route = createFileRoute("/painel")({
       { name: "description", content: "Acompanhe métricas de funil: CTA → WhatsApp → Formulário → Scroll." },
       { name: "robots", content: "noindex,nofollow" },
     ],
-    links: [{ rel: "canonical", href: "/painel" }],
+    
   }),
   component: PainelGated,
   ssr: false,
