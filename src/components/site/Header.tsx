@@ -15,6 +15,7 @@ const nav = [
   { href: "/#planos", label: "Planos" },
   { href: "/#faq", label: "FAQ" },
   { href: "/blog", label: "Blog" },
+  { href: "/marketplace", label: "Marketplace" },
 ];
 
 export function Header() {
@@ -55,7 +56,7 @@ export function Header() {
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
           {nav.map((n) =>
-            n.href.startsWith("/blog") ? (
+            n.href.startsWith("/blog") || n.href.startsWith("/marketplace") ? (
               <Link key={n.href} to={n.href} className="hover:text-foreground transition-colors">
                 {n.label}
               </Link>
