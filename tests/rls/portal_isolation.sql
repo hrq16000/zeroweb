@@ -6,6 +6,9 @@
 
 \set ON_ERROR_STOP on
 BEGIN;
+-- Bypass FK to auth.users for ephemeral test fixtures (rolled back at end)
+SET LOCAL session_replication_role = 'replica';
+
 
 -- 1) Fixtures: create two portals + two users + memberships
 DO $$
