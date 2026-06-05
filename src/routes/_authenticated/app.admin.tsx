@@ -451,12 +451,12 @@ function RoleControls({
 }: {
   userId: string;
   roles: string[];
-  onChange: (action: "add" | "remove", role: "admin" | "collaborator" | "client") => Promise<void>;
+  onChange: (action: "add" | "remove", role: "admin" | "collaborator" | "client" | "admin_integrations") => Promise<void>;
 }) {
   return (
     <div className="flex flex-wrap gap-2 text-xs items-center">
       <span className="text-muted-foreground">Papéis:</span>
-      {(["admin", "collaborator", "client"] as const).map((r) => {
+      {(["admin", "admin_integrations", "collaborator", "client"] as const).map((r) => {
         const has = roles.includes(r);
         return (
           <button
