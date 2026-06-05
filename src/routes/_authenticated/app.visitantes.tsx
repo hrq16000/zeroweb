@@ -22,7 +22,7 @@ import {
   Area,
 } from "recharts";
 import { ComposableMap, Geographies, Geography, Sphere, Graticule } from "react-simple-maps";
-import { scaleSequentialSqrt } from "d3-scale" as any;
+
 
 export const Route = createFileRoute("/_authenticated/app/visitantes")({
   component: VisitorsPage,
