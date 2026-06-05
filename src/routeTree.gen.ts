@@ -30,11 +30,13 @@ import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-priva
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as IaRouteImport } from './routes/ia'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
 import { Route as EstadosRouteImport } from './routes/estados'
 import { Route as CriacaoSitesRouteImport } from './routes/criacao-sites'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CidadesRouteImport } from './routes/cidades'
+import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -174,6 +176,11 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
   path: '/marketplace',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IaRoute = IaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
   id: '/google-meu-negocio',
   path: '/google-meu-negocio',
@@ -197,6 +204,11 @@ const ContatoRoute = ContatoRouteImport.update({
 const CidadesRoute = CidadesRouteImport.update({
   id: '/cidades',
   path: '/cidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomacaoRoute = AutomacaoRouteImport.update({
+  id: '/automacao',
+  path: '/automacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -367,11 +379,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
   '/auth': typeof AuthRoute
+  '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/ia': typeof IaRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
@@ -425,11 +439,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
   '/auth': typeof AuthRoute
+  '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/ia': typeof IaRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
@@ -484,11 +500,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$service': typeof ServiceRoute
   '/auth': typeof AuthRoute
+  '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
   '/contato': typeof ContatoRoute
   '/criacao-sites': typeof CriacaoSitesRoute
   '/estados': typeof EstadosRouteWithChildren
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
+  '/ia': typeof IaRoute
   '/marketplace': typeof MarketplaceRoute
   '/painel': typeof PainelRoute
   '/painel-crm': typeof PainelCrmRoute
@@ -544,11 +562,13 @@ export interface FileRouteTypes {
     | '/'
     | '/$service'
     | '/auth'
+    | '/automacao'
     | '/cidades'
     | '/contato'
     | '/criacao-sites'
     | '/estados'
     | '/google-meu-negocio'
+    | '/ia'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
@@ -602,11 +622,13 @@ export interface FileRouteTypes {
     | '/'
     | '/$service'
     | '/auth'
+    | '/automacao'
     | '/cidades'
     | '/contato'
     | '/criacao-sites'
     | '/estados'
     | '/google-meu-negocio'
+    | '/ia'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
@@ -660,11 +682,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/$service'
     | '/auth'
+    | '/automacao'
     | '/cidades'
     | '/contato'
     | '/criacao-sites'
     | '/estados'
     | '/google-meu-negocio'
+    | '/ia'
     | '/marketplace'
     | '/painel'
     | '/painel-crm'
@@ -720,11 +744,13 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ServiceRoute: typeof ServiceRoute
   AuthRoute: typeof AuthRoute
+  AutomacaoRoute: typeof AutomacaoRoute
   CidadesRoute: typeof CidadesRoute
   ContatoRoute: typeof ContatoRoute
   CriacaoSitesRoute: typeof CriacaoSitesRoute
   EstadosRoute: typeof EstadosRouteWithChildren
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
+  IaRoute: typeof IaRoute
   MarketplaceRoute: typeof MarketplaceRoute
   PainelRoute: typeof PainelRoute
   PainelCrmRoute: typeof PainelCrmRoute
@@ -906,6 +932,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ia': {
+      id: '/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof IaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/google-meu-negocio': {
       id: '/google-meu-negocio'
       path: '/google-meu-negocio'
@@ -939,6 +972,13 @@ declare module '@tanstack/react-router' {
       path: '/cidades'
       fullPath: '/cidades'
       preLoaderRoute: typeof CidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automacao': {
+      id: '/automacao'
+      path: '/automacao'
+      fullPath: '/automacao'
+      preLoaderRoute: typeof AutomacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1269,11 +1309,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ServiceRoute: ServiceRoute,
   AuthRoute: AuthRoute,
+  AutomacaoRoute: AutomacaoRoute,
   CidadesRoute: CidadesRoute,
   ContatoRoute: ContatoRoute,
   CriacaoSitesRoute: CriacaoSitesRoute,
   EstadosRoute: EstadosRouteWithChildren,
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
+  IaRoute: IaRoute,
   MarketplaceRoute: MarketplaceRoute,
   PainelRoute: PainelRoute,
   PainelCrmRoute: PainelCrmRoute,
@@ -1308,3 +1350,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
