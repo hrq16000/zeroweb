@@ -59,7 +59,7 @@ export const Route = createFileRoute("/estados/$state")({
 
 function EstadoPage() {
   const state = Route.useLoaderData();
-  const cities = state.cities.map((slug) => CITIES[slug]);
+  const cities = state.cities.map((slug: string) => CITIES[slug]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -89,7 +89,7 @@ function EstadoPage() {
           <div className="mx-auto max-w-5xl px-5 lg:px-8">
             <h2 className="text-2xl font-bold mb-6">Cidades atendidas em {state.name}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {cities.map((c) => (
+              {cities.map((c: typeof cities[number]) => (
                 <Link
                   key={c.slug}
                   to="/$city/$service"
