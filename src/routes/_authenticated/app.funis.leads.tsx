@@ -117,8 +117,8 @@ function LeadsDashboard() {
                 const m = (r.metadata_json ?? {}) as Record<string, any>;
                 const utm = (m.utm ?? {}) as Record<string, string>;
                 return (
-                  <>
-                    <tr key={r.id} className="border-t border-border hover:bg-muted/30">
+                  <Fragment key={r.id}>
+                    <tr className="border-t border-border hover:bg-muted/30">
                       <td className="p-3 whitespace-nowrap">{new Date(r.created_at).toLocaleString("pt-BR")}</td>
                       <td className="p-3">{r.form?.name ?? "—"}</td>
                       <td className="p-3">
