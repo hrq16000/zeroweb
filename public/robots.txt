@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /painel
+Disallow: /qa-events
 
-Sitemap: /sitemap.xml
+Sitemap: https://0web.com.br/sitemap.xml
