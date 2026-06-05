@@ -77,7 +77,7 @@ export function Plans() {
           </p>
         </div>
 
-        <div className="mt-14 grid lg:grid-cols-3 gap-5 items-stretch">
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
           {plans.map((p, i) => (
             <motion.div
               key={p.name}
