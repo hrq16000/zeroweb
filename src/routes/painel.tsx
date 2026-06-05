@@ -103,6 +103,9 @@ function PainelPage() {
                 Última atualização: <strong>{new Date(data.lastUpdated).toLocaleString("pt-BR")}</strong>
               </p>
             </div>
+            <a href="/painel-crm" className="px-3 py-2 rounded-lg border border-border hover:bg-muted text-sm">
+              → Abrir CRM
+            </a>
             <button
               onClick={() => {
                 resetFunnel();
