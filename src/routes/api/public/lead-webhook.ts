@@ -34,9 +34,12 @@ export const Route = createFileRoute("/api/public/lead-webhook")({
             return Response.json({ ok: false, error: "email_or_phone_required" }, { status: 400 });
           }
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { payload_json, ...rest } = parsed.data;
+          const insertRow: Record<string, unknown> = { ...rest, status: "novo" };
+          if (payload_json) insertRow.payload_json = payload_json as never;
           const { data, error } = await supabaseAdmin
             .from("lead_submissions")
-            .insert({ ...parsed.data, status: "novo" })
+            .insert(insertRow as never)
             .select("id")
             .single();
           if (error) return Response.json({ ok: false, error: error.message }, { status: 500 });
