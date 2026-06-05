@@ -23,7 +23,7 @@ export interface FunnelCondition {
   id: string;
   from_question_id: string;
   operator: "equals" | "not_equals" | "contains" | "in" | "not_in" | "is_empty" | "is_not_empty";
-  value: unknown;
+  value: any;
   action: "skip_to" | "end_form";
   target_question_id: string | null;
   priority: number;
