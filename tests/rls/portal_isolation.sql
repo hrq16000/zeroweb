@@ -1,10 +1,10 @@
 -- RLS isolation tests for multi-portal access
--- Run via: psql -f tests/rls/portal_isolation.sql
+-- Run with a superuser/service role connection:
+--   PGPASSWORD=$DB_PWD psql "$SUPABASE_DB_URL" -f tests/rls/portal_isolation.sql
 -- Validates that an authenticated user attached to portal A
 -- cannot read or write data scoped to portal B across all
--- portal_id-aware tables.
+-- portal_id-aware tables. The transaction is rolled back at end.
 
-\set ON_ERROR_STOP on
 BEGIN;
 -- Temporarily drop FK to auth.users so we can simulate users (rolled back at end)
 ALTER TABLE public.portal_members DROP CONSTRAINT IF EXISTS portal_members_user_id_fkey;
