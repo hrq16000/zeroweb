@@ -10,19 +10,22 @@ import {
   adminSetRole,
   PROJECT_STATUSES_LIST,
 } from "@/lib/clientarea.functions";
+import { listSettings, upsertSetting } from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
+type Tab = "clients" | "tickets" | "settings";
+
 function AdminPage() {
-  const [tab, setTab] = useState<"clients" | "tickets">("clients");
+  const [tab, setTab] = useState<Tab>("clients");
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos e suporte.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte e integrações.</p>
       <div className="mt-5 flex gap-1 border-b border-border">
-        {(["clients", "tickets"] as const).map((t) => (
+        {(["clients", "tickets", "settings"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -30,14 +33,113 @@ function AdminPage() {
               tab === t ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground"
             }`}
           >
-            {t === "clients" ? "Clientes & Projetos" : "Tickets"}
+            {t === "clients" ? "Clientes & Projetos" : t === "tickets" ? "Tickets" : "Integrações"}
           </button>
         ))}
       </div>
-      {tab === "clients" ? <ClientsTab /> : <TicketsTab />}
+      {tab === "clients" ? <ClientsTab /> : tab === "tickets" ? <TicketsTab /> : <SettingsTab />}
     </div>
   );
 }
+
+function SettingsTab() {
+  const ls = useServerFn(listSettings);
+  const us = useServerFn(upsertSetting);
+  const [rows, setRows] = useState<any[]>([]);
+  const [edits, setEdits] = useState<Record<string, string>>({});
+  const [err, setErr] = useState<string | null>(null);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const load = () =>
+    ls()
+      .then((r) => {
+        setRows(r.rows as any[]);
+        const init: Record<string, string> = {};
+        (r.rows as any[]).forEach((s) => {
+          init[s.key] = s.is_secret ? "" : s.value ?? "";
+        });
+        setEdits(init);
+      })
+      .catch((e) => setErr(e.message));
+  useEffect(() => {
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (err) return <p className="text-sm text-destructive mt-5">{err}. (Sua conta precisa do papel admin.)</p>;
+
+  const save = async (key: string, is_secret: boolean) => {
+    setSaving(key);
+    setMsg(null);
+    try {
+      const value = edits[key] ?? "";
+      await us({ data: { key, value: value === "" ? null : value, is_secret } });
+      setMsg(`Salvo: ${key}`);
+      await load();
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  return (
+    <div className="mt-5 space-y-4">
+      <div className="rounded-xl border border-border bg-card p-4">
+        <h2 className="font-semibold">Integrações</h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          Configurações usadas em runtime (cache de 60s). Campos marcados como segredo não exibem o valor atual após salvo.
+        </p>
+      </div>
+      {msg && <p className="text-xs text-primary">{msg}</p>}
+      <div className="space-y-2">
+        {rows.map((s) => (
+          <div key={s.key} className="rounded-xl border border-border bg-card p-4 space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="font-mono text-sm">{s.key}</div>
+                {s.description && <div className="text-xs text-muted-foreground">{s.description}</div>}
+              </div>
+              <div className="flex items-center gap-2 text-[10px]">
+                {s.is_secret && (
+                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    segredo
+                  </span>
+                )}
+                <span
+                  className={`px-2 py-0.5 rounded ${
+                    s.has_value ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {s.has_value ? "configurado" : "vazio"}
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type={s.is_secret ? "password" : "text"}
+                value={edits[s.key] ?? ""}
+                onChange={(e) => setEdits((p) => ({ ...p, [s.key]: e.target.value }))}
+                placeholder={s.is_secret && s.has_value ? "•••••••• (deixe em branco para manter)" : "valor"}
+                className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
+              />
+              <button
+                onClick={() => save(s.key, !!s.is_secret)}
+                disabled={saving === s.key || (s.is_secret && (edits[s.key] ?? "") === "")}
+                className="px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm disabled:opacity-50"
+              >
+                {saving === s.key ? "…" : "Salvar"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 
 function ClientsTab() {
   const fl = useServerFn(adminListClients);
