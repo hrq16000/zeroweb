@@ -88,6 +88,78 @@ export type Database = {
           },
         ]
       }
+      anomaly_alerts: {
+        Row: {
+          channel: string | null
+          created_at: string
+          id: string
+          kind: string
+          message: string | null
+          payload: Json
+          sent_at: string | null
+          severity: string
+          status: string
+          threshold: number | null
+          value: number | null
+          zscore: number | null
+        }
+        Insert: {
+          channel?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          message?: string | null
+          payload?: Json
+          sent_at?: string | null
+          severity?: string
+          status?: string
+          threshold?: number | null
+          value?: number | null
+          zscore?: number | null
+        }
+        Update: {
+          channel?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          message?: string | null
+          payload?: Json
+          sent_at?: string | null
+          severity?: string
+          status?: string
+          threshold?: number | null
+          value?: number | null
+          zscore?: number | null
+        }
+        Relationships: []
+      }
+      blocked_asns: {
+        Row: {
+          asn: string
+          category: string
+          created_at: string
+          enabled: boolean
+          org: string
+          reason: string
+        }
+        Insert: {
+          asn: string
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          org: string
+          reason?: string
+        }
+        Update: {
+          asn?: string
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          org?: string
+          reason?: string
+        }
+        Relationships: []
+      }
       campaigns: {
         Row: {
           budget_monthly: number | null
@@ -410,6 +482,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ip_blocklist: {
+        Row: {
+          asn: string | null
+          block_reason: string
+          country: string | null
+          expires_at: string
+          first_seen_at: string
+          hits: number
+          ip_hash: string
+          risk_score: number
+        }
+        Insert: {
+          asn?: string | null
+          block_reason: string
+          country?: string | null
+          expires_at?: string
+          first_seen_at?: string
+          hits?: number
+          ip_hash: string
+          risk_score?: number
+        }
+        Update: {
+          asn?: string | null
+          block_reason?: string
+          country?: string | null
+          expires_at?: string
+          first_seen_at?: string
+          hits?: number
+          ip_hash?: string
+          risk_score?: number
+        }
+        Relationships: []
       }
       lead_history: {
         Row: {
@@ -1190,6 +1295,45 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_monitor_runs: {
+        Row: {
+          alerted: boolean
+          details: Json
+          id: string
+          jsonld_ok: boolean
+          jsonld_routes_checked: number | null
+          jsonld_routes_failed: number | null
+          robots_ok: boolean
+          run_at: string
+          sitemap_ok: boolean
+          sitemap_url_count: number | null
+        }
+        Insert: {
+          alerted?: boolean
+          details?: Json
+          id?: string
+          jsonld_ok?: boolean
+          jsonld_routes_checked?: number | null
+          jsonld_routes_failed?: number | null
+          robots_ok?: boolean
+          run_at?: string
+          sitemap_ok?: boolean
+          sitemap_url_count?: number | null
+        }
+        Update: {
+          alerted?: boolean
+          details?: Json
+          id?: string
+          jsonld_ok?: boolean
+          jsonld_routes_checked?: number | null
+          jsonld_routes_failed?: number | null
+          robots_ok?: boolean
+          run_at?: string
+          sitemap_ok?: boolean
+          sitemap_url_count?: number | null
+        }
+        Relationships: []
+      }
       service_requests: {
         Row: {
           budget_range: string | null
@@ -1539,6 +1683,36 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_saved_filters: {
+        Row: {
+          created_at: string
+          filters: Json
+          id: string
+          is_shared: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          filters?: Json
+          id?: string
+          is_shared?: boolean
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          filters?: Json
+          id?: string
+          is_shared?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wa_funnel_sessions: {
         Row: {
           answers_json: Json | null
@@ -1606,7 +1780,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      mv_block_reasons_daily: {
+        Row: {
+          day: string | null
+          hits: number | null
+          reason: string | null
+        }
+        Relationships: []
+      }
+      mv_visitors_daily: {
+        Row: {
+          blocked: number | null
+          bots: number | null
+          countries: number | null
+          day: string | null
+          humans: number | null
+          total: number | null
+          unique_visitors: number | null
+        }
+        Relationships: []
+      }
+      mv_visitors_hourly: {
+        Row: {
+          blocked: number | null
+          bots: number | null
+          hour: string | null
+          humans: number | null
+          total: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       bump_experiment: {
@@ -1647,8 +1850,10 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
+      purge_ip_blocklist: { Args: never; Returns: number }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
+      refresh_visitor_mvs: { Args: never; Returns: undefined }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
     }
     Enums: {
