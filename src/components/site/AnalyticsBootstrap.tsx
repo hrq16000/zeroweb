@@ -1,42 +1,19 @@
 import { useEffect } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { getGa4Id, getGtmId, isValidGa4, isValidGtm, captureAttribution } from "@/lib/site-config";
-import { trackVisit } from "@/lib/tracking.functions";
 
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
     __0web_analytics_loaded?: { ga4?: string; gtm?: string };
-    __0web_tracked_path?: string;
   }
 }
 
 /** Client-only injector that loads GA4 + GTM scripts based on IDs in localStorage. */
 export function AnalyticsBootstrap() {
-  const track = useServerFn(trackVisit);
   useEffect(() => {
     try { captureAttribution(); } catch { /* noop */ }
-    try {
-      const path = window.location.pathname;
-      if (window.__0web_tracked_path !== path) {
-        window.__0web_tracked_path = path;
-        const sp = new URLSearchParams(window.location.search);
-        const get = (k: string) => sp.get(k) || null;
-        let visitorId = localStorage.getItem("0web_vid");
-        if (!visitorId) { visitorId = crypto.randomUUID(); localStorage.setItem("0web_vid", visitorId); }
-        let sessionId = sessionStorage.getItem("0web_sid");
-        if (!sessionId) { sessionId = crypto.randomUUID(); sessionStorage.setItem("0web_sid", sessionId); }
-        void track({ data: {
-          path, query: window.location.search || null,
-          referer: document.referrer || null, user_agent: navigator.userAgent,
-          visitor_id: visitorId, session_id: sessionId,
-          utm_source: get("utm_source"), utm_medium: get("utm_medium"),
-          utm_campaign: get("utm_campaign"), utm_content: get("utm_content"),
-          utm_term: get("utm_term"), gclid: get("gclid"), fbclid: get("fbclid"),
-          landing_page: path,
-        }}).catch(() => {});
-      }
-    } catch { /* noop */ }
+    // NB: visit tracking now happens server-side in `visitorTrackingMiddleware`
+    // (see src/start.ts) — this avoids duplicate inserts and asset noise.
     const load = () => {
       const ga4 = getGa4Id();
       const gtm = getGtmId();
