@@ -32,16 +32,16 @@ export const Route = createFileRoute("/_authenticated/app/admin")({
   component: AdminPage,
 });
 
-type Tab = "clients" | "tickets" | "settings";
+type Tab = "clients" | "tickets" | "settings" | "site";
 
 function AdminPage() {
   const [tab, setTab] = useState<Tab>("clients");
   return (
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold font-display">Administração</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte e integrações.</p>
-      <div className="mt-5 flex gap-1 border-b border-border">
-        {(["clients", "tickets", "settings"] as const).map((t) => (
+      <p className="mt-1 text-sm text-muted-foreground">Clientes, projetos, suporte, integrações e seções do site.</p>
+      <div className="mt-5 flex gap-1 border-b border-border flex-wrap">
+        {(["clients", "tickets", "settings", "site"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -49,11 +49,11 @@ function AdminPage() {
               tab === t ? "border-primary text-primary font-medium" : "border-transparent text-muted-foreground"
             }`}
           >
-            {t === "clients" ? "Clientes & Projetos" : t === "tickets" ? "Tickets" : "Integrações"}
+            {t === "clients" ? "Clientes & Projetos" : t === "tickets" ? "Tickets" : t === "settings" ? "Integrações" : "Seções do site"}
           </button>
         ))}
       </div>
-      {tab === "clients" ? <ClientsTab /> : tab === "tickets" ? <TicketsTab /> : <SettingsTab />}
+      {tab === "clients" ? <ClientsTab /> : tab === "tickets" ? <TicketsTab /> : tab === "settings" ? <SettingsTab /> : <SiteSectionsTab />}
     </div>
   );
 }
