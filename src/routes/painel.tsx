@@ -114,6 +114,8 @@ function PainelPage() {
             </button>
           </div>
 
+          <ExecutiveDashboard />
+
           {/* Funnel cards */}
           <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {steps.map((s, i) => (
