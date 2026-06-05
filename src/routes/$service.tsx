@@ -78,6 +78,9 @@ const SERVICES: Record<string, ServiceData> = {
   },
 };
 
+import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd, SERVICES_DICT } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+
 export const Route = createFileRoute("/$service")({
   beforeLoad: ({ params }) => {
     if (!SERVICES[params.service]) throw notFound();
@@ -85,15 +88,57 @@ export const Route = createFileRoute("/$service")({
   loader: ({ params }) => SERVICES[params.service],
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
+    const url = absUrl(`/${params.service}`);
+    const info = SERVICES_DICT[params.service];
+    const serviceType = info?.serviceType ?? "Digital Services";
     return {
       meta: [
         { title: loaderData.title },
         { name: "description", content: loaderData.description },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: loaderData.description },
-        { property: "og:url", content: `https://0web.com.br/${params.service}` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: DEFAULT_OG_IMAGE },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: loaderData.title },
+        { name: "twitter:description", content: loaderData.description },
+        { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       ],
-      links: [{ rel: "canonical", href: `https://0web.com.br/${params.service}` }],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Service",
+                "@id": `${url}#service`,
+                name: loaderData.h1,
+                description: loaderData.description,
+                serviceType,
+                url,
+                areaServed: { "@type": "Country", name: "BR" },
+                provider: ORG_REF,
+              },
+              {
+                "@type": "WebPage",
+                "@id": url,
+                url,
+                name: loaderData.title,
+                description: loaderData.description,
+                inLanguage: "pt-BR",
+                isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+              },
+              breadcrumbLd([
+                { name: "Serviços", path: "/#solutions" },
+                { name: info?.name ?? loaderData.h1, path: `/${params.service}` },
+              ]),
+            ],
+          }),
+        },
+      ],
     };
   },
   component: ServicePage,
@@ -112,7 +157,9 @@ function ServicePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32">
+      <Breadcrumbs items={[{ name: "Serviços", path: "/#solutions" }, { name: (SERVICES_DICT[service]?.name ?? data.h1), path: `/${service}` }]} />
+      <main className="pt-6">
+
         <section className="py-16 bg-hero">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
             <p className="text-xs uppercase tracking-wider text-primary font-semibold">Serviço</p>

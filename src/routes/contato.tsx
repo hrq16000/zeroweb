@@ -27,25 +27,37 @@ export const Route = createFileRoute("/contato")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "ContactPage",
-          name: TITLE,
-          description: DESC,
-          mainEntity: {
-            "@type": "Organization",
-            name: "0WEB",
-            telephone: "+55-41-99745-2053",
-            email: "contato@0web.com.br",
-            url: "https://0web.com.br/",
-            contactPoint: [
-              {
-                "@type": "ContactPoint",
+          "@graph": [
+            {
+              "@type": "ContactPage",
+              "@id": "https://0web.com.br/contato#contactpage",
+              url: "https://0web.com.br/contato",
+              name: TITLE,
+              description: DESC,
+              inLanguage: "pt-BR",
+              mainEntity: {
+                "@type": "Organization",
+                name: "0WEB",
                 telephone: "+55-41-99745-2053",
-                contactType: "sales",
-                areaServed: "BR",
-                availableLanguage: ["pt-BR"],
+                email: "contato@0web.com.br",
+                url: "https://0web.com.br/",
+                contactPoint: [{
+                  "@type": "ContactPoint",
+                  telephone: "+55-41-99745-2053",
+                  contactType: "sales",
+                  areaServed: "BR",
+                  availableLanguage: ["pt-BR"],
+                }],
               },
-            ],
-          },
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+                { "@type": "ListItem", position: 2, name: "Contato", item: "https://0web.com.br/contato" },
+              ],
+            },
+          ],
         }),
       },
     ],

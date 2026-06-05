@@ -8,60 +8,97 @@ import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
-const CITIES: Record<string, string> = {
-  "curitiba": "Curitiba",
-  "sao-paulo": "São Paulo",
-  "rio-de-janeiro": "Rio de Janeiro",
-  "belo-horizonte": "Belo Horizonte",
-  "porto-alegre": "Porto Alegre",
-  "fortaleza": "Fortaleza",
-  "salvador": "Salvador",
-  "brasilia": "Brasília",
-  "florianopolis": "Florianópolis",
-  "recife": "Recife",
-};
+import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd, SERVICES_DICT, CITIES_DICT } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 
-const SERVICES: Record<string, string> = {
-  "criacao-de-sites": "Criação de Sites",
-  "landing-pages": "Landing Pages",
-  "loja-virtual": "Loja Virtual",
-  "seo": "SEO",
-  "marketing-digital": "Marketing Digital",
-  "automacao-com-ia": "Automação com IA",
-};
+// Only a subset of services has a dedicated geo page (avoids thin combinations).
+const GEO_SERVICE_SLUGS = new Set([
+  "criacao-de-sites",
+  "landing-pages",
+  "loja-virtual",
+  "seo",
+  "marketing-digital",
+  "automacao-com-ia",
+]);
 
 export const Route = createFileRoute("/$city/$service")({
   beforeLoad: ({ params }) => {
-    if (!CITIES[params.city] || !SERVICES[params.service]) throw notFound();
+    if (!CITIES_DICT[params.city] || !GEO_SERVICE_SLUGS.has(params.service) || !SERVICES_DICT[params.service]) {
+      throw notFound();
+    }
   },
   loader: ({ params }) => ({
-    city: CITIES[params.city],
-    service: SERVICES[params.service],
+    city: CITIES_DICT[params.city],
+    service: SERVICES_DICT[params.service].name,
+    serviceInfo: SERVICES_DICT[params.service],
     citySlug: params.city,
     serviceSlug: params.service,
   }),
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "0WEB" }] };
     const title = `${loaderData.service} em ${loaderData.city} · 0WEB`;
-    const desc = `${loaderData.service} em ${loaderData.city}: agência especializada em resultado, performance e conversão. Solicite orçamento.`;
+    const desc = `${loaderData.service} em ${loaderData.city}: agência com time sênior, foco em performance e conversão. Solicite orçamento sem compromisso.`;
+    const url = absUrl(`/${params.city}/${params.service}`);
     return {
       meta: [
         { title },
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: DEFAULT_OG_IMAGE },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       ],
-      links: [{ rel: "canonical", href: `https://0web.com.br/${params.city}/${params.service}` }],
-      scripts: [{
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: `0WEB · ${loaderData.service} ${loaderData.city}`,
-          areaServed: loaderData.city,
-          url: `https://0web.com.br/${params.city}/${params.service}`,
-        }),
-      }],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Service",
+                "@id": `${url}#service`,
+                name: `${loaderData.service} em ${loaderData.city}`,
+                description: desc,
+                serviceType: loaderData.serviceInfo.serviceType,
+                url,
+                areaServed: { "@type": "City", name: loaderData.city, addressCountry: "BR" },
+                provider: ORG_REF,
+              },
+              {
+                "@type": "LocalBusiness",
+                "@id": `${url}#localbusiness`,
+                name: `0WEB · ${loaderData.service} em ${loaderData.city}`,
+                url,
+                telephone: ORG_REF.telephone,
+                email: ORG_REF.email,
+                priceRange: "$$",
+                areaServed: { "@type": "City", name: loaderData.city, addressCountry: "BR" },
+                address: { "@type": "PostalAddress", addressLocality: loaderData.city, addressCountry: "BR" },
+              },
+              {
+                "@type": "WebPage",
+                "@id": url,
+                url,
+                name: title,
+                description: desc,
+                inLanguage: "pt-BR",
+                isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+              },
+              breadcrumbLd([
+                { name: "Serviços", path: "/#solutions" },
+                { name: loaderData.service, path: `/${params.service}` },
+                { name: loaderData.city, path: `/${params.city}/${params.service}` },
+              ]),
+            ],
+          }),
+        },
+      ],
     };
   },
   component: GeoPage,
@@ -73,7 +110,13 @@ function GeoPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32">
+      <Breadcrumbs items={[
+        { name: "Serviços", path: "/#solutions" },
+        { name: service, path: `/${serviceSlug}` },
+        { name: city, path: `/${citySlug}/${serviceSlug}` },
+      ]} />
+      <main className="pt-6">
+
         <section className="py-16 bg-hero">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
             <p className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-primary font-semibold">

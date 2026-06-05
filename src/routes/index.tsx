@@ -35,15 +35,17 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://0web.com.br/" },
       { property: "og:site_name", content: "0WEB" },
       { property: "og:locale", content: "pt_BR" },
+      { property: "og:image", content: "https://0web.com.br/og-default.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: "https://0web.com.br/og-default.png" },
     ],
     links: [
-      { rel: "canonical", href: "/" },
+      { rel: "canonical", href: "https://0web.com.br/" },
       { rel: "preload", as: "image", href: heroDashboard, fetchpriority: "high" },
     ],
     scripts: [
@@ -54,9 +56,15 @@ export const Route = createFileRoute("/")({
           "@graph": [
             {
               "@type": "Organization",
+              "@id": "https://0web.com.br/#org",
               name: "0WEB",
               url: "https://0web.com.br",
+              logo: "https://0web.com.br/favicon.ico",
               slogan: "Tecnologia que gera crescimento",
+              taxID: "41.723.708/0001-58",
+              telephone: "+55-41-99745-2053",
+              email: "contato@0web.com.br",
+              foundingDate: "2006",
               sameAs: [],
             },
             {
@@ -83,8 +91,20 @@ export const Route = createFileRoute("/")({
             },
             {
               "@type": "WebSite",
+              "@id": "https://0web.com.br/#website",
               name: "0WEB",
               url: "https://0web.com.br",
+              inLanguage: "pt-BR",
+              publisher: { "@id": "https://0web.com.br/#org" },
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://0web.com.br/#webpage",
+              url: "https://0web.com.br/",
+              name: TITLE,
+              description: DESC,
+              isPartOf: { "@id": "https://0web.com.br/#website" },
+              inLanguage: "pt-BR",
             },
             {
               "@type": "FAQPage",
@@ -97,7 +117,7 @@ export const Route = createFileRoute("/")({
             {
               "@type": "BreadcrumbList",
               itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Início", item: "/" },
+                { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
               ],
             },
           ],

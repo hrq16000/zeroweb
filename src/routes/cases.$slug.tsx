@@ -30,6 +30,8 @@ export const Route = createFileRoute("/cases/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const c = loaderData.case;
+    const url = `https://0web.com.br/cases/${c.slug}`;
+    const image = c.cover?.startsWith("http") ? c.cover : `https://0web.com.br${c.cover ?? ""}`;
     return {
       meta: [
         { title: c.seo.title },
@@ -38,14 +40,14 @@ export const Route = createFileRoute("/cases/$slug")({
         { property: "og:title", content: c.seo.title },
         { property: "og:description", content: c.seo.description },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/cases/${c.slug}` },
-        { property: "og:image", content: c.cover },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: c.seo.title },
         { name: "twitter:description", content: c.seo.description },
-        { name: "twitter:image", content: c.cover },
+        { name: "twitter:image", content: image },
       ],
-      links: [{ rel: "canonical", href: `/cases/${c.slug}` }],
+      links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
@@ -56,17 +58,17 @@ export const Route = createFileRoute("/cases/$slug")({
                 "@type": "Article",
                 headline: c.seo.title,
                 description: c.seo.description,
-                image: c.cover,
-                author: { "@type": "Organization", name: "0WEB" },
-                publisher: { "@type": "Organization", name: "0WEB" },
-                mainEntityOfPage: `/cases/${c.slug}`,
+                image,
+                author: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
+                publisher: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
+                mainEntityOfPage: url,
               },
               {
                 "@type": "BreadcrumbList",
                 itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Início", item: "/" },
-                  { "@type": "ListItem", position: 2, name: "Cases", item: "/#cases" },
-                  { "@type": "ListItem", position: 3, name: c.brand, item: `/cases/${c.slug}` },
+                  { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+                  { "@type": "ListItem", position: 2, name: "Cases", item: "https://0web.com.br/#cases" },
+                  { "@type": "ListItem", position: 3, name: c.brand, item: url },
                 ],
               },
               {
