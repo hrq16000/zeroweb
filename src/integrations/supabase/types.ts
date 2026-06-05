@@ -250,6 +250,42 @@ export type Database = {
           },
         ]
       }
+      content_metrics: {
+        Row: {
+          clicks: number | null
+          cluster_slug: string
+          conversions: number | null
+          ctr: number | null
+          id: string
+          impressions: number | null
+          position: number | null
+          recorded_at: string
+          url: string
+        }
+        Insert: {
+          clicks?: number | null
+          cluster_slug: string
+          conversions?: number | null
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          position?: number | null
+          recorded_at?: string
+          url: string
+        }
+        Update: {
+          clicks?: number | null
+          cluster_slug?: string
+          conversions?: number | null
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          position?: number | null
+          recorded_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       crm_settings: {
         Row: {
           assignees: string[]
@@ -276,6 +312,60 @@ export type Database = {
           id?: string
           round_robin_pointer?: number
           singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      editorial_calendar: {
+        Row: {
+          cluster_slug: string
+          commercial_value: number
+          created_at: string
+          funnel: string
+          id: string
+          intent: string
+          notes: string | null
+          priority: number
+          published_url: string | null
+          scheduled_for: string | null
+          slug: string
+          status: string
+          template: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cluster_slug: string
+          commercial_value?: number
+          created_at?: string
+          funnel: string
+          id?: string
+          intent: string
+          notes?: string | null
+          priority?: number
+          published_url?: string | null
+          scheduled_for?: string | null
+          slug: string
+          status?: string
+          template: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cluster_slug?: string
+          commercial_value?: number
+          created_at?: string
+          funnel?: string
+          id?: string
+          intent?: string
+          notes?: string | null
+          priority?: number
+          published_url?: string | null
+          scheduled_for?: string | null
+          slug?: string
+          status?: string
+          template?: string
+          title?: string
           updated_at?: string
         }
         Relationships: []

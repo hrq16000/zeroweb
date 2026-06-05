@@ -17,6 +17,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
+import { Route as SitemapEditorialDotxmlRouteImport } from './routes/sitemap-editorial[.]xml'
 import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
@@ -50,10 +51,12 @@ import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as CidadeSlugRouteImport } from './routes/cidade.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as CasesSlugRouteImport } from './routes/cases.$slug'
+import { Route as BlogMapaRouteImport } from './routes/blog.mapa'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
@@ -63,6 +66,7 @@ import { Route as AuthenticatedAppPortalsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
+import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
@@ -113,6 +117,11 @@ const SitemapMarketplaceDotxmlRoute =
     path: '/sitemap-marketplace.xml',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SitemapEditorialDotxmlRoute = SitemapEditorialDotxmlRouteImport.update({
+  id: '/sitemap-editorial.xml',
+  path: '/sitemap-editorial.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapCityServicesDotxmlRoute =
   SitemapCityServicesDotxmlRouteImport.update({
     id: '/sitemap-city-services.xml',
@@ -278,6 +287,11 @@ const CasesSlugRoute = CasesSlugRouteImport.update({
   path: '/cases/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogMapaRoute = BlogMapaRouteImport.update({
+  id: '/blog/mapa',
+  path: '/blog/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -297,6 +311,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const BlogClusterClusterRoute = BlogClusterClusterRouteImport.update({
+  id: '/blog/cluster/$cluster',
+  path: '/blog/cluster/$cluster',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   id: '/api/public/lead-webhook',
@@ -344,6 +363,12 @@ const AuthenticatedAppMarketplaceRoute =
   AuthenticatedAppMarketplaceRouteImport.update({
     id: '/marketplace',
     path: '/marketplace',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppEditorialRoute =
+  AuthenticatedAppEditorialRouteImport.update({
+    id: '/editorial',
+    path: '/editorial',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppDocumentsRoute =
@@ -420,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -431,6 +457,7 @@ export interface FileRoutesByFullPath {
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -441,6 +468,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -450,6 +478,7 @@ export interface FileRoutesByFullPath {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -483,6 +512,7 @@ export interface FileRoutesByTo {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -493,6 +523,7 @@ export interface FileRoutesByTo {
   '/trafego-pago': typeof TrafegoPagoRoute
   '/$city/$service': typeof CityServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -503,6 +534,7 @@ export interface FileRoutesByTo {
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -512,6 +544,7 @@ export interface FileRoutesByTo {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -547,6 +580,7 @@ export interface FileRoutesById {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
@@ -558,6 +592,7 @@ export interface FileRoutesById {
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/mapa': typeof BlogMapaRoute
   '/cases/$slug': typeof CasesSlugRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/cidade/$slug': typeof CidadeSlugRoute
@@ -568,6 +603,7 @@ export interface FileRoutesById {
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
+  '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
@@ -577,6 +613,7 @@ export interface FileRoutesById {
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
+  '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
@@ -612,6 +649,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -623,6 +661,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/app'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -633,6 +672,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/editorial'
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
@@ -642,6 +682,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/app/'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
@@ -675,6 +716,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -685,6 +727,7 @@ export interface FileRouteTypes {
     | '/trafego-pago'
     | '/$city/$service'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -695,6 +738,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
+    | '/app/editorial'
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
@@ -704,6 +748,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/app'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
@@ -738,6 +783,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
@@ -749,6 +795,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/_authenticated/app'
     | '/blog/$slug'
+    | '/blog/mapa'
     | '/cases/$slug'
     | '/categoria/$slug'
     | '/cidade/$slug'
@@ -759,6 +806,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
+    | '/_authenticated/app/editorial'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
     | '/_authenticated/app/notifications'
@@ -768,6 +816,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/reports'
     | '/_authenticated/app/support'
     | '/api/public/lead-webhook'
+    | '/blog/cluster/$cluster'
     | '/_authenticated/app/'
     | '/_authenticated/app/marketplace/admin'
     | '/_authenticated/app/marketplace/company'
@@ -803,6 +852,7 @@ export interface RootRouteChildren {
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
   SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapEditorialDotxmlRoute: typeof SitemapEditorialDotxmlRoute
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
@@ -813,6 +863,7 @@ export interface RootRouteChildren {
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   CityServiceRoute: typeof CityServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogMapaRoute: typeof BlogMapaRoute
   CasesSlugRoute: typeof CasesSlugRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CidadeSlugRoute: typeof CidadeSlugRoute
@@ -820,6 +871,7 @@ export interface RootRouteChildren {
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
+  BlogClusterClusterRoute: typeof BlogClusterClusterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -878,6 +930,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-marketplace.xml'
       fullPath: '/sitemap-marketplace.xml'
       preLoaderRoute: typeof SitemapMarketplaceDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-editorial.xml': {
+      id: '/sitemap-editorial.xml'
+      path: '/sitemap-editorial.xml'
+      fullPath: '/sitemap-editorial.xml'
+      preLoaderRoute: typeof SitemapEditorialDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-city-services.xml': {
@@ -1111,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CasesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/mapa': {
+      id: '/blog/mapa'
+      path: '/blog/mapa'
+      fullPath: '/blog/mapa'
+      preLoaderRoute: typeof BlogMapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -1138,6 +1204,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/blog/cluster/$cluster': {
+      id: '/blog/cluster/$cluster'
+      path: '/blog/cluster/$cluster'
+      fullPath: '/blog/cluster/$cluster'
+      preLoaderRoute: typeof BlogClusterClusterRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/lead-webhook': {
       id: '/api/public/lead-webhook'
@@ -1200,6 +1273,13 @@ declare module '@tanstack/react-router' {
       path: '/marketplace'
       fullPath: '/app/marketplace'
       preLoaderRoute: typeof AuthenticatedAppMarketplaceRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/editorial': {
+      id: '/_authenticated/app/editorial'
+      path: '/editorial'
+      fullPath: '/app/editorial'
+      preLoaderRoute: typeof AuthenticatedAppEditorialRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/documents': {
@@ -1314,6 +1394,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAdminRoute: typeof AuthenticatedAppAdminRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
+  AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
@@ -1329,6 +1410,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAdminRoute: AuthenticatedAppAdminRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
+  AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,
   AuthenticatedAppMasterRoute: AuthenticatedAppMasterRoute,
@@ -1393,6 +1475,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
   SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapEditorialDotxmlRoute: SitemapEditorialDotxmlRoute,
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
@@ -1403,6 +1486,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrafegoPagoRoute: TrafegoPagoRoute,
   CityServiceRoute: CityServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BlogMapaRoute: BlogMapaRoute,
   CasesSlugRoute: CasesSlugRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CidadeSlugRoute: CidadeSlugRoute,
@@ -1410,6 +1494,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
+  BlogClusterClusterRoute: BlogClusterClusterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
