@@ -113,7 +113,7 @@ export const setPartnerStatus = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid(), status: z.enum(STATUSES) }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const patch: Record<string, unknown> = { status: data.status };
+    const patch: { status: typeof data.status; approved_at?: string; approved_by?: string } = { status: data.status };
     if (data.status === "aprovado") {
       patch.approved_at = new Date().toISOString();
       patch.approved_by = userId;
