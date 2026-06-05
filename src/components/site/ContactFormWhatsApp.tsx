@@ -43,6 +43,7 @@ export function ContactFormWhatsApp({
   const [modalOpen, setModalOpen] = useState(false);
   const [geo, setGeo] = useState<GeoInfo | null>(null);
   const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
+  const [gpsConsentOpen, setGpsConsentOpen] = useState(false);
   const shouldUseModal = useModal ?? !redirectTo;
 
   // Subliminal IP geo on mount
@@ -50,11 +51,17 @@ export function ContactFormWhatsApp({
     void getIpGeo().then((g) => { if (g) setGeo(g); });
   }, []);
 
-  const askGps = async () => {
+  const performGps = async () => {
     setGpsStatus("asking");
     const g = await requestGpsThenFallback();
     if (g) { setGeo(g); setGpsStatus(g.source.includes("gps") ? "ok" : "denied"); }
     else setGpsStatus("denied");
+  };
+
+  const askGps = () => {
+    const prev = getStoredGpsDecision();
+    if (prev === "granted") { void performGps(); return; }
+    setGpsConsentOpen(true);
   };
 
   return (
