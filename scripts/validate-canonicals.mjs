@@ -115,19 +115,19 @@ for (const file of files) {
 
   // __root.tsx must not own a canonical.
   if (/__root\.(t|j)sx?$/.test(file)) {
-    if (CANONICAL_RE.test(src)) {
+    if (CANONICAL_OPENER_RE.test(src)) {
       errors.push(
         `${rel}: __root NÃO pode definir <link rel="canonical"> (router concatena para todas as rotas, duplicando).`,
       );
     }
-    CANONICAL_RE.lastIndex = 0;
+    CANONICAL_OPENER_RE.lastIndex = 0;
     continue;
   }
 
   const hrefs = [];
   let m;
-  CANONICAL_RE.lastIndex = 0;
-  while ((m = CANONICAL_RE.exec(src)) !== null) {
+  CANONICAL_OPENER_RE.lastIndex = 0;
+  while ((m = CANONICAL_OPENER_RE.exec(src)) !== null) {
     const owner = nearestArrayOwner(src, m.index);
     if (owner === "meta") {
       errors.push(
@@ -135,7 +135,8 @@ for (const file of files) {
       );
       continue;
     }
-    hrefs.push(m[1].trim());
+    const extracted = extractHrefExpr(src, m.index + m[0].length);
+    if (extracted && extracted.expr) hrefs.push(extracted.expr);
   }
 
   if (hrefs.length === 0) continue;
