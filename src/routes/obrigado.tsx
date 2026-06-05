@@ -66,25 +66,36 @@ const TESTIMONIALS = [
 function ObrigadoPage() {
   const { source } = Route.useSearch();
   const content = getThankYouContent(source);
+  const evtAttr = useMemo(() => {
+    if (typeof window === "undefined") return { source: source || "direct", channel: content.channel };
+    return attributionToEventParams(getLeadAttribution(source || "direct"));
+  }, [source, content.channel]);
 
   useEffect(() => {
     trackConversion("obrigado_page_view", {
+      ...evtAttr,
       page: "/obrigado",
-      source: source || "direct",
-      channel: content.channel,
+      surface: "page",
       event_category: "conversion",
     });
-  }, [source, content.channel]);
+  }, [evtAttr]);
 
-  const handleCta = (ctaId: string, label: string) => {
-    trackConversion("obrigado_cta_click", {
-      source: source || "direct",
-      channel: content.channel,
+  const handleCta = (ctaId: string, label: string, position: number, target: string) => {
+    const params = {
+      ...evtAttr,
       cta_id: ctaId,
       label,
+      position,
+      target,
       surface: "page",
-    });
+      event_category: "engagement",
+    };
+    trackConversion("obrigado_cta_click", params);
+    trackEvent(`obrigado_cta_${ctaId}`, params);
   };
+
+  const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
+  const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
 
   const ctaCards = [
     {
