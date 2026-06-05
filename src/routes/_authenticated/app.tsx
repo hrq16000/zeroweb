@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell, FolderKanban, FileText, LifeBuoy, BarChart3, User, LogOut, Shield, Home, Globe, Layers, Target, BookOpen, Eye, KeyRound, Network, LayoutTemplate, Fingerprint } from "lucide-react";
+import { Bell, FolderKanban, FileText, LifeBuoy, BarChart3, User, LogOut, Shield, Home, Globe, Layers, Target, BookOpen, Eye, KeyRound, Network, LayoutTemplate, Fingerprint, Plug } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { getMyProfile, listMyNotifications } from "@/lib/clientarea.functions";
@@ -37,6 +37,7 @@ function AppShell() {
     { to: "/app/documents", icon: FileText, label: "Documentos" },
     { to: "/app/support", icon: LifeBuoy, label: "Suporte" },
     { to: "/app/reports", icon: BarChart3, label: "Relatórios" },
+    { to: "/app/integracoes", icon: Plug, label: "Conectar" },
     { to: "/app/profile", icon: User, label: "Perfil" },
   ];
 

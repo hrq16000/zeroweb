@@ -25,7 +25,6 @@ import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]x
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
@@ -83,6 +82,7 @@ import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppLicensesRouteImport } from './routes/_authenticated/app.licenses'
+import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppEcosystemRouteImport } from './routes/_authenticated/app.ecosystem'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
@@ -181,11 +181,6 @@ const SeoRoute = SeoRouteImport.update({
 const RssDotxmlRoute = RssDotxmlRouteImport.update({
   id: '/rss.xml',
   path: '/rss.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaEventsRoute = QaEventsRouteImport.update({
@@ -479,6 +474,12 @@ const AuthenticatedAppLicensesRoute =
     path: '/licenses',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppIntegracoesRoute =
+  AuthenticatedAppIntegracoesRouteImport.update({
+    id: '/integracoes',
+    path: '/integracoes',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppEditorialRoute =
   AuthenticatedAppEditorialRouteImport.update({
     id: '/editorial',
@@ -601,7 +602,6 @@ export interface FileRoutesByFullPath {
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -645,6 +645,7 @@ export interface FileRoutesByFullPath {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -693,7 +694,6 @@ export interface FileRoutesByTo {
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -736,6 +736,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -786,7 +787,6 @@ export interface FileRoutesById {
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
@@ -830,6 +830,7 @@ export interface FileRoutesById {
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
@@ -880,7 +881,6 @@ export interface FileRouteTypes {
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
-    | '/reset-password'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -924,6 +924,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/integracoes'
     | '/app/licenses'
     | '/app/marketplace'
     | '/app/master'
@@ -972,7 +973,6 @@ export interface FileRouteTypes {
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
-    | '/reset-password'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -1015,6 +1015,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/integracoes'
     | '/app/licenses'
     | '/app/marketplace'
     | '/app/master'
@@ -1064,7 +1065,6 @@ export interface FileRouteTypes {
     | '/politica-privacidade'
     | '/privacidade'
     | '/qa-events'
-    | '/reset-password'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -1108,6 +1108,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/documents'
     | '/_authenticated/app/ecosystem'
     | '/_authenticated/app/editorial'
+    | '/_authenticated/app/integracoes'
     | '/_authenticated/app/licenses'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
@@ -1158,7 +1159,6 @@ export interface RootRouteChildren {
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRoute
@@ -1317,13 +1317,6 @@ declare module '@tanstack/react-router' {
       path: '/rss.xml'
       fullPath: '/rss.xml'
       preLoaderRoute: typeof RssDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa-events': {
@@ -1725,6 +1718,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppLicensesRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/integracoes': {
+      id: '/_authenticated/app/integracoes'
+      path: '/integracoes'
+      fullPath: '/app/integracoes'
+      preLoaderRoute: typeof AuthenticatedAppIntegracoesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/editorial': {
       id: '/_authenticated/app/editorial'
       path: '/editorial'
@@ -1902,6 +1902,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
+  AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
@@ -1924,6 +1925,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
+  AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,
@@ -1988,7 +1990,6 @@ const rootRouteChildren: RootRouteChildren = {
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRoute,
@@ -2039,13 +2040,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
