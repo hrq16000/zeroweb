@@ -1558,6 +1558,33 @@ export type Database = {
         }
         Relationships: []
       }
+      index_coverage_snapshots: {
+        Row: {
+          count: number
+          created_at: string
+          day: string
+          id: string
+          issue_type: string
+          open_count: number
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          day: string
+          id?: string
+          issue_type: string
+          open_count?: number
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          day?: string
+          id?: string
+          issue_type?: string
+          open_count?: number
+        }
+        Relationships: []
+      }
       integration_health_checks: {
         Row: {
           checked_at: string
