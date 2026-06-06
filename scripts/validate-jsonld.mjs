@@ -145,21 +145,49 @@ function validateRoute(path, html) {
   return { url, path, blocks: blocks.length, nodes: nodes.length, checks, failed };
 }
 
+// Schema.org Validator — endpoint público usado pelo validator.schema.org.
+// Retorna `{ totalNumErrors, totalNumWarnings, tripleGroups: [...] }`.
+async function callSchemaOrgValidator(url) {
+  try {
+    const u = `https://validator.schema.org/validate?hl=en&url=${encodeURIComponent(url)}`;
+    const res = await fetch(u, { headers: { accept: "application/json" } });
+    if (!res.ok) return { errors: null, warnings: null, status: res.status };
+    // a resposta vem com prefixo )]}' anti-XSSI
+    const text = (await res.text()).replace(/^\)\]\}'\n?/, "");
+    const json = JSON.parse(text);
+    return {
+      errors: json?.totalNumErrors ?? 0,
+      warnings: json?.totalNumWarnings ?? 0,
+      tripleGroups: (json?.tripleGroups || []).map((g) => g.nodes?.[0]?.typeGroup).filter(Boolean),
+    };
+  } catch (err) {
+    return { errors: null, warnings: null, status: `error: ${err.message}` };
+  }
+}
+
 async function main() {
+  const withValidator = process.argv.includes("--with-validator");
   await mkdir(REPORT_DIR, { recursive: true });
   const slugs = await loadSlugs();
   const routes = ["/servicos", ...slugs.map((s) => `/servicos/${s}`)];
 
-  console.log(colors.bold(`\nValidando ${routes.length} rotas em ${BASE}\n`));
+  console.log(colors.bold(`\nValidando ${routes.length} rotas em ${BASE}${withValidator ? " (+ Schema.org Validator)" : ""}\n`));
 
   const results = [];
   for (const path of routes) {
     try {
       const html = await fetchText(`${BASE}${path}`);
       const r = validateRoute(path, html);
+      if (withValidator) {
+        r.validator = await callSchemaOrgValidator(`${BASE}${path}`);
+        if (r.validator.errors && r.validator.errors > 0) {
+          r.failed.push({ name: `Schema.org Validator: ${r.validator.errors} erro(s)`, detail: "" });
+        }
+      }
       results.push(r);
       const tag = r.failed.length === 0 ? colors.green("✓") : colors.red(`✗ (${r.failed.length})`);
-      console.log(`${tag} ${path}  [blocks=${r.blocks} nodes=${r.nodes}]`);
+      const extra = r.validator ? `  validator=err:${r.validator.errors ?? "?"} warn:${r.validator.warnings ?? "?"}` : "";
+      console.log(`${tag} ${path}  [blocks=${r.blocks} nodes=${r.nodes}]${extra}`);
       for (const f of r.failed) console.log(colors.red(`   - ${f.name}${f.detail ? `: ${f.detail}` : ""}`));
     } catch (err) {
       console.log(colors.red(`✗ ${path}  ${err.message}`));
