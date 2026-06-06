@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, MessageCircle, LogIn } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
@@ -23,6 +23,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const { open: openFunnel } = useWaFunnel();
   const headerRef = useRef<HTMLElement | null>(null);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -103,13 +108,13 @@ export function Header() {
           >
             <LogIn className="w-4 h-4" /> Conectar
           </Link>
-          <a
-            href="/#contato"
+          <Link
+            to="/contato"
             onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
             className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold px-5 py-2.5 shadow-glow-primary hover:opacity-95 transition"
           >
             Solicitar Diagnóstico
-          </a>
+          </Link>
         </div>
 
         <button
@@ -151,8 +156,8 @@ export function Header() {
               >
                 <LogIn className="w-4 h-4" /> Conectar
               </Link>
-              <a
-                href="/#contato"
+              <Link
+                to="/contato"
                 onClick={() => {
                   trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
                   setOpen(false);
@@ -160,7 +165,7 @@ export function Header() {
                 className="text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
               >
                 Solicitar Diagnóstico
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
