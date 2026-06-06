@@ -71,7 +71,7 @@ export const Route = createFileRoute("/servicos")({
             category: s.category,
             url: sUrl,
             areaServed: { "@type": "Country", name: "Brasil" },
-            provider: ORG_REF,
+            provider: { "@id": `${ORIGIN}/#org` },
           },
         };
       }),
