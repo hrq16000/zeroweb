@@ -91,6 +91,10 @@ export function ContactFormWhatsApp({
             setErrors(errs);
             return;
           }
+          if (requireConsent && !consent) {
+            setErrors({ consent: "É necessário aceitar para enviar." });
+            return;
+          }
           setErrors({});
           const d = parsed.data;
           const attr = getLeadAttribution(source, ctx);
