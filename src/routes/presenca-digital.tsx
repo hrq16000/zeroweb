@@ -333,6 +333,28 @@ function PresencaDigitalPage() {
         </div>
       </section>
 
+      {/* FORM DE CAPTURA */}
+      <section className="py-20 bg-muted/30">
+        <div className="mx-auto max-w-3xl px-5 lg:px-8">
+          <div className="text-center mb-8">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Fale com a 0WEB</p>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-bold font-display">
+              Receba uma proposta personalizada
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Preencha o formulário e respondemos no seu WhatsApp em até 1 hora útil.
+            </p>
+          </div>
+          <ContactFormWhatsApp
+            source="presdig_form"
+            ctx="presdig_form"
+            title="Solicite sua proposta de Presença Digital"
+            defaultMessage="Quero uma proposta de Presença Digital (R$399/mês)."
+            requireConsent
+          />
+        </div>
+      </section>
+
       {/* CTA FINAL */}
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
