@@ -56,6 +56,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
@@ -356,6 +357,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
+  id: '/site-express',
+  path: '/site-express',
+  getParentRoute: () => ServicosRoute,
 } as any)
 const RCodeRoute = RCodeRouteImport.update({
   id: '/r/$code',
@@ -737,7 +743,7 @@ export interface FileRoutesByFullPath {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
+  '/servicos': typeof ServicosRouteWithChildren
   '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -776,6 +782,7 @@ export interface FileRoutesByFullPath {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
@@ -849,7 +856,7 @@ export interface FileRoutesByTo {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
+  '/servicos': typeof ServicosRouteWithChildren
   '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -887,6 +894,7 @@ export interface FileRoutesByTo {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
@@ -962,7 +970,7 @@ export interface FileRoutesById {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
+  '/servicos': typeof ServicosRouteWithChildren
   '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
@@ -1001,6 +1009,7 @@ export interface FileRoutesById {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
@@ -1115,6 +1124,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
     | '/app/admin'
@@ -1226,6 +1236,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/site-express'
     | '/blog'
     | '/cases'
     | '/app/admin'
@@ -1339,6 +1350,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
     | '/_authenticated/app/admin'
@@ -1414,7 +1426,7 @@ export interface RootRouteChildren {
   RedesSociaisRoute: typeof RedesSociaisRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
-  ServicosRoute: typeof ServicosRoute
+  ServicosRoute: typeof ServicosRouteWithChildren
   SiteExpressRoute: typeof SiteExpressRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
@@ -1796,6 +1808,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/servicos/site-express': {
+      id: '/servicos/site-express'
+      path: '/site-express'
+      fullPath: '/servicos/site-express'
+      preLoaderRoute: typeof ServicosSiteExpressRouteImport
+      parentRoute: typeof ServicosRoute
     }
     '/r/$code': {
       id: '/r/$code'
@@ -2395,6 +2414,18 @@ const EstadosRouteChildren: EstadosRouteChildren = {
 const EstadosRouteWithChildren =
   EstadosRoute._addFileChildren(EstadosRouteChildren)
 
+interface ServicosRouteChildren {
+  ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
+}
+
+const ServicosRouteChildren: ServicosRouteChildren = {
+  ServicosSiteExpressRoute: ServicosSiteExpressRoute,
+}
+
+const ServicosRouteWithChildren = ServicosRoute._addFileChildren(
+  ServicosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -2424,7 +2455,7 @@ const rootRouteChildren: RootRouteChildren = {
   RedesSociaisRoute: RedesSociaisRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
-  ServicosRoute: ServicosRoute,
+  ServicosRoute: ServicosRouteWithChildren,
   SiteExpressRoute: SiteExpressRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,

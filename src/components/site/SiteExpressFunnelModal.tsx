@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { WHATSAPP } from "@/lib/site-config";
+import { persistLead } from "@/lib/persistence";
+import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 
 const WHATSAPP_NUMBER = WHATSAPP.number; // edite aqui se necessário
 
