@@ -522,7 +522,7 @@ function ServicosHub() {
         <RelatedLinksGrid
           title="Continue explorando a 0WEB"
           subtitle="Páginas pensadas para responder dúvidas e acelerar sua decisão."
-          only={["/planos", "/faq", "/cases", "/trafego-pago-local", "/seo", "/contato"]}
+          only={["/planos", "/faq", "/cases", "/trafego-pago-local", "/servicos/seo", "/contato"]}
         />
 
         <section className="py-16">
