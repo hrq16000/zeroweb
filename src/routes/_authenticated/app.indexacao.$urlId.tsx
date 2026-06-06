@@ -79,19 +79,29 @@ function IssueDetailPage() {
   const detailFn = useServerFn(getIssueDetail);
   const scrapeFn = useServerFn(scrapeUrlEvidence);
   const resolveFn = useServerFn(resolveIndexIssue);
+  const listActionsFn = useServerFn(listIndexActions);
+  const addActionFn = useServerFn(addIndexAction);
+  const deleteActionFn = useServerFn(deleteIndexAction);
 
   const [row, setRow] = useState<any | null>(null);
   const [history, setHistory] = useState<any[]>([]);
+  const [actions, setActions] = useState<any[]>([]);
+  const [actionNotes, setActionNotes] = useState<Partial<Record<ActionKey, string>>>({});
   const [evidence, setEvidence] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [scraping, setScraping] = useState(false);
+  const [savingAction, setSavingAction] = useState<ActionKey | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true); setErr(null);
     try {
-      const r = await detailFn({ data: { id: urlId } });
+      const [r, a] = await Promise.all([
+        detailFn({ data: { id: urlId } }),
+        listActionsFn({ data: { issueId: urlId } }),
+      ]);
       setRow(r.row); setHistory(r.history);
+      setActions(a.rows);
     } catch (e: any) { setErr(e.message); }
     finally { setLoading(false); }
   };
@@ -110,7 +120,25 @@ function IssueDetailPage() {
     try { await resolveFn({ data: { id: urlId } }); await load(); } catch (e: any) { setErr(e.message); }
   };
 
-  if (loading) return <div className="p-6 text-sm text-muted-foreground">Carregando…</div>;
+  const onAddAction = async (key: ActionKey) => {
+    setSavingAction(key); setErr(null);
+    try {
+      await addActionFn({ data: { issueId: urlId, action_key: key, notes: actionNotes[key] || undefined } });
+      setActionNotes((s) => ({ ...s, [key]: "" }));
+      const a = await listActionsFn({ data: { issueId: urlId } });
+      setActions(a.rows);
+    } catch (e: any) { setErr(e.message); }
+    finally { setSavingAction(null); }
+  };
+
+  const onRemoveAction = async (id: string) => {
+    try {
+      await deleteActionFn({ data: { id } });
+      setActions((rs) => rs.filter((r) => r.id !== id));
+    } catch (e: any) { setErr(e.message); }
+  };
+
+  const checklistDone = new Set<string>(actions.map((a) => a.action_key));
   if (err || !row) return (
     <div className="p-6 space-y-2">
       <p className="text-sm text-destructive">{err ?? "Issue não encontrado."}</p>
