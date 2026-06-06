@@ -1,44 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle2, MapPin, Star, Users, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { trackEvent } from "@/lib/analytics";
+import { getSocialProofFeed, type SocialProofItem as Notif } from "@/lib/social-proof.functions";
 
-type Notif = {
-  name: string;
-  city: string;
-  action: string;
-  time: string;
-};
-
-const POOL: Notif[] = [
+// Fallback usado apenas se a chamada ao servidor falhar ou não retornar itens
+const FALLBACK_POOL: Notif[] = [
   { name: "Carlos M.", city: "Curitiba, PR", action: "solicitou um diagnóstico gratuito", time: "agora há pouco" },
   { name: "Ana P.", city: "São Paulo, SP", action: "fechou plano Pro", time: "há 3 min" },
-  { name: "Studio Vértice", city: "Florianópolis, SC", action: "iniciou um projeto de site", time: "há 7 min" },
   { name: "Rafael S.", city: "Porto Alegre, RS", action: "agendou reunião comercial", time: "há 12 min" },
   { name: "Mariana L.", city: "Belo Horizonte, MG", action: "contratou automação de IA", time: "há 18 min" },
-  { name: "TechFlow Ltda.", city: "Rio de Janeiro, RJ", action: "lançou novo e-commerce", time: "há 22 min" },
   { name: "Bruno F.", city: "Maringá, PR", action: "pediu auditoria de SEO", time: "há 28 min" },
-  { name: "Casa Verde Co.", city: "Brasília, DF", action: "subiu o tráfego em 240%", time: "há 41 min" },
-  { name: "Luana T.", city: "Goiânia, GO", action: "ativou campanha no Google Ads", time: "há 2 min" },
-  { name: "Pedro K.", city: "Campinas, SP", action: "renovou contrato anual", time: "há 5 min" },
-  { name: "Mercado Aurora", city: "Salvador, BA", action: "implantou chatbot de IA", time: "há 9 min" },
-  { name: "Camila R.", city: "Recife, PE", action: "alcançou top 3 no Google", time: "há 14 min" },
-  { name: "Northway Co.", city: "Manaus, AM", action: "subiu CTR em 3.2x", time: "há 19 min" },
-  { name: "Felipe A.", city: "Vitória, ES", action: "pediu proposta de marketing", time: "há 25 min" },
-  { name: "Joana B.", city: "Natal, RN", action: "contratou pacote SEO Local", time: "há 32 min" },
-  { name: "DentClin", city: "Fortaleza, CE", action: "captou 47 leads nesta semana", time: "há 36 min" },
-  { name: "Lucas P.", city: "Londrina, PR", action: "iniciou auditoria GMN", time: "há 45 min" },
-  { name: "Bruna H.", city: "Joinville, SC", action: "atualizou identidade visual", time: "há 52 min" },
-  { name: "Vila Bistrô", city: "Curitiba, PR", action: "dobrou reservas via Instagram Ads", time: "há 58 min" },
-  { name: "Diego N.", city: "Cuiabá, MT", action: "fechou plano Enterprise", time: "há 1h" },
-  { name: "Patrícia O.", city: "Uberlândia, MG", action: "implementou WhatsApp Business API", time: "há 1h" },
-  { name: "Imobiliária Norte", city: "Belém, PA", action: "lançou portal de imóveis", time: "há 1h" },
-  { name: "Renato V.", city: "Sorocaba, SP", action: "começou consultoria de IA", time: "há 1h" },
-  { name: "Júlia M.", city: "Ribeirão Preto, SP", action: "subiu conversão de LP em 38%", time: "há 1h" },
-  { name: "AutoPeças BR", city: "São José dos Campos, SP", action: "rodou nova campanha PMax", time: "há 2h" },
-  { name: "Fernanda G.", city: "Juiz de Fora, MG", action: "marcou diagnóstico estratégico", time: "há 2h" },
-  { name: "Studio HUB", city: "Niterói, RJ", action: "publicou novo blog editorial", time: "há 2h" },
-  { name: "Marcos T.", city: "Caxias do Sul, RS", action: "ativou remarketing dinâmico", time: "há 2h" },
 ];
 
 export function SocialProof() {
