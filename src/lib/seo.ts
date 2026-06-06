@@ -14,8 +14,9 @@ export function absUrl(path: string): string {
 export const DEFAULT_OG_IMAGE = `${ORIGIN}/og-default.jpg`;
 
 export function breadcrumbLd(items: { name: string; path: string }[]) {
+  // Designed to be embedded inside a parent `@graph` — no nested `@context`
+  // (rich-results validators flag duplicated @context inside graph nodes).
   return {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: items.map((it, i) => ({
       "@type": "ListItem",

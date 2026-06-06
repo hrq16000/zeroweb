@@ -116,13 +116,13 @@ export const Route = createFileRoute("/servicos")({
         name: title,
         description: desc,
         inLanguage: "pt-BR",
-        isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+        isPartOf: { "@type": "WebSite", "@id": `${ORIGIN}/#website` },
+        publisher: { "@id": `${ORIGIN}/#org` },
         about: SERVICE_LIST.map((s) => ({ "@type": "Service", name: s.name })),
         mainEntity: { "@id": `${url}#services` },
       },
       breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
       itemList,
-      ORG_REF,
       siteExpressFaqPage,
     ];
     if (aggregatedFaqPage) graph.push(aggregatedFaqPage);
