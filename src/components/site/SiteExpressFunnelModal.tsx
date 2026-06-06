@@ -214,10 +214,10 @@ export function SiteExpressFunnelModal({ open, onOpenChange, source = "site_expr
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!valid}
+            disabled={!valid || submitting}
             className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 active:bg-orange-700 disabled:bg-orange-300 disabled:cursor-not-allowed py-4 text-white font-bold uppercase tracking-wide text-sm shadow-lg shadow-orange-600/30 transition"
           >
-            Quero meu site em 24h <ArrowRight className="w-5 h-5" />
+            {submitting ? "Enviando..." : "Quero meu site em 24h"} {!submitting && <ArrowRight className="w-5 h-5" />}
           </button>
 
           <p className="text-center text-[11px] text-gray-400">
