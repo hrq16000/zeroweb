@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Plus, Trash2, Power, Save, X } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Power, Save, X, FlaskConical, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +12,7 @@ import {
   deletePipelineRule,
   togglePipelineRule,
 } from "@/lib/lead-pipeline-rules.functions";
+import { simulateRules, type PipelineRule, type MockLead, type Stage, type Intent, type SimulationResult } from "@/lib/pipeline-rules-eval";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/app/funis/pipeline/regras")({
