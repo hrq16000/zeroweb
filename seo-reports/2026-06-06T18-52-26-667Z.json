@@ -1,0 +1,1251 @@
+{
+  "baseUrl": "https://0web.com.br",
+  "at": "2026-06-06T18-52-26-667Z",
+  "results": [
+    {
+      "url": "https://0web.com.br/servicos",
+      "path": "/servicos",
+      "blocks": 3,
+      "nodes": 10,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": true,
+          "detail": "1 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": true,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "0 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/criacao-de-sites",
+      "path": "/servicos/criacao-de-sites",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/landing-pages",
+      "path": "/servicos/landing-pages",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/loja-virtual",
+      "path": "/servicos/loja-virtual",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/seo",
+      "path": "/servicos/seo",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/marketing-digital",
+      "path": "/servicos/marketing-digital",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/automacao-com-ia",
+      "path": "/servicos/automacao-com-ia",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/chatbot-whatsapp",
+      "path": "/servicos/chatbot-whatsapp",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/desenvolvimento-saas",
+      "path": "/servicos/desenvolvimento-saas",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/sistemas-web",
+      "path": "/servicos/sistemas-web",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "url": "https://0web.com.br/servicos/gestao-redes-sociais",
+      "path": "/servicos/gestao-redes-sociais",
+      "blocks": 4,
+      "nodes": 14,
+      "checks": [
+        {
+          "name": "og:title presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:description presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:url presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "og:image presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "twitter:card presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "canonical presente",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "JSON-LD parseou (>=1 bloco)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "BreadcrumbList tem itemListElement",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "BreadcrumbList posições sequenciais",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "FAQPage perguntas sem texto vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Service tem campos obrigatórios",
+          "ok": true,
+          "detail": "1 serviços"
+        }
+      ],
+      "failed": [
+        {
+          "name": "hreflang pt-BR presente",
+          "ok": false,
+          "detail": ""
+        },
+        {
+          "name": "Sem @id duplicado",
+          "ok": false,
+          "detail": "https://0web.com.br/#org"
+        },
+        {
+          "name": "BreadcrumbList único",
+          "ok": false,
+          "detail": "2 encontrados"
+        },
+        {
+          "name": "FAQPage único (ou ausente)",
+          "ok": false,
+          "detail": "3 encontrados"
+        },
+        {
+          "name": "FAQPage mainEntity não-vazio",
+          "ok": false,
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}
