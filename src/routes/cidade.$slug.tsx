@@ -23,13 +23,14 @@ export const Route = createFileRoute("/cidade/$slug")({
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify(
-            breadcrumbLd([
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            ...breadcrumbLd([
               { name: "Marketplace", path: "/marketplace" },
               { name: "Cidades", path: "/cidades" },
               { name: params.slug, path: `/cidade/${params.slug}` },
             ]),
-          ),
+          }),
         },
       ],
     };
