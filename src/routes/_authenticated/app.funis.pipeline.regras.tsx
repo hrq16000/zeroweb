@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Plus, Trash2, Power, Save, X } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Power, Save, X, FlaskConical, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +12,7 @@ import {
   deletePipelineRule,
   togglePipelineRule,
 } from "@/lib/lead-pipeline-rules.functions";
+import { simulateRules, type PipelineRule as EvalRule, type MockLead, type SimulationResult } from "@/lib/pipeline-rules-eval";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/app/funis/pipeline/regras")({
@@ -66,6 +67,7 @@ function PipelineRulesPage() {
   const [forms, setForms] = useState<Awaited<ReturnType<typeof listForms>>>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Rule | null>(null);
+  const [simulating, setSimulating] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
@@ -96,9 +98,14 @@ function PipelineRulesPage() {
             Classifique e marque leads automaticamente quando entram no sistema. A regra com maior prioridade vence.
           </p>
         </div>
-        <Button onClick={() => setEditing({ ...EMPTY_RULE })}>
-          <Plus className="w-4 h-4 mr-2" /> Nova regra
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setSimulating(true)}>
+            <FlaskConical className="w-4 h-4 mr-2" /> Simular
+          </Button>
+          <Button onClick={() => setEditing({ ...EMPTY_RULE })}>
+            <Plus className="w-4 h-4 mr-2" /> Nova regra
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
@@ -179,6 +186,14 @@ function PipelineRulesPage() {
               toast.error(e instanceof Error ? e.message : "Erro ao salvar");
             }
           }}
+        />
+      )}
+
+      {simulating && (
+        <RuleSimulator
+          rules={rules as unknown as EvalRule[]}
+          forms={forms}
+          onClose={() => setSimulating(false)}
         />
       )}
     </div>
@@ -419,6 +434,213 @@ function CsvField({ label, value, onChange, placeholder }: { label: string; valu
         onBlur={() => onChange(raw.split(",").map((s) => s.trim()).filter(Boolean))}
         placeholder={placeholder}
       />
+    </div>
+  );
+}
+
+type KV = { key: string; value: string };
+
+function RuleSimulator({
+  rules,
+  forms,
+  onClose,
+}: {
+  rules: EvalRule[];
+  forms: Awaited<ReturnType<typeof listForms>>;
+  onClose: () => void;
+}) {
+  const [formId, setFormId] = useState<string | "">("");
+  const [score, setScore] = useState<number>(70);
+  const [intent, setIntent] = useState<Intent>("hot");
+  const [stage, setStage] = useState<Stage>("novo");
+  const [tagsCsv, setTagsCsv] = useState("");
+  const [answers, setAnswers] = useState<KV[]>([{ key: "", value: "" }]);
+  const [result, setResult] = useState<SimulationResult | null>(null);
+
+  const run = () => {
+    const lead: MockLead = {
+      form_id: formId || null,
+      score,
+      intent,
+      stage,
+      tags: tagsCsv.split(",").map((s) => s.trim()).filter(Boolean),
+      answers: Object.fromEntries(
+        answers.filter((a) => a.key.trim()).map((a) => [a.key.trim(), a.value]),
+      ),
+    };
+    setResult(simulateRules(rules, lead));
+  };
+
+  const applied = result?.matches.find((m) => m.applied);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4">
+      <div className="w-full max-w-4xl bg-card border border-border rounded-2xl shadow-xl my-8 animate-scale-in">
+        <div className="p-5 border-b border-border flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="w-4 h-4" />
+            <h2 className="text-lg font-semibold">Simular regras</h2>
+          </div>
+          <button onClick={onClose} className="p-1 rounded hover:bg-muted"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div className="p-5 grid md:grid-cols-2 gap-6">
+          {/* Lead simulado */}
+          <section className="space-y-3">
+            <h3 className="text-sm font-semibold">Lead simulado</h3>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Funil</label>
+              <select
+                value={formId}
+                onChange={(e) => setFormId(e.target.value)}
+                className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+              >
+                <option value="">(sem funil específico)</option>
+                {forms.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Score (0–100)</label>
+                <Input type="number" min={0} max={100} value={score} onChange={(e) => setScore(Number(e.target.value) || 0)} />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Etapa atual</label>
+                <select
+                  value={stage}
+                  onChange={(e) => setStage(e.target.value as Stage)}
+                  className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                >
+                  {STAGES.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Intenção</label>
+              <div className="flex gap-2 mt-1">
+                {INTENTS.map((i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setIntent(i)}
+                    className={`px-3 py-1.5 rounded-md border text-xs capitalize ${intent === i ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}
+                  >
+                    {i}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Tags atuais (separadas por vírgula)</label>
+              <Input value={tagsCsv} onChange={(e) => setTagsCsv(e.target.value)} placeholder="google-ads, pme" />
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Respostas do funil</label>
+              <div className="space-y-2 mt-1">
+                {answers.map((a, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <Input
+                      placeholder="chave (ex: investimento)"
+                      value={a.key}
+                      onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, key: e.target.value } : x))}
+                    />
+                    <Input
+                      placeholder="valor"
+                      value={a.value}
+                      onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, value: e.target.value } : x))}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setAnswers((p) => p.length === 1 ? [{ key: "", value: "" }] : p.filter((_, i) => i !== idx))}
+                      className="p-2 rounded hover:bg-destructive/10 text-destructive"
+                      title="Remover"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setAnswers((p) => [...p, { key: "", value: "" }])}
+                  className="text-xs text-primary hover:underline"
+                >
+                  + adicionar resposta
+                </button>
+              </div>
+            </div>
+
+            <Button onClick={run} className="w-full">
+              <Play className="w-4 h-4 mr-2" /> Rodar simulação
+            </Button>
+          </section>
+
+          {/* Resultado */}
+          <section className="space-y-3">
+            <h3 className="text-sm font-semibold">Resultado</h3>
+
+            {!result ? (
+              <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                Preencha o lead e clique em <span className="font-medium">Rodar simulação</span>.
+              </div>
+            ) : (
+              <>
+                <div className="rounded-xl border border-border p-4 bg-muted/30 space-y-2">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">Resultado final</div>
+                  {applied ? (
+                    <div className="text-sm">
+                      Regra aplicada: <span className="font-semibold">{applied.rule.name}</span>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">Nenhuma regra disparou — lead segue como está.</div>
+                  )}
+                  <div className="text-sm">Etapa final: <span className="font-mono">{result.finalStage}</span></div>
+                  <div className="text-sm">Tags finais: {result.finalTags.length ? result.finalTags.map((t) => (
+                    <span key={t} className="inline-block mr-1 px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">{t}</span>
+                  )) : <span className="text-muted-foreground">—</span>}</div>
+                </div>
+
+                <div className="rounded-xl border border-border overflow-hidden">
+                  <div className="px-3 py-2 bg-muted/50 text-xs uppercase text-muted-foreground">Avaliação por regra (ordem de prioridade)</div>
+                  <ul className="divide-y divide-border">
+                    {result.matches.map((m, idx) => (
+                      <li key={idx} className="p-3 text-xs">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="font-medium text-sm flex items-center gap-2">
+                            <span className="font-mono text-muted-foreground">[{m.rule.priority}]</span>
+                            {m.rule.name}
+                          </div>
+                          <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-semibold ${
+                            m.applied ? "bg-green-500/15 text-green-600" :
+                            m.matched ? "bg-yellow-500/15 text-yellow-600" :
+                            "bg-muted text-muted-foreground"
+                          }`}>
+                            {m.applied ? "Aplicada" : m.matched ? "Bateria (não venceu)" : "Não bate"}
+                          </span>
+                        </div>
+                        <ul className="mt-1 space-y-0.5 text-muted-foreground">
+                          {m.reasons.map((r, i) => <li key={i}>· {r}</li>)}
+                        </ul>
+                      </li>
+                    ))}
+                    {result.matches.length === 0 && (
+                      <li className="p-4 text-center text-muted-foreground text-sm">Nenhuma regra cadastrada.</li>
+                    )}
+                  </ul>
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+
+        <div className="p-5 border-t border-border flex justify-end">
+          <Button variant="ghost" onClick={onClose}>Fechar</Button>
+        </div>
+      </div>
     </div>
   );
 }
