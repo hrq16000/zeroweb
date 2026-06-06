@@ -39,7 +39,16 @@ export const scrapeUrlEvidence = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { url: string }) =>
     z.object({ url: z.string().url().max(2000) }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data, context }): Promise<{
+    status: number;
+    location: string | null;
+    contentType: string;
+    metaRobots: string | null;
+    canonical: string | null;
+    title: string | null;
+    ldBlocks: string[];
+    error: string | null;
+  }> => {
     const { supabase, userId } = context as any;
     await assertAdmin(supabase, userId);
 
@@ -58,18 +67,17 @@ export const scrapeUrlEvidence = createServerFn({ method: "POST" })
       if (contentType.includes("text/html") && status >= 200 && status < 400) {
         html = (await res.text()).slice(0, 500_000);
       }
-      const ldBlocks: unknown[] = [];
+      // Keep JSON-LD blocks as strings — the client parses for display so the
+      // server-fn return type stays trivially serializable.
+      const ldBlocks: string[] = [];
       const re = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
       let m: RegExpExecArray | null;
-      while ((m = re.exec(html))) {
-        try { ldBlocks.push(JSON.parse(m[1].trim())); }
-        catch { ldBlocks.push({ _parse_error: true, raw: m[1].trim().slice(0, 300) }); }
-      }
+      while ((m = re.exec(html))) ldBlocks.push(m[1].trim().slice(0, 20_000));
       const metaRobots = html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']+)["']/i)?.[1] ?? null;
       const canonical = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1] ?? null;
       const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? null;
 
-      return { status, location, contentType, metaRobots, canonical, title, ldBlocks };
+      return { status, location, contentType, metaRobots, canonical, title, ldBlocks, error: null };
     } catch (e: any) {
       return { status: 0, location: null, contentType: "", metaRobots: null, canonical: null, title: null, ldBlocks: [], error: e?.message ?? "fetch_failed" };
     } finally {
