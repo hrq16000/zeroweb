@@ -49,8 +49,8 @@ export function WhatsAppFloat() {
       )}
       <motion.button
         initial={{ scale: 0, opacity: 0 }}
-        animate={controls}
-        whileInView={{ scale: 1, opacity: 1 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.4 }}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         onClick={() => open("floating")}
