@@ -117,6 +117,7 @@ import { Route as AuthenticatedAppIndexacaoUrlIdRouteImport } from './routes/_au
 import { Route as AuthenticatedAppFunisLeadsRouteImport } from './routes/_authenticated/app.funis.leads'
 import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authenticated/app.funis.$id'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
+import { Route as AuthenticatedAppFunisPipelineRegrasRouteImport } from './routes/_authenticated/app.funis.pipeline.regras'
 
 const TrafegoPagoLocalRoute = TrafegoPagoLocalRouteImport.update({
   id: '/trafego-pago-local',
@@ -689,6 +690,12 @@ const AuthenticatedAppAuditoriaIdentidadeRoute =
     path: '/auditoria/identidade',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppFunisPipelineRegrasRoute =
+  AuthenticatedAppFunisPipelineRegrasRouteImport.update({
+    id: '/funis/pipeline/regras',
+    path: '/funis/pipeline/regras',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -798,6 +805,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis/': typeof AuthenticatedAppFunisIndexRoute
+  '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -906,6 +914,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis': typeof AuthenticatedAppFunisIndexRoute
+  '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1017,6 +1026,7 @@ export interface FileRoutesById {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/_authenticated/app/funis/': typeof AuthenticatedAppFunisIndexRoute
+  '/_authenticated/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1128,6 +1138,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis/'
+    | '/app/funis/pipeline/regras'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1236,6 +1247,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis'
+    | '/app/funis/pipeline/regras'
   id:
     | '__root__'
     | '/'
@@ -1346,6 +1358,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/visitors-cleanup'
     | '/_authenticated/app/funis/'
+    | '/_authenticated/app/funis/pipeline/regras'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2185,6 +2198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAuditoriaIdentidadeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/funis/pipeline/regras': {
+      id: '/_authenticated/app/funis/pipeline/regras'
+      path: '/funis/pipeline/regras'
+      fullPath: '/app/funis/pipeline/regras'
+      preLoaderRoute: typeof AuthenticatedAppFunisPipelineRegrasRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
   }
 }
 
@@ -2276,6 +2296,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppFunisIdRoute: typeof AuthenticatedAppFunisIdRoute
   AuthenticatedAppFunisLeadsRoute: typeof AuthenticatedAppFunisLeadsRoute
   AuthenticatedAppFunisIndexRoute: typeof AuthenticatedAppFunisIndexRoute
+  AuthenticatedAppFunisPipelineRegrasRoute: typeof AuthenticatedAppFunisPipelineRegrasRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
@@ -2305,6 +2326,8 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppFunisIdRoute: AuthenticatedAppFunisIdRoute,
   AuthenticatedAppFunisLeadsRoute: AuthenticatedAppFunisLeadsRoute,
   AuthenticatedAppFunisIndexRoute: AuthenticatedAppFunisIndexRoute,
+  AuthenticatedAppFunisPipelineRegrasRoute:
+    AuthenticatedAppFunisPipelineRegrasRoute,
 }
 
 const AuthenticatedAppRouteWithChildren =
@@ -2416,13 +2439,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

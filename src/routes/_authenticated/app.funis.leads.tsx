@@ -92,6 +92,9 @@ function LeadsDashboard() {
           </div>
         </div>
         <div className="flex gap-2">
+          <Link to="/app/funis/pipeline/regras" className="inline-flex items-center gap-2 text-sm rounded-md border border-border px-3 py-2 hover:bg-muted">
+            Regras do pipeline
+          </Link>
           <Button variant="outline" onClick={refresh} disabled={loading}><RefreshCcw className="w-4 h-4 mr-2" /> Atualizar</Button>
           <Button onClick={exportCsv}><Download className="w-4 h-4 mr-2" /> Exportar CSV</Button>
         </div>
