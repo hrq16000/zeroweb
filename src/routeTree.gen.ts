@@ -13,6 +13,7 @@ import { Route as TrafegoPagoLocalRouteImport } from './routes/trafego-pago-loca
 import { Route as TrafegoPagoRouteImport } from './routes/trafego-pago'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
+import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-diagnostico'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
@@ -137,6 +138,11 @@ const TermosRoute = TermosRouteImport.update({
 const SolicitarOrcamentoRoute = SolicitarOrcamentoRouteImport.update({
   id: '/solicitar-orcamento',
   path: '/solicitar-orcamento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolicitarDiagnosticoRoute = SolicitarDiagnosticoRouteImport.update({
+  id: '/solicitar-diagnostico',
+  path: '/solicitar-diagnostico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SobreRoute = SobreRouteImport.update({
@@ -736,6 +742,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
@@ -846,6 +853,7 @@ export interface FileRoutesByTo {
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
@@ -957,6 +965,7 @@ export interface FileRoutesById {
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
@@ -1069,6 +1078,7 @@ export interface FileRouteTypes {
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
@@ -1179,6 +1189,7 @@ export interface FileRouteTypes {
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
@@ -1289,6 +1300,7 @@ export interface FileRouteTypes {
     | '/sitemap-services.xml'
     | '/sitemap.xml'
     | '/sobre'
+    | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
     | '/termos'
     | '/trafego-pago'
@@ -1401,6 +1413,7 @@ export interface RootRouteChildren {
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  SolicitarDiagnosticoRoute: typeof SolicitarDiagnosticoRoute
   SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
   TermosRoute: typeof TermosRoute
   TrafegoPagoRoute: typeof TrafegoPagoRoute
@@ -1468,6 +1481,13 @@ declare module '@tanstack/react-router' {
       path: '/solicitar-orcamento'
       fullPath: '/solicitar-orcamento'
       preLoaderRoute: typeof SolicitarOrcamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solicitar-diagnostico': {
+      id: '/solicitar-diagnostico'
+      path: '/solicitar-diagnostico'
+      fullPath: '/solicitar-diagnostico'
+      preLoaderRoute: typeof SolicitarDiagnosticoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -2395,6 +2415,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  SolicitarDiagnosticoRoute: SolicitarDiagnosticoRoute,
   SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
   TermosRoute: TermosRoute,
   TrafegoPagoRoute: TrafegoPagoRoute,
