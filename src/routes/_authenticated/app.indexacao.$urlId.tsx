@@ -3,7 +3,15 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { getIssueDetail, scrapeUrlEvidence } from "@/lib/index-coverage-detail.functions";
 import { resolveIndexIssue } from "@/lib/index-coverage.functions";
-import { ArrowLeft, ExternalLink, RefreshCw, CheckCircle2, AlertTriangle, FileSearch } from "lucide-react";
+import {
+  ACTION_KEYS,
+  ACTION_LABELS,
+  addIndexAction,
+  deleteIndexAction,
+  listIndexActions,
+  type ActionKey,
+} from "@/lib/index-coverage-actions.functions";
+import { ArrowLeft, ExternalLink, RefreshCw, CheckCircle2, AlertTriangle, FileSearch, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/indexacao/$urlId")({
   component: IssueDetailPage,
