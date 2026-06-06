@@ -20,10 +20,13 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+import { FunnelPreview } from "@/components/funnel/FunnelPreview";
+import { LogicTester } from "@/components/funnel/LogicTester";
 
 export const Route = createFileRoute("/_authenticated/app/funis/$id")({
   component: FunisEditor,
 });
+
 
 type LoadedForm = Awaited<ReturnType<typeof getForm>>;
 type Q = LoadedForm["questions"][number];
@@ -53,7 +56,7 @@ function FunisEditor() {
   const delC = useServerFn(deleteCondition);
 
   const [data, setData] = useState<LoadedForm | null>(null);
-  const [tab, setTab] = useState<"meta" | "questions" | "logic" | "whatsapp">("meta");
+  const [tab, setTab] = useState<"meta" | "questions" | "logic" | "whatsapp" | "preview">("meta");
   const [meta, setMeta] = useState({ slug: "", name: "", description: "", status: "draft" as "draft" | "published" | "archived" });
   const [wa, setWa] = useState<Record<string, any>>({});
 
@@ -91,11 +94,12 @@ function FunisEditor() {
         </div>
       </div>
 
-      <div className="border-b border-border flex gap-1">
-        {([["meta", "Geral"], ["questions", "Perguntas"], ["logic", "Lógica"], ["whatsapp", "WhatsApp"]] as const).map(([k, l]) => (
+      <div className="border-b border-border flex gap-1 flex-wrap">
+        {([["meta", "Geral"], ["questions", "Perguntas"], ["logic", "Lógica"], ["preview", "Preview"], ["whatsapp", "WhatsApp"]] as const).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition ${tab === k ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{l}</button>
         ))}
       </div>
+
 
       {tab === "meta" && (
         <div className="rounded-2xl border border-border bg-card p-5 space-y-3 max-w-2xl">
@@ -123,14 +127,29 @@ function FunisEditor() {
       )}
 
       {tab === "logic" && (
-        <LogicTab
-          formId={id}
-          questions={data.questions as Q[]}
-          conditions={data.conditions as C[]}
-          onSave={async (c) => { await saveC({ data: { form_id: id, condition: c as any } }); refresh(); }}
-          onDelete={async (cid) => { await delC({ data: { id: cid } }); refresh(); }}
+        <div className="space-y-6">
+          <LogicTab
+            formId={id}
+            questions={data.questions as Q[]}
+            conditions={data.conditions as C[]}
+            onSave={async (c) => { await saveC({ data: { form_id: id, condition: c as any } }); refresh(); }}
+            onDelete={async (cid) => { await delC({ data: { id: cid } }); refresh(); }}
+          />
+          <LogicTester
+            questions={data.questions as any}
+            conditions={data.conditions as any}
+          />
+        </div>
+      )}
+
+      {tab === "preview" && (
+        <FunnelPreview
+          name={data.form.name}
+          questions={data.questions as any}
+          conditions={data.conditions as any}
         />
       )}
+
 
       {tab === "whatsapp" && (
         <div className="rounded-2xl border border-border bg-card p-5 space-y-3 max-w-2xl">
