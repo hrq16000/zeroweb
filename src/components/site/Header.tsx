@@ -6,16 +6,16 @@ import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
-const nav = [
-  { href: "/#inicio", label: "Início" },
-  { href: "/#solucoes", label: "Soluções" },
-  { href: "/#servicos", label: "Serviços" },
-  { href: "/#ia", label: "IA" },
-  { href: "/#cases", label: "Cases" },
-  { href: "/#planos", label: "Planos" },
-  { href: "/#faq", label: "FAQ" },
-  { href: "/blog", label: "Blog" },
-  { href: "/marketplace", label: "Marketplace" },
+const nav: { to: string; label: string }[] = [
+  { to: "/", label: "Início" },
+  { to: "/servicos", label: "Serviços" },
+  { to: "/ia", label: "IA" },
+  { to: "/cases", label: "Cases" },
+  { to: "/planos", label: "Planos" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/blog", label: "Blog" },
+  { to: "/marketplace", label: "Marketplace" },
+  { to: "/contato", label: "Contato" },
 ];
 
 export function Header() {
@@ -55,17 +55,16 @@ export function Header() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-          {nav.map((n) =>
-            n.href.startsWith("/blog") || n.href.startsWith("/marketplace") ? (
-              <Link key={n.href} to={n.href} className="hover:text-foreground transition-colors">
-                {n.label}
-              </Link>
-            ) : (
-              <a key={n.href} href={n.href} className="hover:text-foreground transition-colors">
-                {n.label}
-              </a>
-            ),
-          )}
+          {nav.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              className="hover:text-foreground transition-colors"
+              activeProps={{ className: "text-foreground" }}
+            >
+              {n.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
@@ -111,14 +110,14 @@ export function Header() {
           >
             <div className="px-5 py-4 flex flex-col gap-3">
               {nav.map((n) => (
-                <a
-                  key={n.href}
-                  href={n.href}
+                <Link
+                  key={n.to}
+                  to={n.to}
                   onClick={() => setOpen(false)}
                   className="py-2 text-foreground/80 hover:text-foreground"
                 >
                   {n.label}
-                </a>
+                </Link>
               ))}
               <Link
                 to="/auth"

@@ -5,7 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE, ORG_REF } from "@/lib/seo";
-import { SERVICES, type ServiceCategory, type ServiceData } from "@/lib/services-data";
+import { SERVICES } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
@@ -153,15 +153,22 @@ export const Route = createFileRoute("/servicos")({
       ],
     };
   },
+  loader: async () => {
+    const { listServicesPublic } = await import("@/lib/services-public.functions");
+    const { services } = await listServicesPublic();
+    return { services };
+  },
   component: ServicosHub,
 });
 
 function ServicosHub() {
-  const byCategory = Object.values(SERVICES).reduce<Record<string, ServiceData[]>>((acc, s) => {
-    (acc[s.category] ||= []).push(s);
-    return acc;
-  }, {});
-  const categories = Object.keys(byCategory) as ServiceCategory[];
+  const { services } = Route.useLoaderData();
+  type Svc = (typeof services)[number];
+  const byCategory: Record<string, Svc[]> = {};
+  for (const s of services) {
+    (byCategory[s.category] ||= []).push(s);
+  }
+  const categories = Object.keys(byCategory);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

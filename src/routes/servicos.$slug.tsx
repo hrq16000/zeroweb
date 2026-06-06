@@ -8,20 +8,23 @@ import { trackEvent, trackConversion } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-import { SERVICES, GEO_SERVICE_SLUGS, relatedServices, type ServiceData } from "@/lib/services-data";
+import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
+import { getServicePublic } from "@/lib/services-public.functions";
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
 export const Route = createFileRoute("/servicos/$slug")({
   beforeLoad: ({ params }) => {
-    // site-express tem rota dedicada
     if (params.slug === "site-express") {
       throw redirect({ to: "/servicos/site-express" });
     }
-    if (!SERVICES[params.slug]) throw notFound();
   },
-  loader: ({ params }) => SERVICES[params.slug] as ServiceData,
+  loader: async ({ params }) => {
+    const { service } = await getServicePublic({ data: { slug: params.slug } });
+    if (!service) throw notFound();
+    return service;
+  },
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
     const url = absUrl(`/servicos/${params.slug}`);
