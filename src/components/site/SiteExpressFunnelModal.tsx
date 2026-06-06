@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { X, ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { WHATSAPP } from "@/lib/site-config";
