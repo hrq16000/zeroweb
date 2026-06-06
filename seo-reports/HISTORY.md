@@ -67,3 +67,20 @@
 - **Header**: trocado `/#contato` por `Link to="/contato"` (desktop + mobile). Adicionado fechamento automático do menu mobile em mudança de rota. Outside-click já funcionava via `headerRef`.
 - **Sitemaps/robots**: 7/7 checks verdes em produção.
 - **JSON-LD em `/servicos/{slug}`**: 6 rotas ainda com 5 issues (BreadcrumbList duplicado, FAQPage duplicada, `#org` duplicado, hreflang ausente). Todos já corrigidos no código — aguardando **republish** do frontend. Após publicar, rodar `node scripts/validate-jsonld.mjs --with-validator` para revalidar contra Schema.org.
+## 2026-06-06T23-09-55-934Z — https://0web.com.br
+- Rotas: **11** | Falhas: **11** | Relatório: `seo-reports/2026-06-06T23-09-55-934Z.json`
+  - ❌ (1) `/servicos`
+  - ❌ (3) `/servicos/automacao-com-ia`
+  - ❌ (3) `/servicos/chatbot-whatsapp`
+  - ❌ (3) `/servicos/criacao-de-sites`
+  - ❌ (3) `/servicos/desenvolvimento-saas`
+  - ❌ (3) `/servicos/gestao-redes-sociais`
+  - ❌ (3) `/servicos/landing-pages`
+  - ❌ (3) `/servicos/loja-virtual`
+  - ❌ (3) `/servicos/marketing-digital`
+  - ❌ (3) `/servicos/seo`
+  - ❌ (3) `/servicos/sistemas-web`
+
+## 2026-06-06T23-10-01-934Z — sitemap/robots — https://0web.com.br
+- Checks: **7** | Falhas: **0** | Relatório: `seo-reports/sitemaps-2026-06-06T23-10-01-934Z.json`
+
