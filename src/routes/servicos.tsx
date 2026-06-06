@@ -330,26 +330,103 @@ function ServicosHub() {
                   {filtered.length} serviço{filtered.length === 1 ? "" : "s"} disponíve{filtered.length === 1 ? "l" : "is"}
                 </p>
               </div>
-              <label className="relative w-full sm:w-80">
-                <span className="sr-only">Buscar serviço</span>
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                <input
-                  type="search"
-                  value={q}
-                  onChange={(e) => {
-                    setQ(e.target.value);
-                    setPage(1);
-                  }}
-                  placeholder="Buscar por nome, categoria..."
-                  className="w-full h-10 pl-9 pr-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </label>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <label className="relative flex-1 sm:w-72">
+                  <span className="sr-only">Buscar serviço</span>
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                  <input
+                    type="search"
+                    value={q}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      startTransition(() => {
+                        setQ(v);
+                        setPage(1);
+                      });
+                    }}
+                    placeholder="Buscar por nome, categoria..."
+                    className="w-full h-10 pl-9 pr-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </label>
+                <label className="relative">
+                  <span className="sr-only">Ordenar serviços</span>
+                  <select
+                    value={sort}
+                    onChange={(e) => {
+                      const v = e.target.value as SortKey;
+                      startTransition(() => {
+                        setSort(v);
+                        setPage(1);
+                      });
+                    }}
+                    className="h-10 px-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="relevance">Relevância</option>
+                    <option value="recent">Mais recentes</option>
+                    <option value="alpha">Alfabética (A→Z)</option>
+                  </select>
+                </label>
+              </div>
             </div>
 
-            {filtered.length === 0 ? (
-              <p className="text-center text-muted-foreground py-12">
-                Nenhum serviço encontrado para "{q}".
-              </p>
+            <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+              <button
+                type="button"
+                onClick={() => startTransition(() => { setActiveCat("all"); setPage(1); })}
+                aria-pressed={activeCat === "all"}
+                className={`px-3 h-8 text-xs rounded-full border transition-colors ${
+                  activeCat === "all"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border hover:border-primary"
+                }`}
+              >
+                Todas ({services.length})
+              </button>
+              {allCategories.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => startTransition(() => { setActiveCat(c); setPage(1); })}
+                  aria-pressed={activeCat === c}
+                  className={`px-3 h-8 text-xs rounded-full border transition-colors ${
+                    activeCat === c
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border hover:border-primary"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            {isPending ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" aria-busy="true" aria-live="polite">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
+                    <Skeleton className="aspect-video w-full rounded-none" />
+                    <div className="p-5 space-y-2">
+                      <Skeleton className="h-3 w-20" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-12">
+                <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto" />
+                <p className="mt-3 text-muted-foreground">
+                  Nenhum serviço encontrado{q ? ` para "${q}"` : ""}.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setQ(""); setActiveCat("all"); setPage(1); }}
+                  className="mt-3 text-sm text-primary underline"
+                >
+                  Limpar filtros
+                </button>
+              </div>
             ) : (
               <div className="space-y-12">
                 {categories.map((cat) => (
