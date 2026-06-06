@@ -47,16 +47,15 @@ function shouldSkip(pathname: string): boolean {
 
 // ---------------------------------------------------------------------------
 // Canonical / redirect middleware.
-// - Force canonical host (apex 0web.com.br, no www, https).
-// - Strip trailing slash (except root).
-// - Lookup custom redirects table (cached in-memory for 60s) and 301/308.
-// Runs FIRST in the chain so blocked/tracked rows are recorded against the
-// final URL, not the redirected one.
+// Pure decision logic lives in `@/lib/canonical-redirect.helpers` so it can
+// be unit-tested without spinning up the Worker runtime. This wrapper handles
+// the I/O side (Supabase cache + hit counter).
 // ---------------------------------------------------------------------------
 
-const CANONICAL_HOST = "0web.com.br";
+import { computeCanonicalRedirect } from "@/lib/canonical-redirect.helpers";
+
 type RedirectHit = { to: string; status: number };
-const redirectCache = new Map<string, RedirectHit | null>();
+const redirectCache = new Map<string, RedirectHit>();
 let redirectCacheAt = 0;
 const REDIRECT_CACHE_TTL_MS = 60_000;
 
@@ -107,56 +106,24 @@ function recordRedirectHit(fromPath: string): void {
 
 const canonicalRedirectMiddleware = createMiddleware().server(async ({ next, request }) => {
   try {
-    if (request.method !== "GET" && request.method !== "HEAD") return next();
-    const url = new URL(request.url);
-    if (shouldSkip(url.pathname)) return next();
-
-    // 1) Host normalization: force apex + https.
-    let host = url.host;
-    let proto = request.headers.get("x-forwarded-proto") || url.protocol.replace(":", "");
-    let needsRedirect = false;
-    if (host.startsWith("www.")) {
-      host = host.slice(4);
-      needsRedirect = true;
-    }
-    // Only enforce canonical host when serving the production domain
-    // (avoids breaking preview/sandbox URLs).
-    const isProdHost = host === CANONICAL_HOST || host === `www.${CANONICAL_HOST}`;
-    if (isProdHost && host !== CANONICAL_HOST) {
-      host = CANONICAL_HOST;
-      needsRedirect = true;
-    }
-    if (isProdHost && proto !== "https") {
-      proto = "https";
-      needsRedirect = true;
-    }
-
-    // 2) Trailing slash: strip except root.
-    let pathname = url.pathname;
-    if (pathname.length > 1 && pathname.endsWith("/")) {
-      pathname = pathname.replace(/\/+$/, "");
-      needsRedirect = true;
-    }
-
-    // 3) Custom redirects table.
     await loadRedirectsIntoCache();
-    const hit = redirectCache.get(pathname);
-    if (hit) {
-      recordRedirectHit(pathname);
-      const target = /^https?:\/\//i.test(hit.to)
-        ? hit.to
-        : `${proto}://${host}${hit.to}${url.search}`;
+    const decision = computeCanonicalRedirect({
+      method: request.method,
+      url: request.url,
+      forwardedProto: request.headers.get("x-forwarded-proto"),
+      redirects: redirectCache,
+    });
+    if (decision) {
+      if (decision.source === "custom") recordRedirectHit(decision.fromPath);
       return new Response(null, {
-        status: hit.status,
-        headers: { Location: target, "Cache-Control": "public, max-age=300" },
-      });
-    }
-
-    if (needsRedirect) {
-      const target = `${proto}://${host}${pathname}${url.search}`;
-      return new Response(null, {
-        status: 308,
-        headers: { Location: target, "Cache-Control": "public, max-age=3600" },
+        status: decision.status,
+        headers: {
+          Location: decision.location,
+          "Cache-Control":
+            decision.source === "custom"
+              ? "public, max-age=300"
+              : "public, max-age=3600",
+        },
       });
     }
   } catch (e) {
