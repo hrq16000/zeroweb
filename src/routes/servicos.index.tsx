@@ -27,7 +27,7 @@ const SERVICE_LIST = Object.values(SERVICES);
 const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
 const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
 
-export const Route = createFileRoute("/servicos")({
+export const Route = createFileRoute("/servicos/")({
   head: () => {
     const url = absUrl("/servicos");
     const title = "Serviços da 0WEB · Sites, SEO, IA, Marketing Digital e Sistemas";
