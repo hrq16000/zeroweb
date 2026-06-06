@@ -25,6 +25,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { absUrl, ORIGIN, ORG_REF, breadcrumbLd } from "@/lib/seo";
+import { SITE_EXPRESS_FAQ as FAQ } from "@/lib/site-express-faq";
 
 const SLUG = "site-express";
 const PATH = `/servicos/${SLUG}`;
@@ -33,57 +34,6 @@ const TITLE = "Site Express em 24h · A partir de R$ 499 · 0WEB";
 const DESC =
   "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
 const PRICE = "499.00";
-
-const FAQ: { q: string; a: string }[] = [
-  {
-    q: "Em quanto tempo o site fica pronto mesmo?",
-    a: "Em até 24h após o briefing e o pagamento confirmados. A maioria dos sites Express fica pronto no mesmo dia útil.",
-  },
-  {
-    q: "Por que é tão mais barato que uma agência tradicional?",
-    a: "Nosso processo é enxuto: você manda um áudio no WhatsApp, nosso time produz e entrega — sem reuniões longas, sem orçamentos infinitos e sem retrabalho. Por isso conseguimos cobrar R$ 499 onde agência cobraria R$ 3.000+.",
-  },
-  {
-    q: "Posso pedir alterações depois da entrega?",
-    a: "Sim. Você revisa a prévia antes da publicação e pode pedir ajustes finos. Após entrega, oferecemos suporte para alterações pontuais por até 30 dias.",
-  },
-  {
-    q: "E o domínio (www.meusite.com.br) está incluso?",
-    a: "Sim. Cuidamos do registro do domínio, configuração de DNS, certificado SSL e hospedagem profissional no primeiro ano — tudo já incluso nos R$ 499.",
-  },
-  {
-    q: "Preciso entender de tecnologia para usar?",
-    a: "Zero. Você só conta o que seu negócio faz pelo WhatsApp. Nós cuidamos de tudo: design, textos, fotos, configuração e publicação.",
-  },
-  {
-    q: "O site funciona bem no celular?",
-    a: "100% mobile-first. Mais de 80% dos visitantes acessam pelo celular, então projetamos primeiro pro celular e depois adaptamos pro desktop. Carrega rápido e converte.",
-  },
-  {
-    q: "Vocês integram com WhatsApp e Google?",
-    a: "Sim. Toda página tem botão flutuante de WhatsApp com mensagem pré-preenchida, integração com Google Maps e perfil do Google Meu Negócio quando aplicável.",
-  },
-  {
-    q: "E se eu quiser adicionar mais páginas ou vender online depois?",
-    a: "O Site Express já vem com base profissional. Quando quiser evoluir para mais páginas, blog, e-commerce ou agendamento online, temos pacotes de upgrade — sem refazer do zero.",
-  },
-  {
-    q: "Como funciona o pagamento? Tem mensalidade?",
-    a: "R$ 499 é pagamento único, à vista no Pix ou parcelado no cartão. Não tem mensalidade. A partir do segundo ano, cobramos só uma anuidade simbólica de hospedagem e domínio (R$ 29/mês).",
-  },
-  {
-    q: "Vocês fazem o conteúdo (textos e fotos) do site?",
-    a: "Sim. Escrevemos os textos persuasivos com base no briefing e usamos imagens profissionais do nosso banco. Se você tiver fotos próprias (loja, equipe, trabalhos), incorporamos sem custo extra.",
-  },
-  {
-    q: "Funciona pra qualquer tipo de negócio?",
-    a: "Funciona pra praticamente todo prestador de serviço local ou pequeno comércio: assistência técnica, salão, eletricista, instalador, consultor, construção, autônomo, loja, clínica, escritório. Se a sua dúvida é específica, manda pelo WhatsApp.",
-  },
-  {
-    q: "Posso cancelar ou pedir reembolso?",
-    a: "Sim. Se em 7 dias após a entrega você não estiver satisfeito e a gente não conseguir resolver, devolvemos 100% do valor pago — sem perguntas.",
-  },
-];
 
 export const Route = createFileRoute("/servicos/site-express")({
   head: () => ({
