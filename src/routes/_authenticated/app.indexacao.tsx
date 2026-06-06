@@ -160,12 +160,44 @@ function IndexCoveragePage() {
             URLs com problemas de indexação (404, soft 404, redirects, excluídas). Filtre por tipo e período.
           </p>
         </div>
-        <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
-        </button>
+        <div className="flex gap-2 flex-wrap">
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) void onCsv(f); e.target.value = ""; }}
+          />
+          <button onClick={() => fileRef.current?.click()} disabled={!!csvBusy} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Upload className="w-4 h-4" /> {csvBusy ? `Importando ${csvBusy.done}/${csvBusy.total}…` : "Importar CSV do GSC"}
+          </button>
+          <button onClick={checkAlerts} disabled={alertsChecking} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <AlertTriangle className={`w-4 h-4 ${alertsChecking ? "animate-pulse" : ""}`} /> Verificar alertas
+          </button>
+          <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
+          </button>
+        </div>
       </div>
 
       {err && <p className="text-sm text-destructive">{err}</p>}
+
+      {/* Alerts banner */}
+      {alerts.length > 0 && (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 p-4 space-y-2">
+          <h2 className="text-sm font-semibold inline-flex items-center gap-2 text-amber-800 dark:text-amber-200">
+            <AlertTriangle className="w-4 h-4" /> {alerts.length} alerta(s) de cobertura nas últimas 24h
+          </h2>
+          <ul className="text-xs space-y-1">
+            {alerts.map((a, i) => (
+              <li key={i} className="flex items-start gap-2">
+                {a.kind === "spike" ? <TrendingUp className="w-3 h-3 mt-0.5 text-red-600" /> : <TrendingDown className="w-3 h-3 mt-0.5 text-amber-600" />}
+                <span>{a.message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center rounded-xl border border-border bg-card p-4">
