@@ -35,7 +35,7 @@ const DESC =
   "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
 const PRICE = "499.00";
 
-export const Route = createFileRoute("/servicos_/site-express")({
+export const Route = createFileRoute("/servicos/site-express")({
   head: () => ({
     meta: [
       { title: TITLE },
