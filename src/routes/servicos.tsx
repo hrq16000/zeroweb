@@ -146,7 +146,11 @@ export const Route = createFileRoute("/servicos")({
         { name: "twitter:image", content: DEFAULT_OG_IMAGE },
         { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "alternate", hrefLang: "pt-BR", href: url },
+        { rel: "alternate", hrefLang: "x-default", href: url },
+      ],
       scripts: [
         {
           type: "application/ld+json",
