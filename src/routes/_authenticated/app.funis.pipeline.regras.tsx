@@ -188,6 +188,14 @@ function PipelineRulesPage() {
           }}
         />
       )}
+
+      {simulating && (
+        <RuleSimulator
+          rules={rules as unknown as EvalRule[]}
+          forms={forms}
+          onClose={() => setSimulating(false)}
+        />
+      )}
     </div>
   );
 }
