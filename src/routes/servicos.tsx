@@ -282,13 +282,30 @@ function ServicosHub() {
                       key={s.slug}
                       to="/servicos/$slug"
                       params={{ slug: s.slug }}
-                      className="block p-5 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
+                      className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors overflow-hidden"
                     >
-                      <h3 className="font-semibold text-lg">{s.name}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
-                      <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
-                        Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
+                      {s.imageUrl ? (
+                        <div className="aspect-video overflow-hidden bg-muted">
+                          <img
+                            src={s.imageUrl}
+                            alt={s.imageAlt || s.name}
+                            loading="lazy"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                          <Sparkles className="w-10 h-10 text-primary/40" />
+                        </div>
+                      )}
+                      <div className="p-5">
+                        <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
+                        <h3 className="mt-1 font-semibold text-lg">{s.name}</h3>
+                        <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
+                        <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
+                          Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
                     </Link>
                   ))}
                 </div>
