@@ -117,6 +117,40 @@ function IndexCoveragePage() {
     try { await resolveFn({ data: { id } }); await load(); } catch (e: any) { setErr(e.message); }
   };
 
+  const checkAlerts = async () => {
+    setAlertsChecking(true); setErr(null);
+    try {
+      const { alerts } = await alertsFn({});
+      setAlerts(alerts);
+    } catch (e: any) { setErr(e.message); }
+    finally { setAlertsChecking(false); }
+  };
+
+  useEffect(() => { void checkAlerts(); /* eslint-disable-next-line */ }, []);
+
+  const onCsv = async (file: File) => {
+    setErr(null);
+    try {
+      const text = await file.text();
+      const rows = parseGscCsv(text);
+      if (!rows.length) { setErr("Nenhuma linha válida no CSV."); return; }
+      setCsvBusy({ done: 0, total: rows.length });
+      // Sequential upserts keep this simple and avoid hammering the server fn.
+      for (let i = 0; i < rows.length; i++) {
+        const r = rows[i];
+        try {
+          await addFn({ data: { url: r.url, issue_type: r.issue_type, status_code: r.status_code, message: r.message, source: "gsc_csv" } as any });
+        } catch { /* skip row, continue */ }
+        setCsvBusy({ done: i + 1, total: rows.length });
+      }
+      setCsvBusy(null);
+      await load();
+      await checkAlerts();
+    } catch (e: any) {
+      setErr(e.message); setCsvBusy(null);
+    }
+  };
+
   return (
     <div className="max-w-6xl space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
