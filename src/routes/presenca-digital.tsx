@@ -9,8 +9,9 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { whatsappUrl } from "@/lib/site-config";
-import { trackEvent, trackConversion } from "@/lib/analytics";
+import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
 import cover from "@/assets/presenca-digital-google-capa.png.asset.json";
 
 const TITLE = "Presença Digital para Empresas · 0WEB · Planos a partir de R$399/mês";
