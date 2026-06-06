@@ -105,12 +105,15 @@ import { Route as ApiPublicHooksLicenseUsageSnapshotRouteImport } from './routes
 import { Route as ApiPublicHooksLhciIngestRouteImport } from './routes/api/public/hooks/lhci-ingest'
 import { Route as ApiPublicHooksLgpdMaintenanceRouteImport } from './routes/api/public/hooks/lgpd-maintenance'
 import { Route as ApiPublicHooksIntegrationHealthcheckRouteImport } from './routes/api/public/hooks/integration-healthcheck'
+import { Route as ApiPublicHooksIndexCoverageSnapshotRouteImport } from './routes/api/public/hooks/index-coverage-snapshot'
+import { Route as ApiPublicHooksGscIngestRouteImport } from './routes/api/public/hooks/gsc-ingest'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
 import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes/_authenticated/app.marketplace.company'
 import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_authenticated/app.marketplace.admin'
+import { Route as AuthenticatedAppIndexacaoUrlIdRouteImport } from './routes/_authenticated/app.indexacao.$urlId'
 import { Route as AuthenticatedAppFunisLeadsRouteImport } from './routes/_authenticated/app.funis.leads'
 import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authenticated/app.funis.$id'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
@@ -616,6 +619,17 @@ const ApiPublicHooksIntegrationHealthcheckRoute =
     path: '/api/public/hooks/integration-healthcheck',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksIndexCoverageSnapshotRoute =
+  ApiPublicHooksIndexCoverageSnapshotRouteImport.update({
+    id: '/api/public/hooks/index-coverage-snapshot',
+    path: '/api/public/hooks/index-coverage-snapshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksGscIngestRoute = ApiPublicHooksGscIngestRouteImport.update({
+  id: '/api/public/hooks/gsc-ingest',
+  path: '/api/public/hooks/gsc-ingest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksAnomalyScanRoute =
   ApiPublicHooksAnomalyScanRouteImport.update({
     id: '/api/public/hooks/anomaly-scan',
@@ -651,6 +665,12 @@ const AuthenticatedAppMarketplaceAdminRoute =
     id: '/admin',
     path: '/admin',
     getParentRoute: () => AuthenticatedAppMarketplaceRoute,
+  } as any)
+const AuthenticatedAppIndexacaoUrlIdRoute =
+  AuthenticatedAppIndexacaoUrlIdRouteImport.update({
+    id: '/$urlId',
+    path: '/$urlId',
+    getParentRoute: () => AuthenticatedAppIndexacaoRoute,
   } as any)
 const AuthenticatedAppFunisLeadsRoute =
   AuthenticatedAppFunisLeadsRouteImport.update({
@@ -742,7 +762,7 @@ export interface FileRoutesByFullPath {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
-  '/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
+  '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -762,12 +782,15 @@ export interface FileRoutesByFullPath {
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
+  '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
+  '/api/public/hooks/index-coverage-snapshot': typeof ApiPublicHooksIndexCoverageSnapshotRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
@@ -847,7 +870,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
-  '/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
+  '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -867,12 +890,15 @@ export interface FileRoutesByTo {
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
+  '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
   '/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
+  '/api/public/hooks/index-coverage-snapshot': typeof ApiPublicHooksIndexCoverageSnapshotRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
@@ -955,7 +981,7 @@ export interface FileRoutesById {
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
-  '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRoute
+  '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -975,12 +1001,15 @@ export interface FileRoutesById {
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/_authenticated/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
+  '/_authenticated/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
   '/_authenticated/app/marketplace/admin': typeof AuthenticatedAppMarketplaceAdminRoute
   '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
+  '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
+  '/api/public/hooks/index-coverage-snapshot': typeof ApiPublicHooksIndexCoverageSnapshotRoute
   '/api/public/hooks/integration-healthcheck': typeof ApiPublicHooksIntegrationHealthcheckRoute
   '/api/public/hooks/lgpd-maintenance': typeof ApiPublicHooksLgpdMaintenanceRoute
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
@@ -1083,12 +1112,15 @@ export interface FileRouteTypes {
     | '/app/auditoria/identidade'
     | '/app/funis/$id'
     | '/app/funis/leads'
+    | '/app/indexacao/$urlId'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/gsc-ingest'
+    | '/api/public/hooks/index-coverage-snapshot'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/lhci-ingest'
@@ -1188,12 +1220,15 @@ export interface FileRouteTypes {
     | '/app/auditoria/identidade'
     | '/app/funis/$id'
     | '/app/funis/leads'
+    | '/app/indexacao/$urlId'
     | '/app/marketplace/admin'
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
     | '/app/projects/$id'
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/gsc-ingest'
+    | '/api/public/hooks/index-coverage-snapshot'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/lhci-ingest'
@@ -1295,12 +1330,15 @@ export interface FileRouteTypes {
     | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/funis/$id'
     | '/_authenticated/app/funis/leads'
+    | '/_authenticated/app/indexacao/$urlId'
     | '/_authenticated/app/marketplace/admin'
     | '/_authenticated/app/marketplace/company'
     | '/_authenticated/app/marketplace/provider'
     | '/_authenticated/app/projects/$id'
     | '/_authenticated/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
+    | '/api/public/hooks/gsc-ingest'
+    | '/api/public/hooks/index-coverage-snapshot'
     | '/api/public/hooks/integration-healthcheck'
     | '/api/public/hooks/lgpd-maintenance'
     | '/api/public/hooks/lhci-ingest'
@@ -1379,6 +1417,8 @@ export interface RootRouteChildren {
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
+  ApiPublicHooksGscIngestRoute: typeof ApiPublicHooksGscIngestRoute
+  ApiPublicHooksIndexCoverageSnapshotRoute: typeof ApiPublicHooksIndexCoverageSnapshotRoute
   ApiPublicHooksIntegrationHealthcheckRoute: typeof ApiPublicHooksIntegrationHealthcheckRoute
   ApiPublicHooksLgpdMaintenanceRoute: typeof ApiPublicHooksLgpdMaintenanceRoute
   ApiPublicHooksLhciIngestRoute: typeof ApiPublicHooksLhciIngestRoute
@@ -2061,6 +2101,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksIntegrationHealthcheckRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/index-coverage-snapshot': {
+      id: '/api/public/hooks/index-coverage-snapshot'
+      path: '/api/public/hooks/index-coverage-snapshot'
+      fullPath: '/api/public/hooks/index-coverage-snapshot'
+      preLoaderRoute: typeof ApiPublicHooksIndexCoverageSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/gsc-ingest': {
+      id: '/api/public/hooks/gsc-ingest'
+      path: '/api/public/hooks/gsc-ingest'
+      fullPath: '/api/public/hooks/gsc-ingest'
+      preLoaderRoute: typeof ApiPublicHooksGscIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/anomaly-scan': {
       id: '/api/public/hooks/anomaly-scan'
       path: '/api/public/hooks/anomaly-scan'
@@ -2103,6 +2157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppMarketplaceAdminRouteImport
       parentRoute: typeof AuthenticatedAppMarketplaceRoute
     }
+    '/_authenticated/app/indexacao/$urlId': {
+      id: '/_authenticated/app/indexacao/$urlId'
+      path: '/$urlId'
+      fullPath: '/app/indexacao/$urlId'
+      preLoaderRoute: typeof AuthenticatedAppIndexacaoUrlIdRouteImport
+      parentRoute: typeof AuthenticatedAppIndexacaoRoute
+    }
     '/_authenticated/app/funis/leads': {
       id: '/_authenticated/app/funis/leads'
       path: '/funis/leads'
@@ -2126,6 +2187,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAppIndexacaoRouteChildren {
+  AuthenticatedAppIndexacaoUrlIdRoute: typeof AuthenticatedAppIndexacaoUrlIdRoute
+}
+
+const AuthenticatedAppIndexacaoRouteChildren: AuthenticatedAppIndexacaoRouteChildren =
+  {
+    AuthenticatedAppIndexacaoUrlIdRoute: AuthenticatedAppIndexacaoUrlIdRoute,
+  }
+
+const AuthenticatedAppIndexacaoRouteWithChildren =
+  AuthenticatedAppIndexacaoRoute._addFileChildren(
+    AuthenticatedAppIndexacaoRouteChildren,
+  )
 
 interface AuthenticatedAppMarketplaceRouteChildren {
   AuthenticatedAppMarketplaceAdminRoute: typeof AuthenticatedAppMarketplaceAdminRoute
@@ -2182,7 +2257,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
-  AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRoute
+  AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -2209,7 +2284,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
-  AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRoute,
+  AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
@@ -2326,6 +2401,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
+  ApiPublicHooksGscIngestRoute: ApiPublicHooksGscIngestRoute,
+  ApiPublicHooksIndexCoverageSnapshotRoute:
+    ApiPublicHooksIndexCoverageSnapshotRoute,
   ApiPublicHooksIntegrationHealthcheckRoute:
     ApiPublicHooksIntegrationHealthcheckRoute,
   ApiPublicHooksLgpdMaintenanceRoute: ApiPublicHooksLgpdMaintenanceRoute,
@@ -2338,13 +2416,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

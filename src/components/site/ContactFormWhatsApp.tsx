@@ -8,6 +8,7 @@ import { trackConversion } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { getIpGeo, requestGpsThenFallback, formatLocation, type GeoInfo } from "@/lib/geo-location";
 import { GpsConsentModal, getStoredGpsDecision } from "@/components/site/GpsConsentModal";
 
@@ -91,6 +92,9 @@ export function ContactFormWhatsApp({
           const attr = getLeadAttribution(source, ctx);
           const content = attr.content;
           const evtAttr = attributionToEventParams(attr);
+          // Persist a snapshot so /obrigado, ThankYouModal and the WhatsApp
+          // return fallback all resolve to the SAME attribution payload.
+          saveAttributionSnapshot(attr);
           trackConversion("form_submit", {
             form_name: source,
             event_category: "lead",

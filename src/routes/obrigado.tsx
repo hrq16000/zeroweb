@@ -11,7 +11,9 @@ import { useEffect, useMemo } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
+import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
@@ -60,33 +62,40 @@ export const Route = createFileRoute("/obrigado")({
 
 function ObrigadoPage() {
   const { source } = Route.useSearch();
-  const content = getThankYouContent(source);
+  // Snapshot persisted at submit-time wins over the URL ?source= param.
+  // Fallbacks: query string, then "direct".
+  const attr = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return loadAttributionSnapshot() ?? getLeadAttribution(source || "direct");
+  }, [source]);
+  const resolvedSource = attr?.source ?? source ?? "direct";
+  const content = attr?.content ?? getThankYouContent(resolvedSource);
   const evtAttr = useMemo(() => {
-    if (typeof window === "undefined") return { source: source || "direct", channel: content.channel };
-    return attributionToEventParams(getLeadAttribution(source || "direct"));
-  }, [source, content.channel]);
+    if (typeof window === "undefined") return { source: resolvedSource, channel: content.channel };
+    return attributionToEventParams(attr ?? getLeadAttribution(resolvedSource));
+  }, [attr, resolvedSource, content.channel]);
 
   useEffect(() => {
-    trackConversion("obrigado_page_view", {
+    // Canonical taxonomy event — fires once per /obrigado view.
+    trackConversion("thank_you_view", {
       ...evtAttr,
-      page: "/obrigado",
       surface: "page",
+      page: "/obrigado",
       event_category: "conversion",
     });
+    // Legacy event preserved for one sprint while dashboards transition.
+    trackEvent("obrigado_page_view", { ...evtAttr, surface: "page", legacy: true });
   }, [evtAttr]);
 
-  const handleCta = (ctaId: string, label: string, position: number, target: string) => {
-    const params = {
-      ...evtAttr,
-      cta_id: ctaId,
-      label,
-      position,
-      target,
+  const handleCta = (eventName: string, ctaId: string, label: string, position: number, target: string) => {
+    const params = buildThankYouCtaParams({
+      base: evtAttr,
       surface: "page",
-      event_category: "engagement",
-    };
-    trackConversion("obrigado_cta_click", params);
-    trackEvent(`obrigado_cta_${ctaId}`, params);
+      ctaId, target, label, position,
+    });
+    trackConversion(eventName, params);
+    // Legacy event kept for back-compat dashboards.
+    trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
 
   const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
@@ -97,17 +106,19 @@ function ObrigadoPage() {
       icon: <Layers className="w-6 h-6 text-primary" />,
       title: "Conheça nossos planos",
       desc: content.planosLabel,
-      to: "/planos" as const,
+      to: THANK_YOU_CTA.PLANS.target,
       label: "Ver planos",
-      id: "planos",
+      id: THANK_YOU_CTA.PLANS.id,
+      event: THANK_YOU_CTA.PLANS.event,
     },
     {
       icon: <HelpCircle className="w-6 h-6 text-primary" />,
       title: "Dúvidas frequentes",
       desc: "Veja respostas sobre prazos, contratos e entregáveis.",
-      to: "/faq" as const,
+      to: THANK_YOU_CTA.FAQ.target,
       label: "Ir para FAQ",
-      id: "faq",
+      id: THANK_YOU_CTA.FAQ.id,
+      event: THANK_YOU_CTA.FAQ.event,
     },
     {
       icon: <FileText className="w-6 h-6 text-primary" />,
@@ -115,7 +126,8 @@ function ObrigadoPage() {
       desc: "Receba uma análise gratuita do seu site e estratégia digital.",
       to: "/solicitar-orcamento" as const,
       label: "Pedir diagnóstico",
-      id: "diagnostico",
+      id: THANK_YOU_CTA.DIAGNOSTICO.id,
+      event: THANK_YOU_CTA.DIAGNOSTICO.event,
     },
   ];
 
@@ -169,7 +181,7 @@ function ObrigadoPage() {
             </a>
             <Link
               to={content.finalCtaTo}
-              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel, 0, content.finalCtaTo)}
+              onClick={() => handleCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 0, content.finalCtaTo)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-6 py-4 font-semibold hover:border-primary transition-colors"
             >
               <Sparkles className="w-4 h-4 text-primary" />
@@ -196,7 +208,7 @@ function ObrigadoPage() {
                   <Link
                     to={card.to}
                     preload="render"
-                    onClick={() => handleCta(card.id, card.label, i + 1, card.to)}
+                    onClick={() => handleCta(card.event, card.id, card.label, i + 1, card.to)}
                     className="group block h-full rounded-2xl border border-border bg-card p-6 hover:border-primary transition-colors text-left"
                   >
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -264,7 +276,7 @@ function ObrigadoPage() {
               </a>
               <Link
                 to="/"
-                onClick={() => handleCta("home", "Voltar para o início", 100, "/")}
+                onClick={() => handleCta("thank_you_cta_home", "home", "Voltar para o início", 100, "/")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold hover:bg-muted transition-colors"
               >
                 Voltar para o início

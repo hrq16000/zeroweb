@@ -1,75 +1,90 @@
+## Escopo aprovado
 
-# Escopo aprovado
-
-Tudo gerenciável pelo painel admin. Hreflang fica fora (só pt-BR). Vou entregar em **4 lotes** para manter cada migração curta e auditável.
-
----
-
-## Lote 1 — CRUD de Planos (banco + painel + landing)
-
-**Banco** (`plans` table):
-- Campos: slug, nome, preço (centavos), período (mês/ano/projeto/sob_consulta), descrição, lista de features (jsonb), destaque (bool), cta_label, cta_href, ordem, ativo.
-- RLS: leitura pública (`anon` + `authenticated`); escrita só `super_admin`/`admin` (`has_role`).
-- Trigger `updated_at`. Seed com os 4 planos atuais (Landing R$ 99,99, Start R$ 249, Pro R$ 649, Enterprise sob consulta).
-
-**Server functions** (`src/lib/plans.functions.ts`):
-- `listPlansPublic()` (público), `listPlansAdmin()`, `upsertPlan()`, `deletePlan()`, `reorderPlans()` com `requireSupabaseAuth` + checagem de role.
-
-**UI**:
-- `src/components/site/Plans.tsx` passa a ler do banco com `useSuspenseQuery` (mantém fallback estático se erro).
-- Nova aba **Planos** em `/painel`: tabela com criar/editar/excluir/duplicar/reordenar (drag handles), preview ao vivo.
+Quatro frentes em uma única entrega. GSC fica como stub manual (importação CSV + endpoint webhook), sem connector OAuth por enquanto.
 
 ---
 
-## Lote 2 — Redirects 301 gerenciáveis
+### 1) Atribuição consistente (source/channel/UTM)
 
-**Banco** (`redirects` table):
-- Campos: from_path (unique), to_path, status_code (301/302/308), enabled, hits, last_hit_at, notas.
-- RLS: leitura `service_role` (consumida server-side), escrita admin.
+Fonte única já existe em `src/lib/lead-attribution.ts`. Vou:
 
-**Middleware** (`src/start.ts` requestMiddleware):
-- Lookup em cache (TTL 60s) na entrada de cada request HTML; se match → `Response` 301/308.
-- Normalizações automáticas no mesmo middleware: força sem-trailing-slash (exceto `/`), e força host canônico (`0web.com.br`) quando vier de www/preview/custom.
+- **Persistir snapshot de atribuição em `sessionStorage`** no momento do submit do form (`ContactFormWhatsApp`, `DiagnosticForm`, `WaFunnelModal`, `FunnelRunner`), com TTL e chave `0web_last_lead_attr_v1`.
+- **`/obrigado`** lê esse snapshot (fallback para query params `?source=`) — garante consistência após refresh e back navigation, mesmo quando UTM já saiu da URL.
+- **`ThankYouModal`** passa a derivar `source/channel/utm` do mesmo snapshot quando aberto após submit (hoje só usa prop `source`).
+- **`useWhatsappTracking`** (return fallback) já recebe baseParams; vou garantir que `whatsapp_return` carrega `source/channel/utm` idênticos ao `whatsapp_click` original (snapshot por click em ref).
+- **GA4/Pixel**: padronizar `attributionToEventParams()` como única função que monta payload de evento — auditar `trackConversion` calls em modal, /obrigado, WA hook, FunnelRunner para usar.
+- **Testes**: arquivo `src/lib/lead-attribution.test.ts` cobrindo merge de UTMs, fallback de query param, TTL do snapshot.
 
-**UI** em /painel → **Redirects**: tabela CRUD + métricas (hits, último acesso) + import CSV.
+### 2) Painel /indexacao ↔ Search Console (stub manual)
+
+Sem OAuth agora. Entrego a fundação para ligar depois:
+
+- **Importação CSV** no painel `/app/indexacao`: upload do export padrão GSC (Coverage → Export), parse client-side, chamada a `upsertIndexIssue` em lote.
+- **Endpoint webhook** `src/routes/api/public/hooks/gsc-ingest.ts` autenticado por HMAC (`GSC_INGEST_SECRET`) — pronto para receber jobs externos (Apps Script, n8n) que façam o pull do GSC e empurrem o CSV/JSON.
+- **Campo `source`** já existe na tabela; vou usar `'gsc_csv'` / `'gsc_webhook'` para distinguir do `'manual'`.
+
+### 3) Alertas de queda de cobertura + detalhe por URL
+
+- **Snapshot diário**: nova tabela `index_coverage_snapshots` (day, issue_type, count, open_count) populada por cron `src/routes/api/public/hooks/index-coverage-snapshot.ts` (HMAC).
+- **Detector de anomalia**: server fn `checkIndexCoverageDrops` compara últimas 24h vs média 7d por `issue_type`; se queda > 30% **ou** alta > 50% em volume de novos issues, grava em `anomaly_alerts` (já existe) com `kind='index_coverage'`.
+- **UI no `/app/indexacao`**: faixa de alertas no topo + botão "verificar agora".
+- **Página de detalhe** `src/routes/_authenticated/app.indexacao.$urlId.tsx`:
+  - Histórico de detecções/resoluções do issue (lista cronológica).
+  - Evidências de schema (fetch da URL via server fn, extrai JSON-LD do HTML, mostra blocos `Organization/LocalBusiness/Product/etc`).
+  - Ações sugeridas por tipo (404 → adicionar redirect 301; soft 404 → revisar conteúdo; redirect chain → consolidar; noindex → revisar meta robots), com link direto pro admin de redirects quando aplicável.
+
+### 4) Taxonomia de eventos do /obrigado
+
+Documento canônico + implementação alinhada:
+
+- **`src/lib/event-taxonomy.ts`**: dicionário tipado com `THANK_YOU_EVENTS` (nome exato, params obrigatórios/opcionais, mapeamento Pixel).
+- **Eventos**:
+  - `thank_you_view` — pageview do funil de obrigado (modal ou rota). Params: `source, channel, utm_*, surface (modal|page)`.
+  - `thank_you_cta_plans` — clique no card Planos. Params base + `cta_id=plans, position, target=/planos`.
+  - `thank_you_cta_faq` — clique no FAQ. Params base + `cta_id=faq, target=/faq`.
+  - `thank_you_cta_diagnostico` — clique no CTA final (diagnóstico/orçamento). Params base + `cta_id=diagnostico, target=<dinâmico>`.
+  - `thank_you_cta_whatsapp` — clique WhatsApp do obrigado. Params base + `location=thankyou_<channel>`.
+  - `thank_you_dismiss` — fecha modal sem clicar.
+- **Mapeamento Pixel**: cada evento mapeado para `fbq('trackCustom', ...)` com mesmo nome + `Lead` padrão no `thank_you_view`.
+- **Refatorar** `ThankYouModal` e `src/routes/obrigado.tsx` para usar as constantes da taxonomia.
+- **Docs**: bloco JSDoc + tabela em comentário no topo do arquivo (GTM-ready).
 
 ---
 
-## Lote 3 — Validação de canônicos no build + paginação
+### Arquivos previstos
 
-**Script** `scripts/validate-canonicals.ts`:
-- Faz crawl do build (`dist/`) lendo o HTML SSR de cada rota do sitemap.
-- Verifica: exatamente 1 `<link rel=canonical>` por página; URL absoluta com host correto; canonical aponta para si mesmo (self-referential) OU para alvo declarado; nenhuma rota indexável aponta para 404.
-- Roda como `postbuild` no `package.json`; falha o build com lista clara de erros.
+**Novos**
+- `src/lib/event-taxonomy.ts`
+- `src/lib/lead-attribution-snapshot.ts`
+- `src/lib/lead-attribution.test.ts`
+- `src/lib/gsc-csv.ts` (parser)
+- `src/lib/index-coverage-detail.functions.ts` (detalhe + schema scrape)
+- `src/lib/index-coverage-alerts.functions.ts` (detector)
+- `src/routes/_authenticated/app.indexacao.$urlId.tsx`
+- `src/routes/api/public/hooks/gsc-ingest.ts`
+- `src/routes/api/public/hooks/index-coverage-snapshot.ts`
+- Migração: `index_coverage_snapshots` + GRANTs
 
-**Paginação consistente** (`blog.index`, `blog.cluster.$cluster`, `categoria.$slug`):
-- Página `?p=2` recebe canonical apontando para si mesma + `<link rel="prev/next">` (já que Google reverteu o comportamento mas Bing ainda usa). Sem paginação ⇒ canonical limpo.
-- Garantir que cluster e categoria nunca dupliquem listagem do `/blog` (canonical próprio + JSON-LD CollectionPage exclusivo).
+**Editados**
+- `src/components/site/ThankYouModal.tsx` (snapshot + taxonomia)
+- `src/components/site/ContactFormWhatsApp.tsx` (gravar snapshot)
+- `src/components/site/DiagnosticForm.tsx` (idem)
+- `src/components/site/WaFunnelModal.tsx` (idem)
+- `src/components/funnel/FunnelRunner.tsx` (idem)
+- `src/lib/use-whatsapp-tracking.ts` (snapshot por click)
+- `src/lib/lead-attribution.ts` (read/write snapshot)
+- `src/routes/obrigado.tsx` (consumir snapshot + taxonomia)
+- `src/routes/_authenticated/app.indexacao.tsx` (upload CSV, alertas, link p/ detalhe)
 
----
+**Segredo necessário**: `GSC_INGEST_SECRET` (HMAC do webhook). Pedirei via `add_secret` após aprovação do plano.
 
-## Lote 4 — Search Console gerenciável pelo painel
+### Detalhes técnicos
 
-**Banco** (`gsc_settings` singleton + `gsc_coverage_snapshots`):
-- Settings: property_url, verification_meta_token, enabled.
-- Snapshots: coletados periodicamente — total_indexed, total_excluded, soft_404, errors, last_synced_at.
+- O snapshot vai em `sessionStorage` (não localStorage) para não vazar entre abas/usuários, com `{ value, expires_at }` (TTL 30min).
+- O parser CSV usa apenas APIs do browser (sem dep nova) — formato GSC: `URL, Last crawled, Issue type, ...`.
+- O scrape de schema no detalhe usa `fetch` server-side com timeout 5s e extrai `<script type="application/ld+json">`.
+- Detector de queda usa janela móvel; thresholds configuráveis via `app_settings` (chave `index_coverage_alert_thresholds`).
+- Eventos novos não quebram dashboards existentes — `thank_you_cta_click` legacy continua sendo emitido em paralelo durante 1 sprint, com flag `legacy=true`.
+- Os 3 findings de segurança (companies/providers/reviews PII em policies públicas) serão tratados no final via views públicas sem PII + restrição das policies — vou perguntar antes se preferir esconder os campos para anônimos ou pedir autenticação.
 
-**UI** em /painel → **Search Console**:
-- Passo 1: copiar meta verification (renderizada no `__root.tsx` quando configurada).
-- Passo 2: botão "Conectar GSC" → fluxo do connector Google Search Console.
-- Passo 3: dashboard com últimas métricas + botão "Sincronizar agora".
-
-**Server fn** `syncGscCoverage()` que chama `connector-gateway.lovable.dev/google_search_console/webmasters/v3/sites/.../urlInspection` e grava snapshot. Cron diário via pg_cron opcional.
-
----
-
-## Sequência de execução
-
-Começo pelo **Lote 1** agora (migração + UI + landing dinâmica) porque é o que mais muda o site visível. Lotes 2/3/4 nas próximas mensagens — peço sua confirmação ao final do Lote 1 antes de seguir.
-
-## Decisões pendentes que assumo se não houver objeção
-
-- Preços armazenados em **centavos** (BIGINT) para evitar float.
-- Período como enum: `month` | `year` | `project` | `custom`.
-- Redirects: default **308** (preserva método; é o substituto moderno do 301 e Google trata igual).
-- Validador roda em `postbuild` mas pode ser desabilitado por env `SKIP_CANONICAL_CHECK=1` para hotfixes.
+Posso seguir?

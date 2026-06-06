@@ -5,6 +5,8 @@ import { getFunnelConfig, renderTemplate, type FunnelConfig } from "@/lib/wa-fun
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { persistWaFunnelOpen, persistWaFunnelStep, persistWaFunnelComplete } from "@/lib/persistence";
 import { WHATSAPP, getActiveUtms } from "@/lib/site-config";
+import { getLeadAttribution } from "@/lib/lead-attribution";
+import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 
 type Ctx = { open: (location: string) => void };
 const FunnelCtx = createContext<Ctx>({ open: () => {} });
@@ -69,6 +71,7 @@ function FunnelModal({ cfg, location, onClose }: { cfg: FunnelConfig; location: 
     setDone(true);
     trackConversion("wa_funnel_complete", { location, steps: total });
     void persistWaFunnelComplete(answers);
+    try { saveAttributionSnapshot(getLeadAttribution(`wa_funnel:${location}`, `wa_funnel_${location}`)); } catch { /* noop */ }
     const utms = getActiveUtms();
     const tail =
       "\n\n—\nOrigem: " + Object.entries(utms).map(([k, v]) => `${k}=${v}`).join(" · ") + ` · location=${location}`;

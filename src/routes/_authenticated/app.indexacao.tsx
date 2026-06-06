@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   listIndexIssues,
@@ -7,8 +7,10 @@ import {
   upsertIndexIssue,
   resolveIndexIssue,
 } from "@/lib/index-coverage.functions";
+import { detectIndexCoverageAlerts, type CoverageAlert } from "@/lib/index-coverage-alerts.functions";
+import { parseGscCsv } from "@/lib/gsc-csv";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/indexacao")({
   component: IndexCoveragePage,
@@ -39,10 +41,15 @@ function IndexCoveragePage() {
   const summaryFn = useServerFn(indexIssuesSummary);
   const addFn = useServerFn(upsertIndexIssue);
   const resolveFn = useServerFn(resolveIndexIssue);
+  const alertsFn = useServerFn(detectIndexCoverageAlerts);
 
   const [period, setPeriod] = useState<7 | 30 | 90>(30);
   const [type, setType] = useState<string>("all");
   const [onlyOpen, setOnlyOpen] = useState(true);
+  const [alerts, setAlerts] = useState<CoverageAlert[]>([]);
+  const [alertsChecking, setAlertsChecking] = useState(false);
+  const [csvBusy, setCsvBusy] = useState<{ done: number; total: number } | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
   const [rows, setRows] = useState<any[]>([]);
   const [summary, setSummary] = useState<{ byType: Record<string, number>; byDay: Record<string, number>; open: number; total: number } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -110,6 +117,40 @@ function IndexCoveragePage() {
     try { await resolveFn({ data: { id } }); await load(); } catch (e: any) { setErr(e.message); }
   };
 
+  const checkAlerts = async () => {
+    setAlertsChecking(true); setErr(null);
+    try {
+      const { alerts } = await alertsFn({});
+      setAlerts(alerts);
+    } catch (e: any) { setErr(e.message); }
+    finally { setAlertsChecking(false); }
+  };
+
+  useEffect(() => { void checkAlerts(); /* eslint-disable-next-line */ }, []);
+
+  const onCsv = async (file: File) => {
+    setErr(null);
+    try {
+      const text = await file.text();
+      const rows = parseGscCsv(text);
+      if (!rows.length) { setErr("Nenhuma linha válida no CSV."); return; }
+      setCsvBusy({ done: 0, total: rows.length });
+      // Sequential upserts keep this simple and avoid hammering the server fn.
+      for (let i = 0; i < rows.length; i++) {
+        const r = rows[i];
+        try {
+          await addFn({ data: { url: r.url, issue_type: r.issue_type, status_code: r.status_code, message: r.message, source: "gsc_csv" } as any });
+        } catch { /* skip row, continue */ }
+        setCsvBusy({ done: i + 1, total: rows.length });
+      }
+      setCsvBusy(null);
+      await load();
+      await checkAlerts();
+    } catch (e: any) {
+      setErr(e.message); setCsvBusy(null);
+    }
+  };
+
   return (
     <div className="max-w-6xl space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -119,12 +160,44 @@ function IndexCoveragePage() {
             URLs com problemas de indexação (404, soft 404, redirects, excluídas). Filtre por tipo e período.
           </p>
         </div>
-        <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
-        </button>
+        <div className="flex gap-2 flex-wrap">
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) void onCsv(f); e.target.value = ""; }}
+          />
+          <button onClick={() => fileRef.current?.click()} disabled={!!csvBusy} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Upload className="w-4 h-4" /> {csvBusy ? `Importando ${csvBusy.done}/${csvBusy.total}…` : "Importar CSV do GSC"}
+          </button>
+          <button onClick={checkAlerts} disabled={alertsChecking} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <AlertTriangle className={`w-4 h-4 ${alertsChecking ? "animate-pulse" : ""}`} /> Verificar alertas
+          </button>
+          <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
+          </button>
+        </div>
       </div>
 
       {err && <p className="text-sm text-destructive">{err}</p>}
+
+      {/* Alerts banner */}
+      {alerts.length > 0 && (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800 p-4 space-y-2">
+          <h2 className="text-sm font-semibold inline-flex items-center gap-2 text-amber-800 dark:text-amber-200">
+            <AlertTriangle className="w-4 h-4" /> {alerts.length} alerta(s) de cobertura nas últimas 24h
+          </h2>
+          <ul className="text-xs space-y-1">
+            {alerts.map((a, i) => (
+              <li key={i} className="flex items-start gap-2">
+                {a.kind === "spike" ? <TrendingUp className="w-3 h-3 mt-0.5 text-red-600" /> : <TrendingDown className="w-3 h-3 mt-0.5 text-amber-600" />}
+                <span>{a.message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center rounded-xl border border-border bg-card p-4">
@@ -246,7 +319,14 @@ function IndexCoveragePage() {
                     ? <span className="text-emerald-600 inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> resolvido</span>
                     : <span className="text-amber-600">aberto</span>}
                 </td>
-                <td className="p-3 text-right">
+                <td className="p-3 text-right whitespace-nowrap">
+                  <Link
+                    to="/app/indexacao/$urlId"
+                    params={{ urlId: r.id }}
+                    className="text-xs px-2 py-1 rounded border border-border hover:bg-muted mr-2 inline-block"
+                  >
+                    Detalhes
+                  </Link>
                   {!r.resolved_at && (
                     <button onClick={() => onResolve(r.id)} className="text-xs px-2 py-1 rounded border border-border hover:bg-muted">
                       Marcar resolvido
