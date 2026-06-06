@@ -56,6 +56,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
+import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
@@ -356,6 +357,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
   id: '/site-express',
   path: '/site-express',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosSlugRoute = ServicosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => ServicosRoute,
 } as any)
 const RCodeRoute = RCodeRouteImport.update({
@@ -782,6 +788,7 @@ export interface FileRoutesByFullPath {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
@@ -894,6 +901,7 @@ export interface FileRoutesByTo {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
@@ -1009,6 +1017,7 @@ export interface FileRoutesById {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
@@ -1124,6 +1133,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/$slug'
     | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
@@ -1236,6 +1246,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/$slug'
     | '/servicos/site-express'
     | '/blog'
     | '/cases'
@@ -1350,6 +1361,7 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
+    | '/servicos/$slug'
     | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
@@ -1807,6 +1819,13 @@ declare module '@tanstack/react-router' {
       path: '/site-express'
       fullPath: '/servicos/site-express'
       preLoaderRoute: typeof ServicosSiteExpressRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/$slug': {
+      id: '/servicos/$slug'
+      path: '/$slug'
+      fullPath: '/servicos/$slug'
+      preLoaderRoute: typeof ServicosSlugRouteImport
       parentRoute: typeof ServicosRoute
     }
     '/r/$code': {
@@ -2417,10 +2436,12 @@ const EstadosRouteWithChildren =
   EstadosRoute._addFileChildren(EstadosRouteChildren)
 
 interface ServicosRouteChildren {
+  ServicosSlugRoute: typeof ServicosSlugRoute
   ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
 }
 
 const ServicosRouteChildren: ServicosRouteChildren = {
+  ServicosSlugRoute: ServicosSlugRoute,
   ServicosSiteExpressRoute: ServicosSiteExpressRoute,
 }
 
@@ -2513,13 +2534,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
