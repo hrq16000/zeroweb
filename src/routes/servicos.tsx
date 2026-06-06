@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -164,8 +165,26 @@ export const Route = createFileRoute("/servicos")({
 function ServicosHub() {
   const { services } = Route.useLoaderData();
   type Svc = (typeof services)[number];
+  const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 9;
+
+  const filtered = useMemo<Svc[]>(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return services;
+    return services.filter((s: Svc) =>
+      [s.name, s.description, s.category, ...(s.keywords ?? [])]
+        .join(" ")
+        .toLowerCase()
+        .includes(term),
+    );
+  }, [services, q]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
   const byCategory: Record<string, Svc[]> = {};
-  for (const s of services) {
+  for (const s of paginated) {
     (byCategory[s.category] ||= []).push(s);
   }
   const categories = Object.keys(byCategory);
@@ -271,46 +290,119 @@ function ServicosHub() {
 
 
 
-        <section className="py-16">
-          <div className="mx-auto max-w-6xl px-5 lg:px-8 space-y-12">
-            {categories.map((cat) => (
-              <div key={cat}>
-                <h2 className="text-2xl font-bold mb-4">{cat}</h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {byCategory[cat].map((s) => (
-                    <Link
-                      key={s.slug}
-                      to="/servicos/$slug"
-                      params={{ slug: s.slug }}
-                      className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors overflow-hidden"
-                    >
-                      {s.imageUrl ? (
-                        <div className="aspect-video overflow-hidden bg-muted">
-                          <img
-                            src={s.imageUrl}
-                            alt={s.imageAlt || s.name}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-                      ) : (
-                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                          <Sparkles className="w-10 h-10 text-primary/40" />
-                        </div>
-                      )}
-                      <div className="p-5">
-                        <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
-                        <h3 className="mt-1 font-semibold text-lg">{s.name}</h3>
-                        <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
-                        <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
-                          Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+        <section className="py-16" id="catalogo" aria-labelledby="catalogo-title">
+          <div className="mx-auto max-w-6xl px-5 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+              <div>
+                <h2 id="catalogo-title" className="text-2xl sm:text-3xl font-bold">
+                  Catálogo de serviços
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {filtered.length} serviço{filtered.length === 1 ? "" : "s"} disponíve{filtered.length === 1 ? "l" : "is"}
+                </p>
               </div>
-            ))}
+              <label className="relative w-full sm:w-80">
+                <span className="sr-only">Buscar serviço</span>
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                <input
+                  type="search"
+                  value={q}
+                  onChange={(e) => {
+                    setQ(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Buscar por nome, categoria..."
+                  className="w-full h-10 pl-9 pr-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </label>
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className="text-center text-muted-foreground py-12">
+                Nenhum serviço encontrado para "{q}".
+              </p>
+            ) : (
+              <div className="space-y-12">
+                {categories.map((cat) => (
+                  <div key={cat}>
+                    <h3 className="text-xl font-bold mb-4">{cat}</h3>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {byCategory[cat].map((s) => (
+                        <Link
+                          key={s.slug}
+                          to="/servicos/$slug"
+                          params={{ slug: s.slug }}
+                          className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          aria-label={`Ver detalhes do serviço ${s.name}`}
+                        >
+                          {s.imageUrl ? (
+                            <div className="aspect-video overflow-hidden bg-muted">
+                              <img
+                                src={s.imageUrl}
+                                alt={s.imageAlt || s.name}
+                                loading="lazy"
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            </div>
+                          ) : (
+                            <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                              <Sparkles className="w-10 h-10 text-primary/40" />
+                            </div>
+                          )}
+                          <div className="p-5">
+                            <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
+                            <h4 className="mt-1 font-semibold text-lg">{s.name}</h4>
+                            <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
+                            <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
+                              Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {totalPages > 1 && (
+              <nav
+                className="mt-10 flex items-center justify-center gap-2"
+                aria-label="Paginação do catálogo"
+              >
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage === 1}
+                  className="px-3 h-9 rounded-full border border-border text-sm disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Anterior
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPage(p)}
+                    aria-current={p === safePage ? "page" : undefined}
+                    className={`w-9 h-9 rounded-full border text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      p === safePage
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage === totalPages}
+                  className="px-3 h-9 rounded-full border border-border text-sm disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Próxima
+                </button>
+              </nav>
+            )}
           </div>
         </section>
 
