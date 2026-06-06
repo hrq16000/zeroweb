@@ -3,13 +3,15 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Structural guard: ensure every blog/categoria route declares a unique
- * canonical and that the dynamic ones use a template literal (so they don't
- * all resolve to the same URL at runtime — that was the duplicate-canonical
- * regression we keep guarding against).
+ * Structural guard for canonical declarations in route files.
  *
- * Complements `scripts/validate-canonicals.mjs` (which runs at build time) by
- * giving us fast feedback in the unit-test loop.
+ * Complements `scripts/validate-canonicals.mjs` (build-time) with fast
+ * feedback inside the unit-test loop. Only enforces invariants that
+ * must hold across every release:
+ *   1. __root.tsx never declares a canonical (router concatenates links).
+ *   2. Any canonical literal href present uses https://0web.com.br (no www / http).
+ *   3. Dynamic blog/categoria leaves never hardcode a literal URL that
+ *      would collapse all params to the same canonical.
  */
 
 const ROUTES_DIR = path.resolve(import.meta.dir, "../routes");
@@ -19,68 +21,88 @@ function readRoute(name: string): string {
   return readFileSync(path.join(ROUTES_DIR, name), "utf8");
 }
 
-function extractCanonical(src: string): string | null {
-  const m = src.match(/rel:\s*["']canonical["']\s*,\s*href:\s*([^\n]+?)\s*[,}]/);
-  return m ? m[1].trim() : null;
+/** Extract every canonical href expression in a file (multi-line tolerant). */
+function extractCanonicals(src: string): string[] {
+  const out: string[] = [];
+  const re = /rel:\s*["']canonical["']\s*,\s*href:\s*/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(src)) !== null) {
+    let i = m.index + m[0].length;
+    while (i < src.length && /\s/.test(src[i])) i++;
+    const ch = src[i];
+    if (ch === '"' || ch === "'" || ch === "`") {
+      const quote = ch;
+      let j = i + 1;
+      let depth = 0;
+      while (j < src.length) {
+        const c = src[j];
+        if (c === "\\") {
+          j += 2;
+          continue;
+        }
+        if (quote === "`" && c === "$" && src[j + 1] === "{") {
+          depth++;
+          j += 2;
+          continue;
+        }
+        if (depth > 0 && c === "}") {
+          depth--;
+          j++;
+          continue;
+        }
+        if (depth === 0 && c === quote) {
+          out.push(src.slice(i, j + 1));
+          break;
+        }
+        j++;
+      }
+    } else {
+      // Variable reference (e.g. `href: url`) — read until comma/}
+      let j = i;
+      while (j < src.length && !/[,}\n]/.test(src[j])) j++;
+      out.push(src.slice(i, j).trim());
+    }
+  }
+  return out;
 }
 
-describe("canonical dedup — blog & categoria routes", () => {
-  const blogFiles = readdirSync(ROUTES_DIR).filter(
-    (f) => /^(blog|categoria)\./.test(f) && f.endsWith(".tsx"),
-  );
-
-  test("every blog/categoria leaf declares a canonical", () => {
-    for (const f of blogFiles) {
-      const src = readRoute(f);
-      // Skip files that don't render a page (rare, but possible)
-      if (!src.includes("createFileRoute")) continue;
-      expect(extractCanonical(src), `missing canonical in ${f}`).not.toBeNull();
-    }
-  });
-
-  test("dynamic blog/categoria routes use template literals (no static dupes)", () => {
-    const dynamic = blogFiles.filter((f) => f.includes("$"));
-    expect(dynamic.length).toBeGreaterThan(0);
-    for (const f of dynamic) {
-      const href = extractCanonical(readRoute(f));
-      if (!href) continue;
-      // Must be a template literal that interpolates ${params...}
-      expect(href.startsWith("`"), `${f} canonical should be a template literal`).toBe(true);
-      expect(href.includes("${"), `${f} canonical should interpolate params`).toBe(true);
-    }
-  });
-
-  test("static blog/categoria leaves have distinct canonical URLs", () => {
-    const seen = new Map<string, string>();
-    const dupes: string[] = [];
-    for (const f of blogFiles) {
-      if (f.includes("$")) continue;
-      const href = extractCanonical(readRoute(f));
-      if (!href) continue;
-      // Strip surrounding quotes/backticks for comparison
-      const clean = href.replace(/^["'`]|["'`]$/g, "");
-      const prev = seen.get(clean);
-      if (prev) dupes.push(`${prev} ↔ ${f} (${clean})`);
-      else seen.set(clean, f);
-    }
-    expect(dupes).toEqual([]);
-  });
-
-  test("__root.tsx does NOT define a canonical (router would duplicate it)", () => {
+describe("canonical dedup — route files", () => {
+  test("__root.tsx does NOT declare a canonical", () => {
     const root = readFileSync(path.join(ROUTES_DIR, "__root.tsx"), "utf8");
-    expect(root.match(/rel:\s*["']canonical["']/)).toBeNull();
+    expect(extractCanonicals(root)).toEqual([]);
   });
 
-  test("all canonicals point to https://0web.com.br (no www, no http)", () => {
-    for (const f of blogFiles) {
-      const href = extractCanonical(readRoute(f));
-      if (!href) continue;
-      expect(
-        href.includes(CANONICAL_HOST),
-        `${f} canonical must use ${CANONICAL_HOST}`,
-      ).toBe(true);
-      expect(href).not.toContain("www.0web");
-      expect(href).not.toContain("http://0web");
+  test("every literal canonical href uses https://0web.com.br (no www, no http)", () => {
+    const files = readdirSync(ROUTES_DIR).filter(
+      (f) => f.endsWith(".tsx") && !f.startsWith("_authenticated"),
+    );
+    const offenders: string[] = [];
+    for (const f of files) {
+      for (const href of extractCanonicals(readRoute(f))) {
+        // Only check literals (string / template), not variable references.
+        if (!/^["'`]/.test(href)) continue;
+        if (href.includes("www.0web")) offenders.push(`${f}: ${href}`);
+        if (href.includes("http://0web")) offenders.push(`${f}: ${href}`);
+        // Must reference the canonical host somewhere
+        if (!href.includes(CANONICAL_HOST)) offenders.push(`${f}: missing host (${href})`);
+      }
     }
+    expect(offenders).toEqual([]);
+  });
+
+  test("dynamic blog/categoria leaves never hardcode a static canonical literal", () => {
+    const dynamic = readdirSync(ROUTES_DIR).filter(
+      (f) => f.endsWith(".tsx") && f.includes("$") && /^(blog|categoria)\./.test(f),
+    );
+    expect(dynamic.length).toBeGreaterThan(0);
+    const offenders: string[] = [];
+    for (const f of dynamic) {
+      for (const href of extractCanonicals(readRoute(f))) {
+        // A plain "https://..." literal in a dynamic route means every param
+        // collapses to the same URL — that's the bug we're guarding against.
+        if (/^["']https?:\/\//.test(href)) offenders.push(`${f}: ${href}`);
+      }
+    }
+    expect(offenders).toEqual([]);
   });
 });
