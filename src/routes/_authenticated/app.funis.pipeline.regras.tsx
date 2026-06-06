@@ -490,24 +490,31 @@ function csvEscape(v: unknown): string {
 
 function traceToCsv(result: SimulationResult, lead: MockLead): string {
   const rows: string[] = [];
-  rows.push(["scope", "rule_priority", "rule_name", "status", "detail"].join(","));
-  rows.push(["lead", "", "", "score", String(lead.score)].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "intent", lead.intent].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "stage", lead.stage].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "tags", lead.tags.join("|")].map(csvEscape).join(","));
+  rows.push(["scope", "rule_id", "rule_priority", "rule_name", "status", "detail"].join(","));
+  rows.push(["lead", "", "", "", "score", String(lead.score)].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "intent", lead.intent].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "stage", lead.stage].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "tags", lead.tags.join("|")].map(csvEscape).join(","));
   Object.entries(lead.answers).forEach(([k, v]) =>
-    rows.push(["lead", "", "", `answer:${k}`, v].map(csvEscape).join(",")),
+    rows.push(["lead", "", "", "", `answer:${k}`, v].map(csvEscape).join(",")),
   );
-  rows.push(["final", "", "", "stage", result.finalStage].map(csvEscape).join(","));
-  rows.push(["final", "", "", "tags", result.finalTags.join("|")].map(csvEscape).join(","));
+  rows.push(["final", "", "", "", "stage", result.finalStage].map(csvEscape).join(","));
+  rows.push(["final", "", "", "", "tags", result.finalTags.join("|")].map(csvEscape).join(","));
+  // Change list (winner-driven diff)
+  const added = result.finalTags.filter((t) => !lead.tags.includes(t));
+  const removed = lead.tags.filter((t) => !result.finalTags.includes(t));
+  if (lead.stage !== result.finalStage) rows.push(["change", "", "", "", "stage", `${lead.stage} → ${result.finalStage}`].map(csvEscape).join(","));
+  added.forEach((t) => rows.push(["change", "", "", "", "tag_added", t].map(csvEscape).join(",")));
+  removed.forEach((t) => rows.push(["change", "", "", "", "tag_removed", t].map(csvEscape).join(",")));
   for (const m of result.matches) {
     const status = m.applied ? "applied" : m.matched ? "matched" : "skipped";
     for (const r of m.reasons) {
-      rows.push(["rule", String(m.rule.priority), m.rule.name, status, r].map(csvEscape).join(","));
+      rows.push(["rule", m.rule.id ?? "", String(m.rule.priority), m.rule.name, status, r].map(csvEscape).join(","));
     }
   }
   return rows.join("\n");
 }
+
 
 function RuleSimulator({
   rules,
