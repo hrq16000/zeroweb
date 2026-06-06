@@ -39,10 +39,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Rodar validador
+      - name: Rodar validador JSON-LD
         env:
           BASE_URL: ${{ github.event.inputs.base_url || 'https://0web.com.br' }}
-          WITH_VALIDATOR: ${{ github.event.inputs.with_validator || 'true' }}
+          # PR roda rápido (sem chamar o Schema.org Validator remoto).
+          WITH_VALIDATOR: ${{ github.event.inputs.with_validator || (github.event_name == 'pull_request' && 'false' || 'true') }}
         run: |
           set -e
           if [ "$WITH_VALIDATOR" = "true" ]; then
@@ -50,6 +51,11 @@ jobs:
           else
             node scripts/validate-jsonld.mjs "$BASE_URL"
           fi
+
+      - name: Rodar validador de sitemap/robots
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://0web.com.br' }}
+        run: node scripts/validate-sitemaps.mjs "$BASE_URL"
 
       - name: Publicar relatório
         if: always()
