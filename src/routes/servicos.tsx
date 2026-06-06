@@ -160,26 +160,54 @@ export const Route = createFileRoute("/servicos")({
     const { services } = await listServicesPublic();
     return { services };
   },
+  errorComponent: ({ error }) => (
+    <div className="min-h-screen grid place-items-center p-8 text-center">
+      <div>
+        <AlertCircle className="w-10 h-10 text-destructive mx-auto" />
+        <h1 className="mt-4 text-2xl font-bold">Não foi possível carregar o catálogo</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+        <Link to="/" className="mt-4 inline-block text-primary underline">Voltar ao início</Link>
+      </div>
+    </div>
+  ),
   component: ServicosHub,
 });
+
+type SortKey = "relevance" | "alpha" | "recent";
 
 function ServicosHub() {
   const { services } = Route.useLoaderData();
   type Svc = (typeof services)[number];
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<SortKey>("relevance");
+  const [activeCat, setActiveCat] = useState<string>("all");
+  const [isPending, startTransition] = useTransition();
   const PER_PAGE = 9;
+
+  const allCategories = useMemo(() => {
+    const s = new Set<string>();
+    services.forEach((x: Svc) => s.add(x.category));
+    return Array.from(s);
+  }, [services]);
 
   const filtered = useMemo<Svc[]>(() => {
     const term = q.trim().toLowerCase();
-    if (!term) return services;
-    return services.filter((s: Svc) =>
-      [s.name, s.description, s.category, ...(s.keywords ?? [])]
-        .join(" ")
-        .toLowerCase()
-        .includes(term),
-    );
-  }, [services, q]);
+    let list = services as Svc[];
+    if (activeCat !== "all") list = list.filter((s) => s.category === activeCat);
+    if (term) {
+      list = list.filter((s) =>
+        [s.name, s.description, s.category, ...(s.keywords ?? [])]
+          .join(" ")
+          .toLowerCase()
+          .includes(term),
+      );
+    }
+    const sorted = [...list];
+    if (sort === "alpha") sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    else if (sort === "recent") sorted.reverse();
+    return sorted;
+  }, [services, q, sort, activeCat]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
