@@ -108,13 +108,13 @@ export function Header() {
           >
             <LogIn className="w-4 h-4" /> Conectar
           </Link>
-          <a
-            href="/#contato"
+          <Link
+            to="/contato"
             onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
             className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold px-5 py-2.5 shadow-glow-primary hover:opacity-95 transition"
           >
             Solicitar Diagnóstico
-          </a>
+          </Link>
         </div>
 
         <button
