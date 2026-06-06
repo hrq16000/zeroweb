@@ -84,6 +84,7 @@ import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/le
 import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authenticated/app.visitantes'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
+import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
@@ -499,6 +500,12 @@ const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppServicosRoute =
+  AuthenticatedAppServicosRouteImport.update({
+    id: '/servicos',
+    path: '/servicos',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppReportsRoute = AuthenticatedAppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -794,6 +801,7 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -905,6 +913,7 @@ export interface FileRoutesByTo {
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -1019,6 +1028,7 @@ export interface FileRoutesById {
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
+  '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -1133,6 +1143,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/servicos'
     | '/app/support'
     | '/app/templates'
     | '/app/visitantes'
@@ -1244,6 +1255,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/servicos'
     | '/app/support'
     | '/app/templates'
     | '/app/visitantes'
@@ -1357,6 +1369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
+    | '/_authenticated/app/servicos'
     | '/_authenticated/app/support'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/visitantes'
@@ -1992,6 +2005,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSupportRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/servicos': {
+      id: '/_authenticated/app/servicos'
+      path: '/servicos'
+      fullPath: '/app/servicos'
+      preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/reports': {
       id: '/_authenticated/app/reports'
       path: '/reports'
@@ -2327,6 +2347,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
+  AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppVisitantesRoute: typeof AuthenticatedAppVisitantesRoute
@@ -2356,6 +2377,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
+  AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppVisitantesRoute: AuthenticatedAppVisitantesRoute,
