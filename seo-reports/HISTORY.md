@@ -84,3 +84,17 @@
 ## 2026-06-06T23-10-01-934Z — sitemap/robots — https://0web.com.br
 - Checks: **7** | Falhas: **0** | Relatório: `seo-reports/sitemaps-2026-06-06T23-10-01-934Z.json`
 
+
+## 2026-06-06T23:15 — Round 7: corrigir duplicidade JSON-LD em /servicos/{slug}
+
+**Causa raiz (produção pós-publish anterior):**
+- `servicos.tsx` era pai (layout) de `servicos.$slug.tsx` e `servicos.site-express.tsx` no roteamento flat do TanStack. Resultado: o `head().scripts` de `/servicos` (CollectionPage + BreadcrumbList + FAQPage agregado + Site Express FAQ) era concatenado em todo `/servicos/{slug}`, gerando BreadcrumbList × 2 e FAQPage × 2~3.
+- `SocialProofBlock.tsx` reemitia uma `Organization` com `@id=https://0web.com.br/#org` — colidindo com a Organization do layout raiz.
+
+**Correções aplicadas (aguardando publish):**
+1. Renomeado `servicos.$slug.tsx` → `servicos_.$slug.tsx` e `servicos.site-express.tsx` → `servicos_.site-express.tsx`. O sufixo `_` quebra a herança de layout/head mantendo a URL pública (`/servicos/$slug`, `/servicos/site-express`).
+2. `SocialProofBlock.tsx`: removida a Organization duplicada; agora emite somente `AggregateRating` + `Review[]` referenciando `#org` via `itemReviewed`, com `@id` único por contexto.
+
+**Estado atual em produção (antes do novo publish):** 11/11 rotas ainda falham com os mesmos sintomas (esperado — código novo ainda não está no ar). Rodar `node scripts/validate-jsonld.mjs https://0web.com.br --with-validator` depois do próximo publish.
+
+**Sitemap/robots:** 7/7 verdes.
