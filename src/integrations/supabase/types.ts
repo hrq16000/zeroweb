@@ -3908,6 +3908,93 @@ export type Database = {
           },
         ]
       }
+      services: {
+        Row: {
+          benefits: Json
+          category: string
+          created_at: string
+          cta_label: string
+          cta_target: string | null
+          description: string
+          display_order: number
+          faq: Json
+          h1: string
+          id: string
+          image_alt: string | null
+          image_path: string | null
+          is_active: boolean
+          is_featured: boolean
+          keywords: Json
+          name: string
+          price_from: number | null
+          problems: Json
+          process: Json
+          seo_description: string | null
+          seo_title: string | null
+          service_type: string
+          slug: string
+          tagline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          benefits?: Json
+          category: string
+          created_at?: string
+          cta_label?: string
+          cta_target?: string | null
+          description: string
+          display_order?: number
+          faq?: Json
+          h1: string
+          id?: string
+          image_alt?: string | null
+          image_path?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: Json
+          name: string
+          price_from?: number | null
+          problems?: Json
+          process?: Json
+          seo_description?: string | null
+          seo_title?: string | null
+          service_type: string
+          slug: string
+          tagline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          benefits?: Json
+          category?: string
+          created_at?: string
+          cta_label?: string
+          cta_target?: string | null
+          description?: string
+          display_order?: number
+          faq?: Json
+          h1?: string
+          id?: string
+          image_alt?: string | null
+          image_path?: string | null
+          is_active?: boolean
+          is_featured?: boolean
+          keywords?: Json
+          name?: string
+          price_from?: number | null
+          problems?: Json
+          process?: Json
+          seo_description?: string | null
+          seo_title?: string | null
+          service_type?: string
+          slug?: string
+          tagline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       settings_change_log: {
         Row: {
           action: string
