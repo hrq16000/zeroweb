@@ -153,15 +153,21 @@ export const Route = createFileRoute("/servicos")({
       ],
     };
   },
+  loader: async () => {
+    const { listServicesPublic } = await import("@/lib/services-public.functions");
+    const { services } = await listServicesPublic();
+    return { services };
+  },
   component: ServicosHub,
 });
 
 function ServicosHub() {
-  const byCategory = Object.values(SERVICES).reduce<Record<string, ServiceData[]>>((acc, s) => {
+  const { services } = Route.useLoaderData();
+  const byCategory = services.reduce<Record<string, typeof services>>((acc, s) => {
     (acc[s.category] ||= []).push(s);
     return acc;
   }, {});
-  const categories = Object.keys(byCategory) as ServiceCategory[];
+  const categories = Object.keys(byCategory);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
