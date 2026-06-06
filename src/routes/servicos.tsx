@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, Zap, Clock } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -9,8 +9,21 @@ import { SERVICES, type ServiceCategory, type ServiceData } from "@/lib/services
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  SITE_EXPRESS_FAQ,
+  SITE_EXPRESS_FAQ_KEYS,
+  normalizeFaqKey,
+} from "@/lib/site-express-faq";
 
 const SERVICE_LIST = Object.values(SERVICES);
+const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
+const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
 
 export const Route = createFileRoute("/servicos")({
   head: () => {
