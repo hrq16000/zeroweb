@@ -8,7 +8,9 @@ import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
 import { Picture } from "@/components/site/Picture";
 import { AuthorBio } from "@/components/site/AuthorBio";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { suggestLinksForArticle } from "@/lib/interlinking";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
