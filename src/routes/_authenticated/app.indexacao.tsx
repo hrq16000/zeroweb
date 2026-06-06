@@ -216,9 +216,16 @@ function IndexCoveragePage() {
           <button onClick={checkAlerts} disabled={alertsChecking} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
             <AlertTriangle className={`w-4 h-4 ${alertsChecking ? "animate-pulse" : ""}`} /> Verificar alertas
           </button>
+          <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Download className="w-4 h-4" /> CSV
+          </button>
+          <button onClick={exportPdf} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Download className="w-4 h-4" /> PDF
+          </button>
           <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
           </button>
+
         </div>
       </div>
 
