@@ -1,11 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Download, RefreshCcw, Filter } from "lucide-react";
+import { ArrowLeft, Download, RefreshCcw, Filter, Flame, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listForms, listLeads } from "@/lib/dynamic-funnel-admin.functions";
+import { listForms, listLeads, updateLeadStage, bulkUpdateLeads } from "@/lib/dynamic-funnel-admin.functions";
 import { toast } from "sonner";
+
+const STAGES = [
+  { v: "novo", label: "Novo", cls: "bg-blue-500/15 text-blue-700 dark:text-blue-400" },
+  { v: "contatado", label: "Contatado", cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
+  { v: "qualificado", label: "Qualificado", cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
+  { v: "ganho", label: "Ganho", cls: "bg-emerald-600/20 text-emerald-700 dark:text-emerald-400 font-semibold" },
+  { v: "perdido", label: "Perdido", cls: "bg-destructive/15 text-destructive" },
+] as const;
+type Stage = typeof STAGES[number]["v"];
 
 export const Route = createFileRoute("/_authenticated/app/funis/leads")({
   component: LeadsDashboard,
@@ -16,19 +25,25 @@ type Lead = Awaited<ReturnType<typeof listLeads>>[number];
 function LeadsDashboard() {
   const fetchForms = useServerFn(listForms);
   const fetchLeads = useServerFn(listLeads);
+  const setStage = useServerFn(updateLeadStage);
+  const bulkUpdate = useServerFn(bulkUpdateLeads);
   const [forms, setForms] = useState<Awaited<ReturnType<typeof listForms>>>([]);
   const [rows, setRows] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
-  const [filters, setFilters] = useState<{ form_id: string; status: string; from: string; to: string; q: string }>({ form_id: "", status: "all", from: "", to: "", q: "" });
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [filters, setFilters] = useState<{ form_id: string; status: string; stage: string; from: string; to: string; q: string }>({ form_id: "", status: "all", stage: "", from: "", to: "", q: "" });
 
   const refresh = async () => {
     setLoading(true);
+    setSelected(new Set());
     try {
       const f: any = { ...filters, limit: 200 };
       if (!f.form_id) delete f.form_id;
-      if (!f.from) delete f.from; if (!f.to) delete f.to; if (!f.q) delete f.q;
-      setRows(await fetchLeads({ data: f }));
+      if (!f.from) delete f.from; if (!f.to) delete f.to; if (!f.q) delete f.q; delete f.stage;
+      let data = await fetchLeads({ data: f });
+      if (filters.stage) data = data.filter((r: any) => r.pipeline_stage === filters.stage);
+      setRows(data);
     } catch (e) { toast.error(e instanceof Error ? e.message : "Erro"); }
     finally { setLoading(false); }
   };
