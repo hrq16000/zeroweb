@@ -106,17 +106,19 @@ function ObrigadoPage() {
       icon: <Layers className="w-6 h-6 text-primary" />,
       title: "Conheça nossos planos",
       desc: content.planosLabel,
-      to: "/planos" as const,
+      to: THANK_YOU_CTA.PLANS.target,
       label: "Ver planos",
-      id: "planos",
+      id: THANK_YOU_CTA.PLANS.id,
+      event: THANK_YOU_CTA.PLANS.event,
     },
     {
       icon: <HelpCircle className="w-6 h-6 text-primary" />,
       title: "Dúvidas frequentes",
       desc: "Veja respostas sobre prazos, contratos e entregáveis.",
-      to: "/faq" as const,
+      to: THANK_YOU_CTA.FAQ.target,
       label: "Ir para FAQ",
-      id: "faq",
+      id: THANK_YOU_CTA.FAQ.id,
+      event: THANK_YOU_CTA.FAQ.event,
     },
     {
       icon: <FileText className="w-6 h-6 text-primary" />,
@@ -124,7 +126,8 @@ function ObrigadoPage() {
       desc: "Receba uma análise gratuita do seu site e estratégia digital.",
       to: "/solicitar-orcamento" as const,
       label: "Pedir diagnóstico",
-      id: "diagnostico",
+      id: THANK_YOU_CTA.DIAGNOSTICO.id,
+      event: THANK_YOU_CTA.DIAGNOSTICO.event,
     },
   ];
 
@@ -178,7 +181,7 @@ function ObrigadoPage() {
             </a>
             <Link
               to={content.finalCtaTo}
-              onClick={() => handleCta("hero_final_cta", content.finalCtaLabel, 0, content.finalCtaTo)}
+              onClick={() => handleCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 0, content.finalCtaTo)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-primary/5 px-6 py-4 font-semibold hover:border-primary transition-colors"
             >
               <Sparkles className="w-4 h-4 text-primary" />
@@ -205,7 +208,7 @@ function ObrigadoPage() {
                   <Link
                     to={card.to}
                     preload="render"
-                    onClick={() => handleCta(card.id, card.label, i + 1, card.to)}
+                    onClick={() => handleCta(card.event, card.id, card.label, i + 1, card.to)}
                     className="group block h-full rounded-2xl border border-border bg-card p-6 hover:border-primary transition-colors text-left"
                   >
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -273,7 +276,7 @@ function ObrigadoPage() {
               </a>
               <Link
                 to="/"
-                onClick={() => handleCta("home", "Voltar para o início", 100, "/")}
+                onClick={() => handleCta("thank_you_cta_home", "home", "Voltar para o início", 100, "/")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 font-semibold hover:bg-muted transition-colors"
               >
                 Voltar para o início
