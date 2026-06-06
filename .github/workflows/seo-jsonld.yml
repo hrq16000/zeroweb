@@ -4,6 +4,18 @@ on:
   schedule:
     # Diariamente às 06:00 BRT (09:00 UTC) — após o ciclo de deploy noturno.
     - cron: "0 9 * * *"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/routes/servicos*.tsx"
+      - "src/routes/sitemap*.ts"
+      - "src/lib/seo.ts"
+      - "src/lib/services-*.ts"
+      - "scripts/validate-jsonld.mjs"
+      - "scripts/validate-sitemaps.mjs"
+      - ".github/workflows/seo-jsonld.yml"
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       base_url:
