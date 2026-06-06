@@ -156,8 +156,8 @@ export function Header() {
               >
                 <LogIn className="w-4 h-4" /> Conectar
               </Link>
-              <a
-                href="/#contato"
+              <Link
+                to="/contato"
                 onClick={() => {
                   trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
                   setOpen(false);
@@ -165,7 +165,7 @@ export function Header() {
                 className="text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
               >
                 Solicitar Diagnóstico
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
