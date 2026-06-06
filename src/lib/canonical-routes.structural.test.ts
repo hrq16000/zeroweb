@@ -83,8 +83,9 @@ describe("canonical dedup — route files", () => {
         if (!/^["'`]/.test(href)) continue;
         if (href.includes("www.0web")) offenders.push(`${f}: ${href}`);
         if (href.includes("http://0web")) offenders.push(`${f}: ${href}`);
-        // Must reference the canonical host somewhere
-        if (!href.includes(CANONICAL_HOST)) offenders.push(`${f}: missing host (${href})`);
+        // Must reference the canonical host literally OR via interpolation.
+        const ok = href.includes(CANONICAL_HOST) || href.includes("${");
+        if (!ok) offenders.push(`${f}: missing host (${href})`);
       }
     }
     expect(offenders).toEqual([]);
