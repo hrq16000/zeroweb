@@ -298,7 +298,7 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Quero o plano de Presença Digital de R$399/mês da 0WEB.", "presdig_pricing")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_pricing" })}
+                onClick={() => trackWhatsAppClick("presdig_pricing")}
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 hover:scale-[1.02] transition"
               >
                 Quero começar agora <ArrowRight className="w-4 h-4" />
