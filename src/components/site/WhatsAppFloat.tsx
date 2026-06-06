@@ -58,11 +58,13 @@ export function WhatsAppFloat() {
         className="relative grid place-items-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-glow-primary"
         style={{ originX: 0.5, originY: 0.5 }}
       >
-        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
-        {showBubble && (
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-destructive border-2 border-background animate-pulse" />
-        )}
-        <MessageCircle className="relative w-6 h-6" />
+        <motion.span animate={controls} className="absolute inset-0 grid place-items-center" style={{ originX: 0.5, originY: 0.5 }}>
+          <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
+          {showBubble && (
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-destructive border-2 border-background animate-pulse" />
+          )}
+          <MessageCircle className="relative w-6 h-6" />
+        </motion.span>
       </motion.button>
     </div>
   );
