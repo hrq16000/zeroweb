@@ -62,6 +62,7 @@ export const Route = createFileRoute("/servicos/$slug")({
                 serviceType: loaderData.serviceType,
                 category: loaderData.category,
                 url,
+                ...(loaderData.imageUrl ? { image: loaderData.imageUrl } : {}),
                 areaServed: { "@type": "Country", name: "BR" },
                 provider: ORG_REF,
               },
