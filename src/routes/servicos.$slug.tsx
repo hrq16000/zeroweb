@@ -28,6 +28,8 @@ export const Route = createFileRoute("/servicos/$slug")({
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
     const url = absUrl(`/servicos/${params.slug}`);
+    const ogImage = loaderData.imageUrl || DEFAULT_OG_IMAGE;
+    const ogAlt = loaderData.imageAlt || loaderData.h1;
     return {
       meta: [
         { title: loaderData.title },
@@ -37,11 +39,12 @@ export const Route = createFileRoute("/servicos/$slug")({
         { property: "og:description", content: loaderData.description },
         { property: "og:type", content: "website" },
         { property: "og:url", content: url },
-        { property: "og:image", content: DEFAULT_OG_IMAGE },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:alt", content: ogAlt },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: loaderData.title },
         { name: "twitter:description", content: loaderData.description },
-        { name: "twitter:image", content: DEFAULT_OG_IMAGE },
+        { name: "twitter:image", content: ogImage },
         { name: "robots", content: "index, follow, max-image-preview:large" },
       ],
       links: [{ rel: "canonical", href: url }],
