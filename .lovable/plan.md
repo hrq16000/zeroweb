@@ -1,90 +1,101 @@
-## Escopo aprovado
+## Contexto
 
-Quatro frentes em uma única entrega. GSC fica como stub manual (importação CSV + endpoint webhook), sem connector OAuth por enquanto.
+O projeto **já tem** boa parte da fundação:
 
----
+- Tabelas `dynamic_forms`, `dynamic_form_questions`, `dynamic_form_conditions`, `dynamic_form_leads` com RLS.
+- Builder admin em `/app/funis/$id` e listagem em `/app/funis`.
+- `FunnelRunner.tsx` que executa formulários.
+- 1 form publicado: `diagnostico-0web` (Diagnóstico Digital 0web).
 
-### 1) Atribuição consistente (source/channel/UTM)
+Faltam: **conceito de "Etapa/Step"**, **drag & drop** real, **lógica condicional na UI do builder**, **runner com transições/progress bar refinados**, **captura de geo-IP no servidor**, **mensagem WhatsApp hierárquica**, **seed dos 13 campos pedidos**.
 
-Fonte única já existe em `src/lib/lead-attribution.ts`. Vou:
+## Mudanças no banco
 
-- **Persistir snapshot de atribuição em `sessionStorage`** no momento do submit do form (`ContactFormWhatsApp`, `DiagnosticForm`, `WaFunnelModal`, `FunnelRunner`), com TTL e chave `0web_last_lead_attr_v1`.
-- **`/obrigado`** lê esse snapshot (fallback para query params `?source=`) — garante consistência após refresh e back navigation, mesmo quando UTM já saiu da URL.
-- **`ThankYouModal`** passa a derivar `source/channel/utm` do mesmo snapshot quando aberto após submit (hoje só usa prop `source`).
-- **`useWhatsappTracking`** (return fallback) já recebe baseParams; vou garantir que `whatsapp_return` carrega `source/channel/utm` idênticos ao `whatsapp_click` original (snapshot por click em ref).
-- **GA4/Pixel**: padronizar `attributionToEventParams()` como única função que monta payload de evento — auditar `trackConversion` calls em modal, /obrigado, WA hook, FunnelRunner para usar.
-- **Testes**: arquivo `src/lib/lead-attribution.test.ts` cobrindo merge de UTMs, fallback de query param, TTL do snapshot.
+1 migration:
 
-### 2) Painel /indexacao ↔ Search Console (stub manual)
+- Adicionar `step_index INT NOT NULL DEFAULT 0` em `dynamic_form_questions` (campos de uma mesma `step_index` aparecem na mesma tela).
+- Adicionar tabela `dynamic_form_steps(id, form_id, order_index, title, subtitle, cta_label)` para títulos/CTA por etapa (opcional — se uma etapa não tiver row, usa defaults).
+- Adicionar em `dynamic_form_leads`: `ip_address inet`, `isp text`, `geo_city text`, `geo_region text`, `geo_country text`, `user_agent text`, `referer text`, `utm_json jsonb`.
+- Seed do funil `diagnostico-0web` com as 13 perguntas pedidas, agrupadas em 2 etapas, com options dos selects pré-preenchidos.
 
-Sem OAuth agora. Entrego a fundação para ligar depois:
+GRANTs e RLS já existentes cobrem; só ajustar policies para incluir nova tabela `dynamic_form_steps` (admin manage + public read quando form published).
 
-- **Importação CSV** no painel `/app/indexacao`: upload do export padrão GSC (Coverage → Export), parse client-side, chamada a `upsertIndexIssue` em lote.
-- **Endpoint webhook** `src/routes/api/public/hooks/gsc-ingest.ts` autenticado por HMAC (`GSC_INGEST_SECRET`) — pronto para receber jobs externos (Apps Script, n8n) que façam o pull do GSC e empurrem o CSV/JSON.
-- **Campo `source`** já existe na tabela; vou usar `'gsc_csv'` / `'gsc_webhook'` para distinguir do `'manual'`.
+## Server functions (novas)
 
-### 3) Alertas de queda de cobertura + detalhe por URL
+Em `src/lib/funnel.functions.ts`:
 
-- **Snapshot diário**: nova tabela `index_coverage_snapshots` (day, issue_type, count, open_count) populada por cron `src/routes/api/public/hooks/index-coverage-snapshot.ts` (HMAC).
-- **Detector de anomalia**: server fn `checkIndexCoverageDrops` compara últimas 24h vs média 7d por `issue_type`; se queda > 30% **ou** alta > 50% em volume de novos issues, grava em `anomaly_alerts` (já existe) com `kind='index_coverage'`.
-- **UI no `/app/indexacao`**: faixa de alertas no topo + botão "verificar agora".
-- **Página de detalhe** `src/routes/_authenticated/app.indexacao.$urlId.tsx`:
-  - Histórico de detecções/resoluções do issue (lista cronológica).
-  - Evidências de schema (fetch da URL via server fn, extrai JSON-LD do HTML, mostra blocos `Organization/LocalBusiness/Product/etc`).
-  - Ações sugeridas por tipo (404 → adicionar redirect 301; soft 404 → revisar conteúdo; redirect chain → consolidar; noindex → revisar meta robots), com link direto pro admin de redirects quando aplicável.
+- `submitDynamicFunnelLead({ formId, answers, clientMeta })` — pública (sem auth). Lê IP do header (`getRequestIP`), faz fetch em `https://ipapi.co/{ip}/json/` (ou ip-api.com como fallback) para enriquecer `isp/city/region/country`, persiste em `dynamic_form_leads` via `supabaseAdmin`, dispara o alerta WhatsApp existente (UAZAPI), retorna `{ leadId, waUserUrl }`.
+- `getPublishedFunnel({ slug })` — pública, retorna form + steps + questions + conditions de forma agrupada.
 
-### 4) Taxonomia de eventos do /obrigado
+A formatação da mensagem WhatsApp (hierárquica, com `*negrito*`, quebras, seção "📋 Respostas" + "🌐 Metadados") fica num helper puro `src/lib/funnel-wa-message.ts` para ser testável.
 
-Documento canônico + implementação alinhada:
+## Builder admin (refatorar `app.funis.$id.tsx`)
 
-- **`src/lib/event-taxonomy.ts`**: dicionário tipado com `THANK_YOU_EVENTS` (nome exato, params obrigatórios/opcionais, mapeamento Pixel).
-- **Eventos**:
-  - `thank_you_view` — pageview do funil de obrigado (modal ou rota). Params: `source, channel, utm_*, surface (modal|page)`.
-  - `thank_you_cta_plans` — clique no card Planos. Params base + `cta_id=plans, position, target=/planos`.
-  - `thank_you_cta_faq` — clique no FAQ. Params base + `cta_id=faq, target=/faq`.
-  - `thank_you_cta_diagnostico` — clique no CTA final (diagnóstico/orçamento). Params base + `cta_id=diagnostico, target=<dinâmico>`.
-  - `thank_you_cta_whatsapp` — clique WhatsApp do obrigado. Params base + `location=thankyou_<channel>`.
-  - `thank_you_dismiss` — fecha modal sem clicar.
-- **Mapeamento Pixel**: cada evento mapeado para `fbq('trackCustom', ...)` com mesmo nome + `Lead` padrão no `thank_you_view`.
-- **Refatorar** `ThankYouModal` e `src/routes/obrigado.tsx` para usar as constantes da taxonomia.
-- **Docs**: bloco JSDoc + tabela em comentário no topo do arquivo (GTM-ready).
+UI dividida em 3 zonas:
 
----
+```text
+┌─────────────────┬──────────────────────────┬──────────────────┐
+│ Sidebar Etapas  │ Canvas (campos da etapa) │ Inspector campo  │
+│ + drag/reorder  │ + drag/reorder de campos │ (label/options/  │
+│                 │                          │  validação/      │
+│                 │                          │  condições)      │
+└─────────────────┴──────────────────────────┴──────────────────┘
+```
 
-### Arquivos previstos
+- Drag & drop com `@dnd-kit/core` + `@dnd-kit/sortable` (já são leves; instalar).
+- Inspector com aba "Condições" que cria rows em `dynamic_form_conditions` (operador, valor, action `skip_to`/`end_form`).
+- Botão "Pré-visualizar" abre o runner em modo preview.
+- Toggle de status draft/published direto no header.
+
+## Runner (refatorar `FunnelRunner.tsx`)
+
+- Dark mode sofisticado com tokens do `src/styles.css` (verde esmeralda + azul claro já existem como `--success`/`--info`-like; adicionar se faltar).
+- Barra de progresso fixa no topo ("Etapa X de N").
+- Transições com `framer-motion` (já no projeto) — fade/slide entre etapas.
+- Radio renderizado como **cards clicáveis** grandes (mobile-first, min-height 56px).
+- Validação por etapa usando `zod` (já no projeto). Botão "Continuar" desabilitado até passar.
+- Avaliador de condições: ao mudar resposta, recomputa quais perguntas/etapas estão visíveis e qual é o "skip_to".
+- CTA final muda label para "QUERO MAIS CLIENTES" (configurável via `whatsapp_config.final_cta`).
+- Ao submeter: chama `submitDynamicFunnelLead`, depois `window.location.href = waUserUrl` (wa.me já formatado).
+
+## Página pública
+
+Rota nova `src/routes/funil.$slug.tsx` (pública, SSR) — renderiza `<FunnelRunner slug={slug} />`. Reaproveita captura de UTM do `lead-attribution-snapshot.ts`.
+
+## Arquivos
 
 **Novos**
-- `src/lib/event-taxonomy.ts`
-- `src/lib/lead-attribution-snapshot.ts`
-- `src/lib/lead-attribution.test.ts`
-- `src/lib/gsc-csv.ts` (parser)
-- `src/lib/index-coverage-detail.functions.ts` (detalhe + schema scrape)
-- `src/lib/index-coverage-alerts.functions.ts` (detector)
-- `src/routes/_authenticated/app.indexacao.$urlId.tsx`
-- `src/routes/api/public/hooks/gsc-ingest.ts`
-- `src/routes/api/public/hooks/index-coverage-snapshot.ts`
-- Migração: `index_coverage_snapshots` + GRANTs
+- `supabase/migrations/<ts>_funnel_steps_geo.sql`
+- `src/lib/funnel.functions.ts`
+- `src/lib/funnel-wa-message.ts` (+ teste)
+- `src/lib/funnel-conditions.ts` (avaliador puro + teste)
+- `src/components/funnel/builder/StepsSidebar.tsx`
+- `src/components/funnel/builder/FieldCanvas.tsx`
+- `src/components/funnel/builder/FieldInspector.tsx`
+- `src/components/funnel/builder/ConditionsEditor.tsx`
+- `src/routes/funil.$slug.tsx`
 
 **Editados**
-- `src/components/site/ThankYouModal.tsx` (snapshot + taxonomia)
-- `src/components/site/ContactFormWhatsApp.tsx` (gravar snapshot)
-- `src/components/site/DiagnosticForm.tsx` (idem)
-- `src/components/site/WaFunnelModal.tsx` (idem)
-- `src/components/funnel/FunnelRunner.tsx` (idem)
-- `src/lib/use-whatsapp-tracking.ts` (snapshot por click)
-- `src/lib/lead-attribution.ts` (read/write snapshot)
-- `src/routes/obrigado.tsx` (consumir snapshot + taxonomia)
-- `src/routes/_authenticated/app.indexacao.tsx` (upload CSV, alertas, link p/ detalhe)
+- `src/components/funnel/FunnelRunner.tsx` (steps + progress + framer + cards radio + zod)
+- `src/routes/_authenticated/app.funis.$id.tsx` (nova UI 3 zonas)
+- `src/routes/_authenticated/app.funis.leads.tsx` (mostrar geo/ISP/UTM nos detalhes)
+- `src/integrations/supabase/types.ts` (regen após migration)
+- `package.json` (dnd-kit)
 
-**Segredo necessário**: `GSC_INGEST_SECRET` (HMAC do webhook). Pedirei via `add_secret` após aprovação do plano.
+## Stack & decisões técnicas
 
-### Detalhes técnicos
+- **Banco**: continua Postgres (Supabase). `answers_json` em JSONB já cobre flexibilidade.
+- **Geo-IP**: `ipapi.co` (free tier 1k/dia, sem chave); fallback `ip-api.com`. Roda no server (TanStack server fn) — não vaza no cliente.
+- **WhatsApp**: usa `UAZAPI_*` secrets já configurados para alerta interno + `wa.me/<numero>?text=` para redirecionar o lead.
+- **Drag & drop**: `@dnd-kit` (acessível, leve, suportado em workers/edge).
 
-- O snapshot vai em `sessionStorage` (não localStorage) para não vazar entre abas/usuários, com `{ value, expires_at }` (TTL 30min).
-- O parser CSV usa apenas APIs do browser (sem dep nova) — formato GSC: `URL, Last crawled, Issue type, ...`.
-- O scrape de schema no detalhe usa `fetch` server-side com timeout 5s e extrai `<script type="application/ld+json">`.
-- Detector de queda usa janela móvel; thresholds configuráveis via `app_settings` (chave `index_coverage_alert_thresholds`).
-- Eventos novos não quebram dashboards existentes — `thank_you_cta_click` legacy continua sendo emitido em paralelo durante 1 sprint, com flag `legacy=true`.
-- Os 3 findings de segurança (companies/providers/reviews PII em policies públicas) serão tratados no final via views públicas sem PII + restrição das policies — vou perguntar antes se preferir esconder os campos para anônimos ou pedir autenticação.
+## Ordem de execução
+
+1. Migration + seed (gera approval) → tipos regenerados.
+2. Helpers puros (`funnel-wa-message`, `funnel-conditions`) + testes.
+3. Server functions (`funnel.functions.ts`).
+4. Runner refatorado + rota pública.
+5. Builder admin (drag&drop + inspector + condições).
+6. Lista de leads enriquecida.
 
 Posso seguir?
