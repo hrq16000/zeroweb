@@ -139,6 +139,8 @@ function IssueDetailPage() {
   };
 
   const checklistDone = new Set<string>(actions.map((a) => a.action_key));
+
+  if (loading) return <div className="p-6 text-sm text-muted-foreground">Carregando…</div>;
   if (err || !row) return (
     <div className="p-6 space-y-2">
       <p className="text-sm text-destructive">{err ?? "Issue não encontrado."}</p>
