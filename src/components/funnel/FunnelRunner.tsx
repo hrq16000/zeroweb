@@ -13,6 +13,8 @@ import {
   type FunnelQuestion,
 } from "@/lib/dynamic-funnel.functions";
 import { trackEvent, trackConversion } from "@/lib/analytics";
+import { getLeadAttribution } from "@/lib/lead-attribution";
+import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -134,6 +136,12 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
         utm_campaign: utm.utm_campaign,
         whatsapp_redirect: result.whatsapp_user_url ? true : false,
       });
+      // Persist attribution snapshot so /obrigado + ThankYouModal show the
+      // same source/channel/UTM as this submission.
+      try {
+        const attr = getLeadAttribution(`funnel:${funnel.slug}`, `funnel_${funnel.slug}`);
+        saveAttributionSnapshot(attr);
+      } catch { /* noop */ }
       setDone({ whatsapp: result.whatsapp_user_url });
       if (result.whatsapp_user_url) {
         // Open after a short beat so the success state can render.
