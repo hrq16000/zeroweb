@@ -4,46 +4,112 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
+import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE, ORG_REF } from "@/lib/seo";
 import { SERVICES, type ServiceCategory, type ServiceData } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 
+const SERVICE_LIST = Object.values(SERVICES);
+
 export const Route = createFileRoute("/servicos")({
   head: () => {
     const url = absUrl("/servicos");
     const title = "Serviços da 0WEB · Sites, SEO, IA, Marketing Digital e Sistemas";
-    const desc = "Catálogo completo de serviços da 0WEB: criação de sites, landing pages, e-commerce, SEO, marketing digital, automação com IA, chatbot WhatsApp, SaaS e sistemas web sob medida.";
+    const desc =
+      "Catálogo completo de serviços da 0WEB: criação de sites, landing pages, e-commerce, SEO, marketing digital, automação com IA, chatbot WhatsApp, SaaS e sistemas web sob medida.";
+
+    // Aggregate unique FAQ pairs from every service (cap to avoid duplicates/spam)
+    const seenQ = new Set<string>();
+    const faqItems: { q: string; a: string }[] = [];
+    for (const s of SERVICE_LIST) {
+      for (const f of s.faq ?? []) {
+        const key = f.q.trim().toLowerCase();
+        if (seenQ.has(key)) continue;
+        seenQ.add(key);
+        faqItems.push(f);
+        if (faqItems.length >= 20) break;
+      }
+      if (faqItems.length >= 20) break;
+    }
+
+    const itemList = {
+      "@type": "ItemList",
+      "@id": `${url}#services`,
+      name: "Serviços 0WEB",
+      numberOfItems: SERVICE_LIST.length,
+      itemListElement: SERVICE_LIST.map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: absUrl(`/${s.slug}`),
+        item: {
+          "@type": "Service",
+          "@id": absUrl(`/${s.slug}#service`),
+          name: s.name,
+          serviceType: s.serviceType,
+          description: s.description,
+          category: s.category,
+          url: absUrl(`/${s.slug}`),
+          areaServed: { "@type": "Country", name: "Brasil" },
+          provider: ORG_REF,
+        },
+      })),
+    };
+
+    const faqPage = faqItems.length
+      ? {
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          mainEntity: faqItems.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }
+      : null;
+
+    const graph: unknown[] = [
+      {
+        "@type": "CollectionPage",
+        "@id": url,
+        url,
+        name: title,
+        description: desc,
+        inLanguage: "pt-BR",
+        isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+        about: SERVICE_LIST.map((s) => ({ "@type": "Service", name: s.name })),
+        mainEntity: { "@id": `${url}#services` },
+      },
+      breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
+      itemList,
+      ORG_REF,
+    ];
+    if (faqPage) graph.push(faqPage);
+
     return {
       meta: [
         { title },
         { name: "description", content: desc },
+        { name: "keywords", content: "serviços digitais, criação de sites, SEO, marketing digital, automação IA, chatbot WhatsApp, e-commerce, landing page, 0WEB" },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "0WEB" },
+        { property: "og:locale", content: "pt_BR" },
         { property: "og:image", content: DEFAULT_OG_IMAGE },
+        { property: "og:image:alt", content: "Catálogo de serviços da 0WEB" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: DEFAULT_OG_IMAGE },
+        { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "CollectionPage",
-                "@id": url,
-                url,
-                name: title,
-                description: desc,
-                inLanguage: "pt-BR",
-                isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
-              },
-              breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
-            ],
-          }),
+          children: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
         },
       ],
     };
