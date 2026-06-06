@@ -263,7 +263,7 @@ export const listLeads = createServerFn({ method: "POST" })
     await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let q = supabaseAdmin.from("dynamic_form_leads")
-      .select("id, form_id, answers_json, metadata_json, contact_name, contact_email, contact_phone, whatsapp_alert_status, whatsapp_user_url, created_at")
+      .select("id, form_id, answers_json, metadata_json, contact_name, contact_email, contact_phone, whatsapp_alert_status, whatsapp_user_url, score, score_breakdown, tags, intent_level, pipeline_stage, assigned_to, created_at")
       .order("created_at", { ascending: false }).limit(data.limit);
     if (data.form_id) q = q.eq("form_id", data.form_id);
     if (data.status !== "all") q = q.eq("whatsapp_alert_status", data.status);
@@ -280,4 +280,48 @@ export const listLeads = createServerFn({ method: "POST" })
       .from("dynamic_forms").select("id, name, slug");
     const formsById = Object.fromEntries((forms ?? []).map((f) => [f.id, f]));
     return (rows ?? []).map((r) => ({ ...r, form: formsById[r.form_id] ?? null }));
+  });
+
+const PIPELINE_STAGES = ["novo","contatado","qualificado","perdido","ganho"] as const;
+
+export const updateLeadStage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    id: z.string().uuid(),
+    stage: z.enum(PIPELINE_STAGES),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("dynamic_form_leads")
+      .update({ pipeline_stage: data.stage }).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const bulkUpdateLeads = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    ids: z.array(z.string().uuid()).min(1).max(500),
+    stage: z.enum(PIPELINE_STAGES).optional(),
+    add_tags: z.array(z.string().min(1).max(40)).optional(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.stage) {
+      const { error } = await supabaseAdmin.from("dynamic_form_leads")
+        .update({ pipeline_stage: data.stage }).in("id", data.ids);
+      if (error) throw new Error(error.message);
+    }
+    if (data.add_tags?.length) {
+      // append unique tags
+      const { data: rows } = await supabaseAdmin.from("dynamic_form_leads")
+        .select("id, tags").in("id", data.ids);
+      for (const r of rows ?? []) {
+        const merged = Array.from(new Set([...((r as any).tags ?? []), ...data.add_tags!]));
+        await supabaseAdmin.from("dynamic_form_leads").update({ tags: merged }).eq("id", r.id);
+      }
+    }
+    return { ok: true, count: data.ids.length };
   });
