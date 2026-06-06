@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search } from "lucide-react";
+import { useMemo, useState, useTransition } from "react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE, ORG_REF } from "@/lib/seo";
 import { SERVICES } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
