@@ -23,6 +23,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const { open: openFunnel } = useWaFunnel();
   const headerRef = useRef<HTMLElement | null>(null);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
