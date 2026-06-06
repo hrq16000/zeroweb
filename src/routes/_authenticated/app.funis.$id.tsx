@@ -56,7 +56,7 @@ function FunisEditor() {
   const delC = useServerFn(deleteCondition);
 
   const [data, setData] = useState<LoadedForm | null>(null);
-  const [tab, setTab] = useState<"meta" | "questions" | "logic" | "whatsapp">("meta");
+  const [tab, setTab] = useState<"meta" | "questions" | "logic" | "whatsapp" | "preview">("meta");
   const [meta, setMeta] = useState({ slug: "", name: "", description: "", status: "draft" as "draft" | "published" | "archived" });
   const [wa, setWa] = useState<Record<string, any>>({});
 
