@@ -94,11 +94,12 @@ function FunisEditor() {
         </div>
       </div>
 
-      <div className="border-b border-border flex gap-1">
-        {([["meta", "Geral"], ["questions", "Perguntas"], ["logic", "Lógica"], ["whatsapp", "WhatsApp"]] as const).map(([k, l]) => (
+      <div className="border-b border-border flex gap-1 flex-wrap">
+        {([["meta", "Geral"], ["questions", "Perguntas"], ["logic", "Lógica"], ["preview", "Preview"], ["whatsapp", "WhatsApp"]] as const).map(([k, l]) => (
           <button key={k} onClick={() => setTab(k)} className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition ${tab === k ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>{l}</button>
         ))}
       </div>
+
 
       {tab === "meta" && (
         <div className="rounded-2xl border border-border bg-card p-5 space-y-3 max-w-2xl">
