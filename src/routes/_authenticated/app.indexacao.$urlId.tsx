@@ -200,7 +200,9 @@ function IssueDetailPage() {
             <div>
               <p className="font-semibold mb-1">JSON-LD encontrados: {evidence.ldBlocks?.length ?? 0}</p>
               {evidence.ldBlocks?.length
-                ? <pre className="max-h-80 overflow-auto rounded bg-muted/40 p-2 text-[10px]">{JSON.stringify(evidence.ldBlocks, null, 2)}</pre>
+                ? <pre className="max-h-80 overflow-auto rounded bg-muted/40 p-2 text-[10px]">{(evidence.ldBlocks as string[]).map((raw, i) => {
+                    try { return JSON.stringify(JSON.parse(raw), null, 2); } catch { return `// parse error\n${raw}`; }
+                  }).join("\n\n")}</pre>
                 : <p className="text-muted-foreground">Nenhum bloco encontrado.</p>}
             </div>
           </div>
