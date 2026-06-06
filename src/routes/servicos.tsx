@@ -274,8 +274,8 @@ function ServicosHub() {
                   {byCategory[cat].map((s) => (
                     <Link
                       key={s.slug}
-                      to="/$service"
-                      params={{ service: s.slug }}
+                      to="/servicos/$slug"
+                      params={{ slug: s.slug }}
                       className="block p-5 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
                     >
                       <h3 className="font-semibold text-lg">{s.name}</h3>
