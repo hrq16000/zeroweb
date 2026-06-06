@@ -6,16 +6,16 @@ import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
-const nav = [
-  { href: "/#inicio", label: "Início" },
-  { href: "/#solucoes", label: "Soluções" },
-  { href: "/#servicos", label: "Serviços" },
-  { href: "/#ia", label: "IA" },
-  { href: "/#cases", label: "Cases" },
-  { href: "/#planos", label: "Planos" },
-  { href: "/#faq", label: "FAQ" },
-  { href: "/blog", label: "Blog" },
-  { href: "/marketplace", label: "Marketplace" },
+const nav: { to: string; label: string }[] = [
+  { to: "/", label: "Início" },
+  { to: "/servicos", label: "Serviços" },
+  { to: "/ia", label: "IA" },
+  { to: "/cases", label: "Cases" },
+  { to: "/planos", label: "Planos" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/blog", label: "Blog" },
+  { to: "/marketplace", label: "Marketplace" },
+  { to: "/contato", label: "Contato" },
 ];
 
 export function Header() {
