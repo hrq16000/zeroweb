@@ -98,9 +98,14 @@ function PipelineRulesPage() {
             Classifique e marque leads automaticamente quando entram no sistema. A regra com maior prioridade vence.
           </p>
         </div>
-        <Button onClick={() => setEditing({ ...EMPTY_RULE })}>
-          <Plus className="w-4 h-4 mr-2" /> Nova regra
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setSimulating(true)}>
+            <FlaskConical className="w-4 h-4 mr-2" /> Simular
+          </Button>
+          <Button onClick={() => setEditing({ ...EMPTY_RULE })}>
+            <Plus className="w-4 h-4 mr-2" /> Nova regra
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
