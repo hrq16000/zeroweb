@@ -67,6 +67,7 @@ function PipelineRulesPage() {
   const [forms, setForms] = useState<Awaited<ReturnType<typeof listForms>>>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Rule | null>(null);
+  const [simulating, setSimulating] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
