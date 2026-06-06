@@ -6,7 +6,9 @@ import { trackConversion, trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent, type LeadSource } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
+import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
 
 type Props = {
   open: boolean;
@@ -15,37 +17,45 @@ type Props = {
 };
 
 export function ThankYouModal({ open, onOpenChange, source }: Props) {
-  const content = getThankYouContent(source);
+  // Prefer the attribution snapshot persisted at submit-time so the modal
+  // shows the exact same source/channel/UTM as /obrigado and the events
+  // emitted from this surface — even after a refresh or back navigation.
+  const attr = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return loadAttributionSnapshot() ?? getLeadAttribution(String(source || "unknown"));
+  }, [source, open]);
+  const resolvedSource = attr?.source ?? String(source || "unknown");
+  const content = attr?.content ?? getThankYouContent(resolvedSource);
+
   const evtAttr = useMemo(() => {
-    if (typeof window === "undefined") return { source: String(source || "unknown"), channel: content.channel };
-    return attributionToEventParams(getLeadAttribution(String(source || "unknown")));
-  }, [source, content.channel]);
+    if (typeof window === "undefined") return { source: resolvedSource, channel: content.channel };
+    return attributionToEventParams(attr ?? getLeadAttribution(resolvedSource));
+  }, [attr, resolvedSource, content.channel]);
 
   useEffect(() => {
     if (!open) return;
     trackConversion("thank_you_view", { ...evtAttr, surface: "modal", event_category: "conversion" });
   }, [open, evtAttr]);
 
-  const fireCta = (ctaId: string, label: string, position: number, target: string) => {
-    const params = {
-      ...evtAttr,
-      cta_id: ctaId,
+  const fireCta = (eventName: string, ctaId: string, label: string, position: number, target: string) => {
+    const params = buildThankYouCtaParams({
+      base: evtAttr,
+      surface: "modal",
+      ctaId,
+      target,
       label,
       position,
-      target,
-      surface: "modal",
-      event_category: "engagement",
-    };
-    trackConversion("thank_you_cta_click", params);
-    // Fine-grained per-CTA event so GA4/Pixel custom triggers can target each.
-    trackEvent(`thank_you_cta_${ctaId}`, params);
+    });
+    trackConversion(eventName, params);
+    // Legacy aggregate event kept during transition for older dashboards.
+    trackEvent("thank_you_cta_click", { ...params, legacy: true });
   };
 
   const wa = useWhatsappTracking({
     ...evtAttr,
     location: `thankyou_modal_${content.channel}`,
     surface: "modal",
-    cta_id: "whatsapp",
+    cta_id: THANK_YOU_CTA.WHATSAPP.id,
   });
 
   return (
@@ -65,7 +75,15 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
           href={whatsappUrl(content.whatsappMessage, `thankyou_modal_${content.channel}`)}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={wa.onClick}
+          onClick={() => {
+            wa.onClick();
+            trackConversion(THANK_YOU_CTA.WHATSAPP.event, {
+              ...evtAttr,
+              surface: "modal",
+              location: `thankyou_modal_${content.channel}`,
+              cta_id: THANK_YOU_CTA.WHATSAPP.id,
+            });
+          }}
           className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
         >
           <MessageCircle className="w-4 h-4" /> Falar no WhatsApp agora
@@ -73,8 +91,8 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
 
         <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Link
-            to="/planos"
-            onClick={() => fireCta("planos", "Ver planos", 1, "/planos")}
+            to={THANK_YOU_CTA.PLANS.target}
+            onClick={() => fireCta(THANK_YOU_CTA.PLANS.event, THANK_YOU_CTA.PLANS.id, "Ver planos", 1, THANK_YOU_CTA.PLANS.target)}
             className="group rounded-xl border border-border bg-card p-3 text-left hover:border-primary transition-colors"
           >
             <Layers className="w-4 h-4 text-primary mb-1" />
@@ -84,8 +102,8 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
             </span>
           </Link>
           <Link
-            to="/faq"
-            onClick={() => fireCta("faq", "Ver FAQ", 2, "/faq")}
+            to={THANK_YOU_CTA.FAQ.target}
+            onClick={() => fireCta(THANK_YOU_CTA.FAQ.event, THANK_YOU_CTA.FAQ.id, "Ver FAQ", 2, THANK_YOU_CTA.FAQ.target)}
             className="group rounded-xl border border-border bg-card p-3 text-left hover:border-primary transition-colors"
           >
             <HelpCircle className="w-4 h-4 text-primary mb-1" />
@@ -96,7 +114,7 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
           </Link>
           <Link
             to={content.finalCtaTo}
-            onClick={() => fireCta("diagnostico_final", content.finalCtaLabel, 3, content.finalCtaTo)}
+            onClick={() => fireCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 3, content.finalCtaTo)}
             className="group rounded-xl border border-primary/40 bg-primary/5 p-3 text-left hover:border-primary transition-colors"
           >
             <Sparkles className="w-4 h-4 text-primary mb-1" />
@@ -107,7 +125,6 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
           </Link>
         </div>
 
-        {/* Mini prova social personalizada por origem */}
         <div className="mt-4 rounded-xl bg-muted/40 p-3">
           <div className="grid grid-cols-3 gap-2 mb-2 text-center">
             {content.stats.map((s) => (
@@ -135,7 +152,7 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
         <button
           type="button"
           onClick={() => {
-            trackEvent("thank_you_dismiss", evtAttr);
+            trackEvent(THANK_YOU_CTA.DISMISS.event, { ...evtAttr, surface: "modal" });
             onOpenChange(false);
           }}
           className="mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors mx-auto block"

@@ -11,7 +11,9 @@ import { useEffect, useMemo } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
+import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
+import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
@@ -60,33 +62,40 @@ export const Route = createFileRoute("/obrigado")({
 
 function ObrigadoPage() {
   const { source } = Route.useSearch();
-  const content = getThankYouContent(source);
+  // Snapshot persisted at submit-time wins over the URL ?source= param.
+  // Fallbacks: query string, then "direct".
+  const attr = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return loadAttributionSnapshot() ?? getLeadAttribution(source || "direct");
+  }, [source]);
+  const resolvedSource = attr?.source ?? source ?? "direct";
+  const content = attr?.content ?? getThankYouContent(resolvedSource);
   const evtAttr = useMemo(() => {
-    if (typeof window === "undefined") return { source: source || "direct", channel: content.channel };
-    return attributionToEventParams(getLeadAttribution(source || "direct"));
-  }, [source, content.channel]);
+    if (typeof window === "undefined") return { source: resolvedSource, channel: content.channel };
+    return attributionToEventParams(attr ?? getLeadAttribution(resolvedSource));
+  }, [attr, resolvedSource, content.channel]);
 
   useEffect(() => {
-    trackConversion("obrigado_page_view", {
+    // Canonical taxonomy event — fires once per /obrigado view.
+    trackConversion("thank_you_view", {
       ...evtAttr,
-      page: "/obrigado",
       surface: "page",
+      page: "/obrigado",
       event_category: "conversion",
     });
+    // Legacy event preserved for one sprint while dashboards transition.
+    trackEvent("obrigado_page_view", { ...evtAttr, surface: "page", legacy: true });
   }, [evtAttr]);
 
-  const handleCta = (ctaId: string, label: string, position: number, target: string) => {
-    const params = {
-      ...evtAttr,
-      cta_id: ctaId,
-      label,
-      position,
-      target,
+  const handleCta = (eventName: string, ctaId: string, label: string, position: number, target: string) => {
+    const params = buildThankYouCtaParams({
+      base: evtAttr,
       surface: "page",
-      event_category: "engagement",
-    };
-    trackConversion("obrigado_cta_click", params);
-    trackEvent(`obrigado_cta_${ctaId}`, params);
+      ctaId, target, label, position,
+    });
+    trackConversion(eventName, params);
+    // Legacy event kept for back-compat dashboards.
+    trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
 
   const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
