@@ -136,7 +136,7 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Olá! Quero saber mais sobre o plano de Presença Digital de R$399/mês.", "presdig_hero_principal")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_hero_principal", label: "Fale Conosco" })}
+                onClick={() => trackWhatsAppClick("presdig_hero_principal", { label: "Fale Conosco" })}
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 shadow-glow-primary hover:scale-[1.02] transition"
               >
                 Fale Conosco <ArrowRight className="w-4 h-4" />
@@ -352,7 +352,7 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Quero falar com a 0WEB sobre Presença Digital (R$399/mês).", "presdig_cta_final")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_cta_final", label: "Fale Conosco" })}
+                onClick={() => trackWhatsAppClick("presdig_cta_final", { label: "Fale Conosco" })}
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-7 py-4 hover:scale-[1.02] transition"
               >
                 Fale Conosco no WhatsApp <ArrowRight className="w-4 h-4" />
