@@ -149,6 +149,23 @@ export function trackConversion(name: string, params: EventParams = {}) {
   trackEvent(name, { ...params, conversion: true, event_category: params.event_category ?? "conversion" });
 }
 
+/**
+ * Track a WhatsApp click across GA4 (via gtag/dataLayer) AND Meta Pixel (fbq)
+ * when present. Use anywhere a WhatsApp link/button is clicked.
+ */
+export function trackWhatsAppClick(
+  location: string,
+  extra: EventParams = {},
+) {
+  trackConversion("whatsapp_click", { location, ...extra });
+  try {
+    const w = window as unknown as { fbq?: (...args: unknown[]) => void };
+    if (typeof w.fbq === "function") {
+      w.fbq("track", "Contact", { source: "whatsapp", location, ...extra });
+    }
+  } catch { /* noop */ }
+}
+
 /** Canonical list of events that should be marked as GA4 Conversion events. */
 export const CONVERSION_EVENTS = [
   "cta_click",
