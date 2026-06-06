@@ -319,7 +319,14 @@ function IndexCoveragePage() {
                     ? <span className="text-emerald-600 inline-flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> resolvido</span>
                     : <span className="text-amber-600">aberto</span>}
                 </td>
-                <td className="p-3 text-right">
+                <td className="p-3 text-right whitespace-nowrap">
+                  <Link
+                    to="/app/indexacao/$urlId"
+                    params={{ urlId: r.id }}
+                    className="text-xs px-2 py-1 rounded border border-border hover:bg-muted mr-2 inline-block"
+                  >
+                    Detalhes
+                  </Link>
                   {!r.resolved_at && (
                     <button onClick={() => onResolve(r.id)} className="text-xs px-2 py-1 rounded border border-border hover:bg-muted">
                       Marcar resolvido
