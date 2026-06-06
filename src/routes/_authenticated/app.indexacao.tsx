@@ -10,7 +10,7 @@ import {
 import { detectIndexCoverageAlerts, type CoverageAlert } from "@/lib/index-coverage-alerts.functions";
 import { parseGscCsv } from "@/lib/gsc-csv";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp } from "lucide-react";
+import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/indexacao")({
   component: IndexCoveragePage,
@@ -150,6 +150,48 @@ function IndexCoveragePage() {
       setErr(e.message); setCsvBusy(null);
     }
   };
+  const exportCsv = () => {
+    const headers = ["url", "issue_type", "status_code", "message", "source", "detected_at", "resolved_at"];
+    const escape = (v: any) => {
+      if (v === null || v === undefined) return "";
+      const s = String(v).replace(/"/g, '""');
+      return /[",\n\r]/.test(s) ? `"${s}"` : s;
+    };
+    const lines = [headers.join(",")];
+    for (const r of rows) {
+      lines.push(headers.map((h) => escape((r as any)[h])).join(","));
+    }
+    const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `indexacao-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const exportPdf = () => {
+    const w = window.open("", "_blank");
+    if (!w) return;
+    const rowsHtml = rows
+      .map(
+        (r) => `<tr>
+          <td>${(r.url ?? "").replace(/</g, "&lt;")}</td>
+          <td>${r.issue_type ?? ""}</td>
+          <td>${r.status_code ?? ""}</td>
+          <td>${(r.message ?? "").replace(/</g, "&lt;")}</td>
+          <td>${new Date(r.detected_at).toLocaleString("pt-BR")}</td>
+          <td>${r.resolved_at ? "resolvido" : "aberto"}</td>
+        </tr>`,
+      )
+      .join("");
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Cobertura de indexação — ${new Date().toLocaleDateString("pt-BR")}</title>
+      <style>body{font-family:system-ui,sans-serif;padding:24px;color:#111}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:6px;text-align:left;vertical-align:top}th{background:#f3f4f6}h1{font-size:18px;margin:0 0 16px}</style></head><body>
+      <h1>Cobertura de indexação — ${rows.length} item(s)</h1>
+      <table><thead><tr><th>URL</th><th>Tipo</th><th>HTTP</th><th>Mensagem</th><th>Detectado</th><th>Estado</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+      <script>window.onload=()=>window.print();</script></body></html>`);
+    w.document.close();
+  };
+
 
   return (
     <div className="max-w-6xl space-y-6">
@@ -174,9 +216,16 @@ function IndexCoveragePage() {
           <button onClick={checkAlerts} disabled={alertsChecking} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
             <AlertTriangle className={`w-4 h-4 ${alertsChecking ? "animate-pulse" : ""}`} /> Verificar alertas
           </button>
+          <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Download className="w-4 h-4" /> CSV
+          </button>
+          <button onClick={exportPdf} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
+            <Download className="w-4 h-4" /> PDF
+          </button>
           <button onClick={load} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-muted disabled:opacity-50">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /> Atualizar
           </button>
+
         </div>
       </div>
 

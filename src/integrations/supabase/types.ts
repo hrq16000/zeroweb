@@ -1637,6 +1637,41 @@ export type Database = {
         }
         Relationships: []
       }
+      index_coverage_actions: {
+        Row: {
+          action_key: string
+          actor: string | null
+          created_at: string
+          id: string
+          issue_id: string
+          notes: string | null
+        }
+        Insert: {
+          action_key: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          issue_id: string
+          notes?: string | null
+        }
+        Update: {
+          action_key?: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          issue_id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "index_coverage_actions_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "index_coverage_issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       index_coverage_issues: {
         Row: {
           created_at: string
