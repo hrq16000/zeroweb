@@ -4,7 +4,7 @@ import { z } from "zod";
 import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
 import { ORIGIN } from "@/lib/seo";
-import { trackConversion } from "@/lib/analytics";
+import { trackConversion, trackWhatsAppClick } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
