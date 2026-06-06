@@ -11,9 +11,9 @@ type Item = {
 
 const ALL: Item[] = [
   { to: "/trafego-pago-local", title: "Tráfego pago para negócios locais", desc: "Anúncios no Google e Meta a partir de R$499/mês, sem contrato.", anchor: "Ver tráfego pago local", icon: Megaphone },
-  { to: "/criacao-sites", title: "Criação de sites profissionais", desc: "Sites rápidos, otimizados para SEO e prontos para converter.", anchor: "Criar meu site agora", icon: Globe },
-  { to: "/seo", title: "SEO e primeiras posições no Google", desc: "Plano de SEO local e nacional com foco em ROI mensurável.", anchor: "Quero rankear no Google", icon: Search },
-  { to: "/automacao", title: "Automação e IA no WhatsApp", desc: "Atendimento, qualificação de leads e fluxos com IA no WhatsApp.", anchor: "Automatizar meu atendimento", icon: Bot },
+  { to: "/servicos/criacao-de-sites", title: "Criação de sites profissionais", desc: "Sites rápidos, otimizados para SEO e prontos para converter.", anchor: "Criar meu site agora", icon: Globe },
+  { to: "/servicos/seo", title: "SEO e primeiras posições no Google", desc: "Plano de SEO local e nacional com foco em ROI mensurável.", anchor: "Quero rankear no Google", icon: Search },
+  { to: "/servicos/automacao-com-ia", title: "Automação e IA no WhatsApp", desc: "Atendimento, qualificação de leads e fluxos com IA no WhatsApp.", anchor: "Automatizar meu atendimento", icon: Bot },
   { to: "/planos", title: "Planos e preços", desc: "Compare os planos da 0WEB e escolha o ideal para o seu momento.", anchor: "Ver planos completos", icon: Layers },
   { to: "/cases", title: "Cases de sucesso", desc: "Histórias reais de empresas que cresceram com a 0WEB.", anchor: "Ver cases reais", icon: Award },
   { to: "/faq", title: "Perguntas frequentes", desc: "Tire dúvidas sobre prazos, valores, contratos e suporte.", anchor: "Tirar minhas dúvidas", icon: HelpCircle },

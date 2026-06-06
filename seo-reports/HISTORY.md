@@ -114,3 +114,46 @@
 ### Itens que dependem de ação do usuário
 - ⏳ Login Google em /painel com hrq16000@gmail.com → preciso que você faça login uma vez para eu confirmar console/role.
 - ⏳ Republish para o validator JSON-LD recolocar 11/11 rotas em verde (código corrigido aguarda deploy).
+
+## 2026-06-06 · Round 9 — Catálogo /servicos + 301 em lote
+
+### Roteamento corrigido
+- `servicos.tsx` virou layout (`<Outlet/>`) e o conteúdo do catálogo migrou para `servicos.index.tsx`.
+- `servicos.$slug.tsx` e `servicos.site-express.tsx` agora aninham corretamente sob `/servicos`, eliminando 404 em links de detalhe.
+
+### Catálogo
+- `/servicos` lista 9 serviços do banco (`services.is_active=true`) + fallback de arquivo (`seo`) + card destacado do Site Express.
+- Cards e botões usam `<Link to="/servicos/$slug" params={{slug}}>` (sem href manual).
+
+### 301 em lote (rotas legadas → /servicos/{slug})
+| Origem | Destino |
+|---|---|
+| /criacao-sites | /servicos/criacao-de-sites |
+| /landing-pages | /servicos/landing-pages |
+| /seo | /servicos/seo |
+| /automacao | /servicos/automacao-com-ia |
+| /ia | /servicos/automacao-com-ia |
+| /desenvolvimento | /servicos/desenvolvimento-saas |
+| /redes-sociais | /servicos/gestao-redes-sociais |
+| /$service (qualquer slug não capturado) | /servicos/$service |
+
+Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode:301, replace:true})` em cada arquivo.
+
+### Links internos atualizados
+- `Footer.tsx` (3 colunas) — todos os links de soluções/tecnologia agora apontam para `/servicos/{slug}`.
+- `RelatedLinksGrid.tsx` — itens `criacao-sites`, `seo`, `automacao` re-mapeados.
+- `Header.tsx` — item "IA" agora aponta para `/servicos/automacao-com-ia`.
+- Filtros `only=` em `servicos.index.tsx` e `trafego-pago-local.tsx` atualizados.
+
+### Sitemap & robots
+- `sitemap-pages.xml` removeu as 6 rotas legadas (agora redirecionadas) e adicionou `/servicos`, `/cases`, `/blog`, `/planos`, `/faq`, `/presenca-digital`, `/trafego-pago-local`.
+- `sitemap-services.xml` segue gerando uma URL por slug em `/servicos/{slug}`.
+- `robots.txt` mantido (já permite tudo exceto `/app`, `/painel`, `/auth`, `/r/`, `/api/`).
+
+### Canonical & breadcrumbs
+- `/servicos/$slug` continua emitindo `<link rel="canonical">` para `https://0web.com.br/servicos/{slug}` + `hreflang pt-BR/x-default` e breadcrumb `Início › Serviços › {Nome}`.
+
+### Testes
+- Novo `src/components/site/__tests__/Header.menu.test.tsx` cobrindo:
+  abertura/fechamento do menu mobile, fechamento via Escape, fechamento ao clicar fora,
+  e validação de que cada link de serviço aponta para `/servicos/{slug}`.

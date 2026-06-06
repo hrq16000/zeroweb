@@ -9,7 +9,7 @@ import logoAsset from "@/assets/logo-0web.png.asset.json";
 const nav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
   { to: "/servicos", label: "Serviços" },
-  { to: "/ia", label: "IA" },
+  { to: "/servicos/automacao-com-ia", label: "IA" },
   { to: "/cases", label: "Cases" },
   { to: "/planos", label: "Planos" },
   { to: "/faq", label: "FAQ" },
