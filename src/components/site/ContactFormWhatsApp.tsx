@@ -225,6 +225,28 @@ export function ContactFormWhatsApp({
             </button>
           )}
         </div>
+        {requireConsent && (
+          <div className="pt-1">
+            <label htmlFor="cf-consent" className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+              <input
+                id="cf-consent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? "cf-consent-err" : undefined}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+              />
+              <span>
+                Concordo em receber contato da 0WEB pelos canais informados e com o tratamento
+                dos meus dados conforme a <a href="/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Política de Privacidade</a> (LGPD).
+              </span>
+            </label>
+            {errors.consent && (
+              <p id="cf-consent-err" className="mt-1 text-xs text-destructive">{errors.consent}</p>
+            )}
+          </div>
+        )}
         <button
           type="submit"
           className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
