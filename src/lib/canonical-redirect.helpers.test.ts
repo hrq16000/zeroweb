@@ -135,8 +135,9 @@ describe("computeCanonicalRedirect — custom redirects table", () => {
     expect(d!.location).toBe("https://other.com/x");
   });
 
-  test("custom redirect runs AFTER trailing slash normalization", () => {
-    // /antigo/ should strip to /antigo and then match the table
+  test("custom redirect collapses trailing slash + table lookup in one hop", () => {
+    // /antigo/ strips to /antigo, then matches the table → single 301 to /novo.
+    // Locks the current behavior (one redirect, not two).
     const map = new Map([["/antigo", { to: "/novo", status: 301 }]]);
     const d = computeCanonicalRedirect({
       method: "GET",
@@ -144,10 +145,8 @@ describe("computeCanonicalRedirect — custom redirects table", () => {
       forwardedProto: "https",
       redirects: map,
     });
-    // Slash strip wins first → 308 to /antigo, table hits on the next request.
-    // This documents and locks the current order (avoids double-rewrite loops).
-    expect(d!.status).toBe(308);
-    expect(d!.location).toBe("https://0web.com.br/antigo");
+    expect(d!.status).toBe(301);
+    expect(d!.location).toBe("https://0web.com.br/novo");
   });
 });
 
