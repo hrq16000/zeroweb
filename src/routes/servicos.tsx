@@ -32,12 +32,14 @@ export const Route = createFileRoute("/servicos")({
     const desc =
       "Catálogo completo de serviços da 0WEB: criação de sites, landing pages, e-commerce, SEO, marketing digital, automação com IA, chatbot WhatsApp, SaaS e sistemas web sob medida.";
 
-    // Aggregate unique FAQ pairs from every service (cap to avoid duplicates/spam)
-    const seenQ = new Set<string>();
+    // FAQ agregado: exclui perguntas que já pertencem ao Site Express,
+    // que terão seu próprio FAQPage dedicado no mesmo @graph.
+    const seenQ = new Set<string>(SITE_EXPRESS_FAQ_KEYS);
     const faqItems: { q: string; a: string }[] = [];
     for (const s of SERVICE_LIST) {
+      if (s.slug === "site-express") continue; // tratado separadamente
       for (const f of s.faq ?? []) {
-        const key = f.q.trim().toLowerCase();
+        const key = normalizeFaqKey(f.q);
         if (seenQ.has(key)) continue;
         seenQ.add(key);
         faqItems.push(f);
@@ -51,28 +53,52 @@ export const Route = createFileRoute("/servicos")({
       "@id": `${url}#services`,
       name: "Serviços 0WEB",
       numberOfItems: SERVICE_LIST.length,
-      itemListElement: SERVICE_LIST.map((s, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: absUrl(`/${s.slug}`),
-        item: {
-          "@type": "Service",
-          "@id": absUrl(`/${s.slug}#service`),
-          name: s.name,
-          serviceType: s.serviceType,
-          description: s.description,
-          category: s.category,
-          url: absUrl(`/${s.slug}`),
-          areaServed: { "@type": "Country", name: "Brasil" },
-          provider: ORG_REF,
-        },
+      itemListElement: SERVICE_LIST.map((s, i) => {
+        const isSiteExpress = s.slug === "site-express";
+        const sUrl = isSiteExpress ? SITE_EXPRESS_URL : absUrl(`/${s.slug}`);
+        const sId = isSiteExpress ? SITE_EXPRESS_SERVICE_ID : `${sUrl}#service`;
+        return {
+          "@type": "ListItem",
+          position: i + 1,
+          url: sUrl,
+          item: {
+            "@type": "Service",
+            "@id": sId,
+            name: s.name,
+            serviceType: s.serviceType,
+            description: s.description,
+            category: s.category,
+            url: sUrl,
+            areaServed: { "@type": "Country", name: "Brasil" },
+            provider: ORG_REF,
+          },
+        };
+      }),
+    };
+
+    // FAQPage dedicado do Site Express, vinculado ao Service via `about`
+    const siteExpressFaqPage = {
+      "@type": "FAQPage",
+      "@id": `${url}#faq-site-express`,
+      name: "Perguntas sobre o Site Express",
+      inLanguage: "pt-BR",
+      about: { "@id": SITE_EXPRESS_SERVICE_ID },
+      isPartOf: { "@id": url },
+      mainEntity: SITE_EXPRESS_FAQ.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
       })),
     };
 
-    const faqPage = faqItems.length
+    // FAQPage agregado dos demais serviços (sem duplicar Site Express)
+    const aggregatedFaqPage = faqItems.length
       ? {
           "@type": "FAQPage",
-          "@id": `${url}#faq`,
+          "@id": `${url}#faq-servicos`,
+          name: "Perguntas sobre os demais serviços",
+          inLanguage: "pt-BR",
+          isPartOf: { "@id": url },
           mainEntity: faqItems.map((f) => ({
             "@type": "Question",
             name: f.q,
@@ -96,8 +122,9 @@ export const Route = createFileRoute("/servicos")({
       breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
       itemList,
       ORG_REF,
+      siteExpressFaqPage,
     ];
-    if (faqPage) graph.push(faqPage);
+    if (aggregatedFaqPage) graph.push(aggregatedFaqPage);
 
     return {
       meta: [
