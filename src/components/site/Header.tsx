@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, MessageCircle, LogIn } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
