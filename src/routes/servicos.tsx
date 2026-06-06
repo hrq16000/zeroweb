@@ -54,9 +54,8 @@ export const Route = createFileRoute("/servicos")({
       name: "Serviços 0WEB",
       numberOfItems: SERVICE_LIST.length,
       itemListElement: SERVICE_LIST.map((s, i) => {
-        const isSiteExpress = s.slug === "site-express";
-        const sUrl = isSiteExpress ? SITE_EXPRESS_URL : absUrl(`/${s.slug}`);
-        const sId = isSiteExpress ? SITE_EXPRESS_SERVICE_ID : `${sUrl}#service`;
+        const sUrl = absUrl(`/servicos/${s.slug}`);
+        const sId = `${sUrl}#service`;
         return {
           "@type": "ListItem",
           position: i + 1,
@@ -274,8 +273,8 @@ function ServicosHub() {
                   {byCategory[cat].map((s) => (
                     <Link
                       key={s.slug}
-                      to="/$service"
-                      params={{ service: s.slug }}
+                      to="/servicos/$slug"
+                      params={{ slug: s.slug }}
                       className="block p-5 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
                     >
                       <h3 className="font-semibold text-lg">{s.name}</h3>

@@ -128,8 +128,8 @@ function CidadesHub() {
                 return (
                   <Link
                     key={slug}
-                    to="/$service"
-                    params={{ service: slug }}
+                    to="/servicos/$slug"
+                    params={{ slug }}
                     className="block p-4 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
                   >
                     <p className="text-xs uppercase tracking-wider text-primary font-semibold">{s.category}</p>
