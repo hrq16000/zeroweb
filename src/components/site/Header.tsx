@@ -110,14 +110,14 @@ export function Header() {
           >
             <div className="px-5 py-4 flex flex-col gap-3">
               {nav.map((n) => (
-                <a
-                  key={n.href}
-                  href={n.href}
+                <Link
+                  key={n.to}
+                  to={n.to}
                   onClick={() => setOpen(false)}
                   className="py-2 text-foreground/80 hover:text-foreground"
                 >
                   {n.label}
-                </a>
+                </Link>
               ))}
               <Link
                 to="/auth"
