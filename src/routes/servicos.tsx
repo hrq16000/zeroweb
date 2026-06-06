@@ -163,10 +163,11 @@ export const Route = createFileRoute("/servicos")({
 
 function ServicosHub() {
   const { services } = Route.useLoaderData();
-  const byCategory = services.reduce<Record<string, typeof services>>((acc, s) => {
-    (acc[s.category] ||= []).push(s);
-    return acc;
-  }, {});
+  type Svc = (typeof services)[number];
+  const byCategory: Record<string, Svc[]> = {};
+  for (const s of services) {
+    (byCategory[s.category] ||= []).push(s);
+  }
   const categories = Object.keys(byCategory);
 
   return (
