@@ -9,7 +9,7 @@ export const Route = createFileRoute("/sitemap-services.xml")({
         return renderSitemap(
           resolveBaseUrl(request),
           ALL_SERVICE_SLUGS.map((s) => ({
-            path: `/${s}`,
+            path: `/servicos/${s}`,
             changefreq: "monthly" as const,
             priority: "0.85",
           })),
