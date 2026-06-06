@@ -37,27 +37,28 @@ const steps = [
 export function SocialProofBlock({ ctxId = "servicos_social_proof" }: { ctxId?: string }) {
   const ctaWa = whatsappUrl("Quero um diagnóstico gratuito da 0WEB.", ctxId);
 
+  // Reference (don't redefine) the root #org Organization to avoid duplicate
+  // @id nodes; expose only AggregateRating + Reviews as separate nodes that
+  // point back to the canonical Organization via itemReviewed.
   const reviewLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
-        "@id": "https://0web.com.br/#org",
-        name: "0WEB",
-        url: "https://0web.com.br",
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          bestRating: "5",
-          reviewCount: String(180),
-        },
-        review: testimonials.map((t) => ({
-          "@type": "Review",
-          author: { "@type": "Person", name: t.name },
-          reviewBody: t.text,
-          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-        })),
+        "@type": "AggregateRating",
+        "@id": `https://0web.com.br/#org-rating-${ctxId}`,
+        itemReviewed: { "@id": "https://0web.com.br/#org" },
+        ratingValue: "4.9",
+        bestRating: "5",
+        reviewCount: String(180),
       },
+      ...testimonials.map((t, i) => ({
+        "@type": "Review",
+        "@id": `https://0web.com.br/#org-review-${ctxId}-${i}`,
+        itemReviewed: { "@id": "https://0web.com.br/#org" },
+        author: { "@type": "Person", name: t.name },
+        reviewBody: t.text,
+        reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      })),
     ],
   };
 
