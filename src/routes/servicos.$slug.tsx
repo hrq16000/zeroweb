@@ -47,7 +47,11 @@ export const Route = createFileRoute("/servicos/$slug")({
         { name: "twitter:image", content: ogImage },
         { name: "robots", content: "index, follow, max-image-preview:large" },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "alternate", hrefLang: "pt-BR", href: url },
+        { rel: "alternate", hrefLang: "x-default", href: url },
+      ],
       scripts: [
         {
           type: "application/ld+json",
