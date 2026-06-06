@@ -21,13 +21,26 @@ export function SocialProof() {
   const [dismissed, setDismissed] = useState(false);
   const [online, setOnline] = useState(127);
 
+  const fetchFeed = useServerFn(getSocialProofFeed);
+  const { data } = useQuery({
+    queryKey: ["social-proof-feed"],
+    queryFn: () => fetchFeed(),
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const pool: Notif[] = useMemo(() => {
+    const items = data?.items ?? [];
+    return items.length > 0 ? items : FALLBACK_POOL;
+  }, [data]);
+
   useEffect(() => {
     if (dismissed) return;
     const start = setTimeout(() => setVisible(true), 4500);
     const cycle = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setIdx(() => Math.floor(Math.random() * POOL.length));
+        setIdx(() => Math.floor(Math.random() * pool.length));
         setVisible(true);
       }, 500);
     }, 6500);
@@ -39,9 +52,10 @@ export function SocialProof() {
       clearInterval(cycle);
       clearInterval(live);
     };
-  }, [dismissed]);
+  }, [dismissed, pool.length]);
 
-  const item = POOL[idx];
+  const item = pool[idx % pool.length] ?? pool[0];
+
 
   return (
     <>
