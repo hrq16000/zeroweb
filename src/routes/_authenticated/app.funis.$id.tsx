@@ -127,14 +127,29 @@ function FunisEditor() {
       )}
 
       {tab === "logic" && (
-        <LogicTab
-          formId={id}
-          questions={data.questions as Q[]}
-          conditions={data.conditions as C[]}
-          onSave={async (c) => { await saveC({ data: { form_id: id, condition: c as any } }); refresh(); }}
-          onDelete={async (cid) => { await delC({ data: { id: cid } }); refresh(); }}
+        <div className="space-y-6">
+          <LogicTab
+            formId={id}
+            questions={data.questions as Q[]}
+            conditions={data.conditions as C[]}
+            onSave={async (c) => { await saveC({ data: { form_id: id, condition: c as any } }); refresh(); }}
+            onDelete={async (cid) => { await delC({ data: { id: cid } }); refresh(); }}
+          />
+          <LogicTester
+            questions={data.questions as any}
+            conditions={data.conditions as any}
+          />
+        </div>
+      )}
+
+      {tab === "preview" && (
+        <FunnelPreview
+          name={data.form.name}
+          questions={data.questions as any}
+          conditions={data.conditions as any}
         />
       )}
+
 
       {tab === "whatsapp" && (
         <div className="rounded-2xl border border-border bg-card p-5 space-y-3 max-w-2xl">
