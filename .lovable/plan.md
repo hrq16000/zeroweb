@@ -1,101 +1,118 @@
-## Contexto
+## Escopo
 
-O projeto **já tem** boa parte da fundação:
+Cinco evoluções no módulo de Funis/Leads do painel admin. Todas backwards-compatible com o funil `diagnostico-0web` já em produção.
 
-- Tabelas `dynamic_forms`, `dynamic_form_questions`, `dynamic_form_conditions`, `dynamic_form_leads` com RLS.
-- Builder admin em `/app/funis/$id` e listagem em `/app/funis`.
-- `FunnelRunner.tsx` que executa formulários.
-- 1 form publicado: `diagnostico-0web` (Diagnóstico Digital 0web).
+---
 
-Faltam: **conceito de "Etapa/Step"**, **drag & drop** real, **lógica condicional na UI do builder**, **runner com transições/progress bar refinados**, **captura de geo-IP no servidor**, **mensagem WhatsApp hierárquica**, **seed dos 13 campos pedidos**.
+### 1. Drag-and-drop com @dnd-kit (perguntas e etapas)
 
-## Mudanças no banco
+- Adicionar `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`.
+- Em `app.funis.$id.tsx` (aba Perguntas), substituir botões ↑/↓ por handles ⋮⋮ com `SortableContext` (estratégia vertical).
+- Persistir nova ordem em lote: UPDATE de `order_index` em `dynamic_form_questions` via serverFn `reorderQuestions({ formId, orderedIds })`.
+- Acessibilidade: keyboard sensor habilitado (Space/Setas), `aria-label` por item.
+- Mesmo padrão para reordenar Etapas (ver item 2).
 
-1 migration:
+### 2. Conceito de Etapas no builder
 
-- Adicionar `step_index INT NOT NULL DEFAULT 0` em `dynamic_form_questions` (campos de uma mesma `step_index` aparecem na mesma tela).
-- Adicionar tabela `dynamic_form_steps(id, form_id, order_index, title, subtitle, cta_label)` para títulos/CTA por etapa (opcional — se uma etapa não tiver row, usa defaults).
-- Adicionar em `dynamic_form_leads`: `ip_address inet`, `isp text`, `geo_city text`, `geo_region text`, `geo_country text`, `user_agent text`, `referer text`, `utm_json jsonb`.
-- Seed do funil `diagnostico-0web` com as 13 perguntas pedidas, agrupadas em 2 etapas, com options dos selects pré-preenchidos.
+**DB** (já parcialmente planejado):
+- Nova tabela `dynamic_form_steps(id, form_id, order_index, title, subtitle, cta_label, created_at, updated_at)` com GRANTs + RLS (admin via `has_role`).
+- Coluna nova em `dynamic_form_questions`: `step_id uuid NULL REFERENCES dynamic_form_steps(id) ON DELETE SET NULL`. Mantém `step_index` legado nullable para compat.
+- Migração de dados: para cada form existente sem steps, cria 1 etapa "Etapa 1" e associa todas as perguntas a ela. `diagnostico-0web` ganha 2 etapas (Qualificação / Contato) pré-configuradas.
 
-GRANTs e RLS já existentes cobrem; só ajustar policies para incluir nova tabela `dynamic_form_steps` (admin manage + public read quando form published).
+**Builder UI** (`app.funis.$id.tsx`):
+- Sidebar esquerda lista Etapas (DnD, +Nova Etapa, editar título/subtítulo/CTA).
+- Canvas central mostra perguntas da etapa selecionada (DnD interno).
+- Mover pergunta entre etapas: arrastar para outra etapa na sidebar.
 
-## Server functions (novas)
+**Runner** (`FunnelRunner.tsx`):
+- Renderiza todas as perguntas da etapa atual numa única tela (validação Zod por etapa).
+- Progresso: "Etapa X de N" + barra proporcional.
+- Condições `skip_to` continuam funcionando: se target estiver em etapa futura, salta direto pra ela; se na mesma etapa, oculta perguntas intermediárias visualmente.
 
-Em `src/lib/funnel.functions.ts`:
+### 3. Pipeline de leads (Kanban + bulk)
 
-- `submitDynamicFunnelLead({ formId, answers, clientMeta })` — pública (sem auth). Lê IP do header (`getRequestIP`), faz fetch em `https://ipapi.co/{ip}/json/` (ou ip-api.com como fallback) para enriquecer `isp/city/region/country`, persiste em `dynamic_form_leads` via `supabaseAdmin`, dispara o alerta WhatsApp existente (UAZAPI), retorna `{ leadId, waUserUrl }`.
-- `getPublishedFunnel({ slug })` — pública, retorna form + steps + questions + conditions de forma agrupada.
+**DB**:
+- Coluna `pipeline_stage text NOT NULL DEFAULT 'novo'` em `dynamic_form_leads` (enum lógico: novo, contatado, qualificado, perdido, ganho).
+- Tabela `lead_pipeline_rules(id, form_id NULL, trigger jsonb, action jsonb, enabled, priority, created_at)` — ex.: `{ when: { score_gte: 70 }, then: { stage: 'qualificado', tags: ['hot'] } }`.
+- Tabela `lead_stage_history(lead_id, from_stage, to_stage, actor, reason, created_at)`.
+- Trigger `apply_pipeline_rules_on_insert` aplica regras automaticamente.
 
-A formatação da mensagem WhatsApp (hierárquica, com `*negrito*`, quebras, seção "📋 Respostas" + "🌐 Metadados") fica num helper puro `src/lib/funnel-wa-message.ts` para ser testável.
+**UI** (`app.funis.leads.tsx`):
+- Toggle Tabela ↔ Kanban (5 colunas, DnD entre colunas via @dnd-kit).
+- Seleção múltipla (checkbox) → barra de ações: mover etapa, atribuir tags, exportar, marcar perdido.
+- Editor de regras em `/app/funis/pipeline/regras`.
 
-## Builder admin (refatorar `app.funis.$id.tsx`)
+### 4. Lead scoring + tags automáticas
 
-UI dividida em 3 zonas:
+**DB**:
+- Colunas em `dynamic_form_leads`: `score int DEFAULT 0`, `score_breakdown jsonb`, `tags text[] DEFAULT '{}'`, `intent_level text` (cold/warm/hot).
+- Tabela `lead_scoring_rules(id, form_id, question_id, condition jsonb, points int, tag text NULL)` — admin define no builder, aba nova "Scoring".
 
-```text
-┌─────────────────┬──────────────────────────┬──────────────────┐
-│ Sidebar Etapas  │ Canvas (campos da etapa) │ Inspector campo  │
-│ + drag/reorder  │ + drag/reorder de campos │ (label/options/  │
-│                 │                          │  validação/      │
-│                 │                          │  condições)      │
-└─────────────────┴──────────────────────────┴──────────────────┘
-```
+**Server**:
+- Em `submitDynamicFunnelLead`, após gravar respostas, computar score:
+  - Investimento R$3k+ → +30 / R$1.5k+ → +20 / R$399 → +5
+  - Tem site → +5; objetivo "vender mais" → +10; clientes/mês 200+ → +15
+  - Origem indicação → +10; segmento alvo (advocacia, saúde, etc) → +5
+  - Telefone+email preenchidos → +10
+- Tags automáticas baseadas em respostas: `["google-ads"]` se serviço principal contém Google; `["instagram"]` idem; `["pme"]` se 11-50 funcionários; `["enterprise"]` se 50+.
+- `intent_level` derivado: ≥70 hot, ≥40 warm, senão cold.
 
-- Drag & drop com `@dnd-kit/core` + `@dnd-kit/sortable` (já são leves; instalar).
-- Inspector com aba "Condições" que cria rows em `dynamic_form_conditions` (operador, valor, action `skip_to`/`end_form`).
-- Botão "Pré-visualizar" abre o runner em modo preview.
-- Toggle de status draft/published direto no header.
+**UI**:
+- Coluna Score (badge colorida) e chips de tags na tabela/kanban.
+- Filtros por tag e por intent.
 
-## Runner (refatorar `FunnelRunner.tsx`)
+### 5. Preview + versionamento
 
-- Dark mode sofisticado com tokens do `src/styles.css` (verde esmeralda + azul claro já existem como `--success`/`--info`-like; adicionar se faltar).
-- Barra de progresso fixa no topo ("Etapa X de N").
-- Transições com `framer-motion` (já no projeto) — fade/slide entre etapas.
-- Radio renderizado como **cards clicáveis** grandes (mobile-first, min-height 56px).
-- Validação por etapa usando `zod` (já no projeto). Botão "Continuar" desabilitado até passar.
-- Avaliador de condições: ao mudar resposta, recomputa quais perguntas/etapas estão visíveis e qual é o "skip_to".
-- CTA final muda label para "QUERO MAIS CLIENTES" (configurável via `whatsapp_config.final_cta`).
-- Ao submeter: chama `submitDynamicFunnelLead`, depois `window.location.href = waUserUrl` (wa.me já formatado).
+**DB**:
+- Tabela `dynamic_form_versions(id, form_id, version_number, snapshot jsonb, published_at, published_by, notes)` — snapshot completo (form + steps + questions + conditions + scoring rules + WA templates).
+- Coluna `published_version_id uuid` em `dynamic_forms`. Coluna `is_draft boolean` no form.
 
-## Página pública
+**Server**:
+- `publishFunnelDraft(formId)` → cria nova versão (auto-increment), define como published.
+- `rollbackFunnelTo(formId, versionId)` → restaura snapshot na tabela ativa.
+- Rota pública `/f/:slug` lê **published_version_id** snapshot (não a draft). Admin preview lê draft.
 
-Rota nova `src/routes/funil.$slug.tsx` (pública, SSR) — renderiza `<FunnelRunner slug={slug} />`. Reaproveita captura de UTM do `lead-attribution-snapshot.ts`.
+**UI**:
+- Botão "Pré-visualizar" no builder abre `/f/:slug?preview=DRAFT_TOKEN` em nova aba (token assinado, 1h).
+- Botão "Publicar" com diff resumido (X perguntas adicionadas, Y editadas).
+- Aba "Histórico" lista versões com Restaurar/Visualizar.
 
-## Arquivos
+---
 
-**Novos**
-- `supabase/migrations/<ts>_funnel_steps_geo.sql`
-- `src/lib/funnel.functions.ts`
-- `src/lib/funnel-wa-message.ts` (+ teste)
-- `src/lib/funnel-conditions.ts` (avaliador puro + teste)
+## Arquivos (resumo)
+
+**Migrações** (3, em sequência):
+1. Etapas + scoring + tags + score columns
+2. Pipeline (stage, rules, history, trigger)
+3. Versionamento (versions table + columns)
+
+**Novos arquivos** (~14):
+- `src/lib/funnel-builder.functions.ts` (reorder, scoring CRUD, etapas CRUD)
+- `src/lib/funnel-publish.functions.ts` (publish, rollback, preview token)
+- `src/lib/lead-pipeline.functions.ts` (bulk move, apply rules)
+- `src/lib/lead-scoring.ts` (motor puro, testável)
 - `src/components/funnel/builder/StepsSidebar.tsx`
-- `src/components/funnel/builder/FieldCanvas.tsx`
-- `src/components/funnel/builder/FieldInspector.tsx`
-- `src/components/funnel/builder/ConditionsEditor.tsx`
-- `src/routes/funil.$slug.tsx`
+- `src/components/funnel/builder/QuestionsCanvas.tsx`
+- `src/components/funnel/builder/ScoringTab.tsx`
+- `src/components/funnel/builder/VersionsTab.tsx`
+- `src/components/funnel/builder/PreviewButton.tsx`
+- `src/components/leads/KanbanBoard.tsx`
+- `src/components/leads/BulkActionsBar.tsx`
+- `src/routes/_authenticated/app.funis.pipeline.regras.tsx`
+- `src/lib/lead-scoring.test.ts`
+- `src/lib/funnel-conditions.ts` (helper já planejado)
 
-**Editados**
-- `src/components/funnel/FunnelRunner.tsx` (steps + progress + framer + cards radio + zod)
-- `src/routes/_authenticated/app.funis.$id.tsx` (nova UI 3 zonas)
-- `src/routes/_authenticated/app.funis.leads.tsx` (mostrar geo/ISP/UTM nos detalhes)
-- `src/integrations/supabase/types.ts` (regen após migration)
-- `package.json` (dnd-kit)
+**Editados** (~6):
+- `app.funis.$id.tsx`, `app.funis.leads.tsx`, `FunnelRunner.tsx`, `funil.$slug.tsx`, `types.ts`, `package.json`.
 
-## Stack & decisões técnicas
+---
 
-- **Banco**: continua Postgres (Supabase). `answers_json` em JSONB já cobre flexibilidade.
-- **Geo-IP**: `ipapi.co` (free tier 1k/dia, sem chave); fallback `ip-api.com`. Roda no server (TanStack server fn) — não vaza no cliente.
-- **WhatsApp**: usa `UAZAPI_*` secrets já configurados para alerta interno + `wa.me/<numero>?text=` para redirecionar o lead.
-- **Drag & drop**: `@dnd-kit` (acessível, leve, suportado em workers/edge).
+## Detalhes técnicos relevantes
 
-## Ordem de execução
+- DnD: `useSortable` + `restrictToVerticalAxis`; persist em debounce 400ms.
+- Scoring é determinístico e roda server-side em `submitDynamicFunnelLead` (não confiar em cliente).
+- Pipeline trigger usa `SECURITY DEFINER` + `search_path=public` e roda BEFORE INSERT.
+- Versão preview-only: token JWT curto assinado com `SUPABASE_SERVICE_ROLE_KEY` (HS256), validado em `getPublishedFunnel({ preview })`.
+- Rollback é não-destrutivo: cria nova versão a partir do snapshot antigo (preserva histórico linear).
 
-1. Migration + seed (gera approval) → tipos regenerados.
-2. Helpers puros (`funnel-wa-message`, `funnel-conditions`) + testes.
-3. Server functions (`funnel.functions.ts`).
-4. Runner refatorado + rota pública.
-5. Builder admin (drag&drop + inspector + condições).
-6. Lista de leads enriquecida.
-
-Posso seguir?
+## Posso seguir?

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { scoreLead } from "./lead-scoring";
 
 // ============ Types (also used by the client UI) ============
 export type FunnelQuestionType =
@@ -226,6 +227,9 @@ export const submitFunnel = createServerFn({ method: "POST" })
       whatsapp_user_url = `https://wa.me/${digitsOnly(String(wa.redirect_phone))}?text=${encodeURIComponent(msg)}`;
     }
 
+    // ---- Scoring + tags ----
+    const scoring = scoreLead(data.answers);
+
     // ---- Insert lead ----
     const { data: lead, error: insErr } = await supabaseAdmin
       .from("dynamic_form_leads")
@@ -236,7 +240,12 @@ export const submitFunnel = createServerFn({ method: "POST" })
         contact_name, contact_email, contact_phone,
         whatsapp_user_url,
         whatsapp_alert_status: wa.enabled && wa.alert_phone ? "pending" : "disabled",
-      })
+        score: scoring.score,
+        score_breakdown: scoring.breakdown,
+        tags: scoring.tags,
+        intent_level: scoring.intent,
+        pipeline_stage: scoring.intent === "hot" ? "qualificado" : "novo",
+      } as any)
       .select("id")
       .single();
     if (insErr) throw new Error(insErr.message);

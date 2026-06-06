@@ -1121,13 +1121,19 @@ export type Database = {
       dynamic_form_leads: {
         Row: {
           answers_json: Json
+          assigned_to: string | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
           created_at: string
           form_id: string
           id: string
+          intent_level: string
           metadata_json: Json
+          pipeline_stage: string
+          score: number
+          score_breakdown: Json
+          tags: string[]
           whatsapp_alert_error: string | null
           whatsapp_alert_sent_at: string | null
           whatsapp_alert_status: string | null
@@ -1135,13 +1141,19 @@ export type Database = {
         }
         Insert: {
           answers_json?: Json
+          assigned_to?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
           form_id: string
           id?: string
+          intent_level?: string
           metadata_json?: Json
+          pipeline_stage?: string
+          score?: number
+          score_breakdown?: Json
+          tags?: string[]
           whatsapp_alert_error?: string | null
           whatsapp_alert_sent_at?: string | null
           whatsapp_alert_status?: string | null
@@ -1149,13 +1161,19 @@ export type Database = {
         }
         Update: {
           answers_json?: Json
+          assigned_to?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
           form_id?: string
           id?: string
+          intent_level?: string
           metadata_json?: Json
+          pipeline_stage?: string
+          score?: number
+          score_breakdown?: Json
+          tags?: string[]
           whatsapp_alert_error?: string | null
           whatsapp_alert_sent_at?: string | null
           whatsapp_alert_status?: string | null
@@ -1183,6 +1201,7 @@ export type Database = {
           order_index: number
           placeholder: string | null
           required: boolean
+          step_id: string | null
           type: string
           updated_at: string
           validation_json: Json
@@ -1198,6 +1217,7 @@ export type Database = {
           order_index?: number
           placeholder?: string | null
           required?: boolean
+          step_id?: string | null
           type: string
           updated_at?: string
           validation_json?: Json
@@ -1213,6 +1233,7 @@ export type Database = {
           order_index?: number
           placeholder?: string | null
           required?: boolean
+          step_id?: string | null
           type?: string
           updated_at?: string
           validation_json?: Json
@@ -1225,6 +1246,92 @@ export type Database = {
             referencedRelation: "dynamic_forms"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dynamic_form_questions_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dynamic_form_steps: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          form_id: string
+          id: string
+          order_index: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          form_id: string
+          id?: string
+          order_index?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          form_id?: string
+          id?: string
+          order_index?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_form_steps_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dynamic_form_versions: {
+        Row: {
+          form_id: string
+          id: string
+          notes: string | null
+          published_at: string
+          published_by: string | null
+          snapshot: Json
+          version_number: number
+        }
+        Insert: {
+          form_id: string
+          id?: string
+          notes?: string | null
+          published_at?: string
+          published_by?: string | null
+          snapshot: Json
+          version_number: number
+        }
+        Update: {
+          form_id?: string
+          id?: string
+          notes?: string | null
+          published_at?: string
+          published_by?: string | null
+          snapshot?: Json
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_form_versions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
         ]
       }
       dynamic_forms: {
@@ -1232,9 +1339,11 @@ export type Database = {
           config_json: Json
           created_at: string
           created_by: string | null
+          current_version: number
           description: string | null
           id: string
           name: string
+          published_version_id: string | null
           slug: string
           status: string
           updated_at: string
@@ -1244,9 +1353,11 @@ export type Database = {
           config_json?: Json
           created_at?: string
           created_by?: string | null
+          current_version?: number
           description?: string | null
           id?: string
           name: string
+          published_version_id?: string | null
           slug: string
           status?: string
           updated_at?: string
@@ -1256,15 +1367,25 @@ export type Database = {
           config_json?: Json
           created_at?: string
           created_by?: string | null
+          current_version?: number
           description?: string | null
           id?: string
           name?: string
+          published_version_id?: string | null
           slug?: string
           status?: string
           updated_at?: string
           whatsapp_config?: Json
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "dynamic_forms_published_version_id_fkey"
+            columns: ["published_version_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_versions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ecosystem_portals: {
         Row: {
@@ -1752,6 +1873,53 @@ export type Database = {
           },
         ]
       }
+      lead_pipeline_rules: {
+        Row: {
+          action: Json
+          created_at: string
+          created_by: string | null
+          enabled: boolean
+          form_id: string | null
+          id: string
+          name: string
+          priority: number
+          trigger: Json
+          updated_at: string
+        }
+        Insert: {
+          action?: Json
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          form_id?: string | null
+          id?: string
+          name: string
+          priority?: number
+          trigger?: Json
+          updated_at?: string
+        }
+        Update: {
+          action?: Json
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          form_id?: string | null
+          id?: string
+          name?: string
+          priority?: number
+          trigger?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_pipeline_rules_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_routing_log: {
         Row: {
           created_at: string
@@ -1877,6 +2045,44 @@ export type Database = {
             columns: ["portal_id"]
             isOneToOne: false
             referencedRelation: "portals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_stage_history: {
+        Row: {
+          actor: string | null
+          created_at: string
+          from_stage: string | null
+          id: string
+          lead_id: string
+          reason: string | null
+          to_stage: string
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          lead_id: string
+          reason?: string | null
+          to_stage: string
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          lead_id?: string
+          reason?: string | null
+          to_stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_stage_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_leads"
             referencedColumns: ["id"]
           },
         ]

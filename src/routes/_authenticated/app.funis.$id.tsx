@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Plus, Trash2, GripVertical, Save, ExternalLink, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, GripVertical, Save, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,16 @@ import {
   upsertCondition, deleteCondition,
 } from "@/lib/dynamic-funnel-admin.functions";
 import { toast } from "sonner";
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor,
+  useSensor, useSensors, type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext, sortableKeyboardCoordinates, useSortable,
+  verticalListSortingStrategy, arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
 export const Route = createFileRoute("/_authenticated/app/funis/$id")({
   component: FunisEditor,
@@ -164,39 +174,38 @@ function QuestionsTab({ formId, questions, onSave, onDelete, onReorder }: {
     setDraft({ ...q, hint: q.hint ?? "", placeholder: q.placeholder ?? "", options: q.options_json ?? [] });
   };
 
-  const move = async (idx: number, dir: -1 | 1) => {
-    const j = idx + dir;
-    if (j < 0 || j >= questions.length) return;
-    const next = [...questions];
-    [next[idx], next[j]] = [next[j], next[idx]];
+  const onDragEnd = async (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIdx = questions.findIndex((q) => q.id === active.id);
+    const newIdx = questions.findIndex((q) => q.id === over.id);
+    if (oldIdx < 0 || newIdx < 0) return;
+    const next = arrayMove(questions, oldIdx, newIdx);
     await onReorder(next.map((q) => q.id));
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="font-semibold">{questions.length} perguntas</h2>
+        <h2 className="font-semibold">{questions.length} perguntas <span className="text-xs text-muted-foreground font-normal">· arraste para reordenar</span></h2>
         <Button onClick={startNew} size="sm"><Plus className="w-4 h-4 mr-1" /> Nova pergunta</Button>
       </div>
 
-      <div className="space-y-2">
-        {questions.map((q, i) => (
-          <div key={q.id} className="rounded-xl border border-border bg-card p-3 flex items-center gap-3">
-            <div className="flex flex-col">
-              <button onClick={() => move(i, -1)} className="p-0.5 hover:bg-muted rounded"><ChevronUp className="w-3 h-3" /></button>
-              <button onClick={() => move(i, 1)} className="p-0.5 hover:bg-muted rounded"><ChevronDown className="w-3 h-3" /></button>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs text-muted-foreground flex gap-2">
-                <span className="font-mono">{q.key}</span>·<span>{q.type}</span>{q.required && <span className="text-primary">obrigatório</span>}
-              </div>
-              <div className="font-medium truncate">{q.label}</div>
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => startEdit(q)}>Editar</Button>
-            <button onClick={() => onDelete(q.id)} className="p-2 text-destructive hover:bg-destructive/10 rounded"><Trash2 className="w-4 h-4" /></button>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}>
+        <SortableContext items={questions.map((q) => q.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-2">
+            {questions.map((q) => (
+              <SortableQuestionRow key={q.id} q={q} onEdit={() => startEdit(q)} onDelete={() => onDelete(q.id)} />
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
 
       {editing && draft && (
         <div className="rounded-2xl border border-primary/40 bg-card p-5 space-y-3">
@@ -344,6 +353,36 @@ function LogicTab({ formId, questions, conditions, onSave, onDelete }: {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SortableQuestionRow({ q, onEdit, onDelete }: { q: Q; onEdit: () => void; onDelete: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: q.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style}
+      className={`rounded-xl border border-border bg-card p-3 flex items-center gap-3 ${isDragging ? "shadow-lg ring-2 ring-primary/40" : ""}`}>
+      <button type="button" {...attributes} {...listeners}
+        aria-label={`Arrastar ${q.label}`}
+        className="p-1.5 cursor-grab active:cursor-grabbing hover:bg-muted rounded touch-none">
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-muted-foreground flex gap-2">
+          <span className="font-mono">{q.key}</span>·<span>{q.type}</span>
+          {q.required && <span className="text-primary">obrigatório</span>}
+        </div>
+        <div className="font-medium truncate">{q.label}</div>
+      </div>
+      <Button variant="ghost" size="sm" onClick={onEdit}>Editar</Button>
+      <button onClick={onDelete} className="p-2 text-destructive hover:bg-destructive/10 rounded">
+        <Trash2 className="w-4 h-4" />
+      </button>
     </div>
   );
 }
