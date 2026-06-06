@@ -47,12 +47,21 @@ type Props = {
 };
 
 export function SiteExpressFunnelModal({ open, onOpenChange, source = "site_express" }: Props) {
+  const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [negocio, setNegocio] = useState("");
   const [temSite, setTemSite] = useState<string>("");
   const [divulga, setDivulga] = useState<string>("");
   const [problema, setProblema] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+
+  // Snapshot de atribuição: garante que /obrigado leia o mesmo canal/UTM
+  // que o lead persistido, mesmo após o navigate().
+  const attribution = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return getLeadAttribution("site_express", "site_express_funnel");
+  }, [open]);
 
   useEffect(() => {
     if (open) trackEvent("site_express_funnel_open", { source });
@@ -73,8 +82,19 @@ export function SiteExpressFunnelModal({ open, onOpenChange, source = "site_expr
     return opts.find((o) => o.value === v)?.label ?? v;
   }
 
-  function handleSubmit() {
-    if (!valid) return;
+  async function handleSubmit() {
+    if (!valid || submitting) return;
+    setSubmitting(true);
+
+    const answers = {
+      tem_site: { value: temSite, label: labelOf(HAS_SITE, temSite) },
+      divulga: { value: divulga, label: labelOf(DIVULGA, divulga) },
+      problema: { value: problema, label: labelOf(PROBLEMA, problema) },
+      negocio,
+      offer: "site_express_499",
+      consent_at: new Date().toISOString(),
+      source,
+    };
 
     const message =
       `Olá! Quero meu *Site Express em 24h* (R$ 499).\n\n` +
@@ -89,16 +109,45 @@ export function SiteExpressFunnelModal({ open, onOpenChange, source = "site_expr
       message,
     )}`;
 
+    const attrParams = attribution ? attributionToEventParams(attribution) : { source };
+
+    // 1) Persistir lead em lead_submissions (anon insert via RLS)
+    try {
+      await persistLead({
+        name: nome,
+        phone: whatsapp,
+        source: "site_express",
+        offer_slug: "site_express_499",
+        audience_tag: problema,
+        payload: { ...answers, attribution: attrParams },
+      });
+    } catch {
+      /* best effort */
+    }
+
+    // 2) Snapshot pro /obrigado conseguir mostrar o canal correto
+    if (attribution) saveAttributionSnapshot(attribution);
+
+    // 3) Telemetria GA4 + Pixel (via trackConversion)
     trackConversion("site_express_funnel_submit", {
-      source,
+      ...attrParams,
       tem_site: temSite,
       divulga,
       problema,
+      offer: "site_express_499",
+      value: 499,
+      currency: "BRL",
     });
 
+    // 4) Abre WhatsApp em nova aba
     window.open(url, "_blank", "noopener,noreferrer");
+
+    // 5) Fecha modal e leva para /obrigado com status do pedido
     onOpenChange(false);
+    setSubmitting(false);
+    void navigate({ to: "/obrigado", search: { source: "site_express" } });
   }
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
