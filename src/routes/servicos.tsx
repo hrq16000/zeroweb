@@ -165,8 +165,26 @@ export const Route = createFileRoute("/servicos")({
 function ServicosHub() {
   const { services } = Route.useLoaderData();
   type Svc = (typeof services)[number];
+  const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 9;
+
+  const filtered = useMemo<Svc[]>(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return services;
+    return services.filter((s) =>
+      [s.name, s.description, s.category, ...(s.keywords ?? [])]
+        .join(" ")
+        .toLowerCase()
+        .includes(term),
+    );
+  }, [services, q]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
   const byCategory: Record<string, Svc[]> = {};
-  for (const s of services) {
+  for (const s of paginated) {
     (byCategory[s.category] ||= []).push(s);
   }
   const categories = Object.keys(byCategory);
