@@ -22,12 +22,25 @@ export const categories = [
 import chatgpt3PalavrasCover from "@/assets/blog-chatgpt-3-palavras.jpg";
 import chatgpt3PalavrasInline from "@/assets/blog-chatgpt-3-palavras-2.jpg";
 import trafegoPago499Capa from "@/assets/trafego-pago-499-capa.png.asset.json";
+import presencaDigitalCapa from "@/assets/presenca-digital-google-capa.png.asset.json";
 
 export const inlineImages = {
   "3-palavras-chatgpt-respostas-inteligentes": chatgpt3PalavrasInline,
 } as const;
 
 export const posts: BlogPost[] = [
+  {
+    slug: "seus-clientes-estao-no-google-e-a-sua-empresa",
+    title: "Seus clientes estão no Google. E a sua empresa? Como parar de perder vendas todos os dias",
+    excerpt:
+      "Hoje as pessoas pegam o celular e pesquisam no Google. Quem aparece primeiro recebe mais ligações, mais mensagens no WhatsApp e fecha mais negócios. Veja como mudar isso a partir de R$399/mês.",
+    category: "Marketing Digital",
+    date: "2026-06-06",
+    readTime: "7 min",
+    cover: presencaDigitalCapa.url,
+    content:
+      "🚨 SUA EMPRESA ESTÁ PERDENDO CLIENTES TODOS OS DIAS 🚨\n\nVocê é prestador de serviços, tem uma loja, comércio ou empresa e ainda depende apenas de indicações, redes sociais ou de quem passa na frente do seu negócio?\n\nEntão provavelmente você já percebeu uma coisa: tem dias em que aparecem vários clientes. E tem dias em que o telefone simplesmente não toca.\n\n## O comportamento do cliente mudou — e ninguém te avisou\n\nO problema é que hoje as pessoas não procuram mais na lista telefônica, não perguntam para vizinhos e nem ficam andando pela cidade procurando empresas.\n\nElas pegam o celular e pesquisam no Google.\n\nE quem aparece primeiro recebe mais ligações, mais mensagens no WhatsApp e fecha mais negócios.\n\nEnquanto isso, centenas de clientes podem estar procurando exatamente o que você oferece — e encontrando seus concorrentes.\n\n## O que está em jogo (e quase ninguém calcula)\n\nFaça uma conta simples: se 10 pessoas pesquisam o seu serviço por dia na sua região e você não aparece, são 300 oportunidades perdidas por mês. Mesmo que apenas 5% fechem, são 15 clientes a mais — todo mês — indo para o concorrente que apareceu antes.\n\nMultiplique pelo seu ticket médio. É isso que está saindo do seu caixa todo mês.\n\n## A boa notícia\n\nVocê não precisa entender de marketing, anúncios ou tecnologia para mudar isso.\n\nNa 0WEB ajudamos empresas, comércios e profissionais a aumentarem sua presença digital, aparecerem mais no Google e conquistarem novos clientes todos os dias.\n\n## O que muda quando você ativa a sua presença digital\n\n- 📈 Mais visibilidade — sua empresa aparecendo no Google, no Maps e nas redes\n- 📱 Mais contatos — mensagens no WhatsApp de quem já quer comprar\n- 💰 Mais clientes — fluxo previsível, sem depender de indicação\n- 🚀 Mais resultados — crescimento mensurável, mês a mês\n\n## Como funciona na prática\n\n1. **Diagnóstico gratuito** — entendemos seu negócio, seu cliente e sua região\n2. **Configuração e otimização** — Google Meu Negócio, site, WhatsApp e anúncios\n3. **Veiculação em até 72h** — sua empresa começa a aparecer ainda esta semana\n4. **Relatórios claros** — você acompanha o que está dando retorno, sem juridiquês\n\n## Quanto custa começar\n\nSe você quer mais visibilidade, mais contatos e mais oportunidades de venda para o seu negócio — e está disposto a investir a partir de R$ 399 por mês no crescimento da sua empresa — o caminho mais rápido é falar com a gente no WhatsApp.\n\n📈 Mais visibilidade.\n📱 Mais contatos.\n💰 Mais clientes.\n🚀 Mais resultados.\n\nConheça a página de Presença Digital da 0WEB — planos a partir de R$399/mês, sem contrato e com suporte humano de verdade. Pare de torcer. Comece a vender.",
+  },
   {
     slug: "meta-ads-para-negocios-locais",
     title: "Meta Ads para negócios locais: como vender mais no Instagram e Facebook em 2026",

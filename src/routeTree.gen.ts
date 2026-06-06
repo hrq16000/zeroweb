@@ -29,6 +29,7 @@ import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as PresencaDigitalRouteImport } from './routes/presenca-digital'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as ParceirosRouteImport } from './routes/parceiros'
@@ -214,6 +215,11 @@ const QaEventsRoute = QaEventsRouteImport.update({
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PresencaDigitalRoute = PresencaDigitalRouteImport.update({
+  id: '/presenca-digital',
+  path: '/presenca-digital',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
@@ -686,6 +692,7 @@ export interface FileRoutesByFullPath {
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
@@ -791,6 +798,7 @@ export interface FileRoutesByTo {
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
@@ -897,6 +905,7 @@ export interface FileRoutesById {
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
@@ -1004,6 +1013,7 @@ export interface FileRouteTypes {
     | '/parceiros'
     | '/planos'
     | '/politica-privacidade'
+    | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
@@ -1109,6 +1119,7 @@ export interface FileRouteTypes {
     | '/parceiros'
     | '/planos'
     | '/politica-privacidade'
+    | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
@@ -1214,6 +1225,7 @@ export interface FileRouteTypes {
     | '/parceiros'
     | '/planos'
     | '/politica-privacidade'
+    | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
@@ -1321,6 +1333,7 @@ export interface RootRouteChildren {
   ParceirosRoute: typeof ParceirosRoute
   PlanosRoute: typeof PlanosRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
+  PresencaDigitalRoute: typeof PresencaDigitalRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   RedesSociaisRoute: typeof RedesSociaisRoute
@@ -1514,6 +1527,13 @@ declare module '@tanstack/react-router' {
       path: '/privacidade'
       fullPath: '/privacidade'
       preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/presenca-digital': {
+      id: '/presenca-digital'
+      path: '/presenca-digital'
+      fullPath: '/presenca-digital'
+      preLoaderRoute: typeof PresencaDigitalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-privacidade': {
@@ -2260,6 +2280,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParceirosRoute: ParceirosRoute,
   PlanosRoute: PlanosRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
+  PresencaDigitalRoute: PresencaDigitalRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   RedesSociaisRoute: RedesSociaisRoute,
