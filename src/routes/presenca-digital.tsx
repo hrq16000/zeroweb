@@ -142,10 +142,11 @@ function PresencaDigitalPage() {
                 Fale Conosco <ArrowRight className="w-4 h-4" />
               </a>
               <Link
-                to="/servicos"
+                to="/solicitar-diagnostico"
+                onClick={() => trackEvent("cta_click", { label: "Solicitar Diagnóstico", location: "presdig_hero" })}
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 text-white font-semibold px-6 py-3.5 hover:bg-white/10 transition"
               >
-                Ver todos os serviços
+                Solicitar diagnóstico gratuito
               </Link>
             </div>
 
