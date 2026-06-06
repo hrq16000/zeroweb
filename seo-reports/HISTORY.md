@@ -98,3 +98,19 @@
 **Estado atual em produção (antes do novo publish):** 11/11 rotas ainda falham com os mesmos sintomas (esperado — código novo ainda não está no ar). Rodar `node scripts/validate-jsonld.mjs https://0web.com.br --with-validator` depois do próximo publish.
 
 **Sitemap/robots:** 7/7 verdes.
+
+## 2026-06-06T23:30 — SocialProof dinâmico + status da fila
+
+### Mudanças
+- **`src/lib/social-proof.functions.ts`** (novo): server fn `getSocialProofFeed` que une as 20 últimas `lead_submissions` (anonimizadas) com 10 serviços ativos para gerar até 30 notificações reais. Cidade/nome derivados deterministicamente via seed quando ausentes.
+- **`src/components/site/SocialProof.tsx`**: usa `useServerFn` + `useQuery` (`staleTime` 5 min, sem refetch on focus). Fallback para `FALLBACK_POOL` se servidor falhar. Acabou o POOL hardcoded repetitivo.
+- **Cache do Vite**: limpei `node_modules/.vite`, `.vite`, `dist`, `.output` e reiniciei dev server para resolver 502s residuais do rename `servicos.$slug → servicos_.$slug`.
+
+### Itens da fila já entregues em rounds anteriores (verificado)
+- ✅ FAQ Schema dedicado do Site Express em `/servicos` com dedupe via `SITE_EXPRESS_FAQ_KEYS` (linhas 21-130 de `src/routes/servicos.tsx`).
+- ✅ Redirect 301 `/$service → /servicos/$slug` em `src/routes/$service.tsx`.
+- ✅ CRUD `/app/servicos` com dnd-kit sortable, upload de imagem e dialogs (594 linhas em `_authenticated/app.servicos.tsx`).
+
+### Itens que dependem de ação do usuário
+- ⏳ Login Google em /painel com hrq16000@gmail.com → preciso que você faça login uma vez para eu confirmar console/role.
+- ⏳ Republish para o validator JSON-LD recolocar 11/11 rotas em verde (código corrigido aguarda deploy).
