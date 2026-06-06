@@ -6,7 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE, ORG_REF } from "@/lib/seo";
+import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { SERVICES } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
@@ -71,7 +71,7 @@ export const Route = createFileRoute("/servicos")({
             category: s.category,
             url: sUrl,
             areaServed: { "@type": "Country", name: "Brasil" },
-            provider: ORG_REF,
+            provider: { "@id": `${ORIGIN}/#org` },
           },
         };
       }),
@@ -116,13 +116,13 @@ export const Route = createFileRoute("/servicos")({
         name: title,
         description: desc,
         inLanguage: "pt-BR",
-        isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+        isPartOf: { "@type": "WebSite", "@id": `${ORIGIN}/#website` },
+        publisher: { "@id": `${ORIGIN}/#org` },
         about: SERVICE_LIST.map((s) => ({ "@type": "Service", name: s.name })),
         mainEntity: { "@id": `${url}#services` },
       },
       breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
       itemList,
-      ORG_REF,
       siteExpressFaqPage,
     ];
     if (aggregatedFaqPage) graph.push(aggregatedFaqPage);

@@ -6,7 +6,7 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
-import { absUrl, ORIGIN, ORG_REF, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
+import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
@@ -55,6 +55,19 @@ export const Route = createFileRoute("/servicos/$slug")({
             "@context": "https://schema.org",
             "@graph": [
               {
+                "@type": "WebPage",
+                "@id": url,
+                url,
+                name: loaderData.title,
+                description: loaderData.description,
+                inLanguage: "pt-BR",
+                isPartOf: { "@type": "WebSite", "@id": `${ORIGIN}/#website` },
+                publisher: { "@id": `${ORIGIN}/#org` },
+                primaryImageOfPage: loaderData.imageUrl ? { "@type": "ImageObject", url: loaderData.imageUrl } : undefined,
+                mainEntity: { "@id": `${url}#service` },
+                ...(loaderData.faq?.length ? { hasPart: { "@id": `${url}#faq` } } : {}),
+              },
+              {
                 "@type": "Service",
                 "@id": `${url}#service`,
                 name: loaderData.h1,
@@ -64,26 +77,22 @@ export const Route = createFileRoute("/servicos/$slug")({
                 url,
                 ...(loaderData.imageUrl ? { image: loaderData.imageUrl } : {}),
                 areaServed: { "@type": "Country", name: "BR" },
-                provider: ORG_REF,
+                provider: { "@id": `${ORIGIN}/#org` },
               },
-              {
-                "@type": "FAQPage",
-                "@id": `${url}#faq`,
-                mainEntity: loaderData.faq.map((f: { q: string; a: string }) => ({
-                  "@type": "Question",
-                  name: f.q,
-                  acceptedAnswer: { "@type": "Answer", text: f.a },
-                })),
-              },
-              {
-                "@type": "WebPage",
-                "@id": url,
-                url,
-                name: loaderData.title,
-                description: loaderData.description,
-                inLanguage: "pt-BR",
-                isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
-              },
+              ...(loaderData.faq?.length
+                ? [{
+                    "@type": "FAQPage",
+                    "@id": `${url}#faq`,
+                    inLanguage: "pt-BR",
+                    about: { "@id": `${url}#service` },
+                    isPartOf: { "@id": url },
+                    mainEntity: loaderData.faq.map((f: { q: string; a: string }) => ({
+                      "@type": "Question",
+                      name: f.q,
+                      acceptedAnswer: { "@type": "Answer", text: f.a },
+                    })),
+                  }]
+                : []),
               breadcrumbLd([
                 { name: "Serviços", path: "/servicos" },
                 { name: loaderData.name, path: `/servicos/${params.slug}` },
