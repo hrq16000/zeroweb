@@ -356,3 +356,33 @@ function LogicTab({ formId, questions, conditions, onSave, onDelete }: {
     </div>
   );
 }
+
+function SortableQuestionRow({ q, onEdit, onDelete }: { q: Q; onEdit: () => void; onDelete: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: q.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style}
+      className={`rounded-xl border border-border bg-card p-3 flex items-center gap-3 ${isDragging ? "shadow-lg ring-2 ring-primary/40" : ""}`}>
+      <button type="button" {...attributes} {...listeners}
+        aria-label={`Arrastar ${q.label}`}
+        className="p-1.5 cursor-grab active:cursor-grabbing hover:bg-muted rounded touch-none">
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-muted-foreground flex gap-2">
+          <span className="font-mono">{q.key}</span>·<span>{q.type}</span>
+          {q.required && <span className="text-primary">obrigatório</span>}
+        </div>
+        <div className="font-medium truncate">{q.label}</div>
+      </div>
+      <Button variant="ghost" size="sm" onClick={onEdit}>Editar</Button>
+      <button onClick={onDelete} className="p-2 text-destructive hover:bg-destructive/10 rounded">
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
