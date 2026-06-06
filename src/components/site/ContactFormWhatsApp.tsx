@@ -4,7 +4,7 @@ import { z } from "zod";
 import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
 import { ORIGIN } from "@/lib/seo";
-import { trackConversion } from "@/lib/analytics";
+import { trackConversion, trackWhatsAppClick } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
 import { ThankYouModal } from "@/components/site/ThankYouModal";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
@@ -29,6 +29,8 @@ type Props = {
   redirectTo?: string;
   /** Show thank-you modal in-place instead of redirecting (default: true when no redirectTo). */
   useModal?: boolean;
+  /** Show LGPD consent checkbox (required to submit when true). */
+  requireConsent?: boolean;
 };
 
 export function ContactFormWhatsApp({
@@ -38,6 +40,7 @@ export function ContactFormWhatsApp({
   defaultMessage = "Quero uma proposta da 0WEB.",
   redirectTo,
   useModal,
+  requireConsent = false,
 }: Props) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -46,6 +49,7 @@ export function ContactFormWhatsApp({
   const [geo, setGeo] = useState<GeoInfo | null>(null);
   const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
   const [gpsConsentOpen, setGpsConsentOpen] = useState(false);
+  const [consent, setConsent] = useState(false);
   const shouldUseModal = useModal ?? !redirectTo;
 
   // Subliminal IP geo on mount
@@ -87,6 +91,10 @@ export function ContactFormWhatsApp({
             setErrors(errs);
             return;
           }
+          if (requireConsent && !consent) {
+            setErrors({ consent: "É necessário aceitar para enviar." });
+            return;
+          }
           setErrors({});
           const d = parsed.data;
           const attr = getLeadAttribution(source, ctx);
@@ -108,6 +116,8 @@ export function ContactFormWhatsApp({
             source,
             payload: {
               message: d.message,
+              consent: requireConsent ? consent : undefined,
+              consent_at: requireConsent && consent ? new Date().toISOString() : undefined,
               channel: attr.channel,
               ctx: attr.ctx,
               origin_page: attr.page_path,
@@ -147,6 +157,7 @@ export function ContactFormWhatsApp({
           // Remove falsy lines but preserve intentional blank separators
           const msg = lines.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
           window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
+          trackWhatsAppClick(`form_${source}`, { form_name: source });
           setSent(true);
           if (shouldUseModal) {
             setModalOpen(true);
@@ -214,6 +225,28 @@ export function ContactFormWhatsApp({
             </button>
           )}
         </div>
+        {requireConsent && (
+          <div className="pt-1">
+            <label htmlFor="cf-consent" className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer">
+              <input
+                id="cf-consent"
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? "cf-consent-err" : undefined}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+              />
+              <span>
+                Concordo em receber contato da 0WEB pelos canais informados e com o tratamento
+                dos meus dados conforme a <a href="/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Política de Privacidade</a> (LGPD).
+              </span>
+            </label>
+            {errors.consent && (
+              <p id="cf-consent-err" className="mt-1 text-xs text-destructive">{errors.consent}</p>
+            )}
+          </div>
+        )}
         <button
           type="submit"
           className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"

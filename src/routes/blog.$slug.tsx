@@ -8,7 +8,9 @@ import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
 import { Picture } from "@/components/site/Picture";
 import { AuthorBio } from "@/components/site/AuthorBio";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { suggestLinksForArticle } from "@/lib/interlinking";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -171,6 +173,35 @@ function PostPage() {
           )}
 
           <AuthorBio className="mt-12" />
+
+          {/* CTA Diagnóstico */}
+          <aside className="mt-12 rounded-3xl bg-gradient-to-br from-primary/10 via-card to-card border border-border p-6 lg:p-8 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Gostou do conteúdo?</p>
+            <h2 className="mt-2 text-2xl font-bold font-display">
+              Quer um diagnóstico para o seu negócio?
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Responda algumas perguntas rápidas e receba um plano personalizado.
+            </p>
+            <Link
+              to="/solicitar-diagnostico"
+              onClick={() => trackEvent("cta_click", { label: "Solicitar Diagnóstico", location: `blog_post_${post.slug}` })}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
+            >
+              Solicitar diagnóstico gratuito
+            </Link>
+          </aside>
+
+          {/* Formulário de captura */}
+          <section className="mt-12">
+            <ContactFormWhatsApp
+              source={`blog_post_${post.slug}`}
+              ctx="blog_post_form"
+              title="Quer aplicar isso na sua empresa? Fale com a 0WEB"
+              defaultMessage={`Li o artigo "${post.title}" e quero aplicar isso na minha empresa.`}
+              requireConsent
+            />
+          </section>
 
           {(() => {
             const internal = suggestLinksForArticle({ category: post.category, limit: 6 });

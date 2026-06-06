@@ -9,8 +9,9 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { whatsappUrl } from "@/lib/site-config";
-import { trackEvent, trackConversion } from "@/lib/analytics";
+import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
 import cover from "@/assets/presenca-digital-google-capa.png.asset.json";
 
 const TITLE = "Presença Digital para Empresas · 0WEB · Planos a partir de R$399/mês";
@@ -135,16 +136,17 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Olá! Quero saber mais sobre o plano de Presença Digital de R$399/mês.", "presdig_hero_principal")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_hero_principal", label: "Fale Conosco" })}
+                onClick={() => trackWhatsAppClick("presdig_hero_principal", { label: "Fale Conosco" })}
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 shadow-glow-primary hover:scale-[1.02] transition"
               >
                 Fale Conosco <ArrowRight className="w-4 h-4" />
               </a>
               <Link
-                to="/servicos"
+                to="/solicitar-diagnostico"
+                onClick={() => trackEvent("cta_click", { label: "Solicitar Diagnóstico", location: "presdig_hero" })}
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 text-white font-semibold px-6 py-3.5 hover:bg-white/10 transition"
               >
-                Ver todos os serviços
+                Solicitar diagnóstico gratuito
               </Link>
             </div>
 
@@ -297,7 +299,7 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Quero o plano de Presença Digital de R$399/mês da 0WEB.", "presdig_pricing")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_pricing" })}
+                onClick={() => trackWhatsAppClick("presdig_pricing")}
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 hover:scale-[1.02] transition"
               >
                 Quero começar agora <ArrowRight className="w-4 h-4" />
@@ -331,6 +333,28 @@ function PresencaDigitalPage() {
         </div>
       </section>
 
+      {/* FORM DE CAPTURA */}
+      <section className="py-20 bg-muted/30">
+        <div className="mx-auto max-w-3xl px-5 lg:px-8">
+          <div className="text-center mb-8">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Fale com a 0WEB</p>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-bold font-display">
+              Receba uma proposta personalizada
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Preencha o formulário e respondemos no seu WhatsApp em até 1 hora útil.
+            </p>
+          </div>
+          <ContactFormWhatsApp
+            source="presdig_form"
+            ctx="presdig_form"
+            title="Solicite sua proposta de Presença Digital"
+            defaultMessage="Quero uma proposta de Presença Digital (R$399/mês)."
+            requireConsent
+          />
+        </div>
+      </section>
+
       {/* CTA FINAL */}
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
@@ -351,7 +375,7 @@ function PresencaDigitalPage() {
               <a
                 href={wa("Quero falar com a 0WEB sobre Presença Digital (R$399/mês).", "presdig_cta_final")}
                 target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "presdig_cta_final", label: "Fale Conosco" })}
+                onClick={() => trackWhatsAppClick("presdig_cta_final", { label: "Fale Conosco" })}
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-7 py-4 hover:scale-[1.02] transition"
               >
                 Fale Conosco no WhatsApp <ArrowRight className="w-4 h-4" />
