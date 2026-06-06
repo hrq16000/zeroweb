@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Clock } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -76,6 +76,45 @@ function ServicosHub() {
             </p>
           </div>
         </section>
+
+        {/* DESTAQUE: Site Express */}
+        <section className="py-12 px-5">
+          <div className="mx-auto max-w-6xl">
+            <Link
+              to="/servicos/site-express"
+              className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-orange-600 to-orange-500 text-white p-8 lg:p-12 shadow-2xl shadow-orange-600/20 hover:shadow-orange-600/40 transition-shadow"
+            >
+              <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+              <div className="relative flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
+                <div className="flex-1">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-xs font-bold uppercase tracking-wider">
+                    <Zap className="w-3.5 h-3.5" /> Novo · Mais procurado
+                  </span>
+                  <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">
+                    Site Express em 24h <span className="opacity-90">· a partir de R$ 499</span>
+                  </h2>
+                  <p className="mt-3 text-white/90 max-w-xl">
+                    Site profissional sob medida, mobile-first e focado em WhatsApp, no ar em até
+                    24 horas. Briefing de 5 minutos.
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-3 text-sm">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15">
+                      <Clock className="w-3.5 h-3.5" /> Entrega 24h
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-white/15">Pagamento único</span>
+                    <span className="px-3 py-1 rounded-full bg-white/15">Domínio + SSL</span>
+                  </div>
+                </div>
+                <div className="shrink-0">
+                  <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg group-hover:scale-105 transition-transform">
+                    Quero meu site <ArrowRight className="w-5 h-5" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+
 
         <section className="py-16">
           <div className="mx-auto max-w-6xl px-5 lg:px-8 space-y-12">

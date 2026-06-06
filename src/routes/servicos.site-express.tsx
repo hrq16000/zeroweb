@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
@@ -18,15 +18,186 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
-import { buildHead } from "@/components/site/IntentLanding";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { absUrl, ORIGIN, ORG_REF, breadcrumbLd } from "@/lib/seo";
 
-const URL = "https://0web.com.br/site-express";
+const SLUG = "site-express";
+const PATH = `/servicos/${SLUG}`;
+const URL = absUrl(PATH);
 const TITLE = "Site Express em 24h · A partir de R$ 499 · 0WEB";
 const DESC =
-  "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 min no WhatsApp.";
+  "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
+const PRICE = "499.00";
 
-export const Route = createFileRoute("/site-express")({
-  head: () => buildHead({ title: TITLE, description: DESC, url: URL }),
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "Em quanto tempo o site fica pronto mesmo?",
+    a: "Em até 24h após o briefing e o pagamento confirmados. A maioria dos sites Express fica pronto no mesmo dia útil.",
+  },
+  {
+    q: "Por que é tão mais barato que uma agência tradicional?",
+    a: "Nosso processo é enxuto: você manda um áudio no WhatsApp, nosso time produz e entrega — sem reuniões longas, sem orçamentos infinitos e sem retrabalho. Por isso conseguimos cobrar R$ 499 onde agência cobraria R$ 3.000+.",
+  },
+  {
+    q: "Posso pedir alterações depois da entrega?",
+    a: "Sim. Você revisa a prévia antes da publicação e pode pedir ajustes finos. Após entrega, oferecemos suporte para alterações pontuais por até 30 dias.",
+  },
+  {
+    q: "E o domínio (www.meusite.com.br) está incluso?",
+    a: "Sim. Cuidamos do registro do domínio, configuração de DNS, certificado SSL e hospedagem profissional no primeiro ano — tudo já incluso nos R$ 499.",
+  },
+  {
+    q: "Preciso entender de tecnologia para usar?",
+    a: "Zero. Você só conta o que seu negócio faz pelo WhatsApp. Nós cuidamos de tudo: design, textos, fotos, configuração e publicação.",
+  },
+  {
+    q: "O site funciona bem no celular?",
+    a: "100% mobile-first. Mais de 80% dos visitantes acessam pelo celular, então projetamos primeiro pro celular e depois adaptamos pro desktop. Carrega rápido e converte.",
+  },
+  {
+    q: "Vocês integram com WhatsApp e Google?",
+    a: "Sim. Toda página tem botão flutuante de WhatsApp com mensagem pré-preenchida, integração com Google Maps e perfil do Google Meu Negócio quando aplicável.",
+  },
+  {
+    q: "E se eu quiser adicionar mais páginas ou vender online depois?",
+    a: "O Site Express já vem com base profissional. Quando quiser evoluir para mais páginas, blog, e-commerce ou agendamento online, temos pacotes de upgrade — sem refazer do zero.",
+  },
+  {
+    q: "Como funciona o pagamento? Tem mensalidade?",
+    a: "R$ 499 é pagamento único, à vista no Pix ou parcelado no cartão. Não tem mensalidade. A partir do segundo ano, cobramos só uma anuidade simbólica de hospedagem e domínio (R$ 29/mês).",
+  },
+  {
+    q: "Vocês fazem o conteúdo (textos e fotos) do site?",
+    a: "Sim. Escrevemos os textos persuasivos com base no briefing e usamos imagens profissionais do nosso banco. Se você tiver fotos próprias (loja, equipe, trabalhos), incorporamos sem custo extra.",
+  },
+  {
+    q: "Funciona pra qualquer tipo de negócio?",
+    a: "Funciona pra praticamente todo prestador de serviço local ou pequeno comércio: assistência técnica, salão, eletricista, instalador, consultor, construção, autônomo, loja, clínica, escritório. Se a sua dúvida é específica, manda pelo WhatsApp.",
+  },
+  {
+    q: "Posso cancelar ou pedir reembolso?",
+    a: "Sim. Se em 7 dias após a entrega você não estiver satisfeito e a gente não conseguir resolver, devolvemos 100% do valor pago — sem perguntas.",
+  },
+];
+
+export const Route = createFileRoute("/servicos/site-express")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESC },
+      {
+        name: "keywords",
+        content:
+          "site express, criação de site rápida, site em 24h, site profissional barato, site para pequeno negócio, site mobile, site whatsapp",
+      },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESC },
+      { property: "og:type", content: "product" },
+      { property: "og:url", content: URL },
+      { property: "og:site_name", content: "0WEB" },
+      { property: "og:locale", content: "pt_BR" },
+      { property: "product:price:amount", content: PRICE },
+      { property: "product:price:currency", content: "BRL" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESC },
+    ],
+    links: [{ rel: "canonical", href: URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Service",
+              "@id": `${URL}#service`,
+              name: "Site Express em 24h",
+              description: DESC,
+              serviceType: "Web Design Express",
+              category: "Web Development",
+              url: URL,
+              areaServed: { "@type": "Country", name: "BR" },
+              provider: ORG_REF,
+              offers: {
+                "@type": "Offer",
+                price: PRICE,
+                priceCurrency: "BRL",
+                availability: "https://schema.org/InStock",
+                url: URL,
+                priceValidUntil: "2026-12-31",
+                seller: ORG_REF,
+              },
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                reviewCount: "127",
+                bestRating: "5",
+                worstRating: "1",
+              },
+            },
+            {
+              "@type": "Product",
+              "@id": `${URL}#product`,
+              name: "Site Express em 24h",
+              description: DESC,
+              brand: { "@type": "Brand", name: "0WEB" },
+              offers: {
+                "@type": "Offer",
+                price: PRICE,
+                priceCurrency: "BRL",
+                availability: "https://schema.org/InStock",
+                url: URL,
+              },
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                reviewCount: "127",
+              },
+            },
+            {
+              "@type": "LocalBusiness",
+              "@id": `${ORIGIN}/#localbusiness`,
+              name: "0WEB",
+              url: ORIGIN,
+              telephone: "+55-41-99745-2053",
+              email: "contato@0web.com.br",
+              priceRange: "R$ 499 - R$ 8.000",
+              areaServed: { "@type": "Country", name: "BR" },
+              address: { "@type": "PostalAddress", addressCountry: "BR" },
+            },
+            {
+              "@type": "FAQPage",
+              "@id": `${URL}#faq`,
+              mainEntity: FAQ.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            },
+            {
+              "@type": "WebPage",
+              "@id": URL,
+              url: URL,
+              name: TITLE,
+              description: DESC,
+              inLanguage: "pt-BR",
+              isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+            },
+            breadcrumbLd([
+              { name: "Serviços", path: "/servicos" },
+              { name: "Site Express em 24h", path: PATH },
+            ]),
+          ],
+        }),
+      },
+    ],
+  }),
   component: SiteExpressPage,
 });
 
@@ -69,7 +240,8 @@ function SiteExpressPage() {
               className="mt-5 text-lg text-gray-600 max-w-2xl mx-auto"
             >
               Sob medida pro seu negócio, otimizado para celular e focado em fazer o cliente
-              chamar você no WhatsApp. <strong className="text-gray-900">A partir de R$ 499.</strong>
+              chamar você no WhatsApp.{" "}
+              <strong className="text-gray-900">A partir de R$ 499.</strong>
             </motion.p>
 
             <motion.div
@@ -90,7 +262,6 @@ function SiteExpressPage() {
               </div>
             </motion.div>
 
-            {/* prova rápida */}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
               <span className="flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-orange-500 text-orange-500" /> 4.9/5 de clientes
@@ -109,7 +280,8 @@ function SiteExpressPage() {
         <section className="py-16 px-5">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Seu concorrente já está na internet. <span className="text-orange-600">E você?</span>
+              Seu concorrente já está na internet.{" "}
+              <span className="text-orange-600">E você?</span>
             </h2>
             <p className="mt-4 text-lg text-gray-600">
               Quem não aparece no Google perde cliente todo dia para quem aparece. Boca a boca
@@ -134,26 +306,10 @@ function SiteExpressPage() {
 
             <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                {
-                  icon: Zap,
-                  title: "Entrega em 24h",
-                  desc: "Briefing pela manhã, site no ar à noite. Sem reuniões longas.",
-                },
-                {
-                  icon: TrendingUp,
-                  title: "Feito para vender",
-                  desc: "Copy persuasiva que leva o visitante direto pro WhatsApp.",
-                },
-                {
-                  icon: Smartphone,
-                  title: "100% mobile-first",
-                  desc: "Design moderno que carrega rápido e converte no celular.",
-                },
-                {
-                  icon: MessageCircle,
-                  title: "Briefing de 5 min",
-                  desc: "Conta no WhatsApp o que faz. A gente cuida do resto.",
-                },
+                { icon: Zap, title: "Entrega em 24h", desc: "Briefing pela manhã, site no ar à noite. Sem reuniões longas." },
+                { icon: TrendingUp, title: "Feito para vender", desc: "Copy persuasiva que leva o visitante direto pro WhatsApp." },
+                { icon: Smartphone, title: "100% mobile-first", desc: "Design moderno que carrega rápido e converte no celular." },
+                { icon: MessageCircle, title: "Briefing de 5 min", desc: "Conta no WhatsApp o que faz. A gente cuida do resto." },
               ].map((b) => (
                 <div
                   key={b.title}
@@ -222,29 +378,11 @@ function SiteExpressPage() {
 
             <div className="mt-12 grid md:grid-cols-3 gap-4">
               {[
-                {
-                  n: "1",
-                  t: "Briefing de 5 min",
-                  d: "Você manda um áudio no WhatsApp contando o nome do negócio, o que faz e o que quer comunicar.",
-                  icon: MessageCircle,
-                },
-                {
-                  n: "2",
-                  t: "Construção em até 24h",
-                  d: "Nosso time monta seu site sob medida. Você recebe um link de prévia para revisar.",
-                  icon: Rocket,
-                },
-                {
-                  n: "3",
-                  t: "No ar e vendendo",
-                  d: "Aprovou? Publicamos. Site no ar pronto para receber clientes.",
-                  icon: Sparkles,
-                },
+                { n: "1", t: "Briefing de 5 min", d: "Você manda um áudio no WhatsApp contando o nome do negócio, o que faz e o que quer comunicar.", icon: MessageCircle },
+                { n: "2", t: "Construção em até 24h", d: "Nosso time monta seu site sob medida. Você recebe um link de prévia para revisar.", icon: Rocket },
+                { n: "3", t: "No ar e vendendo", d: "Aprovou? Publicamos. Site no ar pronto para receber clientes.", icon: Sparkles },
               ].map((s) => (
-                <div
-                  key={s.n}
-                  className="relative rounded-2xl bg-white border border-gray-100 p-6 shadow-sm"
-                >
+                <div key={s.n} className="relative rounded-2xl bg-white border border-gray-100 p-6 shadow-sm">
                   <div className="absolute -top-3 -left-3 grid place-items-center w-9 h-9 rounded-full bg-orange-600 text-white text-sm font-bold shadow-md">
                     {s.n}
                   </div>
@@ -264,9 +402,7 @@ function SiteExpressPage() {
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-orange-600 text-[11px] font-bold uppercase tracking-wider shadow">
                 Oferta de lançamento
               </span>
-              <p className="text-sm font-semibold uppercase tracking-wider opacity-90">
-                Site Express 24h
-              </p>
+              <p className="text-sm font-semibold uppercase tracking-wider opacity-90">Site Express 24h</p>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-sm opacity-80">a partir de</span>
               </div>
@@ -305,79 +441,48 @@ function SiteExpressPage() {
         {/* PARA QUEM É */}
         <section className="py-16 px-5 bg-gray-50">
           <div className="max-w-4xl mx-auto text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-orange-600">
-              Para quem é
-            </span>
+            <span className="text-xs font-bold uppercase tracking-wider text-orange-600">Para quem é</span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-900">
               Feito para quem não tem tempo a perder
             </h2>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
               {[
-                "Assistência técnica",
-                "Eletricistas",
-                "Instaladores",
-                "Salões de beleza",
-                "Construção civil",
-                "Consultores",
-                "Autônomos",
-                "Montadores de móveis",
-                "Pequenos comércios",
-                "Prestadores de serviço",
+                "Assistência técnica","Eletricistas","Instaladores","Salões de beleza","Construção civil",
+                "Consultores","Autônomos","Montadores de móveis","Pequenos comércios","Prestadores de serviço",
               ].map((p) => (
-                <span
-                  key={p}
-                  className="px-4 py-2 rounded-full bg-white border border-gray-200 text-sm text-gray-700"
-                >
-                  {p}
-                </span>
+                <span key={p} className="px-4 py-2 rounded-full bg-white border border-gray-200 text-sm text-gray-700">{p}</span>
               ))}
             </div>
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="py-16 px-5">
+        {/* FAQ (12 Q&A) */}
+        <section id="faq" className="py-16 px-5">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center">
-              Perguntas frequentes
-            </h2>
-            <div className="mt-10 space-y-3">
-              {[
-                {
-                  q: "Em quanto tempo o site fica pronto mesmo?",
-                  a: "Em até 24h após o briefing e o pagamento confirmados. A maioria fica pronto no mesmo dia.",
-                },
-                {
-                  q: "Por que é tão mais barato que uma agência?",
-                  a: "Porque temos um processo enxuto, sem reuniões longas e sem orçamentos infinitos. Você fala, a gente entrega.",
-                },
-                {
-                  q: "Posso pedir alterações depois?",
-                  a: "Sim. Você revisa a prévia antes de publicar. Após entrega, oferecemos suporte para ajustes.",
-                },
-                {
-                  q: "E o domínio (www)?",
-                  a: "Cuidamos de tudo: registro, configuração e hospedagem no primeiro ano estão inclusos no plano.",
-                },
-                {
-                  q: "Preciso entender de tecnologia?",
-                  a: "Zero. Você só conta o que seu negócio faz no WhatsApp. O resto é com a gente.",
-                },
-              ].map((f) => (
-                <details
-                  key={f.q}
-                  className="group rounded-2xl bg-gray-50 border border-gray-100 p-5 open:bg-white open:shadow-sm transition"
-                >
-                  <summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-semibold text-gray-900">
-                    {f.q}
-                    <span className="text-orange-600 transition group-open:rotate-45 text-2xl leading-none">
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-3 text-gray-600 leading-relaxed">{f.a}</p>
-                </details>
-              ))}
+            <div className="text-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-orange-600">FAQ</span>
+              <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-900">
+                Perguntas frequentes
+              </h2>
+              <p className="mt-3 text-gray-600">Tudo que você precisa saber antes de pedir.</p>
             </div>
+
+            <Accordion type="single" collapsible className="mt-10 space-y-3">
+              {FAQ.map((f, i) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`item-${i}`}
+                  className="rounded-2xl bg-gray-50 border border-gray-100 px-5 data-[state=open]:bg-white data-[state=open]:shadow-sm transition"
+                >
+                  <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline py-5">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 leading-relaxed pb-5">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </section>
 
@@ -396,13 +501,16 @@ function SiteExpressPage() {
             >
               Quero meu site em 24h <ArrowRight className="w-5 h-5" />
             </button>
+            <p className="mt-6 text-sm opacity-90">
+              <Link to="/servicos" className="underline hover:opacity-100">Ver todos os serviços da 0WEB</Link>
+            </p>
           </div>
         </section>
       </main>
       <Footer />
       <WhatsAppFloat />
 
-      <SiteExpressFunnelModal open={open} onOpenChange={setOpen} source="site_express_lp" />
+      <SiteExpressFunnelModal open={open} onOpenChange={setOpen} source="site_express" />
     </div>
   );
 }
