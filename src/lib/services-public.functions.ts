@@ -47,8 +47,9 @@ function asFaq(v: unknown): { q: string; a: string }[] {
     .filter((x) => x.q && x.a);
 }
 
-function mapRow(row: DbServiceRow): ServiceData & {
+function mapRow(row: DbServiceRow, imageUrl: string | null = null): ServiceData & {
   imagePath: string | null;
+  imageUrl: string | null;
   imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
@@ -68,14 +69,37 @@ function mapRow(row: DbServiceRow): ServiceData & {
     keywords: asStringArray(row.keywords),
     ctaLabel: row.cta_label,
     imagePath: row.image_path,
+    imageUrl,
     imageAlt: row.image_alt,
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function signImage(sb: any, path: string | null): Promise<string | null> {
+  if (!path) return null;
+  try {
+    const { data } = await sb.storage
+      .from("service-images")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    return data?.signedUrl ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const COLS =
   "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order";
+
+const fileFallback = (s: ServiceData) => ({
+  ...s,
+  imagePath: null,
+  imageUrl: null,
+  imageAlt: null,
+  seoTitle: null,
+  seoDescription: null,
+});
 
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
   try {
@@ -87,30 +111,17 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
       .order("display_order", { ascending: true });
     if (error) throw error;
     const rows = (data ?? []) as unknown as DbServiceRow[];
-    const mapped = rows.map(mapRow);
-    // Fallback: garante que serviços do arquivo (não-DB) ainda apareçam.
+    const mapped = await Promise.all(
+      rows.map(async (r) => mapRow(r, await signImage(supabaseAdmin, r.image_path))),
+    );
     const seen = new Set(mapped.map((s) => s.slug));
     for (const s of Object.values(SERVICES)) {
-      if (!seen.has(s.slug)) mapped.push({
-        ...s,
-        imagePath: null,
-        imageAlt: null,
-        seoTitle: null,
-        seoDescription: null,
-      });
+      if (!seen.has(s.slug)) mapped.push(fileFallback(s));
     }
     return { services: mapped };
   } catch (err) {
     console.error("[listServicesPublic] fallback to file", err);
-    return {
-      services: Object.values(SERVICES).map((s) => ({
-        ...s,
-        imagePath: null,
-        imageAlt: null,
-        seoTitle: null,
-        seoDescription: null,
-      })),
-    };
+    return { services: Object.values(SERVICES).map(fileFallback) };
   }
 });
 
@@ -126,22 +137,17 @@ export const getServicePublic = createServerFn({ method: "GET" })
         .eq("is_active", true)
         .maybeSingle();
       if (error) throw error;
-      if (row) return { service: mapRow(row as unknown as DbServiceRow), source: "db" as const };
+      if (row) {
+        const r = row as unknown as DbServiceRow;
+        const imageUrl = await signImage(supabaseAdmin, r.image_path);
+        return { service: mapRow(r, imageUrl), source: "db" as const };
+      }
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);
     }
     const fallback = SERVICES[data.slug];
     if (!fallback) return { service: null, source: "none" as const };
-    return {
-      service: {
-        ...fallback,
-        imagePath: null,
-        imageAlt: null,
-        seoTitle: null,
-        seoDescription: null,
-      },
-      source: "file" as const,
-    };
+    return { service: fileFallback(fallback), source: "file" as const };
   });
 
 export type PublicService = Awaited<ReturnType<typeof listServicesPublic>>["services"][number];
