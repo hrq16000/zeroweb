@@ -55,17 +55,16 @@ export function Header() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-          {nav.map((n) =>
-            n.href.startsWith("/blog") || n.href.startsWith("/marketplace") ? (
-              <Link key={n.href} to={n.href} className="hover:text-foreground transition-colors">
-                {n.label}
-              </Link>
-            ) : (
-              <a key={n.href} href={n.href} className="hover:text-foreground transition-colors">
-                {n.label}
-              </a>
-            ),
-          )}
+          {nav.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              className="hover:text-foreground transition-colors"
+              activeProps={{ className: "text-foreground" }}
+            >
+              {n.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
