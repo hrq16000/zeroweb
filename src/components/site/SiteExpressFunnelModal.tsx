@@ -99,23 +99,14 @@ export function SiteExpressFunnelModal({ open, onOpenChange, source = "site_expr
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-lg p-0 gap-0 overflow-hidden rounded-2xl bg-white border-0 shadow-2xl max-h-[92vh] overflow-y-auto"
-        showCloseButton={false}
+        className="max-w-lg p-0 gap-0 overflow-hidden rounded-2xl bg-white border-0 shadow-2xl max-h-[92vh] overflow-y-auto [&>button]:text-gray-400 [&>button]:hover:text-gray-700"
       >
         {/* Cabeçalho */}
         <div className="relative px-6 pt-6 pb-4">
-          <button
-            onClick={() => onOpenChange(false)}
-            className="absolute right-4 top-4 grid place-items-center w-8 h-8 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition"
-            aria-label="Fechar"
-            type="button"
-          >
-            <X className="w-4 h-4" />
-          </button>
-
           <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-orange-100 text-orange-600">
             Começar Agora
           </span>
+
 
           <h2 className="mt-3 text-2xl sm:text-[26px] font-bold text-gray-900 leading-tight">
             Me conta um pouco sobre o seu negócio
