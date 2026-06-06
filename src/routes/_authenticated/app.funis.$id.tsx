@@ -20,10 +20,13 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+import { FunnelPreview } from "@/components/funnel/FunnelPreview";
+import { LogicTester } from "@/components/funnel/LogicTester";
 
 export const Route = createFileRoute("/_authenticated/app/funis/$id")({
   component: FunisEditor,
 });
+
 
 type LoadedForm = Awaited<ReturnType<typeof getForm>>;
 type Q = LoadedForm["questions"][number];
