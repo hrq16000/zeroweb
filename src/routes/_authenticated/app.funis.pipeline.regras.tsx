@@ -12,7 +12,7 @@ import {
   deletePipelineRule,
   togglePipelineRule,
 } from "@/lib/lead-pipeline-rules.functions";
-import { simulateRules, type PipelineRule, type MockLead, type Stage, type Intent, type SimulationResult } from "@/lib/pipeline-rules-eval";
+import { simulateRules, type PipelineRule as EvalRule, type MockLead, type SimulationResult } from "@/lib/pipeline-rules-eval";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/app/funis/pipeline/regras")({
