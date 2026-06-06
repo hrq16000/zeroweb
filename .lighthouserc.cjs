@@ -17,6 +17,8 @@ module.exports = {
         `${TARGET_URL}/`,
         `${TARGET_URL}/blog`,
         `${TARGET_URL}/blog/3-palavras-chatgpt-respostas-inteligentes`,
+        `${TARGET_URL}/servicos`,
+        `${TARGET_URL}/servicos/criacao-de-sites`,
       ],
       numberOfRuns: 2,
       settings: {
