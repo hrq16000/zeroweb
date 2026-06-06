@@ -25,6 +25,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { absUrl, ORIGIN, ORG_REF, breadcrumbLd } from "@/lib/seo";
+import { SITE_EXPRESS_FAQ as FAQ } from "@/lib/site-express-faq";
 
 const SLUG = "site-express";
 const PATH = `/servicos/${SLUG}`;
@@ -33,8 +34,6 @@ const TITLE = "Site Express em 24h · A partir de R$ 499 · 0WEB";
 const DESC =
   "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
 const PRICE = "499.00";
-
-import { SITE_EXPRESS_FAQ as FAQ } from "@/lib/site-express-faq";
 
 export const Route = createFileRoute("/servicos/site-express")({
   head: () => ({
