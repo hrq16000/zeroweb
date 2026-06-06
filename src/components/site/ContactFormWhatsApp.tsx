@@ -157,6 +157,7 @@ export function ContactFormWhatsApp({
           // Remove falsy lines but preserve intentional blank separators
           const msg = lines.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
           window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
+          trackWhatsAppClick(`form_${source}`, { form_name: source });
           setSent(true);
           if (shouldUseModal) {
             setModalOpen(true);
