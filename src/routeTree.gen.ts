@@ -24,6 +24,7 @@ import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
+import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
@@ -200,6 +201,11 @@ const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
   path: '/sitemap-blog.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeoRoute = SeoRouteImport.update({
   id: '/seo',
   path: '/seo',
@@ -340,9 +346,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
-  id: '/servicos/',
-  path: '/servicos/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServicosRoute,
 } as any)
 const CasesIndexRoute = CasesIndexRouteImport.update({
   id: '/cases/',
@@ -355,14 +361,14 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
-  id: '/servicos/site-express',
-  path: '/servicos/site-express',
-  getParentRoute: () => rootRouteImport,
+  id: '/site-express',
+  path: '/site-express',
+  getParentRoute: () => ServicosRoute,
 } as any)
 const ServicosSlugRoute = ServicosSlugRouteImport.update({
-  id: '/servicos/$slug',
-  path: '/servicos/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ServicosRoute,
 } as any)
 const RCodeRoute = RCodeRouteImport.update({
   id: '/r/$code',
@@ -750,6 +756,7 @@ export interface FileRoutesByFullPath {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
+  '/servicos': typeof ServicosRouteWithChildren
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -979,6 +986,7 @@ export interface FileRoutesById {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
+  '/servicos': typeof ServicosRouteWithChildren
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1095,6 +1103,7 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
+    | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1323,6 +1332,7 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
+    | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1439,6 +1449,7 @@ export interface RootRouteChildren {
   RedesSociaisRoute: typeof RedesSociaisRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
+  ServicosRoute: typeof ServicosRouteWithChildren
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
@@ -1474,11 +1485,8 @@ export interface RootRouteChildren {
   FSlugRoute: typeof FSlugRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
-  ServicosSlugRoute: typeof ServicosSlugRoute
-  ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
-  ServicosIndexRoute: typeof ServicosIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
@@ -1597,6 +1605,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-blog.xml'
       fullPath: '/sitemap-blog.xml'
       preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/seo': {
@@ -1797,10 +1812,10 @@ declare module '@tanstack/react-router' {
     }
     '/servicos/': {
       id: '/servicos/'
-      path: '/servicos'
+      path: '/'
       fullPath: '/servicos/'
       preLoaderRoute: typeof ServicosIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ServicosRoute
     }
     '/cases/': {
       id: '/cases/'
@@ -1818,17 +1833,17 @@ declare module '@tanstack/react-router' {
     }
     '/servicos/site-express': {
       id: '/servicos/site-express'
-      path: '/servicos/site-express'
+      path: '/site-express'
       fullPath: '/servicos/site-express'
       preLoaderRoute: typeof ServicosSiteExpressRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ServicosRoute
     }
     '/servicos/$slug': {
       id: '/servicos/$slug'
-      path: '/servicos/$slug'
+      path: '/$slug'
       fullPath: '/servicos/$slug'
       preLoaderRoute: typeof ServicosSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ServicosRoute
     }
     '/r/$code': {
       id: '/r/$code'
@@ -2437,6 +2452,22 @@ const EstadosRouteChildren: EstadosRouteChildren = {
 const EstadosRouteWithChildren =
   EstadosRoute._addFileChildren(EstadosRouteChildren)
 
+interface ServicosRouteChildren {
+  ServicosSlugRoute: typeof ServicosSlugRoute
+  ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
+  ServicosIndexRoute: typeof ServicosIndexRoute
+}
+
+const ServicosRouteChildren: ServicosRouteChildren = {
+  ServicosSlugRoute: ServicosSlugRoute,
+  ServicosSiteExpressRoute: ServicosSiteExpressRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
+}
+
+const ServicosRouteWithChildren = ServicosRoute._addFileChildren(
+  ServicosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -2466,6 +2497,7 @@ const rootRouteChildren: RootRouteChildren = {
   RedesSociaisRoute: RedesSociaisRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
+  ServicosRoute: ServicosRouteWithChildren,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
@@ -2501,11 +2533,8 @@ const rootRouteChildren: RootRouteChildren = {
   FSlugRoute: FSlugRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
-  ServicosSlugRoute: ServicosSlugRoute,
-  ServicosSiteExpressRoute: ServicosSiteExpressRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
-  ServicosIndexRoute: ServicosIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
@@ -2524,13 +2553,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
