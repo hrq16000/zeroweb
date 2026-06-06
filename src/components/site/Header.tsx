@@ -113,8 +113,11 @@ export function Header() {
         </div>
 
         <button
-          aria-label="Abrir menu"
-          className="lg:hidden p-2 rounded-lg hover:bg-muted"
+          type="button"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          className="lg:hidden p-2 rounded-lg hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
