@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   listIndexIssues,
@@ -7,8 +7,10 @@ import {
   upsertIndexIssue,
   resolveIndexIssue,
 } from "@/lib/index-coverage.functions";
+import { detectIndexCoverageAlerts, type CoverageAlert } from "@/lib/index-coverage-alerts.functions";
+import { parseGscCsv } from "@/lib/gsc-csv";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/indexacao")({
   component: IndexCoveragePage,
@@ -39,10 +41,15 @@ function IndexCoveragePage() {
   const summaryFn = useServerFn(indexIssuesSummary);
   const addFn = useServerFn(upsertIndexIssue);
   const resolveFn = useServerFn(resolveIndexIssue);
+  const alertsFn = useServerFn(detectIndexCoverageAlerts);
 
   const [period, setPeriod] = useState<7 | 30 | 90>(30);
   const [type, setType] = useState<string>("all");
   const [onlyOpen, setOnlyOpen] = useState(true);
+  const [alerts, setAlerts] = useState<CoverageAlert[]>([]);
+  const [alertsChecking, setAlertsChecking] = useState(false);
+  const [csvBusy, setCsvBusy] = useState<{ done: number; total: number } | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
   const [rows, setRows] = useState<any[]>([]);
   const [summary, setSummary] = useState<{ byType: Record<string, number>; byDay: Record<string, number>; open: number; total: number } | null>(null);
   const [loading, setLoading] = useState(false);
