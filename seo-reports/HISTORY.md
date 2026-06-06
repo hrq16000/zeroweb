@@ -62,3 +62,8 @@
   - ❌ (5) `/servicos/sistemas-web`
   - ❌ (5) `/servicos/gestao-redes-sociais`
 
+
+## 2026-06-06T22:02 — Rodada 6 (Header + republish pendente)
+- **Header**: trocado `/#contato` por `Link to="/contato"` (desktop + mobile). Adicionado fechamento automático do menu mobile em mudança de rota. Outside-click já funcionava via `headerRef`.
+- **Sitemaps/robots**: 7/7 checks verdes em produção.
+- **JSON-LD em `/servicos/{slug}`**: 6 rotas ainda com 5 issues (BreadcrumbList duplicado, FAQPage duplicada, `#org` duplicado, hreflang ausente). Todos já corrigidos no código — aguardando **republish** do frontend. Após publicar, rodar `node scripts/validate-jsonld.mjs --with-validator` para revalidar contra Schema.org.
