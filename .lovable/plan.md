@@ -1,118 +1,70 @@
-## Escopo
+# Plano de Ação — Serviços, SEO e Admin
 
-Cinco evoluções no módulo de Funis/Leads do painel admin. Todas backwards-compatible com o funil `diagnostico-0web` já em produção.
-
----
-
-### 1. Drag-and-drop com @dnd-kit (perguntas e etapas)
-
-- Adicionar `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`.
-- Em `app.funis.$id.tsx` (aba Perguntas), substituir botões ↑/↓ por handles ⋮⋮ com `SortableContext` (estratégia vertical).
-- Persistir nova ordem em lote: UPDATE de `order_index` em `dynamic_form_questions` via serverFn `reorderQuestions({ formId, orderedIds })`.
-- Acessibilidade: keyboard sensor habilitado (Space/Setas), `aria-label` por item.
-- Mesmo padrão para reordenar Etapas (ver item 2).
-
-### 2. Conceito de Etapas no builder
-
-**DB** (já parcialmente planejado):
-- Nova tabela `dynamic_form_steps(id, form_id, order_index, title, subtitle, cta_label, created_at, updated_at)` com GRANTs + RLS (admin via `has_role`).
-- Coluna nova em `dynamic_form_questions`: `step_id uuid NULL REFERENCES dynamic_form_steps(id) ON DELETE SET NULL`. Mantém `step_index` legado nullable para compat.
-- Migração de dados: para cada form existente sem steps, cria 1 etapa "Etapa 1" e associa todas as perguntas a ela. `diagnostico-0web` ganha 2 etapas (Qualificação / Contato) pré-configuradas.
-
-**Builder UI** (`app.funis.$id.tsx`):
-- Sidebar esquerda lista Etapas (DnD, +Nova Etapa, editar título/subtítulo/CTA).
-- Canvas central mostra perguntas da etapa selecionada (DnD interno).
-- Mover pergunta entre etapas: arrastar para outra etapa na sidebar.
-
-**Runner** (`FunnelRunner.tsx`):
-- Renderiza todas as perguntas da etapa atual numa única tela (validação Zod por etapa).
-- Progresso: "Etapa X de N" + barra proporcional.
-- Condições `skip_to` continuam funcionando: se target estiver em etapa futura, salta direto pra ela; se na mesma etapa, oculta perguntas intermediárias visualmente.
-
-### 3. Pipeline de leads (Kanban + bulk)
-
-**DB**:
-- Coluna `pipeline_stage text NOT NULL DEFAULT 'novo'` em `dynamic_form_leads` (enum lógico: novo, contatado, qualificado, perdido, ganho).
-- Tabela `lead_pipeline_rules(id, form_id NULL, trigger jsonb, action jsonb, enabled, priority, created_at)` — ex.: `{ when: { score_gte: 70 }, then: { stage: 'qualificado', tags: ['hot'] } }`.
-- Tabela `lead_stage_history(lead_id, from_stage, to_stage, actor, reason, created_at)`.
-- Trigger `apply_pipeline_rules_on_insert` aplica regras automaticamente.
-
-**UI** (`app.funis.leads.tsx`):
-- Toggle Tabela ↔ Kanban (5 colunas, DnD entre colunas via @dnd-kit).
-- Seleção múltipla (checkbox) → barra de ações: mover etapa, atribuir tags, exportar, marcar perdido.
-- Editor de regras em `/app/funis/pipeline/regras`.
-
-### 4. Lead scoring + tags automáticas
-
-**DB**:
-- Colunas em `dynamic_form_leads`: `score int DEFAULT 0`, `score_breakdown jsonb`, `tags text[] DEFAULT '{}'`, `intent_level text` (cold/warm/hot).
-- Tabela `lead_scoring_rules(id, form_id, question_id, condition jsonb, points int, tag text NULL)` — admin define no builder, aba nova "Scoring".
-
-**Server**:
-- Em `submitDynamicFunnelLead`, após gravar respostas, computar score:
-  - Investimento R$3k+ → +30 / R$1.5k+ → +20 / R$399 → +5
-  - Tem site → +5; objetivo "vender mais" → +10; clientes/mês 200+ → +15
-  - Origem indicação → +10; segmento alvo (advocacia, saúde, etc) → +5
-  - Telefone+email preenchidos → +10
-- Tags automáticas baseadas em respostas: `["google-ads"]` se serviço principal contém Google; `["instagram"]` idem; `["pme"]` se 11-50 funcionários; `["enterprise"]` se 50+.
-- `intent_level` derivado: ≥70 hot, ≥40 warm, senão cold.
-
-**UI**:
-- Coluna Score (badge colorida) e chips de tags na tabela/kanban.
-- Filtros por tag e por intent.
-
-### 5. Preview + versionamento
-
-**DB**:
-- Tabela `dynamic_form_versions(id, form_id, version_number, snapshot jsonb, published_at, published_by, notes)` — snapshot completo (form + steps + questions + conditions + scoring rules + WA templates).
-- Coluna `published_version_id uuid` em `dynamic_forms`. Coluna `is_draft boolean` no form.
-
-**Server**:
-- `publishFunnelDraft(formId)` → cria nova versão (auto-increment), define como published.
-- `rollbackFunnelTo(formId, versionId)` → restaura snapshot na tabela ativa.
-- Rota pública `/f/:slug` lê **published_version_id** snapshot (não a draft). Admin preview lê draft.
-
-**UI**:
-- Botão "Pré-visualizar" no builder abre `/f/:slug?preview=DRAFT_TOKEN` em nova aba (token assinado, 1h).
-- Botão "Publicar" com diff resumido (X perguntas adicionadas, Y editadas).
-- Aba "Histórico" lista versões com Restaurar/Visualizar.
+Execução **um item por turno com QA**, conforme combinado. Cada fase é independente e termina com checagem visual/SEO antes de seguir.
 
 ---
 
-## Arquivos (resumo)
+## Fase 1 — FAQ Schema dedicado do Site Express em /servicos
+**Objetivo:** Mapear perguntas do Site Express no JSON-LD da página `/servicos` sem duplicar com o FAQ agregado já existente.
 
-**Migrações** (3, em sequência):
-1. Etapas + scoring + tags + score columns
-2. Pipeline (stage, rules, history, trigger)
-3. Versionamento (versions table + columns)
+- Extrair as 10+ FAQs do Site Express para uma constante reutilizável (`src/lib/site-express-faq.ts`), fonte única usada por `/servicos/site-express` e pelo hub `/servicos`.
+- No `head()` de `/servicos`, adicionar um segundo bloco JSON-LD `@type: FAQPage` com `@id` próprio (`#faq-site-express`) e `about: { @id: '#service-site-express' }`, marcando claramente que pertence ao Site Express.
+- Deduplicar: o FAQ agregado já existente passa a excluir perguntas cujo `normalizedKey` esteja no conjunto Site Express (evita o mesmo `Question` aparecer em dois `FAQPage`).
+- Renderizar a seção visual do Site Express dentro do hub usando Accordion animado já existente, lendo da mesma constante.
+- **QA:** validar com Rich Results Test (visual) lendo o HTML SSR e conferindo que cada pergunta aparece exatamente 1x no `@graph`.
 
-**Novos arquivos** (~14):
-- `src/lib/funnel-builder.functions.ts` (reorder, scoring CRUD, etapas CRUD)
-- `src/lib/funnel-publish.functions.ts` (publish, rollback, preview token)
-- `src/lib/lead-pipeline.functions.ts` (bulk move, apply rules)
-- `src/lib/lead-scoring.ts` (motor puro, testável)
-- `src/components/funnel/builder/StepsSidebar.tsx`
-- `src/components/funnel/builder/QuestionsCanvas.tsx`
-- `src/components/funnel/builder/ScoringTab.tsx`
-- `src/components/funnel/builder/VersionsTab.tsx`
-- `src/components/funnel/builder/PreviewButton.tsx`
-- `src/components/leads/KanbanBoard.tsx`
-- `src/components/leads/BulkActionsBar.tsx`
-- `src/routes/_authenticated/app.funis.pipeline.regras.tsx`
-- `src/lib/lead-scoring.test.ts`
-- `src/lib/funnel-conditions.ts` (helper já planejado)
+## Fase 2 — CRUD admin de serviços
+**Objetivo:** Gerenciar 100% dos serviços via Painel Administrativo, com imagem única, ordenação e status.
 
-**Editados** (~6):
-- `app.funis.$id.tsx`, `app.funis.leads.tsx`, `FunnelRunner.tsx`, `funil.$slug.tsx`, `types.ts`, `package.json`.
+### Backend
+- Tabela `public.services`: `slug` (unique), `title`, `tagline`, `description`, `price_from`, `category`, `image_path`, `image_alt`, `is_active`, `is_featured`, `display_order`, `seo_title`, `seo_description`, `faq` (jsonb), `benefits` (jsonb), `cta_label`, `cta_target`.
+- GRANTs + RLS: `SELECT` público (`anon`+`authenticated`) só onde `is_active=true`; `ALL` apenas para `service_role` e usuários com `has_role(auth.uid(), 'admin')`.
+- Bucket Storage público `service-images` com policy de upload restrita a admin.
+- Seed: migrar `SERVICES` (hardcoded em `src/lib/services-data.ts`) para a tabela preservando `slug` (compatibilidade com rotas atuais).
+
+### ServerFns
+- `listServicesPublic` (admin client, projeta colunas seguras) — usado pelos loaders SSR de `/servicos` e `/servicos/$slug`.
+- `listServicesAdmin`, `upsertService`, `deleteService`, `reorderServices`, `getUploadSignedUrl` — todos com `requireSupabaseAuth` + checagem de role admin.
+
+### UI Admin em `/painel/servicos`
+- Tabela com drag-and-drop (dnd-kit) para `display_order`, toggles de `is_active` / `is_featured`.
+- Modal de criar/editar com upload de imagem única (preview, crop opcional, validação de tamanho/tipo), todos os campos SEO e FAQ inline.
+- Botão excluir com confirmação dupla.
+
+### Frontend público
+- `/servicos` e `/servicos/$slug` passam a ler da tabela; cards usam `image_path` resolvido via URL pública do bucket; ordem respeitada.
+
+**QA:** criar 1 serviço de teste via admin, conferir aparecimento ordenado em `/servicos`, abrir página de detalhe, validar OG image e JSON-LD; excluir e confirmar 404.
+
+## Fase 3 — Migração 301 `/$service` → `/servicos/$slug` + Interlinking
+**Objetivo:** URL canônica única, sem perder SEO, e garantir que todo item de menu tem página própria e acessível.
+
+### Migração de rotas
+- Mover/renomear arquivos `src/routes/$service.tsx` (ex.: `trafego-pago-local.tsx`, `presenca-digital.tsx`, `site-express.tsx` etc.) para `src/routes/servicos.$slug.tsx` quando ainda existirem fora; consolidar lógica no template único da Fase 2.
+- Popular `public.redirects` em lote: `{old_path: '/trafego-pago-local', new_path: '/servicos/trafego-pago-local', status: 301}` para cada serviço.
+- Server route `/api/public/r/$` (catch-all) e middleware leve em `__root.tsx` para lookup runtime; canonical tag SSR aponta sempre para `/servicos/$slug`.
+- Sitemap regenerado a partir da tabela `services`; rotas antigas saem do sitemap.
+
+### Auditoria de interlinking
+- Script `scripts/audit-links.ts`: varre `src/routes/**/*` e `src/components/**/*`, lista todo `<Link to=...>` e `href=...`, compara com a árvore de rotas + tabela `redirects`. Falha se algum item do menu (Header/Footer/MegaMenu/MobileNav) não tiver página correspondente.
+- Corrigir links quebrados, garantir bloco "Serviços relacionados" no rodapé de cada `/servicos/$slug`, e breadcrumbs `Home → Serviços → {slug}` em todas.
+- Footer e Header revistos para listar todos os serviços ativos vindos do banco (não hardcoded).
+
+**QA:** rodar script de auditoria (0 erros), `curl -I` em 3 URLs antigas conferindo `301` + `Location` correto, navegar manualmente pelo menu completo no preview mobile.
 
 ---
 
-## Detalhes técnicos relevantes
+## Ordem e dependências
+```text
+Fase 1 (FAQ Schema)            ← isolado, ~10 min
+   ↓
+Fase 2 (CRUD admin)            ← cria fonte de verdade que a Fase 3 consome
+   ↓
+Fase 3 (301 + interlinking)    ← depende da tabela services existir
+```
 
-- DnD: `useSortable` + `restrictToVerticalAxis`; persist em debounce 400ms.
-- Scoring é determinístico e roda server-side em `submitDynamicFunnelLead` (não confiar em cliente).
-- Pipeline trigger usa `SECURITY DEFINER` + `search_path=public` e roda BEFORE INSERT.
-- Versão preview-only: token JWT curto assinado com `SUPABASE_SERVICE_ROLE_KEY` (HS256), validado em `getPublishedFunnel({ preview })`.
-- Rollback é não-destrutivo: cria nova versão a partir do snapshot antigo (preserva histórico linear).
+## Itens fora deste plano (já feitos / não pertinentes)
+- Login Google em `/painel` — bug do enum `partner_status` já corrigido nesta sessão.
+- Botão flutuante WhatsApp na home — bug de visibilidade já corrigido nesta sessão.
 
-## Posso seguir?
+Aprove para eu começar pela **Fase 1**.
