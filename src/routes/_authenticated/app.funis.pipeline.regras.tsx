@@ -490,24 +490,31 @@ function csvEscape(v: unknown): string {
 
 function traceToCsv(result: SimulationResult, lead: MockLead): string {
   const rows: string[] = [];
-  rows.push(["scope", "rule_priority", "rule_name", "status", "detail"].join(","));
-  rows.push(["lead", "", "", "score", String(lead.score)].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "intent", lead.intent].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "stage", lead.stage].map(csvEscape).join(","));
-  rows.push(["lead", "", "", "tags", lead.tags.join("|")].map(csvEscape).join(","));
+  rows.push(["scope", "rule_id", "rule_priority", "rule_name", "status", "detail"].join(","));
+  rows.push(["lead", "", "", "", "score", String(lead.score)].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "intent", lead.intent].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "stage", lead.stage].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "", "tags", lead.tags.join("|")].map(csvEscape).join(","));
   Object.entries(lead.answers).forEach(([k, v]) =>
-    rows.push(["lead", "", "", `answer:${k}`, v].map(csvEscape).join(",")),
+    rows.push(["lead", "", "", "", `answer:${k}`, v].map(csvEscape).join(",")),
   );
-  rows.push(["final", "", "", "stage", result.finalStage].map(csvEscape).join(","));
-  rows.push(["final", "", "", "tags", result.finalTags.join("|")].map(csvEscape).join(","));
+  rows.push(["final", "", "", "", "stage", result.finalStage].map(csvEscape).join(","));
+  rows.push(["final", "", "", "", "tags", result.finalTags.join("|")].map(csvEscape).join(","));
+  // Change list (winner-driven diff)
+  const added = result.finalTags.filter((t) => !lead.tags.includes(t));
+  const removed = lead.tags.filter((t) => !result.finalTags.includes(t));
+  if (lead.stage !== result.finalStage) rows.push(["change", "", "", "", "stage", `${lead.stage} → ${result.finalStage}`].map(csvEscape).join(","));
+  added.forEach((t) => rows.push(["change", "", "", "", "tag_added", t].map(csvEscape).join(",")));
+  removed.forEach((t) => rows.push(["change", "", "", "", "tag_removed", t].map(csvEscape).join(",")));
   for (const m of result.matches) {
     const status = m.applied ? "applied" : m.matched ? "matched" : "skipped";
     for (const r of m.reasons) {
-      rows.push(["rule", String(m.rule.priority), m.rule.name, status, r].map(csvEscape).join(","));
+      rows.push(["rule", m.rule.id ?? "", String(m.rule.priority), m.rule.name, status, r].map(csvEscape).join(","));
     }
   }
   return rows.join("\n");
 }
+
 
 function RuleSimulator({
   rules,
@@ -599,9 +606,52 @@ function RuleSimulator({
 
   const exportJson = () => {
     if (!result) return;
-    const payload = { lead: buildLead(), result };
+    const lead = buildLead();
+    const winner = result.matches.find((m) => m.applied);
+    const matched = result.matches.filter((m) => m.matched);
+    const addedTags = result.finalTags.filter((t) => !lead.tags.includes(t));
+    const removedTags = lead.tags.filter((t) => !result.finalTags.includes(t));
+    const payload = {
+      schema: "0web.pipeline-simulation/v2",
+      generated_at: new Date().toISOString(),
+      lead,
+      winner: winner
+        ? {
+            rule_id: winner.rule.id ?? null,
+            rule_name: winner.rule.name,
+            rule_priority: winner.rule.priority,
+            match_reasons: winner.reasons,
+            tie_break_note: matched.filter((m) => m !== winner && m.rule.priority === winner.rule.priority).length
+              ? "Empate de prioridade — desempate por created_at ASC"
+              : null,
+          }
+        : null,
+      changes: {
+        stage: lead.stage !== result.finalStage ? { from: lead.stage, to: result.finalStage } : null,
+        tags_added: addedTags,
+        tags_removed: removedTags,
+        final_tags: result.finalTags,
+      },
+      conflicts: matched.length > 1
+        ? matched.filter((m) => !m.applied).map((m) => ({
+            rule_id: m.rule.id ?? null,
+            rule_name: m.rule.name,
+            rule_priority: m.rule.priority,
+            same_priority_as_winner: winner ? m.rule.priority === winner.rule.priority : false,
+            match_reasons: m.reasons,
+          }))
+        : [],
+      evaluation: result.matches.map((m) => ({
+        rule_id: m.rule.id ?? null,
+        rule_name: m.rule.name,
+        rule_priority: m.rule.priority,
+        status: m.applied ? "applied" : m.matched ? "matched" : "skipped",
+        reasons: m.reasons,
+      })),
+    };
     download(`simulacao-${Date.now()}.json`, JSON.stringify(payload, null, 2), "application/json");
   };
+
   const exportCsv = () => {
     if (!result) return;
     download(`simulacao-${Date.now()}.csv`, traceToCsv(result, buildLead()), "text/csv");

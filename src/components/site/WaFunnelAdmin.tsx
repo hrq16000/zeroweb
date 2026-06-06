@@ -157,6 +157,20 @@ export function WaFunnelAdmin() {
             <option value="0">Não — desabilitado</option>
           </select>
         </Field>
+        <Field label="Modo padrão do widget">
+          <select
+            value={cfg.mode ?? "short"}
+            onChange={(e) => patch({ mode: e.target.value as FunnelConfig["mode"] })}
+            className="input"
+          >
+            <option value="short">Fluxo curto (3-5 perguntas no chatbot)</option>
+            <option value="diagnostic">Funil diagnóstico completo (redireciona)</option>
+            <option value="ai">IA conversacional (em breve)</option>
+          </select>
+        </Field>
+        <Field label="Slug do funil diagnóstico">
+          <input className="input" value={cfg.diagnosticSlug ?? ""} onChange={(e) => patch({ diagnosticSlug: e.target.value })} placeholder="diagnostico-0web" />
+        </Field>
         <Field label="Mensagem de sucesso">
           <input className="input" value={cfg.successMessage} onChange={(e) => patch({ successMessage: e.target.value })} />
         </Field>
@@ -174,7 +188,24 @@ export function WaFunnelAdmin() {
             onChange={(e) => patch({ whatsappTemplate: e.target.value })}
           />
         </Field>
+        <Field label="Overrides por rota (uma por linha: /pathname=modo)" className="lg:col-span-2">
+          <textarea
+            rows={4}
+            className="input font-mono text-xs"
+            value={Object.entries(cfg.pageOverrides ?? {}).map(([k, v]) => `${k}=${v}`).join("\n")}
+            onChange={(e) => {
+              const obj: Record<string, FunnelConfig["mode"] & string> = {};
+              e.target.value.split("\n").forEach((line) => {
+                const [path, mode] = line.split("=").map((s) => s.trim());
+                if (path && (mode === "short" || mode === "diagnostic" || mode === "ai")) obj[path] = mode;
+              });
+              patch({ pageOverrides: obj });
+            }}
+            placeholder={"/planos=diagnostic\n/blog/*=ai\n/contato=short"}
+          />
+        </Field>
       </div>
+
 
       <div className="mt-8">
         <div className="flex items-center justify-between">
@@ -237,6 +268,14 @@ export function WaFunnelAdmin() {
                     />
                   </Field>
                 )}
+                <Field label="Mensagem de fallback (resposta inesperada)" className="sm:col-span-2">
+                  <input
+                    className="input"
+                    value={s.fallbackHint ?? ""}
+                    onChange={(e) => patchStep(i, { fallbackHint: e.target.value })}
+                    placeholder="Ex.: Digite um telefone válido com DDD."
+                  />
+                </Field>
                 <Field label="Obrigatório?">
                   <select
                     className="input"
@@ -247,6 +286,7 @@ export function WaFunnelAdmin() {
                     <option value="0">Não</option>
                   </select>
                 </Field>
+
               </div>
             </div>
           ))}
