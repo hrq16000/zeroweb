@@ -29,6 +29,8 @@ type Props = {
   redirectTo?: string;
   /** Show thank-you modal in-place instead of redirecting (default: true when no redirectTo). */
   useModal?: boolean;
+  /** Show LGPD consent checkbox (required to submit when true). */
+  requireConsent?: boolean;
 };
 
 export function ContactFormWhatsApp({
@@ -38,6 +40,7 @@ export function ContactFormWhatsApp({
   defaultMessage = "Quero uma proposta da 0WEB.",
   redirectTo,
   useModal,
+  requireConsent = false,
 }: Props) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -46,6 +49,7 @@ export function ContactFormWhatsApp({
   const [geo, setGeo] = useState<GeoInfo | null>(null);
   const [gpsStatus, setGpsStatus] = useState<"idle" | "asking" | "ok" | "denied">("idle");
   const [gpsConsentOpen, setGpsConsentOpen] = useState(false);
+  const [consent, setConsent] = useState(false);
   const shouldUseModal = useModal ?? !redirectTo;
 
   // Subliminal IP geo on mount
