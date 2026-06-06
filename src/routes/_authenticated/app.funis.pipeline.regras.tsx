@@ -440,6 +440,75 @@ function CsvField({ label, value, onChange, placeholder }: { label: string; valu
 
 type KV = { key: string; value: string };
 
+type Scenario = {
+  id: string;
+  name: string;
+  formId: string;
+  score: number;
+  intent: Intent;
+  stage: Stage;
+  tagsCsv: string;
+  answers: KV[];
+};
+
+const PRESETS_KEY = "pipeline-sim-presets-v1";
+
+function loadPresets(): Scenario[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY);
+    return raw ? (JSON.parse(raw) as Scenario[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePresets(list: Scenario[]) {
+  try {
+    localStorage.setItem(PRESETS_KEY, JSON.stringify(list));
+  } catch {
+    // ignore
+  }
+}
+
+function download(filename: string, content: string, mime: string) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(v: unknown): string {
+  const s = String(v ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function traceToCsv(result: SimulationResult, lead: MockLead): string {
+  const rows: string[] = [];
+  rows.push(["scope", "rule_priority", "rule_name", "status", "detail"].join(","));
+  rows.push(["lead", "", "", "score", String(lead.score)].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "intent", lead.intent].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "stage", lead.stage].map(csvEscape).join(","));
+  rows.push(["lead", "", "", "tags", lead.tags.join("|")].map(csvEscape).join(","));
+  Object.entries(lead.answers).forEach(([k, v]) =>
+    rows.push(["lead", "", "", `answer:${k}`, v].map(csvEscape).join(",")),
+  );
+  rows.push(["final", "", "", "stage", result.finalStage].map(csvEscape).join(","));
+  rows.push(["final", "", "", "tags", result.finalTags.join("|")].map(csvEscape).join(","));
+  for (const m of result.matches) {
+    const status = m.applied ? "applied" : m.matched ? "matched" : "skipped";
+    for (const r of m.reasons) {
+      rows.push(["rule", String(m.rule.priority), m.rule.name, status, r].map(csvEscape).join(","));
+    }
+  }
+  return rows.join("\n");
+}
+
 function RuleSimulator({
   rules,
   forms,
@@ -449,6 +518,9 @@ function RuleSimulator({
   forms: Awaited<ReturnType<typeof listForms>>;
   onClose: () => void;
 }) {
+  const [tab, setTab] = useState<"single" | "bulk">("single");
+
+  // single scenario
   const [formId, setFormId] = useState<string | "">("");
   const [score, setScore] = useState<number>(70);
   const [intent, setIntent] = useState<Intent>("hot");
@@ -457,25 +529,138 @@ function RuleSimulator({
   const [answers, setAnswers] = useState<KV[]>([{ key: "", value: "" }]);
   const [result, setResult] = useState<SimulationResult | null>(null);
 
-  const run = () => {
-    const lead: MockLead = {
-      form_id: formId || null,
+  // presets
+  const [presets, setPresets] = useState<Scenario[]>([]);
+  useEffect(() => setPresets(loadPresets()), []);
+
+  // bulk
+  const [bulkText, setBulkText] = useState(
+    `# Um lead por linha, JSON. Ex.:
+{"score":85,"intent":"hot","stage":"novo","tags":["google-ads"],"answers":{"investimento":"5000"}}
+{"score":40,"intent":"warm","stage":"novo","tags":[],"answers":{"investimento":"500"}}`,
+  );
+  const [bulkResults, setBulkResults] = useState<{ lead: MockLead; result: SimulationResult }[] | null>(null);
+  const [bulkError, setBulkError] = useState<string | null>(null);
+
+  const buildLead = (): MockLead => ({
+    form_id: formId || null,
+    score,
+    intent,
+    stage,
+    tags: tagsCsv.split(",").map((s) => s.trim()).filter(Boolean),
+    answers: Object.fromEntries(
+      answers.filter((a) => a.key.trim()).map((a) => [a.key.trim(), a.value]),
+    ),
+  });
+
+  const run = () => setResult(simulateRules(rules, buildLead()));
+
+  const applied = result?.matches.find((m) => m.applied);
+  const matchedRules = result?.matches.filter((m) => m.matched) ?? [];
+  const hasConflict = matchedRules.length > 1;
+
+  const savePreset = () => {
+    const name = prompt("Nome do cenário:");
+    if (!name?.trim()) return;
+    const sc: Scenario = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      formId,
       score,
       intent,
       stage,
-      tags: tagsCsv.split(",").map((s) => s.trim()).filter(Boolean),
-      answers: Object.fromEntries(
-        answers.filter((a) => a.key.trim()).map((a) => [a.key.trim(), a.value]),
-      ),
+      tagsCsv,
+      answers,
     };
-    setResult(simulateRules(rules, lead));
+    const next = [...presets, sc];
+    setPresets(next);
+    savePresets(next);
+    toast.success("Cenário salvo");
   };
 
-  const applied = result?.matches.find((m) => m.applied);
+  const loadPreset = (id: string) => {
+    const sc = presets.find((p) => p.id === id);
+    if (!sc) return;
+    setFormId(sc.formId);
+    setScore(sc.score);
+    setIntent(sc.intent);
+    setStage(sc.stage);
+    setTagsCsv(sc.tagsCsv);
+    setAnswers(sc.answers.length ? sc.answers : [{ key: "", value: "" }]);
+    setResult(null);
+    toast.success(`Cenário "${sc.name}" carregado`);
+  };
+
+  const deletePreset = (id: string) => {
+    const next = presets.filter((p) => p.id !== id);
+    setPresets(next);
+    savePresets(next);
+  };
+
+  const exportJson = () => {
+    if (!result) return;
+    const payload = { lead: buildLead(), result };
+    download(`simulacao-${Date.now()}.json`, JSON.stringify(payload, null, 2), "application/json");
+  };
+  const exportCsv = () => {
+    if (!result) return;
+    download(`simulacao-${Date.now()}.csv`, traceToCsv(result, buildLead()), "text/csv");
+  };
+
+  const runBulk = () => {
+    setBulkError(null);
+    const lines = bulkText
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith("#"));
+    const out: { lead: MockLead; result: SimulationResult }[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      try {
+        const obj = JSON.parse(lines[i]) as Partial<MockLead>;
+        const lead: MockLead = {
+          form_id: obj.form_id ?? (formId || null),
+          score: Number(obj.score ?? 0),
+          intent: (obj.intent ?? "cold") as Intent,
+          stage: (obj.stage ?? "novo") as Stage,
+          tags: Array.isArray(obj.tags) ? obj.tags : [],
+          answers: (obj.answers as Record<string, string>) ?? {},
+        };
+        out.push({ lead, result: simulateRules(rules, lead) });
+      } catch (e) {
+        setBulkError(`Linha ${i + 1}: ${e instanceof Error ? e.message : "JSON inválido"}`);
+        return;
+      }
+    }
+    setBulkResults(out);
+  };
+
+  const exportBulkCsv = () => {
+    if (!bulkResults) return;
+    const rows = [["#", "score", "intent", "stage_in", "stage_out", "rule", "added_tags", "removed_tags", "final_tags"].join(",")];
+    bulkResults.forEach((b, idx) => {
+      const applied = b.result.matches.find((m) => m.applied);
+      const addedTags = b.result.finalTags.filter((t) => !b.lead.tags.includes(t));
+      const removedTags = b.lead.tags.filter((t) => !b.result.finalTags.includes(t));
+      rows.push(
+        [
+          idx + 1,
+          b.lead.score,
+          b.lead.intent,
+          b.lead.stage,
+          b.result.finalStage,
+          applied?.rule.name ?? "—",
+          addedTags.join("|"),
+          removedTags.join("|"),
+          b.result.finalTags.join("|"),
+        ].map(csvEscape).join(","),
+      );
+    });
+    download(`simulacao-lote-${Date.now()}.csv`, rows.join("\n"), "text/csv");
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4">
-      <div className="w-full max-w-4xl bg-card border border-border rounded-2xl shadow-xl my-8 animate-scale-in">
+      <div className="w-full max-w-5xl bg-card border border-border rounded-2xl shadow-xl my-8 animate-scale-in">
         <div className="p-5 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FlaskConical className="w-4 h-4" />
@@ -484,158 +669,302 @@ function RuleSimulator({
           <button onClick={onClose} className="p-1 rounded hover:bg-muted"><X className="w-4 h-4" /></button>
         </div>
 
-        <div className="p-5 grid md:grid-cols-2 gap-6">
-          {/* Lead simulado */}
-          <section className="space-y-3">
-            <h3 className="text-sm font-semibold">Lead simulado</h3>
+        <div className="px-5 pt-4 flex gap-2 border-b border-border">
+          {([["single", "Único"], ["bulk", "Em lote"]] as const).map(([v, label]) => (
+            <button
+              key={v}
+              onClick={() => setTab(v)}
+              className={`px-3 py-2 text-sm border-b-2 -mb-px ${tab === v ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Funil</label>
-              <select
-                value={formId}
-                onChange={(e) => setFormId(e.target.value)}
-                className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
-              >
-                <option value="">(sem funil específico)</option>
-                {forms.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground">Score (0–100)</label>
-                <Input type="number" min={0} max={100} value={score} onChange={(e) => setScore(Number(e.target.value) || 0)} />
+        {tab === "single" && (
+          <div className="p-5 grid md:grid-cols-2 gap-6">
+            {/* Lead simulado */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Lead simulado</h3>
+                <Button variant="ghost" size="sm" onClick={savePreset} title="Salvar cenário atual">
+                  <BookmarkPlus className="w-3.5 h-3.5 mr-1" /> Salvar cenário
+                </Button>
               </div>
+
+              {presets.length > 0 && (
+                <div className="rounded-lg border border-border p-2">
+                  <div className="text-[10px] uppercase text-muted-foreground mb-1 px-1">Cenários salvos</div>
+                  <div className="flex flex-wrap gap-1">
+                    {presets.map((p) => (
+                      <div key={p.id} className="inline-flex items-center gap-1 rounded-md bg-muted/50 text-xs">
+                        <button className="px-2 py-1 hover:text-primary" onClick={() => loadPreset(p.id)}>{p.name}</button>
+                        <button className="px-1 text-muted-foreground hover:text-destructive" title="Excluir" onClick={() => deletePreset(p.id)}>
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="text-xs font-medium text-muted-foreground">Etapa atual</label>
+                <label className="text-xs font-medium text-muted-foreground">Funil</label>
                 <select
-                  value={stage}
-                  onChange={(e) => setStage(e.target.value as Stage)}
+                  value={formId}
+                  onChange={(e) => setFormId(e.target.value)}
                   className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                 >
-                  {STAGES.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
+                  <option value="">(sem funil específico)</option>
+                  {forms.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
                 </select>
               </div>
-            </div>
 
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Intenção</label>
-              <div className="flex gap-2 mt-1">
-                {INTENTS.map((i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setIntent(i)}
-                    className={`px-3 py-1.5 rounded-md border text-xs capitalize ${intent === i ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Score (0–100)</label>
+                  <Input type="number" min={0} max={100} value={score} onChange={(e) => setScore(Number(e.target.value) || 0)} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Etapa atual</label>
+                  <select
+                    value={stage}
+                    onChange={(e) => setStage(e.target.value as Stage)}
+                    className="w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                   >
-                    {i}
-                  </button>
-                ))}
+                    {STAGES.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Tags atuais (separadas por vírgula)</label>
-              <Input value={tagsCsv} onChange={(e) => setTagsCsv(e.target.value)} placeholder="google-ads, pme" />
-            </div>
-
-            <div>
-              <label className="text-xs font-medium text-muted-foreground">Respostas do funil</label>
-              <div className="space-y-2 mt-1">
-                {answers.map((a, idx) => (
-                  <div key={idx} className="flex gap-2">
-                    <Input
-                      placeholder="chave (ex: investimento)"
-                      value={a.key}
-                      onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, key: e.target.value } : x))}
-                    />
-                    <Input
-                      placeholder="valor"
-                      value={a.value}
-                      onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, value: e.target.value } : x))}
-                    />
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Intenção</label>
+                <div className="flex gap-2 mt-1">
+                  {INTENTS.map((i) => (
                     <button
+                      key={i}
                       type="button"
-                      onClick={() => setAnswers((p) => p.length === 1 ? [{ key: "", value: "" }] : p.filter((_, i) => i !== idx))}
-                      className="p-2 rounded hover:bg-destructive/10 text-destructive"
-                      title="Remover"
+                      onClick={() => setIntent(i)}
+                      className={`px-3 py-1.5 rounded-md border text-xs capitalize ${intent === i ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-muted"}`}
                     >
-                      <X className="w-4 h-4" />
+                      {i}
                     </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => setAnswers((p) => [...p, { key: "", value: "" }])}
-                  className="text-xs text-primary hover:underline"
-                >
-                  + adicionar resposta
-                </button>
+                  ))}
+                </div>
               </div>
+
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Tags atuais (separadas por vírgula)</label>
+                <Input value={tagsCsv} onChange={(e) => setTagsCsv(e.target.value)} placeholder="google-ads, pme" />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Respostas do funil</label>
+                <div className="space-y-2 mt-1">
+                  {answers.map((a, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <Input
+                        placeholder="chave (ex: investimento)"
+                        value={a.key}
+                        onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, key: e.target.value } : x))}
+                      />
+                      <Input
+                        placeholder="valor"
+                        value={a.value}
+                        onChange={(e) => setAnswers((p) => p.map((x, i) => i === idx ? { ...x, value: e.target.value } : x))}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setAnswers((p) => p.length === 1 ? [{ key: "", value: "" }] : p.filter((_, i) => i !== idx))}
+                        className="p-2 rounded hover:bg-destructive/10 text-destructive"
+                        title="Remover"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setAnswers((p) => [...p, { key: "", value: "" }])}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    + adicionar resposta
+                  </button>
+                </div>
+              </div>
+
+              <Button onClick={run} className="w-full">
+                <Play className="w-4 h-4 mr-2" /> Rodar simulação
+              </Button>
+            </section>
+
+            {/* Resultado */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Resultado</h3>
+                {result && (
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" onClick={exportJson} title="Exportar JSON">
+                      <Download className="w-3.5 h-3.5 mr-1" /> JSON
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={exportCsv} title="Exportar CSV">
+                      <Download className="w-3.5 h-3.5 mr-1" /> CSV
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {!result ? (
+                <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                  Preencha o lead e clique em <span className="font-medium">Rodar simulação</span>.
+                </div>
+              ) : (
+                <>
+                  <div className="rounded-xl border border-border p-4 bg-muted/30 space-y-2">
+                    <div className="text-xs uppercase tracking-wide text-muted-foreground">Resultado final</div>
+                    {applied ? (
+                      <div className="text-sm">
+                        Regra aplicada: <span className="font-semibold">{applied.rule.name}</span>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">Nenhuma regra disparou — lead segue como está.</div>
+                    )}
+                    <div className="text-sm">Etapa final: <span className="font-mono">{result.finalStage}</span></div>
+                    <div className="text-sm">Tags finais: {result.finalTags.length ? result.finalTags.map((t) => (
+                      <span key={t} className="inline-block mr-1 px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">{t}</span>
+                    )) : <span className="text-muted-foreground">—</span>}</div>
+                  </div>
+
+                  {hasConflict && applied && (
+                    <div className="rounded-xl border border-yellow-500/40 bg-yellow-500/5 p-3 text-xs space-y-1.5">
+                      <div className="flex items-center gap-1.5 font-medium text-yellow-700 dark:text-yellow-500">
+                        <AlertTriangle className="w-3.5 h-3.5" /> {matchedRules.length} regras casaram — conflito resolvido por prioridade
+                      </div>
+                      <div className="text-muted-foreground">
+                        Vencedora: <span className="font-mono">[{applied.rule.priority}]</span> <span className="font-medium text-foreground">{applied.rule.name}</span>. Demais regras foram ignoradas:
+                      </div>
+                      <ul className="ml-4 list-disc text-muted-foreground">
+                        {matchedRules.filter((m) => !m.applied).map((m, i) => (
+                          <li key={i}>
+                            <span className="font-mono">[{m.rule.priority}]</span> {m.rule.name}
+                            {m.rule.priority === applied.rule.priority && (
+                              <span className="ml-1 text-yellow-700 dark:text-yellow-500">⚠ mesma prioridade — desempate por data de criação</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="rounded-xl border border-border overflow-hidden">
+                    <div className="px-3 py-2 bg-muted/50 text-xs uppercase text-muted-foreground">Avaliação por regra (ordem de prioridade)</div>
+                    <ul className="divide-y divide-border">
+                      {result.matches.map((m, idx) => (
+                        <li key={idx} className="p-3 text-xs">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="font-medium text-sm flex items-center gap-2">
+                              <span className="font-mono text-muted-foreground">[{m.rule.priority}]</span>
+                              {m.rule.name}
+                            </div>
+                            <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-semibold ${
+                              m.applied ? "bg-green-500/15 text-green-600" :
+                              m.matched ? "bg-yellow-500/15 text-yellow-600" :
+                              "bg-muted text-muted-foreground"
+                            }`}>
+                              {m.applied ? "Aplicada" : m.matched ? "Bateu (não venceu)" : "Não bate"}
+                            </span>
+                          </div>
+                          <ul className="mt-1 space-y-0.5 text-muted-foreground">
+                            {m.reasons.map((r, i) => <li key={i}>· {r}</li>)}
+                          </ul>
+                        </li>
+                      ))}
+                      {result.matches.length === 0 && (
+                        <li className="p-4 text-center text-muted-foreground text-sm">Nenhuma regra cadastrada.</li>
+                      )}
+                    </ul>
+                  </div>
+                </>
+              )}
+            </section>
+          </div>
+        )}
+
+        {tab === "bulk" && (
+          <div className="p-5 space-y-4">
+            <div className="text-sm text-muted-foreground flex items-center gap-2">
+              <Layers className="w-4 h-4" /> Cole um lead por linha em JSON. Veja a movimentação prevista para cada um.
+            </div>
+            <textarea
+              value={bulkText}
+              onChange={(e) => setBulkText(e.target.value)}
+              rows={8}
+              className="w-full rounded-md border border-input bg-transparent p-3 text-xs font-mono"
+              spellCheck={false}
+            />
+            {bulkError && (
+              <div className="text-xs text-destructive flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" /> {bulkError}
+              </div>
+            )}
+            <div className="flex justify-between items-center gap-2">
+              <Button onClick={runBulk}>
+                <Play className="w-4 h-4 mr-2" /> Rodar lote
+              </Button>
+              {bulkResults && bulkResults.length > 0 && (
+                <Button variant="outline" onClick={exportBulkCsv}>
+                  <Download className="w-3.5 h-3.5 mr-1" /> Exportar CSV
+                </Button>
+              )}
             </div>
 
-            <Button onClick={run} className="w-full">
-              <Play className="w-4 h-4 mr-2" /> Rodar simulação
-            </Button>
-          </section>
-
-          {/* Resultado */}
-          <section className="space-y-3">
-            <h3 className="text-sm font-semibold">Resultado</h3>
-
-            {!result ? (
-              <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                Preencha o lead e clique em <span className="font-medium">Rodar simulação</span>.
-              </div>
-            ) : (
-              <>
-                <div className="rounded-xl border border-border p-4 bg-muted/30 space-y-2">
-                  <div className="text-xs uppercase tracking-wide text-muted-foreground">Resultado final</div>
-                  {applied ? (
-                    <div className="text-sm">
-                      Regra aplicada: <span className="font-semibold">{applied.rule.name}</span>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-muted-foreground">Nenhuma regra disparou — lead segue como está.</div>
-                  )}
-                  <div className="text-sm">Etapa final: <span className="font-mono">{result.finalStage}</span></div>
-                  <div className="text-sm">Tags finais: {result.finalTags.length ? result.finalTags.map((t) => (
-                    <span key={t} className="inline-block mr-1 px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">{t}</span>
-                  )) : <span className="text-muted-foreground">—</span>}</div>
-                </div>
-
-                <div className="rounded-xl border border-border overflow-hidden">
-                  <div className="px-3 py-2 bg-muted/50 text-xs uppercase text-muted-foreground">Avaliação por regra (ordem de prioridade)</div>
-                  <ul className="divide-y divide-border">
-                    {result.matches.map((m, idx) => (
-                      <li key={idx} className="p-3 text-xs">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="font-medium text-sm flex items-center gap-2">
-                            <span className="font-mono text-muted-foreground">[{m.rule.priority}]</span>
-                            {m.rule.name}
-                          </div>
-                          <span className={`text-[10px] px-2 py-0.5 rounded uppercase font-semibold ${
-                            m.applied ? "bg-green-500/15 text-green-600" :
-                            m.matched ? "bg-yellow-500/15 text-yellow-600" :
-                            "bg-muted text-muted-foreground"
-                          }`}>
-                            {m.applied ? "Aplicada" : m.matched ? "Bateria (não venceu)" : "Não bate"}
-                          </span>
-                        </div>
-                        <ul className="mt-1 space-y-0.5 text-muted-foreground">
-                          {m.reasons.map((r, i) => <li key={i}>· {r}</li>)}
-                        </ul>
-                      </li>
-                    ))}
-                    {result.matches.length === 0 && (
-                      <li className="p-4 text-center text-muted-foreground text-sm">Nenhuma regra cadastrada.</li>
+            {bulkResults && (
+              <div className="rounded-xl border border-border overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground">
+                    <tr>
+                      <th className="text-left p-2">#</th>
+                      <th className="text-left p-2">Score</th>
+                      <th className="text-left p-2">Intenção</th>
+                      <th className="text-left p-2">Etapa</th>
+                      <th className="text-left p-2">→ Etapa final</th>
+                      <th className="text-left p-2">Regra aplicada</th>
+                      <th className="text-left p-2">Tags finais</th>
+                      <th className="text-left p-2">Conflito</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bulkResults.map((b, idx) => {
+                      const applied = b.result.matches.find((m) => m.applied);
+                      const matched = b.result.matches.filter((m) => m.matched).length;
+                      return (
+                        <tr key={idx} className="border-t border-border hover:bg-muted/30">
+                          <td className="p-2 font-mono">{idx + 1}</td>
+                          <td className="p-2">{b.lead.score}</td>
+                          <td className="p-2 capitalize">{b.lead.intent}</td>
+                          <td className="p-2 font-mono">{b.lead.stage}</td>
+                          <td className="p-2 font-mono font-semibold">{b.result.finalStage}</td>
+                          <td className="p-2">{applied?.rule.name ?? <span className="text-muted-foreground">—</span>}</td>
+                          <td className="p-2">{b.result.finalTags.join(", ") || <span className="text-muted-foreground">—</span>}</td>
+                          <td className="p-2">
+                            {matched > 1 ? (
+                              <span className="text-yellow-600">{matched} casaram</span>
+                            ) : (
+                              <span className="text-muted-foreground">ok</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {bulkResults.length === 0 && (
+                      <tr><td colSpan={8} className="p-4 text-center text-muted-foreground">Nenhum lead processado.</td></tr>
                     )}
-                  </ul>
-                </div>
-              </>
+                  </tbody>
+                </table>
+              </div>
             )}
-          </section>
-        </div>
+          </div>
+        )}
 
         <div className="p-5 border-t border-border flex justify-end">
           <Button variant="ghost" onClick={onClose}>Fechar</Button>
@@ -644,3 +973,4 @@ function RuleSimulator({
     </div>
   );
 }
+
