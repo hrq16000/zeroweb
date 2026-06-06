@@ -268,6 +268,14 @@ export function WaFunnelAdmin() {
                     />
                   </Field>
                 )}
+                <Field label="Mensagem de fallback (resposta inesperada)" className="sm:col-span-2">
+                  <input
+                    className="input"
+                    value={s.fallbackHint ?? ""}
+                    onChange={(e) => patchStep(i, { fallbackHint: e.target.value })}
+                    placeholder="Ex.: Digite um telefone válido com DDD."
+                  />
+                </Field>
                 <Field label="Obrigatório?">
                   <select
                     className="input"
@@ -278,6 +286,7 @@ export function WaFunnelAdmin() {
                     <option value="0">Não</option>
                   </select>
                 </Field>
+
               </div>
             </div>
           ))}
