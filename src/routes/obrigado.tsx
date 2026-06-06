@@ -188,7 +188,48 @@ function ObrigadoPage() {
               {content.finalCtaLabel}
             </Link>
           </motion.div>
+
+          {content.slaBadge ? (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-200"
+            >
+              ⏱️ {content.slaBadge}
+            </motion.p>
+          ) : null}
         </section>
+
+        {/* Status do atendimento (quando o canal define passos) */}
+        {content.status && content.status.length > 0 ? (
+          <section className="mt-16">
+            <div className="mx-auto max-w-4xl px-5 lg:px-8">
+              <h2 className="text-center text-2xl font-bold font-display mb-2">Status do seu pedido</h2>
+              <p className="text-center text-muted-foreground mb-8 max-w-xl mx-auto">
+                Acompanhe o que acontece a seguir:
+              </p>
+              <ol className="grid md:grid-cols-3 gap-4">
+                {content.status.map((s, i) => (
+                  <motion.li
+                    key={s.label}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + i * 0.1 }}
+                    className="relative rounded-2xl border border-border bg-card p-5"
+                  >
+                    <span className="absolute -top-3 -left-3 grid place-items-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shadow-md">
+                      {i + 1}
+                    </span>
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary">{s.eta}</p>
+                    <h3 className="mt-1 font-semibold text-foreground">{s.label}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </motion.li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        ) : null}
 
         {/* Próximos passos */}
         <section className="mt-20">
