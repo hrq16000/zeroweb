@@ -451,8 +451,9 @@ function ServicosHub() {
                               />
                             </div>
                           ) : (
-                            <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                              <Sparkles className="w-10 h-10 text-primary/40" />
+                            <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
+                              <Sparkles className="w-8 h-8 text-primary/40" />
+                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
                             </div>
                           )}
                           <div className="p-5">

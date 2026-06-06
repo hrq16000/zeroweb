@@ -122,6 +122,23 @@ function ServicePage() {
               <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
+            {data.imageUrl && (
+              <div
+                className="mt-8 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted"
+                style={{ aspectRatio: "16 / 9" }}
+              >
+                <img
+                  src={data.imageUrl}
+                  alt={data.imageAlt || data.h1}
+                  width={1280}
+                  height={720}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -133,16 +150,6 @@ function ServicePage() {
             >
               {data.ctaLabel} <ArrowRight className="w-4 h-4" />
             </button>
-            {data.imageUrl && (
-              <div className="mt-10 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant">
-                <img
-                  src={data.imageUrl}
-                  alt={data.imageAlt || data.h1}
-                  loading="eager"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            )}
           </div>
         </section>
 

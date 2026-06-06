@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Trash2, Plus, Upload, X } from "lucide-react";
+import { GripVertical, Pencil, Trash2, Plus, Upload, X, ImageOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,6 +136,29 @@ function ServicesAdminPage() {
           <Plus className="w-4 h-4 mr-1" /> Novo serviço
         </Button>
       </div>
+
+      {/* Auditoria: serviços ativos sem imagem real */}
+      {(() => {
+        const missing = rows.filter((r) => r.is_active && !r.image_url);
+        if (!missing.length) return null;
+        return (
+          <div className="mb-4 flex items-start gap-3 p-4 rounded-lg border border-amber-500/40 bg-amber-500/10 text-sm">
+            <ImageOff className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="font-medium text-amber-900 dark:text-amber-100">
+                {missing.length} serviço{missing.length > 1 ? "s" : ""} ativo{missing.length > 1 ? "s" : ""} sem imagem real cadastrada
+              </p>
+              <p className="mt-1 text-xs text-amber-800/80 dark:text-amber-200/80">
+                Estes cards aparecem em <code>/servicos</code> com placeholder. Edite cada um e faça upload da imagem real (sem usar IA genérica): {" "}
+                <span className="font-medium">
+                  {missing.slice(0, 5).map((m) => m.name).join(", ")}{missing.length > 5 ? `, +${missing.length - 5}` : ""}
+                </span>
+              </p>
+            </div>
+          </div>
+        );
+      })()}
+
 
       {loading ? (
         <p className="text-sm text-muted-foreground">Carregando…</p>
