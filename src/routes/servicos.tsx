@@ -54,9 +54,8 @@ export const Route = createFileRoute("/servicos")({
       name: "Serviços 0WEB",
       numberOfItems: SERVICE_LIST.length,
       itemListElement: SERVICE_LIST.map((s, i) => {
-        const isSiteExpress = s.slug === "site-express";
-        const sUrl = isSiteExpress ? SITE_EXPRESS_URL : absUrl(`/${s.slug}`);
-        const sId = isSiteExpress ? SITE_EXPRESS_SERVICE_ID : `${sUrl}#service`;
+        const sUrl = absUrl(`/servicos/${s.slug}`);
+        const sId = `${sUrl}#service`;
         return {
           "@type": "ListItem",
           position: i + 1,
