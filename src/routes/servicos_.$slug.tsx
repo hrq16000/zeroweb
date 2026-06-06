@@ -14,7 +14,7 @@ import { getServicePublic } from "@/lib/services-public.functions";
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
-export const Route = createFileRoute("/servicos/$slug")({
+export const Route = createFileRoute("/servicos_/$slug")({
   beforeLoad: ({ params }) => {
     if (params.slug === "site-express") {
       throw redirect({ to: "/servicos/site-express" });
