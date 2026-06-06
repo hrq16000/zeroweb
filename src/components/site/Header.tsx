@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, MessageCircle, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
