@@ -52,6 +52,7 @@ export function Header() {
 
   return (
     <header
+      ref={headerRef}
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled ? "glass shadow-elegant" : "bg-transparent"
       }`}
