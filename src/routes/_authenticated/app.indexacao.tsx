@@ -10,7 +10,7 @@ import {
 import { detectIndexCoverageAlerts, type CoverageAlert } from "@/lib/index-coverage-alerts.functions";
 import { parseGscCsv } from "@/lib/gsc-csv";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp } from "lucide-react";
+import { AlertTriangle, ExternalLink, RefreshCw, CheckCircle2, Upload, TrendingDown, TrendingUp, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/indexacao")({
   component: IndexCoveragePage,
