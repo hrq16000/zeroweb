@@ -606,9 +606,52 @@ function RuleSimulator({
 
   const exportJson = () => {
     if (!result) return;
-    const payload = { lead: buildLead(), result };
+    const lead = buildLead();
+    const winner = result.matches.find((m) => m.applied);
+    const matched = result.matches.filter((m) => m.matched);
+    const addedTags = result.finalTags.filter((t) => !lead.tags.includes(t));
+    const removedTags = lead.tags.filter((t) => !result.finalTags.includes(t));
+    const payload = {
+      schema: "0web.pipeline-simulation/v2",
+      generated_at: new Date().toISOString(),
+      lead,
+      winner: winner
+        ? {
+            rule_id: winner.rule.id ?? null,
+            rule_name: winner.rule.name,
+            rule_priority: winner.rule.priority,
+            match_reasons: winner.reasons,
+            tie_break_note: matched.filter((m) => m !== winner && m.rule.priority === winner.rule.priority).length
+              ? "Empate de prioridade — desempate por created_at ASC"
+              : null,
+          }
+        : null,
+      changes: {
+        stage: lead.stage !== result.finalStage ? { from: lead.stage, to: result.finalStage } : null,
+        tags_added: addedTags,
+        tags_removed: removedTags,
+        final_tags: result.finalTags,
+      },
+      conflicts: matched.length > 1
+        ? matched.filter((m) => !m.applied).map((m) => ({
+            rule_id: m.rule.id ?? null,
+            rule_name: m.rule.name,
+            rule_priority: m.rule.priority,
+            same_priority_as_winner: winner ? m.rule.priority === winner.rule.priority : false,
+            match_reasons: m.reasons,
+          }))
+        : [],
+      evaluation: result.matches.map((m) => ({
+        rule_id: m.rule.id ?? null,
+        rule_name: m.rule.name,
+        rule_priority: m.rule.priority,
+        status: m.applied ? "applied" : m.matched ? "matched" : "skipped",
+        reasons: m.reasons,
+      })),
+    };
     download(`simulacao-${Date.now()}.json`, JSON.stringify(payload, null, 2), "application/json");
   };
+
   const exportCsv = () => {
     if (!result) return;
     download(`simulacao-${Date.now()}.csv`, traceToCsv(result, buildLead()), "text/csv");
