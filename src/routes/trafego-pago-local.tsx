@@ -260,7 +260,7 @@ function TrafegoPagoLocalPage() {
         <RelatedLinksGrid
           title="Combine com outros serviços da 0WEB"
           subtitle="Tráfego pago performa muito mais quando seu site, SEO e atendimento estão alinhados."
-          only={["/criacao-sites", "/seo", "/automacao", "/planos", "/cases", "/faq"]}
+          only={["/servicos/criacao-de-sites", "/servicos/seo", "/servicos/automacao-com-ia", "/planos", "/cases", "/faq"]}
         />
 
         {/* FINAL */}
