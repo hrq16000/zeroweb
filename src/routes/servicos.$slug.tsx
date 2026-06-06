@@ -133,8 +133,19 @@ function ServicePage() {
             >
               {data.ctaLabel} <ArrowRight className="w-4 h-4" />
             </button>
+            {data.imageUrl && (
+              <div className="mt-10 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant">
+                <img
+                  src={data.imageUrl}
+                  alt={data.imageAlt || data.h1}
+                  loading="eager"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            )}
           </div>
         </section>
+
 
         <section className="py-12 bg-muted/30">
           <div className="mx-auto max-w-4xl px-5 lg:px-8">
