@@ -24,7 +24,6 @@ import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
-import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
@@ -53,10 +52,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as ServicosSiteExpressRouteImport } from './routes/servicos_.site-express'
-import { Route as ServicosSlugRouteImport } from './routes/servicos_.$slug'
+import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
+import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
@@ -200,11 +200,6 @@ const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
   path: '/sitemap-blog.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicosRoute = ServicosRouteImport.update({
-  id: '/servicos',
-  path: '/servicos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SeoRoute = SeoRouteImport.update({
   id: '/seo',
   path: '/seo',
@@ -344,6 +339,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicosIndexRoute = ServicosIndexRouteImport.update({
+  id: '/servicos/',
+  path: '/servicos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CasesIndexRoute = CasesIndexRouteImport.update({
   id: '/cases/',
   path: '/cases/',
@@ -355,12 +355,12 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
-  id: '/servicos_/site-express',
+  id: '/servicos/site-express',
   path: '/servicos/site-express',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosSlugRoute = ServicosSlugRouteImport.update({
-  id: '/servicos_/$slug',
+  id: '/servicos/$slug',
   path: '/servicos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -750,7 +750,6 @@ export interface FileRoutesByFullPath {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -792,6 +791,7 @@ export interface FileRoutesByFullPath {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
+  '/servicos/': typeof ServicosIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -864,7 +864,6 @@ export interface FileRoutesByTo {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -905,6 +904,7 @@ export interface FileRoutesByTo {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
+  '/servicos': typeof ServicosIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -979,7 +979,6 @@ export interface FileRoutesById {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
-  '/servicos': typeof ServicosRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1017,10 +1016,11 @@ export interface FileRoutesById {
   '/f/$slug': typeof FSlugRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
-  '/servicos_/$slug': typeof ServicosSlugRoute
-  '/servicos_/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
+  '/servicos/': typeof ServicosIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
@@ -1095,7 +1095,6 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
-    | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1137,6 +1136,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
+    | '/servicos/'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
@@ -1209,7 +1209,6 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
-    | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1250,6 +1249,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/blog'
     | '/cases'
+    | '/servicos'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/documents'
@@ -1323,7 +1323,6 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
-    | '/servicos'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1361,10 +1360,11 @@ export interface FileRouteTypes {
     | '/f/$slug'
     | '/profissional/$slug'
     | '/r/$code'
-    | '/servicos_/$slug'
-    | '/servicos_/site-express'
+    | '/servicos/$slug'
+    | '/servicos/site-express'
     | '/blog/'
     | '/cases/'
+    | '/servicos/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/documents'
@@ -1439,7 +1439,6 @@ export interface RootRouteChildren {
   RedesSociaisRoute: typeof RedesSociaisRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
-  ServicosRoute: typeof ServicosRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
@@ -1479,6 +1478,7 @@ export interface RootRouteChildren {
   ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  ServicosIndexRoute: typeof ServicosIndexRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
@@ -1597,13 +1597,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-blog.xml'
       fullPath: '/sitemap-blog.xml'
       preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/servicos': {
-      id: '/servicos'
-      path: '/servicos'
-      fullPath: '/servicos'
-      preLoaderRoute: typeof ServicosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/seo': {
@@ -1802,6 +1795,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicos/': {
+      id: '/servicos/'
+      path: '/servicos'
+      fullPath: '/servicos/'
+      preLoaderRoute: typeof ServicosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cases/': {
       id: '/cases/'
       path: '/cases'
@@ -1816,15 +1816,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/servicos_/site-express': {
-      id: '/servicos_/site-express'
+    '/servicos/site-express': {
+      id: '/servicos/site-express'
       path: '/servicos/site-express'
       fullPath: '/servicos/site-express'
       preLoaderRoute: typeof ServicosSiteExpressRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/servicos_/$slug': {
-      id: '/servicos_/$slug'
+    '/servicos/$slug': {
+      id: '/servicos/$slug'
       path: '/servicos/$slug'
       fullPath: '/servicos/$slug'
       preLoaderRoute: typeof ServicosSlugRouteImport
@@ -2466,7 +2466,6 @@ const rootRouteChildren: RootRouteChildren = {
   RedesSociaisRoute: RedesSociaisRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
-  ServicosRoute: ServicosRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
@@ -2506,6 +2505,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicosSiteExpressRoute: ServicosSiteExpressRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
