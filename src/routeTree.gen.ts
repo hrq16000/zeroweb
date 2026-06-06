@@ -24,6 +24,7 @@ import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
+import { Route as SiteExpressRouteImport } from './routes/site-express'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
@@ -195,6 +196,11 @@ const SitemapCasesDotxmlRoute = SitemapCasesDotxmlRouteImport.update({
 const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
   id: '/sitemap-blog.xml',
   path: '/sitemap-blog.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiteExpressRoute = SiteExpressRouteImport.update({
+  id: '/site-express',
+  path: '/site-express',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -732,6 +738,7 @@ export interface FileRoutesByFullPath {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
+  '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -843,6 +850,7 @@ export interface FileRoutesByTo {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
+  '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -955,6 +963,7 @@ export interface FileRoutesById {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRoute
+  '/site-express': typeof SiteExpressRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1068,6 +1077,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/site-express'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1179,6 +1189,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/site-express'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1290,6 +1301,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/site-express'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1403,6 +1415,7 @@ export interface RootRouteChildren {
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRoute
+  SiteExpressRoute: typeof SiteExpressRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
@@ -1558,6 +1571,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-blog.xml'
       fullPath: '/sitemap-blog.xml'
       preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/site-express': {
+      id: '/site-express'
+      path: '/site-express'
+      fullPath: '/site-express'
+      preLoaderRoute: typeof SiteExpressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -2405,6 +2425,7 @@ const rootRouteChildren: RootRouteChildren = {
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRoute,
+  SiteExpressRoute: SiteExpressRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
