@@ -116,6 +116,8 @@ export function ContactFormWhatsApp({
             source,
             payload: {
               message: d.message,
+              consent: requireConsent ? consent : undefined,
+              consent_at: requireConsent && consent ? new Date().toISOString() : undefined,
               channel: attr.channel,
               ctx: attr.ctx,
               origin_page: attr.page_path,
