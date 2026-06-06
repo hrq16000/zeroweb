@@ -42,3 +42,6 @@
   - ❌ (5) `/servicos/sistemas-web`
   - ❌ (5) `/servicos/gestao-redes-sociais`
 
+## 2026-06-06T21-10-09-853Z — sitemap/robots — https://0web.com.br
+- Checks: **7** | Falhas: **0** | Relatório: `seo-reports/sitemaps-2026-06-06T21-10-09-853Z.json`
+

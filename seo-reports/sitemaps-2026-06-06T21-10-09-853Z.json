@@ -1,0 +1,79 @@
+{
+  "base": "https://0web.com.br",
+  "generated_at": "2026-06-06T21:10:09.853Z",
+  "checks": [
+    {
+      "name": "robots.txt: 1 diretiva Sitemap:",
+      "ok": true,
+      "detail": "encontradas: 1 (Sitemap: https://0web.com.br/sitemap.xml)"
+    },
+    {
+      "name": "robots.txt: não bloqueia /servicos",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "sitemap-pages.xml inclui /servicos",
+      "ok": true,
+      "detail": "total urls: 21"
+    },
+    {
+      "name": "sitemap-services.xml acessível",
+      "ok": true,
+      "detail": "total urls: 10"
+    },
+    {
+      "name": "sitemap-services.xml contém slugs obrigatórios (4)",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "sitemap-services.xml sem URLs duplicadas",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "Sem duplicidade /servicos/{slug} entre pages.xml e services.xml",
+      "ok": true,
+      "detail": null
+    }
+  ],
+  "data": {
+    "robots": "User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /app/\nDisallow: /auth\nDisallow: /painel\nDisallow: /painel-crm\nDisallow: /qa-events\nDisallow: /r/\nDisallow: /api/\n\nSitemap: https://0web.com.br/sitemap.xml\n",
+    "pagesUrls": [
+      "https://0web.com.br/",
+      "https://0web.com.br/sobre",
+      "https://0web.com.br/contato",
+      "https://0web.com.br/solicitar-orcamento",
+      "https://0web.com.br/parceiros",
+      "https://0web.com.br/marketplace",
+      "https://0web.com.br/google-meu-negocio",
+      "https://0web.com.br/criacao-sites",
+      "https://0web.com.br/desenvolvimento",
+      "https://0web.com.br/seo",
+      "https://0web.com.br/ia",
+      "https://0web.com.br/automacao",
+      "https://0web.com.br/trafego-pago",
+      "https://0web.com.br/consultoria",
+      "https://0web.com.br/cidades",
+      "https://0web.com.br/servicos",
+      "https://0web.com.br/estados",
+      "https://0web.com.br/politica-privacidade",
+      "https://0web.com.br/privacidade",
+      "https://0web.com.br/termos",
+      "https://0web.com.br/rss.xml"
+    ],
+    "servicesUrls": [
+      "https://0web.com.br/servicos/criacao-de-sites",
+      "https://0web.com.br/servicos/landing-pages",
+      "https://0web.com.br/servicos/loja-virtual",
+      "https://0web.com.br/servicos/seo",
+      "https://0web.com.br/servicos/marketing-digital",
+      "https://0web.com.br/servicos/automacao-com-ia",
+      "https://0web.com.br/servicos/chatbot-whatsapp",
+      "https://0web.com.br/servicos/desenvolvimento-saas",
+      "https://0web.com.br/servicos/sistemas-web",
+      "https://0web.com.br/servicos/gestao-redes-sociais"
+    ]
+  }
+}
