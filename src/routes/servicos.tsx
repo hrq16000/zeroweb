@@ -172,7 +172,7 @@ function ServicosHub() {
   const filtered = useMemo<Svc[]>(() => {
     const term = q.trim().toLowerCase();
     if (!term) return services;
-    return services.filter((s) =>
+    return services.filter((s: Svc) =>
       [s.name, s.description, s.category, ...(s.keywords ?? [])]
         .join(" ")
         .toLowerCase()
