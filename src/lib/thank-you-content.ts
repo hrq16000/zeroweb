@@ -2,6 +2,7 @@ export type LeadSource =
   | "contact_form_whatsapp"
   | "servicos_form_whatsapp"
   | "trafego_pago_local_form"
+  | "site_express"
   | string;
 
 export type Testimonial = { name: string; role: string; text: string };
@@ -12,12 +13,16 @@ export type ThankYouContent = {
   subtitle: string;
   whatsappMessage: string;
   planosLabel: string;
-  finalCtaTo: "/solicitar-orcamento" | "/trafego-pago-local" | "/planos";
+  finalCtaTo: "/solicitar-orcamento" | "/trafego-pago-local" | "/planos" | "/servicos/site-express";
   finalCtaLabel: string;
-  channel: "contato" | "servicos" | "trafego_pago_local" | "outro";
+  channel: "contato" | "servicos" | "trafego_pago_local" | "site_express" | "outro";
   stats: Stat[];
   testimonials: Testimonial[];
   socialProofHeadline: string;
+  /** Optional service-specific status timeline. */
+  status?: { label: string; eta: string; desc: string }[];
+  /** Optional SLA badge (e.g. "Em até 24h"). */
+  slaBadge?: string;
 };
 
 const DEFAULT_STATS: Stat[] = [
@@ -101,6 +106,33 @@ const MAP: Record<string, ThankYouContent> = {
       { name: "Anderson G.", role: "Auto Center · Campinas", text: "Saí de 5 para 40 orçamentos por semana com Google Ads." },
       { name: "Bruna F.", role: "Salão de Beleza · BSB", text: "Cada R$ 1 investido virou R$ 9 em serviços. Surreal." },
       { name: "Igor M.", role: "Imobiliária · Floripa", text: "Tráfego pago bem feito mudou meu funil. 3 vendas no 1º mês." },
+    ],
+  },
+  site_express: {
+    ...DEFAULT,
+    channel: "site_express",
+    title: "Pedido recebido! Seu site fica pronto em até 24h 🚀",
+    subtitle: "Já recebemos seu briefing do Site Express. Vamos te chamar no WhatsApp em minutos para confirmar e iniciar a produção.",
+    whatsappMessage: "Olá! Acabei de pedir meu Site Express em 24h pelo site da 0WEB. Pode confirmar o recebimento?",
+    planosLabel: "Site Express · R$ 499 · entrega em 24h",
+    finalCtaTo: "/servicos/site-express",
+    finalCtaLabel: "Ver detalhes do Site Express",
+    socialProofHeadline: "Negócios que saíram do zero ao site profissional em 24h",
+    slaBadge: "Próximo contato em até 1 hora útil · Site no ar em até 24h",
+    status: [
+      { label: "1. Confirmação", eta: "Em até 1h útil", desc: "Te chamamos no WhatsApp para confirmar briefing, escopo e pagamento." },
+      { label: "2. Produção", eta: "Mesmo dia", desc: "Nosso time monta seu site sob medida e te envia o link de prévia." },
+      { label: "3. No ar", eta: "Em até 24h", desc: "Aprovou? Publicamos imediatamente com domínio, SSL e WhatsApp integrado." },
+    ],
+    stats: [
+      { n: "< 24h", l: "para o site no ar" },
+      { n: "R$ 499", l: "pagamento único" },
+      { n: "4.9/5", l: "satisfação dos clientes" },
+    ],
+    testimonials: [
+      { name: "Diego R.", role: "Assistência técnica · SP", text: "Mandei áudio no WhatsApp de manhã, à noite meu site já estava recebendo cliente." },
+      { name: "Camila T.", role: "Salão de beleza · RJ", text: "Achei que ia ser template pronto. Veio sob medida, lindo e rápido." },
+      { name: "Felipe N.", role: "Eletricista · BH", text: "Em 2 dias depois do site no ar já fechei 3 orçamentos novos pelo WhatsApp." },
     ],
   },
 };
