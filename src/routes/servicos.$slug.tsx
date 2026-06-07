@@ -10,6 +10,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
 import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/lib/services-public.functions";
+import { AddToCartButton } from "@/components/site/AddToCartButton";
 
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
@@ -181,12 +182,22 @@ function ServicePage() {
                 />
               </div>
             )}
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-3">
               <ServiceCTA
                 serviceSlug={slug}
                 funnels={funnels}
                 location="hero"
                 label={data.ctaLabel}
+              />
+              <AddToCartButton
+                item={{
+                  slug,
+                  name: data.name,
+                  category: data.category,
+                  price: data.price ?? null,
+                  pricePeriod: data.pricePeriod ?? null,
+                  imageUrl: data.imageUrl ?? null,
+                }}
               />
             </div>
             {data.conditions && (
