@@ -464,10 +464,28 @@ function ServicosHub() {
                             <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
                             <h4 className="mt-1 font-semibold text-lg">{s.name}</h4>
                             <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
+                            {(s.price != null || s.deliveryDays) && (
+                              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                                {s.price != null && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+                                    {s.price === 0
+                                      ? "Sob consulta"
+                                      : `A partir de R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
+                                    {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
+                                  </span>
+                                )}
+                                {s.deliveryDays && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                                    <Timer className="w-3 h-3" /> {s.deliveryDays}
+                                  </span>
+                                )}
+                              </div>
+                            )}
                             <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
                               Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
                             </span>
                           </div>
+
                         </Link>
                       ))}
                     </div>
