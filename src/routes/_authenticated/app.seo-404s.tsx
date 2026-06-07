@@ -169,17 +169,36 @@ function SeoNotFoundPage() {
         </div>
       )}
 
-      {legacyHits.length > 0 && (
+      {legacyResurfaced.length > 0 && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-4 w-4 text-amber-600" />
             <h2 className="font-semibold text-sm">
-              Rotas legadas ainda recebendo tráfego ({legacyHits.length})
+              Rotas legadas com tráfego no período ({legacyResurfaced.length})
             </h2>
           </div>
           <ul className="text-sm space-y-1">
-            {legacyHits.map((r) => (
+            {legacyResurfaced.map((r) => (
               <li key={r.from_path} className="flex justify-between gap-4">
+                <code className="text-xs">
+                  {r.from_path} → {r.to_path}
+                </code>
+                <span className="text-muted-foreground text-xs">
+                  {r.hits} hits ·{" "}
+                  {r.last_hit_at ? new Date(r.last_hit_at).toLocaleDateString("pt-BR") : "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {hotRedirects.length > 0 && (
+        <div className="rounded-lg border bg-muted/30 p-4">
+          <h2 className="font-semibold text-sm mb-2">🔥 Redirects mais quentes</h2>
+          <ul className="text-sm space-y-1">
+            {hotRedirects.map((r) => (
+              <li key={`hot-${r.from_path}`} className="flex justify-between gap-4">
                 <code className="text-xs">
                   {r.from_path} → {r.to_path}
                 </code>
