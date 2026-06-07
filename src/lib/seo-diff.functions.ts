@@ -6,6 +6,9 @@ import { z } from "zod";
 import { getServicePublic } from "@/lib/services-public.functions";
 import { ORIGIN } from "@/lib/seo";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type JsonLdBlock = Record<string, any>;
+
 export type SeoSnapshot = {
   title: string | null;
   description: string | null;
@@ -14,7 +17,7 @@ export type SeoSnapshot = {
   ogType: string | null;
   ogImage: string | null;
   canonical: string | null;
-  jsonLd: unknown[];
+  jsonLd: JsonLdBlock[];
   raw: string | null;
 };
 
