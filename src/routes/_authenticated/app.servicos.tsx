@@ -448,6 +448,47 @@ function ServiceEditDialog({
             </Field>
           </div>
 
+          {/* Visibilidade — onde o serviço aparece */}
+          <div className="rounded-lg border border-border p-3">
+            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Visibilidade · onde este serviço aparece</Label>
+            <div className="mt-2 grid sm:grid-cols-2 gap-2">
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_menu !== false}
+                  onCheckedChange={(v) => set("show_in_menu", v)}
+                />
+                Menu do site (header)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_footer !== false}
+                  onCheckedChange={(v) => set("show_in_footer", v)}
+                />
+                Rodapé do site
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={!!s.show_in_home_featured}
+                  onCheckedChange={(v) => set("show_in_home_featured", v)}
+                />
+                Destaque na Home (até 4)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_sitemap !== false}
+                  onCheckedChange={(v) => set("show_in_sitemap", v)}
+                />
+                Mapa do site / sitemap.xml
+              </label>
+            </div>
+          </div>
+
+          {/* Funis por local do CTA */}
+          <FunnelsEditor
+            value={(s.funnels ?? {}) as Record<string, string | null | undefined>}
+            onChange={(v) => set("funnels", v as never)}
+          />
+
           {/* Flags */}
           <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-border">
             <label className="flex items-center gap-2 text-sm">
@@ -456,7 +497,7 @@ function ServiceEditDialog({
             </label>
             <label className="flex items-center gap-2 text-sm">
               <Switch checked={!!s.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
-              Destaque
+              Destaque (legado)
             </label>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Ordem</span>
@@ -468,6 +509,7 @@ function ServiceEditDialog({
               />
             </div>
           </div>
+
         </div>
 
         <DialogFooter>
