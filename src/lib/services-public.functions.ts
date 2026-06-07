@@ -124,6 +124,7 @@ function mapRow(
   row: DbServiceRow,
   imageUrl: string | null = null,
   gallery: GalleryItem[] = [],
+  ogImageUrl: string | null = null,
 ): PublicServiceFull {
   return {
     slug: row.slug,
@@ -155,6 +156,11 @@ function mapRow(
     funnels: asFunnels(row.funnels),
     gallery,
     sections: asSections(row.sections),
+    ogImagePath: row.og_image_path,
+    ogImageUrl: ogImageUrl ?? imageUrl,
+    ogType: row.og_type || "website",
+    schemaJsonLd: asSchemaBlocks(row.schema_jsonld),
+    richHtml: row.rich_html,
   };
 }
 
