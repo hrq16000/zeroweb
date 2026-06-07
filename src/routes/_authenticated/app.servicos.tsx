@@ -719,6 +719,12 @@ function serializeForSave(s: EditState) {
     image_alt: s.image_alt?.trim() || null,
     seo_title: s.seo_title?.trim() || null,
     seo_description: s.seo_description?.trim() || null,
+    og_image_path: (s as { og_image_path?: string | null }).og_image_path?.toString().trim() || null,
+    og_type: ((s as { og_type?: string }).og_type as "website" | "article" | "product") || "website",
+    schema_jsonld: Array.isArray((s as { schema_jsonld?: unknown }).schema_jsonld)
+      ? ((s as { schema_jsonld?: Record<string, unknown>[] }).schema_jsonld ?? [])
+      : [],
+    rich_html: (s as { rich_html?: string | null }).rich_html?.toString() || null,
     problems: (s.problems ?? []).map((x) => x.trim()).filter(Boolean),
     benefits: (s.benefits ?? []).map((x) => x.trim()).filter(Boolean),
     process: proc,
