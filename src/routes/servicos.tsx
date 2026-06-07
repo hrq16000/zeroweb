@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ShoppingBag } from "lucide-react";
 import { SmartServiceSearch, type SearchableService } from "@/components/site/SmartServiceSearch";
-import logoAsset from "@/assets/logo-0web.png.asset.json";
+import { BrandLogo } from "@/components/site/BrandLogo";
 
 /**
  * Layout da loja virtual (/servicos/*). Renderiza uma barra sticky com
