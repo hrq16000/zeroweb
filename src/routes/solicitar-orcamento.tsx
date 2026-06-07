@@ -30,7 +30,7 @@ function RequestPage() {
       <div className="max-w-md">
         <h1 className="text-3xl font-display font-bold mb-3">Solicitação recebida</h1>
         <p className="text-muted-foreground mb-6">Vamos analisar e distribuir para prestadores compatíveis em breve.</p>
-        <Link to="/marketplace" className="px-5 py-2 rounded-lg bg-primary text-primary-foreground">Ir ao marketplace</Link>
+        <Link to="/servicos/marketplace" className="px-5 py-2 rounded-lg bg-primary text-primary-foreground">Ir ao marketplace</Link>
       </div>
     </div>
   );

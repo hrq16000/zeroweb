@@ -27,7 +27,7 @@ function CompanyPage() {
   useEffect(() => { void fetchCompany({ data: { slug } }).then(setData); }, [fetchCompany, slug]);
 
   if (!data) return <div className="p-12 text-center text-muted-foreground">Carregando…</div>;
-  if (!data.company) return <div className="p-12 text-center"><h1 className="text-2xl font-display">Empresa não encontrada</h1><Link to="/marketplace" className="text-primary mt-4 inline-block">Voltar ao marketplace</Link></div>;
+  if (!data.company) return <div className="p-12 text-center"><h1 className="text-2xl font-display">Empresa não encontrada</h1><Link to="/servicos/marketplace" className="text-primary mt-4 inline-block">Voltar ao marketplace</Link></div>;
 
   const c = data.company;
   const wa = c.whatsapp?.replace(/\D/g, "");
@@ -35,7 +35,7 @@ function CompanyPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-4xl mx-auto px-5 py-10">
-        <Link to="/marketplace" className="text-sm text-muted-foreground hover:text-foreground">← Marketplace</Link>
+        <Link to="/servicos/marketplace" className="text-sm text-muted-foreground hover:text-foreground">← Marketplace</Link>
         <header className="flex flex-col md:flex-row gap-6 mt-6 pb-8 border-b border-border">
           {c.logo_url ? <img src={c.logo_url} alt={c.trade_name} className="w-32 h-32 rounded-xl object-cover" /> : <div className="w-32 h-32 rounded-xl bg-muted" />}
           <div className="flex-1">
