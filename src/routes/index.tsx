@@ -1,28 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
-import { Problems } from "@/components/site/Problems";
-import { Solutions } from "@/components/site/Solutions";
-import { AISection } from "@/components/site/AISection";
-import { Differentials } from "@/components/site/Differentials";
-import { Cases } from "@/components/site/Cases";
-import { Plans } from "@/components/site/Plans";
-import { Process } from "@/components/site/Process";
-import { FAQ, faqData } from "@/components/site/FAQ";
-import { Blog } from "@/components/site/Blog";
-import { CTA } from "@/components/site/CTA";
+import { TrustBar } from "@/components/site/SocialProof";
 import { Footer } from "@/components/site/Footer";
-import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { ScrollTracker } from "@/components/site/ScrollTracker";
-import { ConsentBanner } from "@/components/site/ConsentBanner";
-import { SocialProof, TrustBar } from "@/components/site/SocialProof";
-import { ExitIntent } from "@/components/site/ExitIntent";
-import { DiagnosticForm } from "@/components/site/DiagnosticForm";
-import { LossCalculator } from "@/components/site/LossCalculator";
-import { SocialProofSection } from "@/components/site/SocialProofSection";
+import { FAQ, faqData } from "@/components/site/FAQ";
 import { getPageSections } from "@/lib/site-sections.functions";
+
+// Below-the-fold: code-split + lazy-load to slash initial JS and TTI on mobile.
+const Problems = lazy(() => import("@/components/site/Problems").then((m) => ({ default: m.Problems })));
+const LossCalculator = lazy(() => import("@/components/site/LossCalculator").then((m) => ({ default: m.LossCalculator })));
+const Solutions = lazy(() => import("@/components/site/Solutions").then((m) => ({ default: m.Solutions })));
+const AISection = lazy(() => import("@/components/site/AISection").then((m) => ({ default: m.AISection })));
+const DiagnosticForm = lazy(() => import("@/components/site/DiagnosticForm").then((m) => ({ default: m.DiagnosticForm })));
+const Differentials = lazy(() => import("@/components/site/Differentials").then((m) => ({ default: m.Differentials })));
+const Cases = lazy(() => import("@/components/site/Cases").then((m) => ({ default: m.Cases })));
+const Plans = lazy(() => import("@/components/site/Plans").then((m) => ({ default: m.Plans })));
+const Process = lazy(() => import("@/components/site/Process").then((m) => ({ default: m.Process })));
+const Blog = lazy(() => import("@/components/site/Blog").then((m) => ({ default: m.Blog })));
+const SocialProofSection = lazy(() => import("@/components/site/SocialProofSection").then((m) => ({ default: m.SocialProofSection })));
+const CTA = lazy(() => import("@/components/site/CTA").then((m) => ({ default: m.CTA })));
+const WhatsAppFloat = lazy(() => import("@/components/site/WhatsAppFloat").then((m) => ({ default: m.WhatsAppFloat })));
+const SocialProof = lazy(() => import("@/components/site/SocialProof").then((m) => ({ default: m.SocialProof })));
+const ExitIntent = lazy(() => import("@/components/site/ExitIntent").then((m) => ({ default: m.ExitIntent })));
+const ConsentBanner = lazy(() => import("@/components/site/ConsentBanner").then((m) => ({ default: m.ConsentBanner })));
+const ScrollTracker = lazy(() => import("@/components/site/ScrollTracker").then((m) => ({ default: m.ScrollTracker })));
+
+const Skel = ({ h = "h-64" }: { h?: string }) => (
+  <div className={`${h} w-full animate-pulse bg-muted/30`} aria-hidden="true" />
+);
 
 const homeSectionsQuery = queryOptions({
   queryKey: ["site-sections", "home"],
@@ -76,28 +84,6 @@ export const Route = createFileRoute("/")({
               sameAs: [],
             },
             {
-              "@type": "LocalBusiness",
-              "@id": "https://0web.com.br/#localbusiness",
-              name: "0WEB",
-              url: "https://0web.com.br",
-              telephone: "+55-41-99745-2053",
-              email: "contato@0web.com.br",
-              priceRange: "$$",
-              areaServed: { "@type": "Country", name: "BR" },
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Curitiba",
-                addressRegion: "PR",
-                addressCountry: "BR",
-              },
-              openingHoursSpecification: [{
-                "@type": "OpeningHoursSpecification",
-                dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-                opens: "09:00",
-                closes: "19:00",
-              }],
-            },
-            {
               "@type": "WebSite",
               "@id": "https://0web.com.br/#website",
               name: "0WEB",
@@ -139,33 +125,37 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { data } = useSuspenseQuery(homeSectionsQuery);
-  const on = (k: string) => data.map[k] !== false; // default ON if missing
+  const on = (k: string) => data.map[k] !== false;
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <ScrollTracker />
+      <Suspense fallback={null}><ScrollTracker /></Suspense>
       <Header />
       <main>
         {on("hero") && <Hero />}
         {on("trustbar") && <TrustBar />}
-        {on("problems") && <Problems />}
-        {on("loss_calculator") && <LossCalculator />}
-        {on("solutions") && <Solutions />}
-        {on("ai_section") && <AISection />}
-        {on("diagnostic_form") && <DiagnosticForm />}
-        {on("differentials") && <Differentials />}
-        {on("cases") && <Cases />}
-        {on("plans") && <Plans />}
-        {on("process") && <Process />}
-        {on("faq") && <FAQ />}
-        {on("blog") && <Blog />}
-        {on("social_proof") && <SocialProofSection />}
-        {on("cta") && <CTA />}
+        <Suspense fallback={<Skel />}>
+          {on("problems") && <Problems />}
+          {on("loss_calculator") && <LossCalculator />}
+          {on("solutions") && <Solutions />}
+          {on("ai_section") && <AISection />}
+          {on("diagnostic_form") && <DiagnosticForm />}
+          {on("differentials") && <Differentials />}
+          {on("cases") && <Cases />}
+          {on("plans") && <Plans />}
+          {on("process") && <Process />}
+          {on("faq") && <FAQ />}
+          {on("blog") && <Blog />}
+          {on("social_proof") && <SocialProofSection />}
+          {on("cta") && <CTA />}
+        </Suspense>
       </main>
       <Footer />
-      <WhatsAppFloat />
-      <SocialProof />
-      <ExitIntent />
-      <ConsentBanner />
+      <Suspense fallback={null}>
+        <WhatsAppFloat />
+        <SocialProof />
+        <ExitIntent />
+        <ConsentBanner />
+      </Suspense>
     </div>
   );
 }
