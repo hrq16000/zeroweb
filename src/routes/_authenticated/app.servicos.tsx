@@ -811,3 +811,57 @@ function FunnelsEditor({
   );
 }
 
+
+function JsonLdEditor({
+  value,
+  onChange,
+}: {
+  value: Record<string, unknown>[];
+  onChange: (v: Record<string, unknown>[]) => void;
+}) {
+  const [text, setText] = useState<string>(() => JSON.stringify(value ?? [], null, 2));
+  const [err, setErr] = useState<string | null>(null);
+
+  // Mantém o textarea em sincronia quando o serviço editado muda.
+  useEffect(() => {
+    setText(JSON.stringify(value ?? [], null, 2));
+    setErr(null);
+  }, [value]);
+
+  return (
+    <div className="rounded-lg border border-border p-3 space-y-2">
+      <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+        Blocos JSON-LD extras
+      </Label>
+      <p className="text-[11px] text-muted-foreground">
+        Array de objetos JSON-LD anexados ao <code>@graph</code> da página
+        (ex.: Product com offers, HowTo, Review). Os blocos WebPage / Service /
+        FAQPage / BreadcrumbList já são gerados automaticamente.
+      </p>
+      <Textarea
+        rows={10}
+        value={text}
+        spellCheck={false}
+        className="font-mono text-xs"
+        onChange={(e) => {
+          const t = e.target.value;
+          setText(t);
+          try {
+            const parsed = JSON.parse(t);
+            if (!Array.isArray(parsed)) throw new Error("Use um array JSON.");
+            for (const item of parsed) {
+              if (!item || typeof item !== "object" || Array.isArray(item)) {
+                throw new Error("Cada item precisa ser um objeto.");
+              }
+            }
+            setErr(null);
+            onChange(parsed as Record<string, unknown>[]);
+          } catch (e2) {
+            setErr((e2 as Error).message);
+          }
+        }}
+      />
+      {err && <p className="text-[11px] text-destructive">JSON inválido: {err}</p>}
+    </div>
+  );
+}
