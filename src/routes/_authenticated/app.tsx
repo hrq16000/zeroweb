@@ -213,7 +213,7 @@ function AppShell() {
                 }`}
               >
                 <Search className="w-4 h-4" />
-                404s & Redirects
+                404s e Redirects
               </Link>
               <Link
                 to="/app/funis"
