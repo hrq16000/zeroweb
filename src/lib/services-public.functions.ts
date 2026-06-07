@@ -35,6 +35,10 @@ type DbServiceRow = {
   funnels: unknown;
   gallery: unknown;
   sections: unknown;
+  og_image_path: string | null;
+  og_type: string | null;
+  schema_jsonld: unknown;
+  rich_html: string | null;
 };
 
 function asStringArray(v: unknown): string[] {
