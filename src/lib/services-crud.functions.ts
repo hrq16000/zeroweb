@@ -23,6 +23,15 @@ async function assertAdmin(userId: string) {
   if (!isAdmin) throw new Error("Forbidden: admin role required");
 }
 
+export type ServiceFunnels = {
+  default?: string | null;
+  header?: string | null;
+  hero?: string | null;
+  card?: string | null;
+  detail?: string | null;
+  footer?: string | null;
+};
+
 export interface ServiceRow {
   id: string;
   slug: string;
@@ -34,6 +43,11 @@ export interface ServiceRow {
   service_type: string;
   tagline: string | null;
   price_from: number | null;
+  // Comercial (novo)
+  price: number | null;
+  price_period: string | null;
+  delivery_days: string | null;
+  conditions: string | null;
   cta_label: string;
   cta_target: string | null;
   image_path: string | null;
@@ -48,9 +62,17 @@ export interface ServiceRow {
   keywords: string[];
   is_active: boolean;
   is_featured: boolean;
+  // Visibilidade (novo)
+  show_in_menu: boolean;
+  show_in_footer: boolean;
+  show_in_home_featured: boolean;
+  show_in_sitemap: boolean;
+  // Funis por local (novo)
+  funnels: ServiceFunnels;
   display_order: number;
   updated_at?: string;
 }
+
 
 function asArr<T>(v: unknown): T[] {
   if (Array.isArray(v)) return v as T[];
