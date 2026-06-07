@@ -275,7 +275,7 @@ function ServicosHub() {
               </h2>
             </div>
             <SmartServiceSearch
-              services={services.map((s) => ({
+              services={(services as Svc[]).map((s) => ({
                 slug: s.slug,
                 name: s.name,
                 category: s.category,
