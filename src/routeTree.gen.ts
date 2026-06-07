@@ -50,6 +50,7 @@ import { Route as ConsultoriaRouteImport } from './routes/consultoria'
 import { Route as CidadesRouteImport } from './routes/cidades'
 import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as R403RouteImport } from './routes/403'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -329,6 +330,11 @@ const AutomacaoRoute = AutomacaoRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R403Route = R403RouteImport.update({
+  id: '/403',
+  path: '/403',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceRoute = ServiceRouteImport.update({
@@ -731,6 +737,7 @@ const AuthenticatedAppFunisPipelineRegrasRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
@@ -846,6 +853,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
+  '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
@@ -961,6 +969,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$service': typeof ServiceRoute
+  '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/cidades': typeof CidadesRoute
@@ -1078,6 +1087,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$service'
+    | '/403'
     | '/auth'
     | '/automacao'
     | '/cidades'
@@ -1193,6 +1203,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$service'
+    | '/403'
     | '/auth'
     | '/automacao'
     | '/cidades'
@@ -1307,6 +1318,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/$service'
+    | '/403'
     | '/auth'
     | '/automacao'
     | '/cidades'
@@ -1424,6 +1436,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ServiceRoute: typeof ServiceRoute
+  R403Route: typeof R403Route
   AuthRoute: typeof AuthRoute
   AutomacaoRoute: typeof AutomacaoRoute
   CidadesRoute: typeof CidadesRoute
@@ -1787,6 +1800,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/403': {
+      id: '/403'
+      path: '/403'
+      fullPath: '/403'
+      preLoaderRoute: typeof R403RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$service': {
@@ -2472,6 +2492,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ServiceRoute: ServiceRoute,
+  R403Route: R403Route,
   AuthRoute: AuthRoute,
   AutomacaoRoute: AutomacaoRoute,
   CidadesRoute: CidadesRoute,

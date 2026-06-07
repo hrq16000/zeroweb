@@ -172,3 +172,9 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - Footer: corrigido link SEO de `/servicos/seo` (404) para `/seo` (rota dedicada).
 - `/servicos`: nova seção "Especialidades complementares" com 6 cards apontando para as páginas dedicadas que estavam órfãs do catálogo.
 - Header já contempla: Início, Serviços, IA, Cases, Planos, FAQ, Blog, Marketplace, Contato.
+
+## 2026-06-07 — Phase 3: Friendly 403/404/500 pages
+- Novo componente `src/components/site/ErrorState.tsx` (ilustração, mensagem PT-BR, CTAs: Tentar novamente, Voltar ao início, Ver serviços, WhatsApp).
+- `__root.tsx`: `notFoundComponent` agora usa `<ErrorState kind="404" />`; `errorComponent` usa `<ErrorState kind="500" />` com `onRetry` (router.invalidate + reset).
+- Bloco de diagnóstico (dev-only) mostra mensagem do erro e dica para limpar cache do Vite quando detectado padrão "Failed to load url …/routes/…".
+- Nova rota `/403` (`src/routes/403.tsx`) com `noindex, nofollow` para acesso negado.
