@@ -289,229 +289,243 @@ function ServiceEditDialog({
           <DialogTitle>{isNew ? "Novo serviço" : `Editar: ${s.name}`}</DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-4 py-2">
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Field label="Slug (URL)" required>
-              <Input
-                value={s.slug ?? ""}
-                onChange={(e) => set("slug", e.target.value.toLowerCase())}
-                placeholder="trafego-pago-local"
-                disabled={!isNew}
-              />
-              {!isNew && <p className="text-[11px] text-muted-foreground mt-1">Slug é imutável após criação (preserva URLs e SEO).</p>}
-            </Field>
-            <Field label="Categoria" required>
-              <Input value={s.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Tráfego" />
-            </Field>
-          </div>
+        <Tabs defaultValue="basico" className="py-2">
+          <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/40 p-1">
+            <TabsTrigger value="basico">Básico</TabsTrigger>
+            <TabsTrigger value="comercial">Comercial</TabsTrigger>
+            <TabsTrigger value="galeria">Galeria</TabsTrigger>
+            <TabsTrigger value="conteudo">Conteúdo</TabsTrigger>
+            <TabsTrigger value="seo">SEO</TabsTrigger>
+            <TabsTrigger value="visibilidade">Visibilidade</TabsTrigger>
+            <TabsTrigger value="funis">Funis</TabsTrigger>
+          </TabsList>
 
-          <Field label="Nome" required>
-            <Input value={s.name ?? ""} onChange={(e) => set("name", e.target.value)} placeholder="Tráfego Pago Local" />
-          </Field>
+          <TabsContent value="basico" className="grid gap-4 mt-4">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Field label="Slug (URL)" required>
+                <Input
+                  value={s.slug ?? ""}
+                  onChange={(e) => set("slug", e.target.value.toLowerCase())}
+                  placeholder="trafego-pago-local"
+                  disabled={!isNew}
+                />
+                {!isNew && <p className="text-[11px] text-muted-foreground mt-1">Slug é imutável após criação (preserva URLs e SEO).</p>}
+              </Field>
+              <Field label="Categoria" required>
+                <Input value={s.category ?? ""} onChange={(e) => set("category", e.target.value)} placeholder="Tráfego" />
+              </Field>
+            </div>
 
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Field label="Title (SEO)" required>
-              <Input value={s.title ?? ""} onChange={(e) => set("title", e.target.value)} />
+            <Field label="Nome" required>
+              <Input value={s.name ?? ""} onChange={(e) => set("name", e.target.value)} placeholder="Tráfego Pago Local" />
             </Field>
-            <Field label="H1" required>
-              <Input value={s.h1 ?? ""} onChange={(e) => set("h1", e.target.value)} />
-            </Field>
-          </div>
 
-          <Field label="Descrição (meta description)" required>
-            <Textarea rows={2} value={s.description ?? ""} onChange={(e) => set("description", e.target.value)} />
-          </Field>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Field label="Title (SEO)" required>
+                <Input value={s.title ?? ""} onChange={(e) => set("title", e.target.value)} />
+              </Field>
+              <Field label="H1" required>
+                <Input value={s.h1 ?? ""} onChange={(e) => set("h1", e.target.value)} />
+              </Field>
+            </div>
 
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Field label="Service Type (schema.org)" required>
-              <Input value={s.service_type ?? ""} onChange={(e) => set("service_type", e.target.value)} placeholder="Digital Marketing" />
+            <Field label="Descrição (meta description)" required>
+              <Textarea rows={2} value={s.description ?? ""} onChange={(e) => set("description", e.target.value)} />
             </Field>
-            <Field label="Preço a partir de (R$)">
-              <Input
-                type="number" min={0} step="0.01"
-                value={s.price_from ?? ""}
-                onChange={(e) => set("price_from", e.target.value === "" ? null : Number(e.target.value))}
-              />
-            </Field>
-          </div>
 
-          {/* Comercial (vitrine) */}
-          <div className="rounded-lg border border-border p-3 space-y-3">
-            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comercial · aparece no card e na página do produto</Label>
-            <div className="grid sm:grid-cols-3 gap-3">
-              <Field label="Preço (R$)">
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Field label="Service Type (schema.org)" required>
+                <Input value={s.service_type ?? ""} onChange={(e) => set("service_type", e.target.value)} placeholder="Digital Marketing" />
+              </Field>
+              <Field label="Preço a partir de (R$) — legado">
                 <Input
                   type="number" min={0} step="0.01"
-                  value={s.price ?? ""}
-                  onChange={(e) => set("price", e.target.value === "" ? null : Number(e.target.value))}
-                  placeholder="499"
-                />
-              </Field>
-              <Field label="Período">
-                <Input
-                  value={s.price_period ?? ""}
-                  onChange={(e) => set("price_period", e.target.value)}
-                  placeholder="único · /mês · sob consulta"
-                />
-              </Field>
-              <Field label="Prazo de entrega">
-                <Input
-                  value={s.delivery_days ?? ""}
-                  onChange={(e) => set("delivery_days", e.target.value)}
-                  placeholder="24h · 7 dias · 15 dias"
+                  value={s.price_from ?? ""}
+                  onChange={(e) => set("price_from", e.target.value === "" ? null : Number(e.target.value))}
                 />
               </Field>
             </div>
-            <Field label="Condições (texto livre, aparece na página)">
-              <Textarea
-                rows={2}
-                value={s.conditions ?? ""}
-                onChange={(e) => set("conditions", e.target.value)}
-                placeholder="Inclui domínio + SSL · pagamento único · suporte por 30 dias"
-              />
+
+            <Field label="Tagline curta">
+              <Input value={s.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} />
             </Field>
-          </div>
 
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Field label="Texto do botão (CTA)">
+                <Input value={s.cta_label ?? ""} onChange={(e) => set("cta_label", e.target.value)} placeholder="Quero esse serviço" />
+              </Field>
+              <Field label="Destino do CTA (opcional)">
+                <Input value={s.cta_target ?? ""} onChange={(e) => set("cta_target", e.target.value)} placeholder="/contato ou https://wa.me/…" />
+              </Field>
+            </div>
 
-          <Field label="Tagline curta">
-            <Input value={s.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} />
-          </Field>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Field label="Texto do botão (CTA)">
-              <Input value={s.cta_label ?? ""} onChange={(e) => set("cta_label", e.target.value)} placeholder="Quero esse serviço" />
-            </Field>
-            <Field label="Destino do CTA (opcional)">
-              <Input value={s.cta_target ?? ""} onChange={(e) => set("cta_target", e.target.value)} placeholder="/contato ou https://wa.me/…" />
-            </Field>
-          </div>
-
-          {/* Image */}
-          <div className="rounded-lg border border-border p-3">
-            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Imagem do card</Label>
-            <div className="mt-2 flex items-center gap-3">
-              {s.image_url ? (
-                <div className="relative">
-                  <img src={s.image_url} alt="" className="w-24 h-24 rounded object-cover bg-muted" />
-                  <button
-                    type="button"
-                    onClick={() => { set("image_path", null); set("image_url", null); }}
-                    className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-0.5"
-                    aria-label="Remover imagem"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ) : (
-                <div className="w-24 h-24 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">Sem imagem</div>
-              )}
-              <div className="flex-1">
-                <label className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border cursor-pointer hover:bg-muted text-sm">
-                  <Upload className="w-4 h-4" />
-                  {uploading ? "Enviando…" : "Enviar imagem"}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploading}
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      e.target.value = "";
-                      if (f) void onUpload(f);
-                    }}
-                  />
-                </label>
+            <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-border">
+              <label className="flex items-center gap-2 text-sm">
+                <Switch checked={!!s.is_active} onCheckedChange={(v) => set("is_active", v)} />
+                Ativo
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch checked={!!s.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
+                Destaque (legado)
+              </label>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">Ordem</span>
                 <Input
-                  className="mt-2"
-                  placeholder="Texto alternativo (acessibilidade)"
-                  value={s.image_alt ?? ""}
-                  onChange={(e) => set("image_alt", e.target.value)}
+                  type="number" min={0}
+                  className="w-24"
+                  value={s.display_order ?? 100}
+                  onChange={(e) => set("display_order", Number(e.target.value) || 0)}
                 />
               </div>
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Arrays */}
-          <ArrayEditor label="Benefícios" items={s.benefits ?? []} onChange={(v) => set("benefits", v)} />
-          <ArrayEditor label="Problemas que resolve" items={s.problems ?? []} onChange={(v) => set("problems", v)} />
-          <ArrayEditor label="Palavras-chave (SEO)" items={s.keywords ?? []} onChange={(v) => set("keywords", v)} />
+          <TabsContent value="comercial" className="grid gap-4 mt-4">
+            <div className="rounded-lg border border-border p-3 space-y-3">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comercial · aparece no card e na página do produto</Label>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <Field label="Preço (R$)">
+                  <Input
+                    type="number" min={0} step="0.01"
+                    value={s.price ?? ""}
+                    onChange={(e) => set("price", e.target.value === "" ? null : Number(e.target.value))}
+                    placeholder="499"
+                  />
+                </Field>
+                <Field label="Período">
+                  <Input
+                    value={s.price_period ?? ""}
+                    onChange={(e) => set("price_period", e.target.value)}
+                    placeholder="único · /mês · sob consulta"
+                  />
+                </Field>
+                <Field label="Prazo de entrega">
+                  <Input
+                    value={s.delivery_days ?? ""}
+                    onChange={(e) => set("delivery_days", e.target.value)}
+                    placeholder="24h · 7 dias · 15 dias"
+                  />
+                </Field>
+              </div>
+              <Field label="Condições (texto livre, aparece na página)">
+                <Textarea
+                  rows={3}
+                  value={s.conditions ?? ""}
+                  onChange={(e) => set("conditions", e.target.value)}
+                  placeholder="Inclui domínio + SSL · pagamento único · suporte por 30 dias"
+                />
+              </Field>
+            </div>
+          </TabsContent>
 
-          <KvEditor label="Etapas do processo" items={s.process ?? []} keyLabel="Etapa" valLabel="Descrição" onChange={(v) => set("process", v)} />
-          <KvEditor label="FAQ" items={s.faq ?? []} keyLabel="Pergunta" valLabel="Resposta" onChange={(v) => set("faq", v.map((x) => ({ q: x.step, a: x.desc })) as never)} adapt />
+          <TabsContent value="galeria" className="grid gap-4 mt-4">
+            <div className="rounded-lg border border-border p-3">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Imagem do card</Label>
+              <div className="mt-2 flex items-center gap-3">
+                {s.image_url ? (
+                  <div className="relative">
+                    <img src={s.image_url} alt="" className="w-24 h-24 rounded object-cover bg-muted" />
+                    <button
+                      type="button"
+                      onClick={() => { set("image_path", null); set("image_url", null); }}
+                      className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-0.5"
+                      aria-label="Remover imagem"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">Sem imagem</div>
+                )}
+                <div className="flex-1">
+                  <label className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border cursor-pointer hover:bg-muted text-sm">
+                    <Upload className="w-4 h-4" />
+                    {uploading ? "Enviando…" : "Enviar imagem"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        e.target.value = "";
+                        if (f) void onUpload(f);
+                      }}
+                    />
+                  </label>
+                  <Input
+                    className="mt-2"
+                    placeholder="Texto alternativo (acessibilidade)"
+                    value={s.image_alt ?? ""}
+                    onChange={(e) => set("image_alt", e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </TabsContent>
 
-          {/* SEO overrides */}
-          <div className="grid sm:grid-cols-2 gap-3">
+          <TabsContent value="conteudo" className="grid gap-4 mt-4">
+            <ArrayEditor label="Benefícios" items={s.benefits ?? []} onChange={(v) => set("benefits", v)} />
+            <ArrayEditor label="Problemas que resolve" items={s.problems ?? []} onChange={(v) => set("problems", v)} />
+            <ArrayEditor label="Palavras-chave (SEO)" items={s.keywords ?? []} onChange={(v) => set("keywords", v)} />
+            <KvEditor label="Etapas do processo" items={s.process ?? []} keyLabel="Etapa" valLabel="Descrição" onChange={(v) => set("process", v)} />
+            <KvEditor label="FAQ" items={s.faq ?? []} keyLabel="Pergunta" valLabel="Resposta" onChange={(v) => set("faq", v.map((x) => ({ q: x.step, a: x.desc })) as never)} adapt />
+          </TabsContent>
+
+          <TabsContent value="seo" className="grid gap-4 mt-4">
             <Field label="SEO title (override)">
               <Input value={s.seo_title ?? ""} onChange={(e) => set("seo_title", e.target.value)} />
             </Field>
             <Field label="SEO description (override)">
-              <Input value={s.seo_description ?? ""} onChange={(e) => set("seo_description", e.target.value)} />
+              <Textarea rows={2} value={s.seo_description ?? ""} onChange={(e) => set("seo_description", e.target.value)} />
             </Field>
-          </div>
+            <p className="text-[11px] text-muted-foreground">Deixe em branco para usar Title/Descrição padrão da aba Básico.</p>
+          </TabsContent>
 
-          {/* Visibilidade — onde o serviço aparece */}
-          <div className="rounded-lg border border-border p-3">
-            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Visibilidade · onde este serviço aparece</Label>
-            <div className="mt-2 grid sm:grid-cols-2 gap-2">
-              <label className="flex items-center gap-2 text-sm">
-                <Switch
-                  checked={s.show_in_menu !== false}
-                  onCheckedChange={(v) => set("show_in_menu", v)}
-                />
-                Menu do site (header)
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Switch
-                  checked={s.show_in_footer !== false}
-                  onCheckedChange={(v) => set("show_in_footer", v)}
-                />
-                Rodapé do site
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Switch
-                  checked={!!s.show_in_home_featured}
-                  onCheckedChange={(v) => set("show_in_home_featured", v)}
-                />
-                Destaque na Home (até 4)
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Switch
-                  checked={s.show_in_sitemap !== false}
-                  onCheckedChange={(v) => set("show_in_sitemap", v)}
-                />
-                Mapa do site / sitemap.xml
-              </label>
+          <TabsContent value="visibilidade" className="grid gap-4 mt-4">
+            <div className="rounded-lg border border-border p-3">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Onde este serviço aparece</Label>
+              <div className="mt-2 grid sm:grid-cols-2 gap-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <Switch
+                    checked={s.show_in_menu !== false}
+                    onCheckedChange={(v) => set("show_in_menu", v)}
+                  />
+                  Menu do site (header)
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Switch
+                    checked={s.show_in_footer !== false}
+                    onCheckedChange={(v) => set("show_in_footer", v)}
+                  />
+                  Rodapé do site
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Switch
+                    checked={!!s.show_in_home_featured}
+                    onCheckedChange={(v) => set("show_in_home_featured", v)}
+                  />
+                  Destaque na Home (até 4)
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Switch
+                    checked={s.show_in_sitemap !== false}
+                    onCheckedChange={(v) => set("show_in_sitemap", v)}
+                  />
+                  Mapa do site / sitemap.xml
+                </label>
+              </div>
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Funis por local do CTA */}
-          <FunnelsEditor
-            value={(s.funnels ?? {}) as Record<string, string | null | undefined>}
-            onChange={(v) => set("funnels", v as never)}
-          />
+          <TabsContent value="funis" className="grid gap-4 mt-4">
+            <FunnelsEditor
+              value={(s.funnels ?? {}) as Record<string, string | null | undefined>}
+              onChange={(v) => set("funnels", v as never)}
+            />
+          </TabsContent>
+        </Tabs>
 
-          {/* Flags */}
-          <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-border">
-            <label className="flex items-center gap-2 text-sm">
-              <Switch checked={!!s.is_active} onCheckedChange={(v) => set("is_active", v)} />
-              Ativo
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <Switch checked={!!s.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
-              Destaque (legado)
-            </label>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Ordem</span>
-              <Input
-                type="number" min={0}
-                className="w-24"
-                value={s.display_order ?? 100}
-                onChange={(e) => set("display_order", Number(e.target.value) || 0)}
-              />
-            </div>
-          </div>
-
-        </div>
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={saving}>Cancelar</Button>
