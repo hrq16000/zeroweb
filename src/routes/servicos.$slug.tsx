@@ -264,7 +264,7 @@ function ServicePage() {
         {data.sections.length > 0 && (
           <section className="py-16 bg-muted/20">
             <div className="mx-auto max-w-3xl px-5 lg:px-8 space-y-10">
-              {data.sections.map((sec, i) => (
+              {data.sections.map((sec: { title: string; body: string }, i: number) => (
                 <article key={`${sec.title}-${i}`}>
                   {sec.title && <h2 className="text-2xl lg:text-3xl font-bold mb-4">{sec.title}</h2>}
                   {sec.body && (
