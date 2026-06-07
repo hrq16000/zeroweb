@@ -91,7 +91,68 @@ export function Header() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-          {nav.map((n) => (
+          <Link
+            to="/"
+            className="hover:text-foreground transition-colors"
+            activeProps={{ className: "text-foreground" }}
+            activeOptions={{ exact: true }}
+          >
+            Início
+          </Link>
+
+          {/* Dropdown Serviços (gerenciado pelo painel via show_in_menu) */}
+          <div
+            className="relative"
+            onMouseEnter={() => setServicesOpen(true)}
+            onMouseLeave={() => setServicesOpen(false)}
+          >
+            <Link
+              to="/servicos"
+              className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+              activeProps={{ className: "text-foreground" }}
+              onClick={() => setServicesOpen(false)}
+            >
+              Serviços
+              {menuServices.length > 0 && <ChevronDown className="w-3.5 h-3.5" />}
+            </Link>
+            <AnimatePresence>
+              {servicesOpen && menuServices.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50"
+                >
+                  <div className="w-[28rem] max-h-[70vh] overflow-y-auto rounded-2xl border border-border bg-card shadow-elegant p-3 grid grid-cols-2 gap-1">
+                    {menuServices.map((s) => (
+                      <Link
+                        key={s.slug}
+                        to="/servicos/$slug"
+                        params={{ slug: s.slug }}
+                        onClick={() => setServicesOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-muted text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
+                        <span className="block font-medium">{s.name}</span>
+                        <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {s.category}
+                        </span>
+                      </Link>
+                    ))}
+                    <Link
+                      to="/servicos"
+                      onClick={() => setServicesOpen(false)}
+                      className="col-span-2 mt-1 text-center text-sm font-semibold text-primary hover:underline py-2"
+                    >
+                      Ver catálogo completo →
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {staticNav.slice(1).map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -102,6 +163,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
+
 
         <div className="hidden lg:flex items-center gap-3">
           <button
