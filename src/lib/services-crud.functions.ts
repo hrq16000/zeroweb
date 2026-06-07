@@ -102,6 +102,10 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     service_type: row.service_type as string,
     tagline: (row.tagline as string) ?? null,
     price_from: (row.price_from as number) ?? null,
+    price: (row.price as number) ?? null,
+    price_period: (row.price_period as string) ?? null,
+    delivery_days: (row.delivery_days as string) ?? null,
+    conditions: (row.conditions as string) ?? null,
     cta_label: (row.cta_label as string) ?? "Solicitar proposta",
     cta_target: (row.cta_target as string) ?? null,
     image_path,
@@ -116,10 +120,16 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     keywords: asArr<string>(row.keywords),
     is_active: Boolean(row.is_active),
     is_featured: Boolean(row.is_featured),
+    show_in_menu: row.show_in_menu === undefined ? true : Boolean(row.show_in_menu),
+    show_in_footer: row.show_in_footer === undefined ? true : Boolean(row.show_in_footer),
+    show_in_home_featured: row.show_in_home_featured === undefined ? false : Boolean(row.show_in_home_featured),
+    show_in_sitemap: row.show_in_sitemap === undefined ? true : Boolean(row.show_in_sitemap),
+    funnels: (row.funnels && typeof row.funnels === "object" ? row.funnels : {}) as ServiceFunnels,
     display_order: Number(row.display_order ?? 100),
     updated_at: row.updated_at as string | undefined,
   };
 }
+
 
 // Public — only active.
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
