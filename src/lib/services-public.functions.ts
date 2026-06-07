@@ -88,7 +88,9 @@ function asFunnels(v: unknown): Record<string, string> {
 }
 
 export type GalleryItem = { path: string; url: string | null; alt: string | null };
-export type SchemaBlock = Record<string, unknown>;
+// JSON-LD block; typed loosely so TanStack's serialization check accepts it.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SchemaBlock = Record<string, any>;
 export type PublicServiceFull = ServiceData & {
   imagePath: string | null;
   imageUrl: string | null;
