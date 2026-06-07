@@ -11,6 +11,8 @@ import { SERVICES } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import { ShopHero } from "@/components/site/ShopHero";
+import { SmartServiceSearch } from "@/components/site/SmartServiceSearch";
 import {
   Accordion,
   AccordionContent,
@@ -161,8 +163,12 @@ export const Route = createFileRoute("/servicos/")({
   },
   loader: async () => {
     const { listServicesPublic } = await import("@/lib/services-public.functions");
-    const { services } = await listServicesPublic();
-    return { services };
+    const { listHeroSlides } = await import("@/lib/hero-slides.functions");
+    const [{ services }, { slides }] = await Promise.all([
+      listServicesPublic(),
+      listHeroSlides({ data: { page: "servicos" } }),
+    ]);
+    return { services, slides };
   },
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-8 text-center">
@@ -200,7 +206,7 @@ function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
 }
 
 function ServicosHub() {
-  const { services } = Route.useLoaderData();
+  const { services, slides } = Route.useLoaderData();
   type Svc = (typeof services)[number];
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
@@ -254,17 +260,32 @@ function ServicosHub() {
       <Header />
       <Breadcrumbs items={[{ name: "Serviços", path: "/servicos" }]} />
       <main className="pt-6">
-        <section className="py-16 bg-hero">
-          <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
-            <p className="text-xs uppercase tracking-wider text-primary font-semibold inline-flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5" /> Catálogo completo
-            </p>
-            <h1 className="mt-3 text-4xl lg:text-6xl font-bold tracking-tight">
-              Serviços <span className="text-gradient">0WEB</span>
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Tudo o que sua empresa precisa para crescer no digital — em um único parceiro.
-            </p>
+        <h1 className="sr-only">Loja de serviços 0WEB</h1>
+        <ShopHero slides={slides} />
+
+        {/* Barra de busca inteligente em destaque, estilo loja virtual */}
+        <section className="py-10 px-5 bg-gradient-to-b from-muted/40 to-background border-b border-border">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center mb-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold inline-flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5" /> O que você procura hoje?
+              </p>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">
+                Encontre o serviço ideal em segundos
+              </h2>
+            </div>
+            <SmartServiceSearch
+              services={services.map((s) => ({
+                slug: s.slug,
+                name: s.name,
+                category: s.category,
+                description: s.description,
+                keywords: s.keywords,
+              }))}
+              value={q}
+              onChange={(v) => startTransition(() => { setQ(v); setPage(1); })}
+              trending={["Site Express", "Tráfego pago", "SEO", "Google Meu Negócio", "Automação WhatsApp"]}
+            />
           </div>
         </section>
 
