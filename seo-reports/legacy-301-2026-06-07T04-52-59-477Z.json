@@ -1,0 +1,78 @@
+{
+  "baseUrl": "https://0web.com.br",
+  "at": "2026-06-07T04-52-59-477Z",
+  "results": [
+    {
+      "from": "/trafego-pago",
+      "expected": "/servicos/trafego-pago",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/trafego-pago",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/trafego-pago-local",
+      "expected": "/servicos/trafego-pago-local",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/trafego-pago-local",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/consultoria",
+      "expected": "/servicos/consultoria",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/consultoria",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/google-meu-negocio",
+      "expected": "/servicos/google-meu-negocio",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/google-meu-negocio",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/marketplace",
+      "expected": "/servicos/marketplace",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/marketplace",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/parceiros",
+      "expected": "/servicos/parceiros",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/parceiros",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/presenca-digital",
+      "expected": "/servicos/presenca-digital",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/presenca-digital",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    },
+    {
+      "from": "/site-express",
+      "expected": "/servicos/site-express",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/site-express",
+      "is301": true,
+      "lands": true,
+      "pass": true
+    }
+  ]
+}
