@@ -11,7 +11,7 @@ const cols: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "Site Express em 24h", to: "/servicos/site-express" },
       { label: "Loja Virtual", to: "/servicos/loja-virtual" },
       { label: "Google Meu Negócio", to: "/google-meu-negocio" },
-      { label: "SEO", to: "/servicos/seo" },
+      { label: "SEO", to: "/seo" },
     ],
   },
   {
@@ -23,6 +23,17 @@ const cols: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "Desenvolvimento SaaS", to: "/servicos/desenvolvimento-saas" },
       { label: "Redes Sociais", to: "/servicos/gestao-redes-sociais" },
       { label: "Marketing Digital", to: "/servicos/marketing-digital" },
+    ],
+  },
+  {
+    title: "Especialidades",
+    links: [
+      { label: "Presença Digital", to: "/presenca-digital" },
+      { label: "Tráfego Pago", to: "/trafego-pago" },
+      { label: "Tráfego Local", to: "/trafego-pago-local" },
+      { label: "Consultoria", to: "/consultoria" },
+      { label: "Parceiros", to: "/parceiros" },
+      { label: "Marketplace", to: "/marketplace" },
     ],
   },
   {
