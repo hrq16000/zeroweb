@@ -1,56 +1,90 @@
 import { Instagram, Linkedin, Youtube, Mail, MessageCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { listServicesNav, type NavService } from "@/lib/services-nav.functions";
 
-const cols: { title: string; links: { label: string; to: string }[] }[] = [
+type FooterLink = { label: string; to?: string; slug?: string };
+type FooterCol = { title: string; links: FooterLink[] };
+
+// Fallback estático quando o DB ainda não respondeu.
+const fallbackCols: FooterCol[] = [
   {
-    title: "Soluções",
+    title: "Serviços",
     links: [
-      { label: "Criação de Sites", to: "/servicos/criacao-de-sites" },
-      { label: "Landing Pages", to: "/servicos/landing-pages" },
-      { label: "Site Express em 24h", to: "/servicos/site-express" },
-      { label: "Loja Virtual", to: "/servicos/loja-virtual" },
-      { label: "Google Meu Negócio", to: "/servicos/google-meu-negocio" },
+      { label: "Site Express em 24h", slug: "site-express" },
+      { label: "Criação de Sites", slug: "criacao-de-sites" },
+      { label: "Landing Pages", slug: "landing-pages" },
+      { label: "Loja Virtual", slug: "loja-virtual" },
+      { label: "Google Meu Negócio", slug: "google-meu-negocio" },
       { label: "SEO", to: "/seo" },
     ],
   },
   {
     title: "Tecnologia",
     links: [
-      { label: "Chatbot no WhatsApp", to: "/servicos/chatbot-whatsapp" },
-      { label: "Automação com IA", to: "/servicos/automacao-com-ia" },
-      { label: "Sistemas Web", to: "/servicos/sistemas-web" },
-      { label: "Desenvolvimento SaaS", to: "/servicos/desenvolvimento-saas" },
-      { label: "Redes Sociais", to: "/servicos/gestao-redes-sociais" },
-      { label: "Marketing Digital", to: "/servicos/marketing-digital" },
+      { label: "Chatbot no WhatsApp", slug: "chatbot-whatsapp" },
+      { label: "Automação com IA", slug: "automacao-com-ia" },
+      { label: "Sistemas Web", slug: "sistemas-web" },
+      { label: "Desenvolvimento SaaS", slug: "desenvolvimento-saas" },
+      { label: "Redes Sociais", slug: "gestao-redes-sociais" },
+      { label: "Marketing Digital", slug: "marketing-digital" },
     ],
   },
   {
     title: "Especialidades",
     links: [
-      { label: "Presença Digital", to: "/servicos/presenca-digital" },
-      { label: "Tráfego Pago", to: "/servicos/trafego-pago" },
-      { label: "Tráfego Local", to: "/servicos/trafego-pago-local" },
-      { label: "Consultoria", to: "/servicos/consultoria" },
-      { label: "Parceiros", to: "/servicos/parceiros" },
-      { label: "Marketplace", to: "/servicos/marketplace" },
-    ],
-  },
-  {
-    title: "Empresa",
-    links: [
-      { label: "Todos os Serviços", to: "/servicos" },
-      { label: "Cases", to: "/cases" },
-      { label: "Planos", to: "/planos" },
-      { label: "Sobre", to: "/sobre" },
-      { label: "Blog", to: "/blog" },
-      { label: "Contato", to: "/contato" },
+      { label: "Presença Digital", slug: "presenca-digital" },
+      { label: "Tráfego Pago", slug: "trafego-pago" },
+      { label: "Tráfego Local", slug: "trafego-pago-local" },
+      { label: "Consultoria", slug: "consultoria" },
+      { label: "Parceiros", slug: "parceiros" },
+      { label: "Marketplace", slug: "marketplace" },
     ],
   },
 ];
 
+const empresaCol: FooterCol = {
+  title: "Empresa",
+  links: [
+    { label: "Todos os Serviços", to: "/servicos" },
+    { label: "Cases", to: "/cases" },
+    { label: "Planos", to: "/planos" },
+    { label: "Sobre", to: "/sobre" },
+    { label: "Blog", to: "/blog" },
+    { label: "Contato", to: "/contato" },
+  ],
+};
+
+function buildDbCols(services: NavService[]): FooterCol[] {
+  if (services.length === 0) return fallbackCols;
+  // Agrupa por categoria, preserva ordem original (display_order do DB).
+  const byCat = new Map<string, NavService[]>();
+  for (const s of services) {
+    const arr = byCat.get(s.category) ?? [];
+    arr.push(s);
+    byCat.set(s.category, arr);
+  }
+  return Array.from(byCat.entries())
+    .slice(0, 3)
+    .map(([title, list]) => ({
+      title,
+      links: list.slice(0, 6).map((s) => ({ label: s.name, slug: s.slug })),
+    }));
+}
+
+
+
 export function Footer() {
   const { open } = useWaFunnel();
+  const { data: nav } = useQuery({
+    queryKey: ["services-nav"],
+    queryFn: () => listServicesNav(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const dbCols = buildDbCols(nav?.footer ?? []);
+  const cols: FooterCol[] = [...dbCols, empresaCol];
+
   return (
     <footer className="bg-foreground text-background pt-20 pb-10">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -105,17 +139,28 @@ export function Footer() {
               <ul className="mt-4 space-y-2.5 text-sm">
                 {c.links.map((l) => (
                   <li key={l.label}>
-                    <Link
-                      to={l.to}
-                      className="text-background/80 hover:text-accent transition"
-                    >
-                      {l.label}
-                    </Link>
+                    {l.slug ? (
+                      <Link
+                        to="/servicos/$slug"
+                        params={{ slug: l.slug }}
+                        className="text-background/80 hover:text-accent transition"
+                      >
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <Link
+                        to={l.to!}
+                        className="text-background/80 hover:text-accent transition"
+                      >
+                        {l.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+
         </div>
 
         <div className="mt-14 pt-8 border-t border-background/10 flex flex-wrap items-center justify-between gap-4 text-xs text-background/60">
