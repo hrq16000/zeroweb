@@ -214,6 +214,7 @@ function AppShell() {
               >
                 <Search className="w-4 h-4" />
                 404s & Redirects
+              </Link>
               <Link
                 to="/app/funis"
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
