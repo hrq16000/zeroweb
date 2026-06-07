@@ -9,7 +9,7 @@ import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
-import { getServicePublic } from "@/lib/services-public.functions";
+import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/lib/services-public.functions";
 
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
