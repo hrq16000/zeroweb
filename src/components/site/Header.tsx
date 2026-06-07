@@ -21,9 +21,17 @@ const staticNav: { to: string; label: string }[] = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const { open: openFunnel } = useWaFunnel();
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { data: navData } = useQuery({
+    queryKey: ["services-nav"],
+    queryFn: () => listServicesNav(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const menuServices = navData?.menu ?? [];
+
 
   useEffect(() => {
     setOpen(false);
