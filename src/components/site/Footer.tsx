@@ -77,6 +77,14 @@ function buildDbCols(services: NavService[]): FooterCol[] {
 
 export function Footer() {
   const { open } = useWaFunnel();
+  const { data: nav } = useQuery({
+    queryKey: ["services-nav"],
+    queryFn: () => listServicesNav(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const dbCols = buildDbCols(nav?.footer ?? []);
+  const cols: FooterCol[] = [...dbCols, empresaCol];
+
   return (
     <footer className="bg-foreground text-background pt-20 pb-10">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
