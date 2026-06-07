@@ -334,6 +334,44 @@ function ServiceEditDialog({
             </Field>
           </div>
 
+          {/* Comercial (vitrine) */}
+          <div className="rounded-lg border border-border p-3 space-y-3">
+            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comercial · aparece no card e na página do produto</Label>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Field label="Preço (R$)">
+                <Input
+                  type="number" min={0} step="0.01"
+                  value={s.price ?? ""}
+                  onChange={(e) => set("price", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="499"
+                />
+              </Field>
+              <Field label="Período">
+                <Input
+                  value={s.price_period ?? ""}
+                  onChange={(e) => set("price_period", e.target.value)}
+                  placeholder="único · /mês · sob consulta"
+                />
+              </Field>
+              <Field label="Prazo de entrega">
+                <Input
+                  value={s.delivery_days ?? ""}
+                  onChange={(e) => set("delivery_days", e.target.value)}
+                  placeholder="24h · 7 dias · 15 dias"
+                />
+              </Field>
+            </div>
+            <Field label="Condições (texto livre, aparece na página)">
+              <Textarea
+                rows={2}
+                value={s.conditions ?? ""}
+                onChange={(e) => set("conditions", e.target.value)}
+                placeholder="Inclui domínio + SSL · pagamento único · suporte por 30 dias"
+              />
+            </Field>
+          </div>
+
+
           <Field label="Tagline curta">
             <Input value={s.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} />
           </Field>
