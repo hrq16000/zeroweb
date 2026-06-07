@@ -78,3 +78,30 @@ export const listNotFound = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { rows: rows ?? [] };
   });
+
+/** Lista admin: redirects 301 cadastrados + hits. */
+export const listRedirects = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("redirects")
+      .select("from_path,to_path,status_code,enabled,hits,last_hit_at,notes")
+      .order("hits", { ascending: false })
+      .limit(500);
+    if (error) throw new Error(error.message);
+    return { rows: data ?? [] };
+  });
+
+/** Lista admin: snapshots de cobertura de indexação (últimos 30 dias). */
+export const listIndexCoverage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("index_coverage_snapshots")
+      .select("day,issue_type,count,open_count")
+      .order("day", { ascending: false })
+      .limit(300);
+    if (error) throw new Error(error.message);
+    return { rows: data ?? [] };
+  });
+
