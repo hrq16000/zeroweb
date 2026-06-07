@@ -92,43 +92,16 @@ async function signImage(sb: any, path: string | null): Promise<string | null> {
 const COLS =
   "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order";
 
-// Fallback de capa por slug — para serviços ainda sem registro/imagem no banco.
-// Vite resolve estes imports para URLs estáveis no bundle.
-import siteExpressCapa from "@/assets/site-express-capa.jpg";
-import site24hCapa from "@/assets/site-24h-capa.jpg";
-import consultoriaCapa from "@/assets/consultoria-capa.jpg";
-import seoCapa from "@/assets/seo-capa.jpg";
-import marketplaceCapa from "@/assets/marketplace-capa.jpg";
-import parceirosCapa from "@/assets/parceiros-capa.jpg";
-import trafegoLocalCapa from "@/assets/trafego-pago-local-capa.jpg";
-import trafegoPagoAsset from "@/assets/trafego-pago-499-capa.png.asset.json";
-import presencaDigitalAsset from "@/assets/presenca-digital-google-capa.png.asset.json";
-import googleMNAsset from "@/assets/google-meu-negocio-capa.png.asset.json";
-
-const FALLBACK_COVERS: Record<string, { url: string; alt: string }> = {
-  "site-express": { url: siteExpressCapa, alt: "Capa Site Express em 24h" },
-  "site-24h": { url: site24hCapa, alt: "Capa Site em 24 horas" },
-  consultoria: { url: consultoriaCapa, alt: "Capa Consultoria Estratégica" },
-  seo: { url: seoCapa, alt: "Capa SEO" },
-  marketplace: { url: marketplaceCapa, alt: "Capa Marketplace de Serviços" },
-  parceiros: { url: parceirosCapa, alt: "Capa Programa de Parceiros" },
-  "trafego-pago-local": { url: trafegoLocalCapa, alt: "Capa Tráfego Pago Local" },
-  "trafego-pago": { url: trafegoPagoAsset.url, alt: "Capa Tráfego Pago" },
-  "presenca-digital": { url: presencaDigitalAsset.url, alt: "Capa Presença Digital" },
-  "google-meu-negocio": { url: googleMNAsset.url, alt: "Capa Google Meu Negócio" },
-};
-
-const fileFallback = (s: ServiceData) => {
-  const cover = FALLBACK_COVERS[s.slug] ?? null;
-  return {
-    ...s,
-    imagePath: null,
-    imageUrl: cover?.url ?? null,
-    imageAlt: cover?.alt ?? null,
-    seoTitle: null,
-    seoDescription: null,
-  };
-};
+// Sem fallbacks de imagem: capa vem 100% do painel administrativo
+// (coluna image_path da tabela services + bucket service-images).
+const fileFallback = (s: ServiceData) => ({
+  ...s,
+  imagePath: null,
+  imageUrl: null,
+  imageAlt: null,
+  seoTitle: null,
+  seoDescription: null,
+});
 
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
   try {
@@ -143,6 +116,8 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     const mapped = await Promise.all(
       rows.map(async (r) => mapRow(r, await signImage(supabaseAdmin, r.image_path))),
     );
+    // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
+    // se ainda não foram migrados (legado de SEO city pages).
     const seen = new Set(mapped.map((s) => s.slug));
     for (const s of Object.values(SERVICES)) {
       if (!seen.has(s.slug)) mapped.push(fileFallback(s));
@@ -153,6 +128,7 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     return { services: Object.values(SERVICES).map(fileFallback) };
   }
 });
+
 
 export const getServicePublic = createServerFn({ method: "GET" })
   .inputValidator((data: unknown) => z.object({ slug: z.string().min(1).max(120) }).parse(data))
