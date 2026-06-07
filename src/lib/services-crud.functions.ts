@@ -171,6 +171,10 @@ const upsertSchema = z.object({
   service_type: z.string().min(1).max(80),
   tagline: z.string().max(200).nullable().optional(),
   price_from: z.number().min(0).nullable().optional(),
+  price: z.number().min(0).nullable().optional(),
+  price_period: z.string().max(40).nullable().optional(),
+  delivery_days: z.string().max(60).nullable().optional(),
+  conditions: z.string().max(2000).nullable().optional(),
   cta_label: z.string().min(1).max(60),
   cta_target: z.string().max(400).nullable().optional(),
   image_path: z.string().max(400).nullable().optional(),
@@ -184,8 +188,23 @@ const upsertSchema = z.object({
   keywords: z.array(z.string().min(1).max(80)).max(30).default([]),
   is_active: z.boolean().default(true),
   is_featured: z.boolean().default(false),
+  show_in_menu: z.boolean().default(true),
+  show_in_footer: z.boolean().default(true),
+  show_in_home_featured: z.boolean().default(false),
+  show_in_sitemap: z.boolean().default(true),
+  funnels: z
+    .object({
+      default: z.string().max(120).nullable().optional(),
+      header: z.string().max(120).nullable().optional(),
+      hero: z.string().max(120).nullable().optional(),
+      card: z.string().max(120).nullable().optional(),
+      detail: z.string().max(120).nullable().optional(),
+      footer: z.string().max(120).nullable().optional(),
+    })
+    .default({}),
   display_order: z.number().int().min(0).max(10000).default(100),
 });
+
 
 export const upsertService = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
