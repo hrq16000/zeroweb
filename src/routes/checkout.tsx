@@ -46,6 +46,7 @@ function buildWhatsAppMessage(items: CartItem[], total: number, orderId: string)
 
 function CheckoutPage() {
   const navigate = useNavigate();
+  const fetchSettings = useServerFn(getPaymentSettings);
   const [items, setItems] = useState<CartItem[]>([]);
   const [session, setSession] = useState<{ email?: string; name?: string } | null>(null);
   const [authReady, setAuthReady] = useState(false);
@@ -54,6 +55,10 @@ function CheckoutPage() {
   const [notes, setNotes] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  const [settings, setSettings] = useState<PaymentSettings>({
+    stripeEnabled: false,
+    whatsappNumber: DEFAULT_WHATSAPP,
+  });
   const total = useMemo(() => cartTotal(items), [items]);
   const hasUnpriced = items.some((i) => !i.price);
 
@@ -63,6 +68,10 @@ function CheckoutPage() {
     window.addEventListener("0web:cart-changed", onChange);
     return () => window.removeEventListener("0web:cart-changed", onChange);
   }, []);
+
+  useEffect(() => {
+    void fetchSettings().then(setSettings).catch(() => {});
+  }, [fetchSettings]);
 
   useEffect(() => {
     void supabase.auth.getUser().then(({ data }) => {
@@ -118,7 +127,8 @@ function CheckoutPage() {
       await markOrderWhatsAppHandoff({ data: { orderId: order.id } });
       const msg = buildWhatsAppMessage(items, total, order.id);
       clearCart();
-      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
+      const wa = settings.whatsappNumber || DEFAULT_WHATSAPP;
+      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
       toast.success("Pedido registrado", { description: "Continue a conversa pelo WhatsApp." });
       navigate({ to: "/app" });
     } catch (e) {
@@ -130,12 +140,22 @@ function CheckoutPage() {
 
   async function handlePayNow() {
     if (!session) return handleGoogle();
-    toast("Pagamento online em breve", {
-      description: "Por enquanto, finalize pelo WhatsApp — sua equipe envia o link de pagamento.",
+    // Stripe está desativado no admin → redireciona o fluxo para WhatsApp,
+    // mantendo o pedido salvo internamente como pendente de pagamento.
+    if (!settings.stripeEnabled) {
+      toast("Pagamento online ainda não está ativo", {
+        description: "Vamos finalizar pelo WhatsApp. Seu pedido fica salvo como pendente de pagamento.",
+        duration: 4000,
+      });
+      return handleWhatsApp();
+    }
+    toast("Stripe em integração final", {
+      description: "Em instantes liberamos o link de pagamento. Por enquanto, finalize pelo WhatsApp.",
       action: { label: "WhatsApp", onClick: () => void handleWhatsApp() },
       duration: 7000,
     });
   }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
