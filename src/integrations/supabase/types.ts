@@ -4156,11 +4156,15 @@ export type Database = {
           is_featured: boolean
           keywords: Json
           name: string
+          og_image_path: string | null
+          og_type: string
           price: number | null
           price_from: number | null
           price_period: string | null
           problems: Json
           process: Json
+          rich_html: string | null
+          schema_jsonld: Json
           sections: Json
           seo_description: string | null
           seo_title: string | null
@@ -4195,11 +4199,15 @@ export type Database = {
           is_featured?: boolean
           keywords?: Json
           name: string
+          og_image_path?: string | null
+          og_type?: string
           price?: number | null
           price_from?: number | null
           price_period?: string | null
           problems?: Json
           process?: Json
+          rich_html?: string | null
+          schema_jsonld?: Json
           sections?: Json
           seo_description?: string | null
           seo_title?: string | null
@@ -4234,11 +4242,15 @@ export type Database = {
           is_featured?: boolean
           keywords?: Json
           name?: string
+          og_image_path?: string | null
+          og_type?: string
           price?: number | null
           price_from?: number | null
           price_period?: string | null
           problems?: Json
           process?: Json
+          rich_html?: string | null
+          schema_jsonld?: Json
           sections?: Json
           seo_description?: string | null
           seo_title?: string | null
