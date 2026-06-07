@@ -15,8 +15,27 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WaFunnelProvider } from "../components/site/WaFunnelModal";
 import { AnalyticsBootstrap } from "../components/site/AnalyticsBootstrap";
 import { ErrorState } from "../components/site/ErrorState";
+import { logNotFound } from "../lib/route-404.functions";
 
 function NotFoundComponent() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const path = window.location.pathname + window.location.search;
+      const key = `404-logged:${path}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+      void logNotFound({
+        data: {
+          path: window.location.pathname,
+          referrer: document.referrer || null,
+          userAgent: navigator.userAgent || null,
+        },
+      }).catch(() => {});
+    } catch {
+      /* noop */
+    }
+  }, []);
   return <ErrorState kind="404" />;
 }
 
