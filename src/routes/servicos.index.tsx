@@ -468,64 +468,63 @@ function ServicosHub() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-12">
-                {categories.map((cat) => (
-                  <div key={cat}>
-                    <h3 className="text-xl font-bold mb-4">{cat}</h3>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {byCategory[cat].map((s) => (
-                        <Link
-                          key={s.slug}
-                          to="/servicos/$slug"
-                          params={{ slug: s.slug }}
-                          className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          aria-label={`Ver detalhes do serviço ${s.name}`}
-                        >
-                          {s.imageUrl ? (
-                            <div className="aspect-video overflow-hidden bg-muted">
-                              <img
-                                src={s.imageUrl}
-                                alt={s.imageAlt || s.name}
-                                loading="lazy"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            </div>
-                          ) : (
-                            <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
-                              <Sparkles className="w-8 h-8 text-primary/40" />
-                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
-                            </div>
-                          )}
-                          <div className="p-5">
-                            <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
-                            <h4 className="mt-1 font-semibold text-lg">{s.name}</h4>
-                            <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
-                            {(s.price != null || s.deliveryDays) && (
-                              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                                {s.price != null && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
-                                    {s.price === 0
-                                      ? "Sob consulta"
-                                      : `A partir de R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
-                                    {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
-                                  </span>
-                                )}
-                                {s.deliveryDays && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                                    <Timer className="w-3 h-3" /> {s.deliveryDays}
-                                  </span>
-                                )}
-                              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {paginated.map((s) => (
+                  <Link
+                    key={s.slug}
+                    to="/servicos/$slug"
+                    params={{ slug: s.slug }}
+                    className="group relative flex flex-col rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-1 hover:shadow-elegant transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`Ver detalhes do serviço ${s.name}`}
+                  >
+                    {newSet.has(s.slug) && (
+                      <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
+                        <Sparkles className="w-3 h-3" /> Novo
+                      </span>
+                    )}
+                    {s.imageUrl ? (
+                      <div className="aspect-video overflow-hidden bg-muted">
+                        <img
+                          src={s.imageUrl}
+                          alt={s.imageAlt || s.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
+                        <Sparkles className="w-8 h-8 text-primary/40" />
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
+                      </div>
+                    )}
+                    <div className="p-4 flex-1 flex flex-col">
+                      <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
+                      <h4 className="mt-1 font-semibold text-base leading-snug">{s.name}</h4>
+                      <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{s.description}</p>
+                      <div className="mt-auto pt-3">
+                        {(s.price != null || s.deliveryDays) && (
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
+                            {s.price != null && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+                                {s.price === 0
+                                  ? "Sob consulta"
+                                  : `R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
+                                {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
+                              </span>
                             )}
-                            <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
-                              Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
-                            </span>
+                            {s.deliveryDays && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                                <Timer className="w-3 h-3" /> {s.deliveryDays}
+                              </span>
+                            )}
                           </div>
-
-                        </Link>
-                      ))}
+                        )}
+                        <span className="inline-flex items-center justify-center w-full gap-1 text-sm font-semibold rounded-full bg-foreground text-background px-3 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          Ver produto <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
