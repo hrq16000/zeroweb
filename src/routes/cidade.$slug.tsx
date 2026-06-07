@@ -26,7 +26,7 @@ export const Route = createFileRoute("/cidade/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             ...breadcrumbLd([
-              { name: "Marketplace", path: "/marketplace" },
+              { name: "Marketplace", path: "/servicos/marketplace" },
               { name: "Cidades", path: "/cidades" },
               { name: params.slug, path: `/cidade/${params.slug}` },
             ]),
@@ -50,7 +50,7 @@ function CityPage() {
     <div className="min-h-screen bg-background">
       <Breadcrumbs
         items={[
-          { name: "Marketplace", path: "/marketplace" },
+          { name: "Marketplace", path: "/servicos/marketplace" },
           { name: "Cidades", path: "/cidades" },
           { name: data.city ?? slug, path: `/cidade/${slug}` },
         ]}

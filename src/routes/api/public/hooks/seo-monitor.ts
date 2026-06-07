@@ -3,7 +3,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendWhatsAppAlert } from "@/lib/alerts.functions";
 
 const BASE = "https://grow-evolution-engine.lovable.app";
-const ROUTES_TO_CHECK = ["/", "/blog", "/servicos", "/contato", "/google-meu-negocio"];
+const ROUTES_TO_CHECK = ["/", "/blog", "/servicos", "/contato", "/servicos/google-meu-negocio"];
 
 async function checkUrl(url: string): Promise<{ ok: boolean; status: number; body?: string }> {
   try {

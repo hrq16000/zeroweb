@@ -10,7 +10,7 @@ type Item = {
 };
 
 const ALL: Item[] = [
-  { to: "/trafego-pago-local", title: "Tráfego pago para negócios locais", desc: "Anúncios no Google e Meta a partir de R$499/mês, sem contrato.", anchor: "Ver tráfego pago local", icon: Megaphone },
+  { to: "/servicos/trafego-pago-local", title: "Tráfego pago para negócios locais", desc: "Anúncios no Google e Meta a partir de R$499/mês, sem contrato.", anchor: "Ver tráfego pago local", icon: Megaphone },
   { to: "/servicos/criacao-de-sites", title: "Criação de sites profissionais", desc: "Sites rápidos, otimizados para SEO e prontos para converter.", anchor: "Criar meu site agora", icon: Globe },
   { to: "/servicos/seo", title: "SEO e primeiras posições no Google", desc: "Plano de SEO local e nacional com foco em ROI mensurável.", anchor: "Quero rankear no Google", icon: Search },
   { to: "/servicos/automacao-com-ia", title: "Automação e IA no WhatsApp", desc: "Atendimento, qualificação de leads e fluxos com IA no WhatsApp.", anchor: "Automatizar meu atendimento", icon: Bot },

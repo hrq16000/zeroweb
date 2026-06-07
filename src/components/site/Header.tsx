@@ -14,7 +14,7 @@ const nav: { to: string; label: string }[] = [
   { to: "/planos", label: "Planos" },
   { to: "/faq", label: "FAQ" },
   { to: "/blog", label: "Blog" },
-  { to: "/marketplace", label: "Marketplace" },
+  { to: "/servicos/marketplace", label: "Marketplace" },
   { to: "/contato", label: "Contato" },
 ];
 

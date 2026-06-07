@@ -9,11 +9,11 @@ type Item = {
   icon: typeof Globe;
   title: string;
   desc: string;
-  to?: "/google-meu-negocio";
+  to?: "/servicos/google-meu-negocio";
 };
 
 const items: Item[] = [
-  { icon: MapPin, title: "Google Meu Negócio", desc: "Apareça no Maps e receba clientes todos os dias.", to: "/google-meu-negocio" },
+  { icon: MapPin, title: "Google Meu Negócio", desc: "Apareça no Maps e receba clientes todos os dias.", to: "/servicos/google-meu-negocio" },
   { icon: Globe, title: "Criação de Sites", desc: "Sites institucionais modernos, rápidos e otimizados." },
   { icon: Rocket, title: "Landing Pages", desc: "Páginas de alta conversão para campanhas." },
   { icon: ShoppingBag, title: "E-commerce", desc: "Lojas virtuais escaláveis e prontas para vender." },
