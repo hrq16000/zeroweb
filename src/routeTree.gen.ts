@@ -48,6 +48,7 @@ import { Route as CriacaoSitesRouteImport } from './routes/criacao-sites'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ConsultoriaRouteImport } from './routes/consultoria'
 import { Route as CidadesRouteImport } from './routes/cidades'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as R403RouteImport } from './routes/403'
@@ -331,6 +332,11 @@ const ConsultoriaRoute = ConsultoriaRouteImport.update({
 const CidadesRoute = CidadesRouteImport.update({
   id: '/cidades',
   path: '/cidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AutomacaoRoute = AutomacaoRouteImport.update({
@@ -809,6 +815,7 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
@@ -936,6 +943,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
@@ -1063,6 +1071,7 @@ export interface FileRoutesById {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
   '/contato': typeof ContatoRoute
@@ -1192,6 +1201,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/checkout'
     | '/cidades'
     | '/consultoria'
     | '/contato'
@@ -1319,6 +1329,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/checkout'
     | '/cidades'
     | '/consultoria'
     | '/contato'
@@ -1445,6 +1456,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/checkout'
     | '/cidades'
     | '/consultoria'
     | '/contato'
@@ -1574,6 +1586,7 @@ export interface RootRouteChildren {
   R403Route: typeof R403Route
   AuthRoute: typeof AuthRoute
   AutomacaoRoute: typeof AutomacaoRoute
+  CheckoutRoute: typeof CheckoutRoute
   CidadesRoute: typeof CidadesRoute
   ConsultoriaRoute: typeof ConsultoriaRoute
   ContatoRoute: typeof ContatoRoute
@@ -1922,6 +1935,13 @@ declare module '@tanstack/react-router' {
       path: '/cidades'
       fullPath: '/cidades'
       preLoaderRoute: typeof CidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/automacao': {
@@ -2740,6 +2760,7 @@ const rootRouteChildren: RootRouteChildren = {
   R403Route: R403Route,
   AuthRoute: AuthRoute,
   AutomacaoRoute: AutomacaoRoute,
+  CheckoutRoute: CheckoutRoute,
   CidadesRoute: CidadesRoute,
   ConsultoriaRoute: ConsultoriaRoute,
   ContatoRoute: ContatoRoute,

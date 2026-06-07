@@ -185,8 +185,7 @@ export function CartDrawer() {
                   className="w-full"
                   onClick={() => {
                     setOpen(false);
-                    // Onda 3: navegar para /checkout
-                    window.location.href = "/servicos";
+                    window.location.href = "/checkout";
                   }}
                 >
                   Finalizar compra

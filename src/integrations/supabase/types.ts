@@ -2822,6 +2822,63 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          items: Json
+          metadata: Json
+          notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          status: string
+          total: number
+          updated_at: string
+          user_id: string
+          whatsapp_handoff_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          metadata?: Json
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          user_id: string
+          whatsapp_handoff_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          metadata?: Json
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          user_id?: string
+          whatsapp_handoff_at?: string | null
+        }
+        Relationships: []
+      }
       partner_attributions: {
         Row: {
           campaign: string | null
