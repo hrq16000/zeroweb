@@ -56,8 +56,9 @@ export const createOrder = createServerFn({ method: "POST" })
   });
 
 /**
- * Marca o pedido como transferido para WhatsApp (handoff).
- * Mantém o pedido visível para o cliente acompanhar o status.
+ * Marca o pedido como transferido para WhatsApp e pendente de pagamento.
+ * O cliente continua o atendimento pelo WhatsApp; internamente o pedido
+ * fica salvo como `pending_payment` para acompanhamento financeiro.
  */
 export const markOrderWhatsAppHandoff = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -69,7 +70,7 @@ export const markOrderWhatsAppHandoff = createServerFn({ method: "POST" })
     const { error } = await supabase
       .from("orders")
       .update({
-        status: "whatsapp_handoff",
+        status: "pending_payment",
         payment_method: "whatsapp",
         whatsapp_handoff_at: new Date().toISOString(),
       })
@@ -78,6 +79,7 @@ export const markOrderWhatsAppHandoff = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 /**
  * Lista pedidos do usuário (área do cliente — usado no painel /app).
