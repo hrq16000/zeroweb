@@ -3793,6 +3793,36 @@ export type Database = {
         }
         Relationships: []
       }
+      route_404_log: {
+        Row: {
+          first_seen: string
+          hits: number
+          id: string
+          last_seen: string
+          path: string
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          first_seen?: string
+          hits?: number
+          id?: string
+          last_seen?: string
+          path: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          first_seen?: string
+          hits?: number
+          id?: string
+          last_seen?: string
+          path?: string
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       seo_monitor_runs: {
         Row: {
           alerted: boolean
