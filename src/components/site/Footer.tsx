@@ -139,17 +139,28 @@ export function Footer() {
               <ul className="mt-4 space-y-2.5 text-sm">
                 {c.links.map((l) => (
                   <li key={l.label}>
-                    <Link
-                      to={l.to}
-                      className="text-background/80 hover:text-accent transition"
-                    >
-                      {l.label}
-                    </Link>
+                    {l.slug ? (
+                      <Link
+                        to="/servicos/$slug"
+                        params={{ slug: l.slug }}
+                        className="text-background/80 hover:text-accent transition"
+                      >
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <Link
+                        to={l.to!}
+                        className="text-background/80 hover:text-accent transition"
+                      >
+                        {l.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+
         </div>
 
         <div className="mt-14 pt-8 border-t border-background/10 flex flex-wrap items-center justify-between gap-4 text-xs text-background/60">
