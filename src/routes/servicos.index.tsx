@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useTransition } from "react";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
