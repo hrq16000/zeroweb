@@ -116,7 +116,7 @@ export const Route = createFileRoute("/servicos/$slug")({
 });
 
 function ServicePage() {
-  const data = Route.useLoaderData();
+  const data = Route.useLoaderData() as PublicServiceFull;
   const { slug } = Route.useParams();
   const otherSvcs = relatedServices(slug, 4);
   const hasGeo = GEO_SET.has(slug);
