@@ -1628,6 +1628,66 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_slides: {
+        Row: {
+          badge: string | null
+          bg_gradient: string | null
+          created_at: string
+          cta_href: string | null
+          cta_label: string | null
+          cta_secondary_href: string | null
+          cta_secondary_label: string | null
+          eyebrow: string | null
+          id: string
+          image_path: string | null
+          image_url: string | null
+          is_active: boolean
+          page: string
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          bg_gradient?: string | null
+          created_at?: string
+          cta_href?: string | null
+          cta_label?: string | null
+          cta_secondary_href?: string | null
+          cta_secondary_label?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_path?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          page?: string
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          bg_gradient?: string | null
+          created_at?: string
+          cta_href?: string | null
+          cta_label?: string | null
+          cta_secondary_href?: string | null
+          cta_secondary_label?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_path?: string | null
+          image_url?: string | null
+          is_active?: boolean
+          page?: string
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       identity_stitch_log: {
         Row: {
           actor: string | null
