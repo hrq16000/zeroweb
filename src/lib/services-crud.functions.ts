@@ -196,6 +196,11 @@ const upsertSchema = z.object({
   image_alt: z.string().max(200).nullable().optional(),
   seo_title: z.string().max(160).nullable().optional(),
   seo_description: z.string().max(320).nullable().optional(),
+  og_image_path: z.string().max(400).nullable().optional(),
+  og_type: z.enum(["website", "article", "product"]).default("website"),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema_jsonld: z.array(z.record(z.any())).max(20).default([]),
+  rich_html: z.string().max(40000).nullable().optional(),
   problems: z.array(z.string().min(1).max(300)).max(20).default([]),
   benefits: z.array(z.string().min(1).max(300)).max(20).default([]),
   process: z.array(z.object({ step: z.string().min(1).max(80), desc: z.string().min(1).max(300) })).max(20).default([]),
