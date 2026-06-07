@@ -35,7 +35,9 @@ export function Header() {
 
   useEffect(() => {
     setOpen(false);
+    setServicesOpen(false);
   }, [pathname]);
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
