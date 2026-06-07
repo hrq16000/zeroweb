@@ -29,7 +29,7 @@ function SeoDiffPage() {
   useEffect(() => {
     fetchList()
       .then((r) => {
-        const list = (r.services ?? []).map((s) => ({ slug: s.slug, name: s.name }));
+        const list = (r.services ?? []).map((s: { slug: string; name: string }) => ({ slug: s.slug, name: s.name }));
         setServices(list);
         if (list.length && !selected) setSelected(list[0].slug);
       })
