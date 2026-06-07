@@ -18,7 +18,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
-import { absUrl, ORIGIN, ORG_REF, breadcrumbLd } from "@/lib/seo";
+import { absUrl, ORG_REF, breadcrumbLd } from "@/lib/seo";
 
 const SLUG = "site-24h";
 const PATH = `/servicos/${SLUG}`;
