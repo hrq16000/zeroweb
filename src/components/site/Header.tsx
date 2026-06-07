@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, MessageCircle, LogIn } from "lucide-react";
+import { Menu, X, MessageCircle, LogIn, ChevronDown } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { listServicesNav } from "@/lib/services-nav.functions";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
-const nav: { to: string; label: string }[] = [
+const staticNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
-  { to: "/servicos", label: "Serviços" },
-  { to: "/servicos/automacao-com-ia", label: "IA" },
   { to: "/cases", label: "Cases" },
   { to: "/planos", label: "Planos" },
   { to: "/faq", label: "FAQ" },
   { to: "/blog", label: "Blog" },
-  { to: "/servicos/marketplace", label: "Marketplace" },
   { to: "/contato", label: "Contato" },
 ];
+
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
