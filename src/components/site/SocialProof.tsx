@@ -31,7 +31,22 @@ export function SocialProof() {
 
   const pool: Notif[] = useMemo(() => {
     const items = data?.items ?? [];
-    return items.length > 0 ? items : FALLBACK_POOL;
+    const source = items.length > 0 ? items : FALLBACK_POOL;
+    // Dedupe por nome+ação para evitar repetição visual
+    const seen = new Set<string>();
+    const unique: Notif[] = [];
+    for (const it of source) {
+      const key = `${it.name}|${it.action}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(it);
+    }
+    // Embaralhar para ordem variada a cada sessão
+    for (let i = unique.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [unique[i], unique[j]] = [unique[j], unique[i]];
+    }
+    return unique.length > 0 ? unique : FALLBACK_POOL;
   }, [data]);
 
   useEffect(() => {
@@ -40,10 +55,11 @@ export function SocialProof() {
     const cycle = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setIdx(() => Math.floor(Math.random() * pool.length));
+        // Avança sequencialmente para nunca repetir o mesmo item consecutivamente
+        setIdx((prev) => (pool.length <= 1 ? 0 : (prev + 1) % pool.length));
         setVisible(true);
       }, 500);
-    }, 6500);
+    }, 8500);
     const live = setInterval(() => {
       setOnline((n) => Math.max(80, Math.min(220, n + Math.floor(Math.random() * 9) - 4)));
     }, 4000);
