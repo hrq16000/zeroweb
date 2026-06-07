@@ -55,6 +55,13 @@ export interface ServiceRow {
   image_alt: string | null;
   seo_title: string | null;
   seo_description: string | null;
+  // SEO avançado (novo)
+  og_image_path: string | null;
+  og_image_url: string | null;
+  og_type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema_jsonld: Record<string, any>[];
+  rich_html: string | null;
   problems: string[];
   benefits: string[];
   process: { step: string; desc: string }[];
