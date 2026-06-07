@@ -9,6 +9,7 @@
     "build": "vite build && bun run postbuild",
     "build:dev": "vite build --mode development && bun run postbuild",
     "routes:validate": "node scripts/validate-route-files.mjs",
+    "smoke:servicos": "node scripts/smoke-servicos.mjs",
     "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs && node scripts/validate-canonicals.mjs",
     "preview": "vite preview",
     "lhci": "lhci autorun --config=.lighthouserc.cjs",
