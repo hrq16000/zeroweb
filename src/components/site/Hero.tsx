@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, MessageCircle, Sparkles, Zap, Store } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { useExperiment } from "@/lib/ab-testing";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
