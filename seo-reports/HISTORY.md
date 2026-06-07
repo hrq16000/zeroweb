@@ -178,3 +178,11 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - `__root.tsx`: `notFoundComponent` agora usa `<ErrorState kind="404" />`; `errorComponent` usa `<ErrorState kind="500" />` com `onRetry` (router.invalidate + reset).
 - Bloco de diagnóstico (dev-only) mostra mensagem do erro e dica para limpar cache do Vite quando detectado padrão "Failed to load url …/routes/…".
 - Nova rota `/403` (`src/routes/403.tsx`) com `noindex, nofollow` para acesso negado.
+
+## Fase 4 — Guardrails de build & dev server (2026-06-07)
+- `scripts/validate-route-files.mjs`: lê `routeTree.gen.ts` e valida cada `import('./routes/X')` → arquivo existente. Falha com mensagem amigável listando os ausentes + comando de limpeza do Vite. Wired no `prebuild` e no `.husky/pre-commit` (bypass: `SKIP_ROUTE_FILES_CHECK=1`).
+- `plugins/vite-plugin-route-watcher.ts`: observa `src/routes/` (add/unlink) e `src/routeTree.gen.ts` (change). Quando detecta divergência por > 2s, dispara `server.ws.send({ type: 'full-reload' })` evitando blank screen em dev por HMR de rota inexistente.
+- `vite.config.ts`: registra o plugin via `vite.plugins`.
+- Validação local: 116 rotas verificadas ✓.
+
+**Próxima fase (5):** sitemap dinâmico de serviços + tabela `route_404_log` + página admin de 404s + script `log-deploy.mjs`.
