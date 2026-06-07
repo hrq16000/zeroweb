@@ -54,8 +54,8 @@ export function RouteLoader() {
             alt=""
             width={72}
             height={72}
-            className="w-18 h-18 animate-logo-pulse drop-shadow-[0_8px_30px_color-mix(in_oklab,var(--primary)_40%,transparent)]"
-            style={{ width: 72, height: 72 }}
+            className="animate-logo-pulse drop-shadow-[0_8px_30px_color-mix(in_oklab,var(--primary)_40%,transparent)] object-contain"
+            style={{ width: 72, height: 72, aspectRatio: "1 / 1" }}
           />
           <span className="text-xs uppercase tracking-[0.3em] font-bold text-muted-foreground">
             Carregando
