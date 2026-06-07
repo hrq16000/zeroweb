@@ -28,8 +28,56 @@ export const Route = createFileRoute("/servicos/$slug")({
   head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Serviço · 0WEB" }] };
     const url = absUrl(`/servicos/${params.slug}`);
-    const ogImage = loaderData.imageUrl || DEFAULT_OG_IMAGE;
+    const ogImage = loaderData.ogImageUrl || loaderData.imageUrl || DEFAULT_OG_IMAGE;
     const ogAlt = loaderData.imageAlt || loaderData.h1;
+    const ogType = loaderData.ogType || "website";
+    const baseGraph = [
+      {
+        "@type": "WebPage",
+        "@id": url,
+        url,
+        name: loaderData.title,
+        description: loaderData.description,
+        inLanguage: "pt-BR",
+        isPartOf: { "@type": "WebSite", "@id": `${ORIGIN}/#website` },
+        publisher: { "@id": `${ORIGIN}/#org` },
+        primaryImageOfPage: loaderData.imageUrl ? { "@type": "ImageObject", url: loaderData.imageUrl } : undefined,
+        mainEntity: { "@id": `${url}#service` },
+        ...(loaderData.faq?.length ? { hasPart: { "@id": `${url}#faq` } } : {}),
+      },
+      {
+        "@type": "Service",
+        "@id": `${url}#service`,
+        name: loaderData.h1,
+        description: loaderData.description,
+        serviceType: loaderData.serviceType,
+        category: loaderData.category,
+        url,
+        ...(loaderData.imageUrl ? { image: loaderData.imageUrl } : {}),
+        areaServed: { "@type": "Country", name: "BR" },
+        provider: { "@id": `${ORIGIN}/#org` },
+      },
+      ...(loaderData.faq?.length
+        ? [{
+            "@type": "FAQPage",
+            "@id": `${url}#faq`,
+            inLanguage: "pt-BR",
+            about: { "@id": `${url}#service` },
+            isPartOf: { "@id": url },
+            mainEntity: loaderData.faq.map((f: { q: string; a: string }) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }]
+        : []),
+      breadcrumbLd([
+        { name: "Serviços", path: "/servicos" },
+        { name: loaderData.name, path: `/servicos/${params.slug}` },
+      ]),
+    ];
+    // Blocos JSON-LD adicionais editáveis pelo painel (aba SEO).
+    const extraGraph = Array.isArray(loaderData.schemaJsonLd) ? loaderData.schemaJsonLd : [];
     return {
       meta: [
         { title: loaderData.title },
@@ -37,7 +85,7 @@ export const Route = createFileRoute("/servicos/$slug")({
         { name: "keywords", content: loaderData.keywords.join(", ") },
         { property: "og:title", content: loaderData.title },
         { property: "og:description", content: loaderData.description },
-        { property: "og:type", content: "website" },
+        { property: "og:type", content: ogType },
         { property: "og:url", content: url },
         { property: "og:image", content: ogImage },
         { property: "og:image:alt", content: ogAlt },
@@ -57,51 +105,7 @@ export const Route = createFileRoute("/servicos/$slug")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
-            "@graph": [
-              {
-                "@type": "WebPage",
-                "@id": url,
-                url,
-                name: loaderData.title,
-                description: loaderData.description,
-                inLanguage: "pt-BR",
-                isPartOf: { "@type": "WebSite", "@id": `${ORIGIN}/#website` },
-                publisher: { "@id": `${ORIGIN}/#org` },
-                primaryImageOfPage: loaderData.imageUrl ? { "@type": "ImageObject", url: loaderData.imageUrl } : undefined,
-                mainEntity: { "@id": `${url}#service` },
-                ...(loaderData.faq?.length ? { hasPart: { "@id": `${url}#faq` } } : {}),
-              },
-              {
-                "@type": "Service",
-                "@id": `${url}#service`,
-                name: loaderData.h1,
-                description: loaderData.description,
-                serviceType: loaderData.serviceType,
-                category: loaderData.category,
-                url,
-                ...(loaderData.imageUrl ? { image: loaderData.imageUrl } : {}),
-                areaServed: { "@type": "Country", name: "BR" },
-                provider: { "@id": `${ORIGIN}/#org` },
-              },
-              ...(loaderData.faq?.length
-                ? [{
-                    "@type": "FAQPage",
-                    "@id": `${url}#faq`,
-                    inLanguage: "pt-BR",
-                    about: { "@id": `${url}#service` },
-                    isPartOf: { "@id": url },
-                    mainEntity: loaderData.faq.map((f: { q: string; a: string }) => ({
-                      "@type": "Question",
-                      name: f.q,
-                      acceptedAnswer: { "@type": "Answer", text: f.a },
-                    })),
-                  }]
-                : []),
-              breadcrumbLd([
-                { name: "Serviços", path: "/servicos" },
-                { name: loaderData.name, path: `/servicos/${params.slug}` },
-              ]),
-            ],
+            "@graph": [...baseGraph, ...extraGraph],
           }),
         },
       ],
