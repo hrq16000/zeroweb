@@ -120,6 +120,14 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     image_alt: (row.image_alt as string) ?? null,
     seo_title: (row.seo_title as string) ?? null,
     seo_description: (row.seo_description as string) ?? null,
+    og_image_path: (row.og_image_path as string) ?? null,
+    og_image_url: publicImageUrl((row.og_image_path as string) ?? null),
+    og_type: ((row.og_type as string) || "website"),
+    schema_jsonld: Array.isArray(row.schema_jsonld)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (row.schema_jsonld as Record<string, any>[])
+      : [],
+    rich_html: (row.rich_html as string) ?? null,
     problems: asArr<string>(row.problems),
     benefits: asArr<string>(row.benefits),
     process: asArr<{ step: string; desc: string }>(row.process),
