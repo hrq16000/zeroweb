@@ -24,6 +24,17 @@ type DbServiceRow = {
   seo_title: string | null;
   seo_description: string | null;
   display_order: number;
+  price: number | string | null;
+  price_period: string | null;
+  delivery_days: string | null;
+  conditions: string | null;
+  show_in_menu: boolean | null;
+  show_in_footer: boolean | null;
+  show_in_home_featured: boolean | null;
+  show_in_sitemap: boolean | null;
+  funnels: unknown;
+  gallery: unknown;
+  sections: unknown;
 };
 
 function asStringArray(v: unknown): string[] {
@@ -47,13 +58,56 @@ function asFaq(v: unknown): { q: string; a: string }[] {
     .filter((x) => x.q && x.a);
 }
 
-function mapRow(row: DbServiceRow, imageUrl: string | null = null): ServiceData & {
+function asGalleryRaw(v: unknown): { path: string; alt: string | null }[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((x): x is { path?: unknown; alt?: unknown } => typeof x === "object" && x !== null)
+    .map((x) => ({ path: String(x.path ?? ""), alt: x.alt == null ? null : String(x.alt) }))
+    .filter((x) => x.path);
+}
+
+function asSections(v: unknown): { title: string; body: string }[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((x): x is { title?: unknown; body?: unknown } => typeof x === "object" && x !== null)
+    .map((x) => ({ title: String(x.title ?? ""), body: String(x.body ?? "") }))
+    .filter((x) => x.title || x.body);
+}
+
+function asFunnels(v: unknown): Record<string, string> {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+  const out: Record<string, string> = {};
+  for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+    if (typeof val === "string" && val) out[k] = val;
+  }
+  return out;
+}
+
+export type GalleryItem = { path: string; url: string | null; alt: string | null };
+export type PublicServiceFull = ServiceData & {
   imagePath: string | null;
   imageUrl: string | null;
   imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
-} {
+  price: number | null;
+  pricePeriod: string | null;
+  deliveryDays: string | null;
+  conditions: string | null;
+  showInMenu: boolean;
+  showInFooter: boolean;
+  showInHomeFeatured: boolean;
+  showInSitemap: boolean;
+  funnels: Record<string, string>;
+  gallery: GalleryItem[];
+  sections: { title: string; body: string }[];
+};
+
+function mapRow(
+  row: DbServiceRow,
+  imageUrl: string | null = null,
+  gallery: GalleryItem[] = [],
+): PublicServiceFull {
   return {
     slug: row.slug,
     name: row.name,
@@ -73,6 +127,17 @@ function mapRow(row: DbServiceRow, imageUrl: string | null = null): ServiceData 
     imageAlt: row.image_alt,
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
+    price: row.price == null ? null : Number(row.price),
+    pricePeriod: row.price_period,
+    deliveryDays: row.delivery_days,
+    conditions: row.conditions,
+    showInMenu: row.show_in_menu ?? true,
+    showInFooter: row.show_in_footer ?? true,
+    showInHomeFeatured: row.show_in_home_featured ?? true,
+    showInSitemap: row.show_in_sitemap ?? true,
+    funnels: asFunnels(row.funnels),
+    gallery,
+    sections: asSections(row.sections),
   };
 }
 
@@ -89,18 +154,41 @@ async function signImage(sb: any, path: string | null): Promise<string | null> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
+  const items = asGalleryRaw(raw);
+  return Promise.all(
+    items.map(async (it) => ({
+      path: it.path,
+      alt: it.alt,
+      url: await signImage(sb, it.path),
+    })),
+  );
+}
+
 const COLS =
-  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order";
+  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,funnels,gallery,sections";
 
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
-const fileFallback = (s: ServiceData) => ({
+const fileFallback = (s: ServiceData): PublicServiceFull => ({
   ...s,
   imagePath: null,
   imageUrl: null,
   imageAlt: null,
   seoTitle: null,
   seoDescription: null,
+  price: null,
+  pricePeriod: null,
+  deliveryDays: null,
+  conditions: null,
+  showInMenu: true,
+  showInFooter: true,
+  showInHomeFeatured: true,
+  showInSitemap: true,
+  funnels: {},
+  gallery: [],
+  sections: [],
 });
 
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
@@ -114,7 +202,9 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     if (error) throw error;
     const rows = (data ?? []) as unknown as DbServiceRow[];
     const mapped = await Promise.all(
-      rows.map(async (r) => mapRow(r, await signImage(supabaseAdmin, r.image_path))),
+      rows.map(async (r) =>
+        mapRow(r, await signImage(supabaseAdmin, r.image_path), await signGallery(supabaseAdmin, r.gallery)),
+      ),
     );
     // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
     // se ainda não foram migrados (legado de SEO city pages).
@@ -145,7 +235,8 @@ export const getServicePublic = createServerFn({ method: "GET" })
       if (row) {
         const r = row as unknown as DbServiceRow;
         const imageUrl = await signImage(supabaseAdmin, r.image_path);
-        return { service: mapRow(r, imageUrl), source: "db" as const };
+        const gallery = await signGallery(supabaseAdmin, r.gallery);
+        return { service: mapRow(r, imageUrl, gallery), source: "db" as const };
       }
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);
