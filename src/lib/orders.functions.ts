@@ -70,7 +70,7 @@ export const markOrderWhatsAppHandoff = createServerFn({ method: "POST" })
     const { error } = await supabase
       .from("orders")
       .update({
-        status: "pending_payment",
+        status: "awaiting_payment",
         payment_method: "whatsapp",
         whatsapp_handoff_at: new Date().toISOString(),
       })
