@@ -47,8 +47,10 @@ import {
   deleteService,
   reorderServices,
   getServiceImageUploadUrl,
+  listFunnelsForServices,
   type ServiceRow,
 } from "@/lib/services-crud.functions";
+
 
 export const Route = createFileRoute("/_authenticated/app/servicos")({
   component: ServicesAdminPage,
