@@ -13,6 +13,7 @@
     "seo:jsonld": "node scripts/validate-jsonld.mjs",
     "seo:legacy301": "node scripts/validate-legacy-301.mjs",
     "seo:validate": "node scripts/validate-jsonld.mjs https://0web.com.br --with-validator && node scripts/validate-legacy-301.mjs https://0web.com.br",
+    "db:validate": "node scripts/validate-required-tables.mjs",
     "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs && node scripts/validate-canonicals.mjs",
     "preview": "vite preview",
     "lhci": "lhci autorun --config=.lighthouserc.cjs",
