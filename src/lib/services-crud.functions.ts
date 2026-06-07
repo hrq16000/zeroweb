@@ -288,3 +288,19 @@ export const getServiceImageUploadUrl = createServerFn({ method: "POST" })
       publicUrl: publicImageUrl(path),
     };
   });
+
+// Lista funis publicados para selecionar nos CTAs do serviço.
+export const listFunnelsForServices = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin((context as { userId: string }).userId);
+    const sb = await getAdmin();
+    const { data, error } = await sb
+      .from("dynamic_forms")
+      .select("slug,name,status")
+      .order("name", { ascending: true });
+    if (error) throw new Error(error.message);
+    type Row = { slug: string; name: string; status: string | null };
+    return { funnels: (data ?? []) as Row[] };
+  });
+
