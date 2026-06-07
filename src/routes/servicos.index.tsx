@@ -517,6 +517,41 @@ function ServicosHub() {
           </div>
         </section>
 
+        <section className="py-16 bg-muted/20" aria-labelledby="especialidades-title">
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 id="especialidades-title" className="text-2xl sm:text-3xl font-bold">
+                Especialidades complementares
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Páginas dedicadas a frentes específicas de crescimento digital.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                { to: "/presenca-digital", title: "Presença Digital", desc: "Estratégia completa para sua marca existir e converter online." },
+                { to: "/trafego-pago", title: "Tráfego Pago", desc: "Campanhas Google Ads e Meta com foco em ROI." },
+                { to: "/trafego-pago-local", title: "Tráfego Pago Local", desc: "Anúncios geolocalizados para negócios físicos." },
+                { to: "/google-meu-negocio", title: "Google Meu Negócio", desc: "Otimização do seu perfil para aparecer nas buscas locais." },
+                { to: "/seo", title: "SEO", desc: "Posicionamento orgânico no Google de forma sustentável." },
+                { to: "/consultoria", title: "Consultoria", desc: "Diagnóstico estratégico para acelerar resultados digitais." },
+              ].map((s) => (
+                <Link
+                  key={s.to}
+                  to={s.to}
+                  className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <h4 className="font-semibold text-lg">{s.title}</h4>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
+                    Acessar página <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <SocialProofBlock ctxId="servicos_page" />
 
         <RelatedLinksGrid
