@@ -231,7 +231,12 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     const rows = (data ?? []) as unknown as DbServiceRow[];
     const mapped = await Promise.all(
       rows.map(async (r) =>
-        mapRow(r, await signImage(supabaseAdmin, r.image_path), await signGallery(supabaseAdmin, r.gallery)),
+        mapRow(
+          r,
+          await signImage(supabaseAdmin, r.image_path),
+          await signGallery(supabaseAdmin, r.gallery),
+          await signImage(supabaseAdmin, r.og_image_path),
+        ),
       ),
     );
     // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
