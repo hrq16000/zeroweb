@@ -211,7 +211,25 @@ export function Header() {
             className="lg:hidden overflow-hidden glass border-t border-border"
           >
             <div className="px-5 py-4 flex flex-col gap-3">
-              {nav.map((n) => (
+              <Link
+                to="/servicos"
+                onClick={() => setOpen(false)}
+                className="py-2 text-foreground/80 hover:text-foreground font-semibold"
+              >
+                Serviços ({menuServices.length || "—"})
+              </Link>
+              {menuServices.slice(0, 8).map((s) => (
+                <Link
+                  key={s.slug}
+                  to="/servicos/$slug"
+                  params={{ slug: s.slug }}
+                  onClick={() => setOpen(false)}
+                  className="pl-4 py-1.5 text-sm text-foreground/70 hover:text-foreground"
+                >
+                  · {s.name}
+                </Link>
+              ))}
+              {staticNav.map((n) => (
                 <Link
                   key={n.to}
                   to={n.to}
@@ -221,6 +239,7 @@ export function Header() {
                   {n.label}
                 </Link>
               ))}
+
               <Link
                 to="/auth"
                 onClick={() => setOpen(false)}
