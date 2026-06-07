@@ -238,6 +238,47 @@ function ServicePage() {
           </div>
         </section>
 
+        {data.gallery.length > 0 && (
+          <section className="py-16">
+            <div className="mx-auto max-w-6xl px-5 lg:px-8">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-6">Galeria</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data.gallery
+                  .filter((g) => g.url)
+                  .map((g, i) => (
+                    <div key={`${g.path}-${i}`} className="aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
+                      <img
+                        src={g.url ?? ""}
+                        alt={g.alt || `${data.name} — imagem ${i + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {data.sections.length > 0 && (
+          <section className="py-16 bg-muted/20">
+            <div className="mx-auto max-w-3xl px-5 lg:px-8 space-y-10">
+              {data.sections.map((sec, i) => (
+                <article key={`${sec.title}-${i}`}>
+                  {sec.title && <h2 className="text-2xl lg:text-3xl font-bold mb-4">{sec.title}</h2>}
+                  {sec.body && (
+                    <div className="prose prose-neutral dark:prose-invert max-w-none whitespace-pre-line text-muted-foreground leading-relaxed">
+                      {sec.body}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+
+
         <section className="py-16">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-3">
