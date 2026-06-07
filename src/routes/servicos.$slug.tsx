@@ -1,16 +1,16 @@
 import { createFileRoute, notFound, Link, redirect } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, XCircle, HelpCircle, MapPin } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, HelpCircle, MapPin, Timer, BadgeCheck } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
-import { trackEvent, trackConversion } from "@/lib/analytics";
-import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
-import { getServicePublic } from "@/lib/services-public.functions";
+import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/lib/services-public.functions";
+
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
@@ -116,11 +116,18 @@ export const Route = createFileRoute("/servicos/$slug")({
 });
 
 function ServicePage() {
-  const data = Route.useLoaderData();
+  const data = Route.useLoaderData() as PublicServiceFull;
   const { slug } = Route.useParams();
-  const { open: openFunnel } = useWaFunnel();
   const otherSvcs = relatedServices(slug, 4);
   const hasGeo = GEO_SET.has(slug);
+  const funnels = data.funnels ?? {};
+
+  const priceLabel =
+    data.price == null
+      ? null
+      : data.price === 0
+        ? "Sob consulta"
+        : `R$ ${Number(data.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -135,6 +142,24 @@ function ServicePage() {
               <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
+
+            {(priceLabel || data.deliveryDays) && (
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                {priceLabel && (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                    <BadgeCheck className="w-4 h-4" />
+                    {data.price && data.price > 0 ? `A partir de ${priceLabel}` : priceLabel}
+                    {data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
+                  </span>
+                )}
+                {data.deliveryDays && (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm">
+                    <Timer className="w-4 h-4" /> {data.deliveryDays}
+                  </span>
+                )}
+              </div>
+            )}
+
             {data.imageUrl && (
               <div
                 className="mt-8 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted"
@@ -152,19 +177,22 @@ function ServicePage() {
                 />
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("cta_click", { label: "service_whatsapp", location: slug });
-                trackConversion("whatsapp_click", { location: `service_${slug}` });
-                openFunnel(`service_${slug}`);
-              }}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
-            >
-              {data.ctaLabel} <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="mt-8 flex justify-center">
+              <ServiceCTA
+                serviceSlug={slug}
+                funnels={funnels}
+                location="hero"
+                label={data.ctaLabel}
+              />
+            </div>
+            {data.conditions && (
+              <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
+                {data.conditions}
+              </p>
+            )}
           </div>
         </section>
+
 
 
         <section className="py-12 bg-muted/30">
@@ -209,6 +237,48 @@ function ServicePage() {
             </ol>
           </div>
         </section>
+
+        {data.gallery.length > 0 && (
+          <section className="py-16">
+            <div className="mx-auto max-w-6xl px-5 lg:px-8">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-6">Galeria</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data.gallery
+                  .filter((g: GalleryItem) => g.url)
+                  .map((g: GalleryItem, i: number) => (
+
+                    <div key={`${g.path}-${i}`} className="aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
+                      <img
+                        src={g.url ?? ""}
+                        alt={g.alt || `${data.name} — imagem ${i + 1}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {data.sections.length > 0 && (
+          <section className="py-16 bg-muted/20">
+            <div className="mx-auto max-w-3xl px-5 lg:px-8 space-y-10">
+              {data.sections.map((sec: { title: string; body: string }, i: number) => (
+                <article key={`${sec.title}-${i}`}>
+                  {sec.title && <h2 className="text-2xl lg:text-3xl font-bold mb-4">{sec.title}</h2>}
+                  {sec.body && (
+                    <div className="prose prose-neutral dark:prose-invert max-w-none whitespace-pre-line text-muted-foreground leading-relaxed">
+                      {sec.body}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+
 
         <section className="py-16">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
