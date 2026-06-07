@@ -405,6 +405,7 @@ function ServicosHub() {
                   className="h-10 px-3 rounded-full border border-border bg-card text-sm inline-flex items-center gap-2 hover:border-primary"
                 >
                   <Shuffle className="w-3.5 h-3.5" /> Embaralhar
+                </button>
               </div>
             </div>
 
