@@ -104,6 +104,7 @@ import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
 import { Route as AuthenticatedAppPortalsRouteImport } from './routes/_authenticated/app.portals'
 import { Route as AuthenticatedAppParceiroRouteImport } from './routes/_authenticated/app.parceiro'
+import { Route as AuthenticatedAppPagamentosRouteImport } from './routes/_authenticated/app.pagamentos'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
@@ -620,6 +621,12 @@ const AuthenticatedAppParceiroRoute =
     path: '/parceiro',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppPagamentosRoute =
+  AuthenticatedAppPagamentosRouteImport.update({
+    id: '/pagamentos',
+    path: '/pagamentos',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppNotificationsRoute =
   AuthenticatedAppNotificationsRouteImport.update({
     id: '/notifications',
@@ -901,6 +908,7 @@ export interface FileRoutesByFullPath {
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/pagamentos': typeof AuthenticatedAppPagamentosRoute
   '/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
@@ -1027,6 +1035,7 @@ export interface FileRoutesByTo {
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/app/pagamentos': typeof AuthenticatedAppPagamentosRoute
   '/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/app/portals': typeof AuthenticatedAppPortalsRoute
   '/app/profile': typeof AuthenticatedAppProfileRoute
@@ -1157,6 +1166,7 @@ export interface FileRoutesById {
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
+  '/_authenticated/app/pagamentos': typeof AuthenticatedAppPagamentosRoute
   '/_authenticated/app/parceiro': typeof AuthenticatedAppParceiroRoute
   '/_authenticated/app/portals': typeof AuthenticatedAppPortalsRoute
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
@@ -1287,6 +1297,7 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
+    | '/app/pagamentos'
     | '/app/parceiro'
     | '/app/portals'
     | '/app/profile'
@@ -1413,6 +1424,7 @@ export interface FileRouteTypes {
     | '/app/marketplace'
     | '/app/master'
     | '/app/notifications'
+    | '/app/pagamentos'
     | '/app/parceiro'
     | '/app/portals'
     | '/app/profile'
@@ -1542,6 +1554,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
     | '/_authenticated/app/notifications'
+    | '/_authenticated/app/pagamentos'
     | '/_authenticated/app/parceiro'
     | '/_authenticated/app/portals'
     | '/_authenticated/app/profile'
@@ -2329,6 +2342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppParceiroRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/pagamentos': {
+      id: '/_authenticated/app/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/app/pagamentos'
+      preLoaderRoute: typeof AuthenticatedAppPagamentosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/notifications': {
       id: '/_authenticated/app/notifications'
       path: '/notifications'
@@ -2645,6 +2665,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
+  AuthenticatedAppPagamentosRoute: typeof AuthenticatedAppPagamentosRoute
   AuthenticatedAppParceiroRoute: typeof AuthenticatedAppParceiroRoute
   AuthenticatedAppPortalsRoute: typeof AuthenticatedAppPortalsRoute
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
@@ -2676,6 +2697,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
     AuthenticatedAppMarketplaceRouteWithChildren,
   AuthenticatedAppMasterRoute: AuthenticatedAppMasterRoute,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
+  AuthenticatedAppPagamentosRoute: AuthenticatedAppPagamentosRoute,
   AuthenticatedAppParceiroRoute: AuthenticatedAppParceiroRoute,
   AuthenticatedAppPortalsRoute: AuthenticatedAppPortalsRoute,
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
