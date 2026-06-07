@@ -248,16 +248,20 @@ function CheckoutPage() {
                     </Button>
                   ) : (
                     <>
+                      {settings.stripeEnabled && (
+                        <Button
+                          size="lg" className="w-full"
+                          onClick={handlePayNow}
+                          disabled={submitting !== "none"}
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Pagar agora
+                        </Button>
+                      )}
                       <Button
-                        size="lg" className="w-full"
-                        onClick={handlePayNow}
-                        disabled={submitting !== "none"}
-                      >
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Pagar agora
-                      </Button>
-                      <Button
-                        size="lg" variant="outline" className="w-full"
+                        size="lg"
+                        variant={settings.stripeEnabled ? "outline" : "default"}
+                        className="w-full"
                         onClick={handleWhatsApp}
                         disabled={submitting !== "none"}
                       >
@@ -266,6 +270,7 @@ function CheckoutPage() {
                       </Button>
                     </>
                   )}
+
                 </div>
 
                 <div className="pt-3 border-t border-border flex items-start gap-2 text-[11px] text-muted-foreground">
