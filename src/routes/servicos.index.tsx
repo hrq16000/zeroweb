@@ -392,11 +392,19 @@ function ServicosHub() {
                     }}
                     className="h-10 px-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <option value="relevance">Relevância</option>
+                    <option value="shop">Vitrine (recentes + variados)</option>
                     <option value="recent">Mais recentes</option>
                     <option value="alpha">Alfabética (A→Z)</option>
+                    <option value="relevance">Relevância</option>
                   </select>
                 </label>
+                <button
+                  type="button"
+                  onClick={() => startTransition(() => { setShuffleSeed(Math.floor(Math.random() * 1e6) + 1); setSort("shop"); setPage(1); })}
+                  title="Embaralhar vitrine"
+                  className="h-10 px-3 rounded-full border border-border bg-card text-sm inline-flex items-center gap-2 hover:border-primary"
+                >
+                  <Shuffle className="w-3.5 h-3.5" /> Embaralhar
               </div>
             </div>
 
