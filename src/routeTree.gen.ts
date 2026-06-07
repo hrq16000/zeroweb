@@ -91,6 +91,7 @@ import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
+import { Route as ApiPublicHealthDbRouteImport } from './routes/api/public/health-db'
 import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authenticated/app.visitantes'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
@@ -546,6 +547,11 @@ const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   path: '/api/public/lead-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHealthDbRoute = ApiPublicHealthDbRouteImport.update({
+  id: '/api/public/health-db',
+  path: '/api/public/health-db',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppVisitantesRoute =
   AuthenticatedAppVisitantesRouteImport.update({
     id: '/visitantes',
@@ -884,6 +890,7 @@ export interface FileRoutesByFullPath {
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
+  '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -1006,6 +1013,7 @@ export interface FileRoutesByTo {
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
+  '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -1132,6 +1140,7 @@ export interface FileRoutesById {
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
+  '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -1258,6 +1267,7 @@ export interface FileRouteTypes {
     | '/app/support'
     | '/app/templates'
     | '/app/visitantes'
+    | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/app/'
@@ -1380,6 +1390,7 @@ export interface FileRouteTypes {
     | '/app/support'
     | '/app/templates'
     | '/app/visitantes'
+    | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/app'
@@ -1505,6 +1516,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/support'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/visitantes'
+    | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/_authenticated/app/'
@@ -1598,6 +1610,7 @@ export interface RootRouteChildren {
   RCodeRoute: typeof RCodeRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
@@ -2187,6 +2200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/health-db': {
+      id: '/api/public/health-db'
+      path: '/api/public/health-db'
+      fullPath: '/api/public/health-db'
+      preLoaderRoute: typeof ApiPublicHealthDbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/visitantes': {
       id: '/_authenticated/app/visitantes'
       path: '/visitantes'
@@ -2726,6 +2746,7 @@ const rootRouteChildren: RootRouteChildren = {
   RCodeRoute: RCodeRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
