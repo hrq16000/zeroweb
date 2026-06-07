@@ -35,6 +35,10 @@ type DbServiceRow = {
   funnels: unknown;
   gallery: unknown;
   sections: unknown;
+  og_image_path: string | null;
+  og_type: string | null;
+  schema_jsonld: unknown;
+  rich_html: string | null;
 };
 
 function asStringArray(v: unknown): string[] {
@@ -84,6 +88,9 @@ function asFunnels(v: unknown): Record<string, string> {
 }
 
 export type GalleryItem = { path: string; url: string | null; alt: string | null };
+// JSON-LD block; typed loosely so TanStack's serialization check accepts it.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SchemaBlock = Record<string, any>;
 export type PublicServiceFull = ServiceData & {
   imagePath: string | null;
   imageUrl: string | null;
@@ -101,12 +108,23 @@ export type PublicServiceFull = ServiceData & {
   funnels: Record<string, string>;
   gallery: GalleryItem[];
   sections: { title: string; body: string }[];
+  ogImagePath: string | null;
+  ogImageUrl: string | null;
+  ogType: string;
+  schemaJsonLd: SchemaBlock[];
+  richHtml: string | null;
 };
+
+function asSchemaBlocks(v: unknown): SchemaBlock[] {
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is SchemaBlock => typeof x === "object" && x !== null && !Array.isArray(x));
+}
 
 function mapRow(
   row: DbServiceRow,
   imageUrl: string | null = null,
   gallery: GalleryItem[] = [],
+  ogImageUrl: string | null = null,
 ): PublicServiceFull {
   return {
     slug: row.slug,
@@ -138,6 +156,11 @@ function mapRow(
     funnels: asFunnels(row.funnels),
     gallery,
     sections: asSections(row.sections),
+    ogImagePath: row.og_image_path,
+    ogImageUrl: ogImageUrl ?? imageUrl,
+    ogType: row.og_type || "website",
+    schemaJsonLd: asSchemaBlocks(row.schema_jsonld),
+    richHtml: row.rich_html,
   };
 }
 
@@ -167,7 +190,7 @@ async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
 }
 
 const COLS =
-  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,funnels,gallery,sections";
+  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
 
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
@@ -189,6 +212,11 @@ const fileFallback = (s: ServiceData): PublicServiceFull => ({
   funnels: {},
   gallery: [],
   sections: [],
+  ogImagePath: null,
+  ogImageUrl: null,
+  ogType: "website",
+  schemaJsonLd: [],
+  richHtml: null,
 });
 
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
@@ -203,7 +231,12 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     const rows = (data ?? []) as unknown as DbServiceRow[];
     const mapped = await Promise.all(
       rows.map(async (r) =>
-        mapRow(r, await signImage(supabaseAdmin, r.image_path), await signGallery(supabaseAdmin, r.gallery)),
+        mapRow(
+          r,
+          await signImage(supabaseAdmin, r.image_path),
+          await signGallery(supabaseAdmin, r.gallery),
+          await signImage(supabaseAdmin, r.og_image_path),
+        ),
       ),
     );
     // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
@@ -236,7 +269,8 @@ export const getServicePublic = createServerFn({ method: "GET" })
         const r = row as unknown as DbServiceRow;
         const imageUrl = await signImage(supabaseAdmin, r.image_path);
         const gallery = await signGallery(supabaseAdmin, r.gallery);
-        return { service: mapRow(r, imageUrl, gallery), source: "db" as const };
+        const ogImageUrl = await signImage(supabaseAdmin, r.og_image_path);
+        return { service: mapRow(r, imageUrl, gallery, ogImageUrl), source: "db" as const };
       }
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);

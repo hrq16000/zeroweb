@@ -55,6 +55,13 @@ export interface ServiceRow {
   image_alt: string | null;
   seo_title: string | null;
   seo_description: string | null;
+  // SEO avançado (novo)
+  og_image_path: string | null;
+  og_image_url: string | null;
+  og_type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema_jsonld: Record<string, any>[];
+  rich_html: string | null;
   problems: string[];
   benefits: string[];
   process: { step: string; desc: string }[];
@@ -113,6 +120,14 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     image_alt: (row.image_alt as string) ?? null,
     seo_title: (row.seo_title as string) ?? null,
     seo_description: (row.seo_description as string) ?? null,
+    og_image_path: (row.og_image_path as string) ?? null,
+    og_image_url: publicImageUrl((row.og_image_path as string) ?? null),
+    og_type: ((row.og_type as string) || "website"),
+    schema_jsonld: Array.isArray(row.schema_jsonld)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (row.schema_jsonld as Record<string, any>[])
+      : [],
+    rich_html: (row.rich_html as string) ?? null,
     problems: asArr<string>(row.problems),
     benefits: asArr<string>(row.benefits),
     process: asArr<{ step: string; desc: string }>(row.process),
@@ -181,6 +196,11 @@ const upsertSchema = z.object({
   image_alt: z.string().max(200).nullable().optional(),
   seo_title: z.string().max(160).nullable().optional(),
   seo_description: z.string().max(320).nullable().optional(),
+  og_image_path: z.string().max(400).nullable().optional(),
+  og_type: z.enum(["website", "article", "product"]).default("website"),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema_jsonld: z.array(z.record(z.any())).max(20).default([]),
+  rich_html: z.string().max(40000).nullable().optional(),
   problems: z.array(z.string().min(1).max(300)).max(20).default([]),
   benefits: z.array(z.string().min(1).max(300)).max(20).default([]),
   process: z.array(z.object({ step: z.string().min(1).max(80), desc: z.string().min(1).max(300) })).max(20).default([]),

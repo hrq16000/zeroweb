@@ -125,6 +125,7 @@ import { Route as ApiPublicHooksIndexCoverageSnapshotRouteImport } from './route
 import { Route as ApiPublicHooksGscIngestRouteImport } from './routes/api/public/hooks/gsc-ingest'
 import { Route as ApiPublicHooksAnomalyScanRouteImport } from './routes/api/public/hooks/anomaly-scan'
 import { Route as AuthenticatedAppSupportIdRouteImport } from './routes/_authenticated/app.support.$id'
+import { Route as AuthenticatedAppServicosSeoDiffRouteImport } from './routes/_authenticated/app.servicos.seo-diff'
 import { Route as AuthenticatedAppProjectsIdRouteImport } from './routes/_authenticated/app.projects.$id'
 import { Route as AuthenticatedAppMarketplaceProviderRouteImport } from './routes/_authenticated/app.marketplace.provider'
 import { Route as AuthenticatedAppMarketplaceCompanyRouteImport } from './routes/_authenticated/app.marketplace.company'
@@ -742,6 +743,12 @@ const AuthenticatedAppSupportIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedAppSupportRoute,
   } as any)
+const AuthenticatedAppServicosSeoDiffRoute =
+  AuthenticatedAppServicosSeoDiffRouteImport.update({
+    id: '/seo-diff',
+    path: '/seo-diff',
+    getParentRoute: () => AuthenticatedAppServicosRoute,
+  } as any)
 const AuthenticatedAppProjectsIdRoute =
   AuthenticatedAppProjectsIdRouteImport.update({
     id: '/$id',
@@ -893,7 +900,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -909,6 +916,7 @@ export interface FileRoutesByFullPath {
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/servicos/seo-diff': typeof AuthenticatedAppServicosSeoDiffRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
@@ -1017,7 +1025,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
-  '/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -1033,6 +1041,7 @@ export interface FileRoutesByTo {
   '/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/app/servicos/seo-diff': typeof AuthenticatedAppServicosSeoDiffRoute
   '/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
@@ -1145,7 +1154,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
-  '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
+  '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
@@ -1161,6 +1170,7 @@ export interface FileRoutesById {
   '/_authenticated/app/marketplace/company': typeof AuthenticatedAppMarketplaceCompanyRoute
   '/_authenticated/app/marketplace/provider': typeof AuthenticatedAppMarketplaceProviderRoute
   '/_authenticated/app/projects/$id': typeof AuthenticatedAppProjectsIdRoute
+  '/_authenticated/app/servicos/seo-diff': typeof AuthenticatedAppServicosSeoDiffRoute
   '/_authenticated/app/support/$id': typeof AuthenticatedAppSupportIdRoute
   '/api/public/hooks/anomaly-scan': typeof ApiPublicHooksAnomalyScanRoute
   '/api/public/hooks/gsc-ingest': typeof ApiPublicHooksGscIngestRoute
@@ -1289,6 +1299,7 @@ export interface FileRouteTypes {
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
     | '/app/projects/$id'
+    | '/app/servicos/seo-diff'
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/gsc-ingest'
@@ -1413,6 +1424,7 @@ export interface FileRouteTypes {
     | '/app/marketplace/company'
     | '/app/marketplace/provider'
     | '/app/projects/$id'
+    | '/app/servicos/seo-diff'
     | '/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/gsc-ingest'
@@ -1540,6 +1552,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/marketplace/company'
     | '/_authenticated/app/marketplace/provider'
     | '/_authenticated/app/projects/$id'
+    | '/_authenticated/app/servicos/seo-diff'
     | '/_authenticated/app/support/$id'
     | '/api/public/hooks/anomaly-scan'
     | '/api/public/hooks/gsc-ingest'
@@ -2450,6 +2463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSupportIdRouteImport
       parentRoute: typeof AuthenticatedAppSupportRoute
     }
+    '/_authenticated/app/servicos/seo-diff': {
+      id: '/_authenticated/app/servicos/seo-diff'
+      path: '/seo-diff'
+      fullPath: '/app/servicos/seo-diff'
+      preLoaderRoute: typeof AuthenticatedAppServicosSeoDiffRouteImport
+      parentRoute: typeof AuthenticatedAppServicosRoute
+    }
     '/_authenticated/app/projects/$id': {
       id: '/_authenticated/app/projects/$id'
       path: '/$id'
@@ -2565,6 +2585,20 @@ const AuthenticatedAppProjectsRouteWithChildren =
     AuthenticatedAppProjectsRouteChildren,
   )
 
+interface AuthenticatedAppServicosRouteChildren {
+  AuthenticatedAppServicosSeoDiffRoute: typeof AuthenticatedAppServicosSeoDiffRoute
+}
+
+const AuthenticatedAppServicosRouteChildren: AuthenticatedAppServicosRouteChildren =
+  {
+    AuthenticatedAppServicosSeoDiffRoute: AuthenticatedAppServicosSeoDiffRoute,
+  }
+
+const AuthenticatedAppServicosRouteWithChildren =
+  AuthenticatedAppServicosRoute._addFileChildren(
+    AuthenticatedAppServicosRouteChildren,
+  )
+
 interface AuthenticatedAppSupportRouteChildren {
   AuthenticatedAppSupportIdRoute: typeof AuthenticatedAppSupportIdRoute
 }
@@ -2597,7 +2631,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSeo404sRoute: typeof AuthenticatedAppSeo404sRoute
-  AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
+  AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRouteWithChildren
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppVisitantesRoute: typeof AuthenticatedAppVisitantesRoute
@@ -2628,7 +2662,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSeo404sRoute: AuthenticatedAppSeo404sRoute,
-  AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
+  AuthenticatedAppServicosRoute: AuthenticatedAppServicosRouteWithChildren,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppVisitantesRoute: AuthenticatedAppVisitantesRoute,

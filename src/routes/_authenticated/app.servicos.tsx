@@ -480,6 +480,42 @@ function ServiceEditDialog({
               <Textarea rows={2} value={s.seo_description ?? ""} onChange={(e) => set("seo_description", e.target.value)} />
             </Field>
             <p className="text-[11px] text-muted-foreground">Deixe em branco para usar Title/Descrição padrão da aba Básico.</p>
+
+            <div className="grid sm:grid-cols-2 gap-3 pt-2 border-t border-border">
+              <Field label="OG type">
+                <select
+                  value={(s as { og_type?: string }).og_type ?? "website"}
+                  onChange={(e) => set("og_type" as never, e.target.value as never)}
+                  className="w-full h-9 px-2 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value="website">website</option>
+                  <option value="article">article</option>
+                  <option value="product">product</option>
+                </select>
+              </Field>
+              <Field label="OG image path (storage: service-images)">
+                <Input
+                  placeholder="ex: site-24h/og.jpg — opcional, cai na capa"
+                  value={(s as { og_image_path?: string | null }).og_image_path ?? ""}
+                  onChange={(e) => set("og_image_path" as never, (e.target.value || null) as never)}
+                />
+              </Field>
+            </div>
+
+            <Field label="Conteúdo rico (HTML/Markdown migrado das rotas literais)">
+              <Textarea
+                rows={10}
+                placeholder="Cole aqui blocos de texto migrados de servicos.<slug>.tsx — renderizado entre 'Como entregamos' e a galeria."
+                value={(s as { rich_html?: string | null }).rich_html ?? ""}
+                onChange={(e) => set("rich_html" as never, (e.target.value || null) as never)}
+                className="font-mono text-xs"
+              />
+            </Field>
+
+            <JsonLdEditor
+              value={((s as { schema_jsonld?: unknown }).schema_jsonld ?? []) as Record<string, unknown>[]}
+              onChange={(v) => set("schema_jsonld" as never, v as never)}
+            />
           </TabsContent>
 
           <TabsContent value="visibilidade" className="grid gap-4 mt-4">
@@ -683,6 +719,12 @@ function serializeForSave(s: EditState) {
     image_alt: s.image_alt?.trim() || null,
     seo_title: s.seo_title?.trim() || null,
     seo_description: s.seo_description?.trim() || null,
+    og_image_path: (s as { og_image_path?: string | null }).og_image_path?.toString().trim() || null,
+    og_type: ((s as { og_type?: string }).og_type as "website" | "article" | "product") || "website",
+    schema_jsonld: Array.isArray((s as { schema_jsonld?: unknown }).schema_jsonld)
+      ? ((s as { schema_jsonld?: Record<string, unknown>[] }).schema_jsonld ?? [])
+      : [],
+    rich_html: (s as { rich_html?: string | null }).rich_html?.toString() || null,
     problems: (s.problems ?? []).map((x) => x.trim()).filter(Boolean),
     benefits: (s.benefits ?? []).map((x) => x.trim()).filter(Boolean),
     process: proc,
@@ -769,3 +811,57 @@ function FunnelsEditor({
   );
 }
 
+
+function JsonLdEditor({
+  value,
+  onChange,
+}: {
+  value: Record<string, unknown>[];
+  onChange: (v: Record<string, unknown>[]) => void;
+}) {
+  const [text, setText] = useState<string>(() => JSON.stringify(value ?? [], null, 2));
+  const [err, setErr] = useState<string | null>(null);
+
+  // Mantém o textarea em sincronia quando o serviço editado muda.
+  useEffect(() => {
+    setText(JSON.stringify(value ?? [], null, 2));
+    setErr(null);
+  }, [value]);
+
+  return (
+    <div className="rounded-lg border border-border p-3 space-y-2">
+      <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+        Blocos JSON-LD extras
+      </Label>
+      <p className="text-[11px] text-muted-foreground">
+        Array de objetos JSON-LD anexados ao <code>@graph</code> da página
+        (ex.: Product com offers, HowTo, Review). Os blocos WebPage / Service /
+        FAQPage / BreadcrumbList já são gerados automaticamente.
+      </p>
+      <Textarea
+        rows={10}
+        value={text}
+        spellCheck={false}
+        className="font-mono text-xs"
+        onChange={(e) => {
+          const t = e.target.value;
+          setText(t);
+          try {
+            const parsed = JSON.parse(t);
+            if (!Array.isArray(parsed)) throw new Error("Use um array JSON.");
+            for (const item of parsed) {
+              if (!item || typeof item !== "object" || Array.isArray(item)) {
+                throw new Error("Cada item precisa ser um objeto.");
+              }
+            }
+            setErr(null);
+            onChange(parsed as Record<string, unknown>[]);
+          } catch (e2) {
+            setErr((e2 as Error).message);
+          }
+        }}
+      />
+      {err && <p className="text-[11px] text-destructive">JSON inválido: {err}</p>}
+    </div>
+  );
+}
