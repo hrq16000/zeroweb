@@ -269,7 +269,8 @@ export const getServicePublic = createServerFn({ method: "GET" })
         const r = row as unknown as DbServiceRow;
         const imageUrl = await signImage(supabaseAdmin, r.image_path);
         const gallery = await signGallery(supabaseAdmin, r.gallery);
-        return { service: mapRow(r, imageUrl, gallery), source: "db" as const };
+        const ogImageUrl = await signImage(supabaseAdmin, r.og_image_path);
+        return { service: mapRow(r, imageUrl, gallery, ogImageUrl), source: "db" as const };
       }
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);
