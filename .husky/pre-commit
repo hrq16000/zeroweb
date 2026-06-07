@@ -40,4 +40,18 @@ if [ "$SKIP_CANONICAL_CHECK" != "1" ]; then
   fi
 fi
 
+# Validate route file references vs routeTree.gen.ts.
+if [ "$SKIP_ROUTE_FILES_CHECK" != "1" ]; then
+  echo "[pre-commit] validating route files..."
+  node scripts/validate-route-files.mjs
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo ""
+    echo "✖ Pre-commit bloqueado: arquivos de rota ausentes."
+    echo "  Corrija as rotas ou rode com SKIP_ROUTE_FILES_CHECK=1 para pular."
+    exit $status
+  fi
+fi
+
 exit 0
+
