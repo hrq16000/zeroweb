@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useTransition } from "react";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer } from "lucide-react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer, Shuffle } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -177,17 +177,43 @@ export const Route = createFileRoute("/servicos/")({
   component: ServicosHub,
 });
 
-type SortKey = "relevance" | "alpha" | "recent";
+type SortKey = "shop" | "recent" | "alpha" | "relevance";
+
+// Shuffle determinístico (Fisher-Yates com seed simples) por janelas de N,
+// preservando o viés de "mais recentes primeiro": embaralha apenas dentro
+// de blocos, então os primeiros itens continuam vindo dos mais recentes.
+function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
+  const out = [...arr];
+  let s = seed || 1;
+  const rand = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  for (let start = 0; start < out.length; start += windowSize) {
+    const end = Math.min(start + windowSize, out.length);
+    for (let i = end - 1; i > start; i--) {
+      const j = start + Math.floor(rand() * (i - start + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+  }
+  return out;
+}
 
 function ServicosHub() {
   const { services } = Route.useLoaderData();
   type Svc = (typeof services)[number];
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<SortKey>("relevance");
+  const [sort, setSort] = useState<SortKey>("shop");
   const [activeCat, setActiveCat] = useState<string>("all");
+  const [shuffleSeed, setShuffleSeed] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const PER_PAGE = 9;
+  const PER_PAGE = 12;
+
+  // Atribui um seed após hidratar para não causar mismatch entre SSR e cliente.
+  useEffect(() => {
+    setShuffleSeed(Math.floor(Date.now() / 1000));
+  }, []);
 
   const allCategories = useMemo(() => {
     const s = new Set<string>();
@@ -207,20 +233,21 @@ function ServicosHub() {
           .includes(term),
       );
     }
-    const sorted = [...list];
-    if (sort === "alpha") sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
-    else if (sort === "recent") sorted.reverse();
-    return sorted;
-  }, [services, q, sort, activeCat]);
+    // Base "recentes primeiro" (loader vem em display_order asc → invertemos)
+    const recentFirst = [...list].reverse();
+    if (sort === "alpha") return [...list].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    if (sort === "relevance") return list;
+    if (sort === "recent") return recentFirst;
+    // "shop" (default): mais recentes primeiro com leve shuffle pós-mount
+    return shuffleSeed > 0 ? windowedShuffle(recentFirst, 4, shuffleSeed) : recentFirst;
+  }, [services, q, sort, activeCat, shuffleSeed]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
-  const byCategory: Record<string, Svc[]> = {};
-  for (const s of paginated) {
-    (byCategory[s.category] ||= []).push(s);
-  }
-  const categories = Object.keys(byCategory);
+  // Index global (na lista filtrada) para badge "Novo" nos 3 primeiros.
+  const newSet = new Set(filtered.slice(0, 3).map((s) => s.slug));
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -365,11 +392,20 @@ function ServicosHub() {
                     }}
                     className="h-10 px-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <option value="relevance">Relevância</option>
+                    <option value="shop">Vitrine (recentes + variados)</option>
                     <option value="recent">Mais recentes</option>
                     <option value="alpha">Alfabética (A→Z)</option>
+                    <option value="relevance">Relevância</option>
                   </select>
                 </label>
+                <button
+                  type="button"
+                  onClick={() => startTransition(() => { setShuffleSeed(Math.floor(Math.random() * 1e6) + 1); setSort("shop"); setPage(1); })}
+                  title="Embaralhar vitrine"
+                  className="h-10 px-3 rounded-full border border-border bg-card text-sm inline-flex items-center gap-2 hover:border-primary"
+                >
+                  <Shuffle className="w-3.5 h-3.5" /> Embaralhar
+                </button>
               </div>
             </div>
 
@@ -432,64 +468,63 @@ function ServicosHub() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-12">
-                {categories.map((cat) => (
-                  <div key={cat}>
-                    <h3 className="text-xl font-bold mb-4">{cat}</h3>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {byCategory[cat].map((s) => (
-                        <Link
-                          key={s.slug}
-                          to="/servicos/$slug"
-                          params={{ slug: s.slug }}
-                          className="group block rounded-2xl border border-border bg-card hover:border-primary transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          aria-label={`Ver detalhes do serviço ${s.name}`}
-                        >
-                          {s.imageUrl ? (
-                            <div className="aspect-video overflow-hidden bg-muted">
-                              <img
-                                src={s.imageUrl}
-                                alt={s.imageAlt || s.name}
-                                loading="lazy"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            </div>
-                          ) : (
-                            <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
-                              <Sparkles className="w-8 h-8 text-primary/40" />
-                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
-                            </div>
-                          )}
-                          <div className="p-5">
-                            <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
-                            <h4 className="mt-1 font-semibold text-lg">{s.name}</h4>
-                            <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{s.description}</p>
-                            {(s.price != null || s.deliveryDays) && (
-                              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                                {s.price != null && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
-                                    {s.price === 0
-                                      ? "Sob consulta"
-                                      : `A partir de R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
-                                    {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
-                                  </span>
-                                )}
-                                {s.deliveryDays && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                                    <Timer className="w-3 h-3" /> {s.deliveryDays}
-                                  </span>
-                                )}
-                              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {paginated.map((s) => (
+                  <Link
+                    key={s.slug}
+                    to="/servicos/$slug"
+                    params={{ slug: s.slug }}
+                    className="group relative flex flex-col rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-1 hover:shadow-elegant transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`Ver detalhes do serviço ${s.name}`}
+                  >
+                    {newSet.has(s.slug) && (
+                      <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
+                        <Sparkles className="w-3 h-3" /> Novo
+                      </span>
+                    )}
+                    {s.imageUrl ? (
+                      <div className="aspect-video overflow-hidden bg-muted">
+                        <img
+                          src={s.imageUrl}
+                          alt={s.imageAlt || s.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
+                        <Sparkles className="w-8 h-8 text-primary/40" />
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
+                      </div>
+                    )}
+                    <div className="p-4 flex-1 flex flex-col">
+                      <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
+                      <h4 className="mt-1 font-semibold text-base leading-snug">{s.name}</h4>
+                      <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{s.description}</p>
+                      <div className="mt-auto pt-3">
+                        {(s.price != null || s.deliveryDays) && (
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
+                            {s.price != null && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+                                {s.price === 0
+                                  ? "Sob consulta"
+                                  : `R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
+                                {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
+                              </span>
                             )}
-                            <span className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-semibold">
-                              Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
-                            </span>
+                            {s.deliveryDays && (
+                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                                <Timer className="w-3 h-3" /> {s.deliveryDays}
+                              </span>
+                            )}
                           </div>
-
-                        </Link>
-                      ))}
+                        )}
+                        <span className="inline-flex items-center justify-center w-full gap-1 text-sm font-semibold rounded-full bg-foreground text-background px-3 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          Ver produto <ArrowRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

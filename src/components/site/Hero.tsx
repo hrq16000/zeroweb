@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { ArrowRight, MessageCircle, Sparkles, Zap } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, MessageCircle, Sparkles, Zap, Store } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { useExperiment } from "@/lib/ab-testing";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
@@ -79,11 +80,11 @@ export function Hero() {
             transition={{ delay: 0.15 }}
             className="mt-8 flex flex-wrap gap-3"
           >
-            <a
-              href="#diagnostico"
+            <Link
+              to="/servicos"
               onClick={() =>
                 trackEvent("cta_click", {
-                  label: "solicitar_diagnostico",
+                  label: "ver_servicos",
                   location: "hero",
                   experiment_hero: heroVariant,
                   experiment_cta: ctaVariant,
@@ -91,9 +92,10 @@ export function Hero() {
               }
               className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
             >
-              {cta.label}
-              <CtaIcon className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+              <Store className="w-4 h-4" />
+              Ver Catálogo de Serviços
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
             <button
               type="button"
               onClick={() => {
@@ -105,6 +107,19 @@ export function Hero() {
               <MessageCircle className="w-4 h-4 text-accent" />
               Falar no WhatsApp
             </button>
+            <a
+              href="#diagnostico"
+              onClick={() =>
+                trackEvent("cta_click", {
+                  label: "solicitar_diagnostico",
+                  location: "hero_secondary",
+                })
+              }
+              className="inline-flex items-center gap-2 rounded-full border border-border text-foreground/80 hover:text-foreground font-medium px-5 py-3 transition"
+            >
+              {cta.label}
+              <CtaIcon className="w-4 h-4" />
+            </a>
           </motion.div>
 
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6">
