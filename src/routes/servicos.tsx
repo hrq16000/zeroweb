@@ -54,7 +54,7 @@ function ServicosLayout() {
 
   return (
     <>
-      <div className="sticky top-16 z-40 border-b border-border bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-sm">
+      <div className="sticky top-16 z-40 mt-16 border-b border-border bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 shadow-sm">
         <div className="mx-auto max-w-6xl px-3 sm:px-5 py-3 flex items-center gap-3">
           <Link
             to="/"
