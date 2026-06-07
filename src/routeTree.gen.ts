@@ -88,6 +88,7 @@ import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
+import { Route as AuthenticatedAppSeo404sRouteImport } from './routes/_authenticated/app.seo-404s'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
 import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
@@ -524,6 +525,11 @@ const AuthenticatedAppServicosRoute =
     path: '/servicos',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppSeo404sRoute = AuthenticatedAppSeo404sRouteImport.update({
+  id: '/seo-404s',
+  path: '/seo-404s',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppReportsRoute = AuthenticatedAppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -822,6 +828,7 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
@@ -936,6 +943,7 @@ export interface FileRoutesByTo {
   '/app/profile': typeof AuthenticatedAppProfileRoute
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
+  '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/app/servicos': typeof AuthenticatedAppServicosRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
@@ -1054,6 +1062,7 @@ export interface FileRoutesById {
   '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
+  '/_authenticated/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
@@ -1172,6 +1181,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/seo-404s'
     | '/app/servicos'
     | '/app/support'
     | '/app/templates'
@@ -1286,6 +1296,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/projects'
     | '/app/reports'
+    | '/app/seo-404s'
     | '/app/servicos'
     | '/app/support'
     | '/app/templates'
@@ -1403,6 +1414,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/profile'
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
+    | '/_authenticated/app/seo-404s'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/support'
     | '/_authenticated/app/templates'
@@ -2068,6 +2080,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/seo-404s': {
+      id: '/_authenticated/app/seo-404s'
+      path: '/seo-404s'
+      fullPath: '/app/seo-404s'
+      preLoaderRoute: typeof AuthenticatedAppSeo404sRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/reports': {
       id: '/_authenticated/app/reports'
       path: '/reports'
@@ -2403,6 +2422,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
+  AuthenticatedAppSeo404sRoute: typeof AuthenticatedAppSeo404sRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
@@ -2433,6 +2453,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
+  AuthenticatedAppSeo404sRoute: AuthenticatedAppSeo404sRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
