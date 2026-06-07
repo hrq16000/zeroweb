@@ -177,17 +177,43 @@ export const Route = createFileRoute("/servicos/")({
   component: ServicosHub,
 });
 
-type SortKey = "relevance" | "alpha" | "recent";
+type SortKey = "shop" | "recent" | "alpha" | "relevance";
+
+// Shuffle determinístico (Fisher-Yates com seed simples) por janelas de N,
+// preservando o viés de "mais recentes primeiro": embaralha apenas dentro
+// de blocos, então os primeiros itens continuam vindo dos mais recentes.
+function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
+  const out = [...arr];
+  let s = seed || 1;
+  const rand = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  for (let start = 0; start < out.length; start += windowSize) {
+    const end = Math.min(start + windowSize, out.length);
+    for (let i = end - 1; i > start; i--) {
+      const j = start + Math.floor(rand() * (i - start + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+  }
+  return out;
+}
 
 function ServicosHub() {
   const { services } = Route.useLoaderData();
   type Svc = (typeof services)[number];
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<SortKey>("relevance");
+  const [sort, setSort] = useState<SortKey>("shop");
   const [activeCat, setActiveCat] = useState<string>("all");
+  const [shuffleSeed, setShuffleSeed] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const PER_PAGE = 9;
+  const PER_PAGE = 12;
+
+  // Atribui um seed após hidratar para não causar mismatch entre SSR e cliente.
+  useEffect(() => {
+    setShuffleSeed(Math.floor(Date.now() / 1000));
+  }, []);
 
   const allCategories = useMemo(() => {
     const s = new Set<string>();
@@ -207,20 +233,21 @@ function ServicosHub() {
           .includes(term),
       );
     }
-    const sorted = [...list];
-    if (sort === "alpha") sorted.sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
-    else if (sort === "recent") sorted.reverse();
-    return sorted;
-  }, [services, q, sort, activeCat]);
+    // Base "recentes primeiro" (loader vem em display_order asc → invertemos)
+    const recentFirst = [...list].reverse();
+    if (sort === "alpha") return [...list].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    if (sort === "relevance") return list;
+    if (sort === "recent") return recentFirst;
+    // "shop" (default): mais recentes primeiro com leve shuffle pós-mount
+    return shuffleSeed > 0 ? windowedShuffle(recentFirst, 4, shuffleSeed) : recentFirst;
+  }, [services, q, sort, activeCat, shuffleSeed]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
-  const byCategory: Record<string, Svc[]> = {};
-  for (const s of paginated) {
-    (byCategory[s.category] ||= []).push(s);
-  }
-  const categories = Object.keys(byCategory);
+  // Index global (na lista filtrada) para badge "Novo" nos 3 primeiros.
+  const newSet = new Set(filtered.slice(0, 3).map((s) => s.slug));
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
