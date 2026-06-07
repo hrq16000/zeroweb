@@ -157,3 +157,12 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - Novo `src/components/site/__tests__/Header.menu.test.tsx` cobrindo:
   abertura/fechamento do menu mobile, fechamento via Escape, fechamento ao clicar fora,
   e validação de que cada link de serviço aponta para `/servicos/{slug}`.
+
+## 2026-06-07 — Catálogo de serviços: imagens reais (Fase 1)
+- 9 capas 16:9 geradas via IA e enviadas ao bucket `service-images/catalog/*.jpg`
+- `services.image_path` + `image_alt` preenchidos via migration para todos os slugs ativos:
+  - criacao-de-sites, landing-pages, loja-virtual, marketing-digital,
+    automacao-com-ia, chatbot-whatsapp, desenvolvimento-saas, sistemas-web,
+    gestao-redes-sociais
+- `/servicos` agora renderiza os 9 cards com imagem real (signed URL 7d). Fallback "Imagem pendente" preservado para futuros serviços sem capa.
+- Rotas `/servicos/$slug` validadas — todos os slugs resolvem para a página de detalhe (sem 404). Site Express continua em rota dedicada.
