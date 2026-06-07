@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
   useRouter,
   useRouterState,
@@ -15,27 +14,10 @@ import faviconAsset from "../assets/favicon-0web.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WaFunnelProvider } from "../components/site/WaFunnelModal";
 import { AnalyticsBootstrap } from "../components/site/AnalyticsBootstrap";
+import { ErrorState } from "../components/site/ErrorState";
 
 function NotFoundComponent() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <ErrorState kind="404" />;
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
@@ -45,34 +27,37 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+  const isDev = import.meta.env.DEV;
+  const message = error?.message ?? "";
+  const looksLikeMissingRoute = /Failed to (load|fetch dynamically imported|resolve).*\/routes\//i.test(
+    message,
+  );
+
+  const diagnostics = isDev ? (
+    <>
+      <p className="font-mono text-[11px] leading-relaxed text-foreground/80 break-words">
+        {error?.name}: {message}
+      </p>
+      {looksLikeMissingRoute ? (
+        <p className="text-foreground/80">
+          Parece que um arquivo de rota foi renomeado/removido. Limpe o cache do Vite e reinicie:
+          <code className="mt-1 block rounded bg-background px-2 py-1 text-foreground">
+            rm -rf node_modules/.vite .vite .output && bun run dev
+          </code>
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </>
+  ) : null;
+
+  return (
+    <ErrorState
+      kind="500"
+      onRetry={() => {
+        router.invalidate();
+        reset();
+      }}
+      diagnostics={diagnostics}
+    />
   );
 }
 
