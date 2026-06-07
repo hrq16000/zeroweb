@@ -138,6 +138,7 @@ function Index() {
           {on("problems") && <Problems />}
           {on("loss_calculator") && <LossCalculator />}
           {on("solutions") && <Solutions />}
+          {on("featured_services") && <FeaturedServices />}
           {on("ai_section") && <AISection />}
           {on("diagnostic_form") && <DiagnosticForm />}
           {on("differentials") && <Differentials />}
