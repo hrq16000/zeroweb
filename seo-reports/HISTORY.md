@@ -186,3 +186,14 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - Validação local: 116 rotas verificadas ✓.
 
 **Próxima fase (5):** sitemap dinâmico de serviços + tabela `route_404_log` + página admin de 404s + script `log-deploy.mjs`.
+
+## Fase 5 — Sitemap dinâmico + monitoramento de 404 (2026-06-07)
+- `/sitemap-services.xml` já consulta o DB (Phase prévia) — confirmado.
+- Migration: tabela `route_404_log` (path UNIQUE, hits agregado, RLS admin-only).
+- `src/lib/route-404.functions.ts`: `logNotFound` (anon, service_role upsert agregado, ignora /@, /_, /api, assets) + `listNotFound` (admin).
+- `__root.tsx` NotFoundComponent: fire-and-forget de `logNotFound` no mount + dedupe por sessionStorage.
+- `/_authenticated/app/seo-404s`: dashboard com tabela, filtro por path, contagem total, refresh, **exportação CSV**.
+- Sidebar `app.tsx`: novo item "404s & Redirects".
+- `scripts/log-deploy.mjs`: probe HEAD em 7 rotas legadas, valida status 301 + Location, anexa tabela markdown ao HISTORY.md. Uso: `node scripts/log-deploy.mjs https://0web.com.br`.
+
+**Próxima fase (6):** smoke tests Playwright + workflow GitHub Actions.

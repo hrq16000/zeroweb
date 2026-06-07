@@ -205,6 +205,16 @@ function AppShell() {
                 Indexação SEO
               </Link>
               <Link
+                to="/app/seo-404s"
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+                  location.pathname.startsWith("/app/seo-404s")
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Search className="w-4 h-4" />
+                404s & Redirects
+              <Link
                 to="/app/funis"
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
                   location.pathname.startsWith("/app/funis")
