@@ -1,16 +1,16 @@
 import { createFileRoute, notFound, Link, redirect } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, XCircle, HelpCircle, MapPin } from "lucide-react";
+import { ArrowRight, CheckCircle2, XCircle, HelpCircle, MapPin, Timer, BadgeCheck } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
-import { trackEvent, trackConversion } from "@/lib/analytics";
-import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
 import { getServicePublic } from "@/lib/services-public.functions";
+
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
