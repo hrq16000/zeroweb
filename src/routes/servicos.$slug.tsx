@@ -242,6 +242,20 @@ function ServicePage() {
           </div>
         </section>
 
+        {data.richHtml && data.richHtml.trim().length > 0 && (
+          <section className="py-16">
+            <div className="mx-auto max-w-3xl px-5 lg:px-8">
+              {/* Bloco rico migrado de rotas literais; editável no painel (aba SEO). */}
+              <div
+                className="prose prose-neutral dark:prose-invert max-w-none leading-relaxed"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: data.richHtml }}
+              />
+            </div>
+          </section>
+        )}
+
+
         {data.gallery.length > 0 && (
           <section className="py-16">
             <div className="mx-auto max-w-6xl px-5 lg:px-8">
