@@ -345,6 +345,14 @@ function ServicePage() {
                 </Link>
               ))}
             </div>
+            <div className="mt-10 flex justify-center">
+              <ServiceCTA
+                serviceSlug={slug}
+                funnels={funnels}
+                location="detail"
+                label={data.ctaLabel}
+              />
+            </div>
           </div>
         </section>
 
