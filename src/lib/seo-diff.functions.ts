@@ -40,7 +40,7 @@ function parseHead(html: string): SeoSnapshot {
     html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i) ??
     html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
 
-  const jsonLd: unknown[] = [];
+  const jsonLd: JsonLdBlock[] = [];
   const ldRe =
     /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   let m: RegExpExecArray | null;
