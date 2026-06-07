@@ -77,9 +77,9 @@ export const Route = createFileRoute("/servicos/site-24h")({
               },
             },
             breadcrumbLd([
-              { name: "Início", url: ORIGIN + "/" },
-              { name: "Serviços", url: ORIGIN + "/servicos" },
-              { name: "Site em 24h", url: URL },
+              { name: "Início", path: "/" },
+              { name: "Serviços", path: "/servicos" },
+              { name: "Site em 24h", path: PATH },
             ]),
           ],
         }),
