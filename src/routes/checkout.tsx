@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { readCart, cartTotal, formatBRL, clearCart, type CartItem } from "@/lib/cart";
 import { createOrder, markOrderWhatsAppHandoff } from "@/lib/orders.functions";
+import { getPaymentSettings, type PaymentSettings } from "@/lib/payment-settings.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { BrandLogo } from "@/components/site/BrandLogo";
@@ -26,7 +28,7 @@ export const Route = createFileRoute("/checkout")({
   ssr: false,
 });
 
-const WHATSAPP = "5511910506037";
+const DEFAULT_WHATSAPP = "5541997452053";
 
 function buildWhatsAppMessage(items: CartItem[], total: number, orderId: string) {
   const lines = items.map((i) => `• ${i.name}${i.qty > 1 ? ` (x${i.qty})` : ""}${typeof i.price === "number" && i.price > 0 ? ` — ${formatBRL(i.price * i.qty)}` : ""}`);
