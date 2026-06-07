@@ -232,8 +232,12 @@ function AppShell() {
         </nav>
         <div className="p-3 border-t border-border">
           <div className="px-3 py-2">
-            <div className="text-sm font-medium truncate">{me?.profile?.full_name || me?.profile?.email}</div>
-            <div className="text-xs text-muted-foreground truncate">{me?.profile?.company || "Cliente"}</div>
+            <div className="text-sm font-medium truncate">
+              {me?.profile?.full_name || me?.profile?.display_name || me?.profile?.email || "—"}
+            </div>
+            <div className="text-xs text-muted-foreground truncate">
+              {me?.profile?.company || (isAdmin ? "Administrador" : "Cliente")}
+            </div>
           </div>
           <button
             onClick={signOut}
@@ -247,7 +251,7 @@ function AppShell() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-14 border-b border-border flex items-center justify-between px-5 lg:px-8">
           <div className="text-sm text-muted-foreground">
-            Bem-vindo, <strong className="text-foreground">{me?.profile?.full_name || "—"}</strong>
+            Bem-vindo, <strong className="text-foreground">{me?.profile?.full_name || me?.profile?.display_name || me?.profile?.email || "—"}</strong>
           </div>
           <Link to="/app/notifications" className="relative p-2 rounded-lg hover:bg-muted">
             <Bell className="w-4 h-4" />
