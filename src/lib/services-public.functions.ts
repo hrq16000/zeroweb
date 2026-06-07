@@ -88,6 +88,7 @@ function asFunnels(v: unknown): Record<string, string> {
 }
 
 export type GalleryItem = { path: string; url: string | null; alt: string | null };
+export type SchemaBlock = Record<string, unknown>;
 export type PublicServiceFull = ServiceData & {
   imagePath: string | null;
   imageUrl: string | null;
@@ -105,7 +106,17 @@ export type PublicServiceFull = ServiceData & {
   funnels: Record<string, string>;
   gallery: GalleryItem[];
   sections: { title: string; body: string }[];
+  ogImagePath: string | null;
+  ogImageUrl: string | null;
+  ogType: string;
+  schemaJsonLd: SchemaBlock[];
+  richHtml: string | null;
 };
+
+function asSchemaBlocks(v: unknown): SchemaBlock[] {
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is SchemaBlock => typeof x === "object" && x !== null && !Array.isArray(x));
+}
 
 function mapRow(
   row: DbServiceRow,
