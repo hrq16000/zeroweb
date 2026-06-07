@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
-import logoAsset from "@/assets/logo-0web.png.asset.json";
+import { BrandLogo } from "@/components/site/BrandLogo";
 
 /**
  * Loader global de navegação. Aparece após 120ms de pending para não
