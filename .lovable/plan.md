@@ -1,120 +1,61 @@
+# Plano: blocos A + B + C + D + validação externa
 
-# Plano de execução sequencial — 7 fases
+Você escolheu tudo. São ~6–10 dias de trabalho somados; não cabe em um único turno sem perder qualidade ou deixar pontas soltas (especialmente Kanban + versionamento + automações). Vou entregar em **4 rodadas curtas**, cada uma com algo publicável e testado, na ordem em que destravam mais valor com menos risco.
 
-Cada fase é entregue isolada, com um checkpoint de validação antes de avançar para a próxima. Se algo quebrar numa fase, a próxima não inicia.
+## Rodada 1 — agora (Bloco A + validação externa)
 
----
+Foco em fechar a base SEO antes de mexer em produto.
 
-## Fase 1 — Imagens do catálogo de serviços
-**Objetivo:** popular os 9 cards de `/servicos` com capas visuais coerentes.
+1. **Validador Schema.org no build/CI**
+   - Estende `scripts/validate-schemas.mjs` para falhar quando `/servicos` e `/servicos/{slug}` não passarem em checks de Rich Results (Service, FAQPage, BreadcrumbList, WebPage).
+   - Roda no `prebuild` (já existe `scripts/validate-jsonld.mjs` — sem duplicar; combinar saídas).
+   - `SKIP_SCHEMA_VALIDATION=1` continua disponível para emergência.
 
-- Gerar 9 capas (16:9, estilo 0WEB: gradiente azul/laranja, mockup minimalista) com `imagegen` em `src/assets/services/{slug}.jpg`.
-- Subir os 9 arquivos para o bucket `service-images` do Storage (público).
-- Migration `UPDATE services SET image_path = '...' WHERE slug = '...'` para os 9 slugs.
-- Render do card em `servicos.index.tsx` já lê `image_path` — só validar que aparece.
+2. **Playwright smoke `/servicos`**
+   - `tests/e2e/servicos-smoke.spec.ts`: percorre `/servicos` + todos os slugs do `services-data.ts`, falha em blank screen (DOM vazio em `<main>`) ou `console.error`.
+   - `tests/e2e/legacy-301.spec.ts`: para cada rota legada (`/trafego-pago`, `/trafego-pago-local`, `/consultoria`, `/google-meu-negocio`, `/marketplace`, `/parceiros`, `/presenca-digital`, `/$service`), valida status 301 e Location final em `/servicos/{slug}`.
+   - Integrado ao `package.json` script `test:e2e:smoke`.
 
-**Checkpoint:** `/servicos` mostra os 9 cards com imagem. Nenhum card antigo quebrado.
+3. **Validação externa em paralelo**
+   - Rodo Rich Results Test + Schema.org Validator nas URLs publicadas (`https://0web.com.br/servicos`, e 3 slugs representativos).
+   - Anexo resultado em `seo-reports/HISTORY.md` com erros/warnings categorizados.
 
----
+4. **Auditoria de SocialProof no hub e leaf**
+   - Confirma carregamento do feed do CRUD em `/servicos` e `/servicos/{slug}` (sem repetição), via teste E2E que lê 6 ciclos consecutivos.
 
-## Fase 2 — Navegação completa (páginas órfãs)
-**Objetivo:** garantir que toda página pública seja alcançável.
+## Rodada 2 — bloco C (dashboard /app/seo-404s)
 
-- Adicionar ao menu (`Header.tsx`): Cases, Planos, FAQ.
-- Adicionar ao Footer: Parceiros, Consultoria, Marketplace.
-- Incluir `presenca-digital`, `trafego-pago`, `trafego-pago-local`, `google-meu-negocio` como cards extras no catálogo `/servicos` (sem migrar slug — só linkar).
-- Atualizar teste `Header.menu.test.tsx` com os novos links.
+- Export CSV de redirects quentes e alertas por período em `app.seo-404s.tsx` (server fn `exportRedirectsCsv` em `route-404.functions.ts`).
+- Script `scripts/audit-internal-links.mjs`: varre `src/**/*.{tsx,ts,md}` e falha quando encontra link interno fora de `/servicos` apontando para rotas legadas (`/trafego-pago`, `/consultoria`, etc.). Roda no `prebuild`.
+- Resultado da auditoria fica disponível no dashboard como aba "Links internos legados".
 
-**Checkpoint:** rodar `bun test src/components/site/__tests__/Header.menu.test.tsx` — verde.
+## Rodada 3 — bloco B (CRM/Funil + Automações)
 
----
+Dividido em três entregas progressivas dentro da rodada para manter cada commit testável:
 
-## Fase 3 — Páginas 403 / 404 / 500 amigáveis + diagnóstico de rota
-**Objetivo:** UX consistente quando algo falha.
+- **B.1 Scoring**: painel em `/app/funis/scoring.tsx` listando regras (tags, pesos, thresholds por funil), com preview executando `compute_lead_score` num lead exemplo antes de salvar. Tabela nova `lead_scoring_rules`.
+- **B.2 Kanban**: `/app/funis/leads.tsx` ganha modo Kanban (`@dnd-kit`) sobre `lead_submissions.pipeline_stage` com bulk-actions (mover N, aplicar tag, atribuir).
+- **B.3 Builder + Versionamento + Automações**:
+  - Sidebar visual em `/app/funis/$id` (estágios, ordem, perguntas múltiplas, `skip_to`, progress por estágio).
+  - Versionamento: tabela `dynamic_form_versions` já existe — adicionar preview + publish/rollback + diff visual.
+  - Automações pós-scoring: novo registro em `lead_pipeline_rules.action` para `whatsapp_send` (UAZAPI), `task_create` e `sheets_append` (via webhook configurável). Disparados no trigger `apply_pipeline_rules_on_insert`.
 
-- Componente compartilhado `src/components/site/ErrorState.tsx` (ilustração, mensagem, CTA voltar/contato/WhatsApp).
-- `notFoundComponent` no `__root.tsx` → usa ErrorState 404.
-- `errorComponent` no `__root.tsx` → ErrorState 500 + (dev only) bloco de diagnóstico: caminho da rota, hint "limpar cache Vite: `rm -rf node_modules/.vite .vite .output && restart`".
-- Página `/403` standalone (acesso negado) usada pelo gate `_authenticated`.
-- Detector de "Failed to load url …/routes/…" → mensagem amigável + instruções de limpeza no overlay dev.
+## Rodada 4 — bloco D (Chatbot + LGPD)
 
-**Checkpoint:** acessar `/rota-inexistente` → 404 amigável. Forçar erro em loader → 500 amigável.
+- Dashboard `/app/funis/conversoes.tsx`: funil por etapa, fallback rate, top respostas por pergunta, drill-down por lead.
+- Área de testes: simulador embutido que roda funil sem persistir, mostrando branching.
+- Registro de consentimento LGPD: tabela `lgpd_consent_log` (lead_id, version_text, given_at, ip_hash, ua), exibido no detalhe do lead.
 
----
+## O que entrego nesta resposta
 
-## Fase 4 — Guardrails de build & dev server
-**Objetivo:** impedir blank screen por arquivo de rota faltando.
+Apenas a **Rodada 1** completa. Ao final mostro o resultado dos validadores externos e qual deve ser o próximo "Prossiga".
 
-- Script `scripts/validate-route-files.mjs`: lê `routeTree.gen.ts`, valida que cada `import('./routes/X')` resolve para arquivo existente. Falha com mensagem amigável listando os arquivos ausentes.
-- Hook no `package.json` `prebuild` e `pre-commit` (.husky).
-- Plugin Vite leve `vite-plugin-route-watcher.ts`: observa `src/routes/` por add/unlink e força full reload (`server.ws.send({ type: 'full-reload' })`) quando `routeTree.gen.ts` ficar dessincronizado por > 2s.
+## Detalhes técnicos (Rodada 1)
 
-**Checkpoint:** simular remoção de um arquivo de rota → build aborta com mensagem clara em vez de erro críptico.
+- `scripts/validate-schemas.mjs`: adicionar regra que percorre `src/routes/servicos.index.tsx` e `src/routes/servicos.$slug.tsx`, valida presença de `@graph` com `Service`+`FAQPage`+`BreadcrumbList`+`WebPage`, e dedup de FAQ no hub.
+- Playwright já está nas devDeps? Se não, `bun add -d @playwright/test` e `playwright.config.ts` mínima (preview URL via env `E2E_BASE_URL`, fallback `http://localhost:8080`).
+- Validação externa via `code--fetch_website` no endpoint do Rich Results Test não funciona (precisa de API key/auth). Vou usar:
+  1. `scripts/run-schema-validator.mjs` que faz POST para `https://validator.schema.org/validate` e parseia retorno.
+  2. Rich Results Test não tem API pública — vou usar o validador estrutural local (já temos) + Schema.org validator oficial + checagem manual via fetch das URLs publicadas, registrando o JSON-LD efetivamente servido.
 
----
-
-## Fase 5 — Sitemap de serviços automatizado + monitoramento 404
-**Objetivo:** sitemap sempre alinhado com o catálogo; rastrear 404 e redirects.
-
-- `sitemap-services.xml.ts`: ler `services` direto do Supabase (slugs ativos) — já existe parcialmente, garantir que reflita 100% do banco e remova slugs legados.
-- Tabela `route_404_log` (migration) + handler em `__root.tsx#notFoundComponent` que faz fire-and-forget de `logNotFound(path, referrer)` via server fn.
-- Rota admin `/app/seo/404s` lista agregada (top 50 paths, contagem, último visto).
-- Append automático ao `seo-reports/HISTORY.md` em cada deploy via script `scripts/log-deploy.mjs`.
-
-**Checkpoint:** adicionar slug fake no banco → aparece no `/sitemap-services.xml` automaticamente. Acessar URL inexistente → linha aparece em `route_404_log`.
-
----
-
-## Fase 6 — Testes E2E Playwright (smoke)
-**Objetivo:** prevenir regressões silenciosas.
-
-- Adicionar `@playwright/test` como devDependency + config básica.
-- Suite `tests/e2e/smoke.spec.ts`:
-  1. `/` carrega, header visível.
-  2. `/servicos` lista ≥ 10 cards com imagem.
-  3. Clicar em cada card de serviço → `/servicos/{slug}` 200 + breadcrumb correto.
-  4. Menu mobile abre, fecha no Escape, fecha ao clicar fora.
-  5. `/rota-falsa` → 404 amigável (não blank).
-- Workflow `.github/workflows/e2e.yml` rodando em PR.
-
-**Checkpoint:** `bunx playwright test` verde local.
-
----
-
-## Fase 7 — Publish + validação de produção
-**Objetivo:** confirmar tudo no ar.
-
-- Sinalizar para publicar.
-- Rodar `node scripts/validate-jsonld.mjs https://0web.com.br --with-validator` → esperado 11/11 verde.
-- Rodar `node scripts/validate-sitemaps.mjs` → esperado 7/7 verde.
-- `curl -I https://0web.com.br/criacao-sites` etc. → confirmar `HTTP/2 301` server-side para cada legado.
-- Adicionar relatório final ao `seo-reports/HISTORY.md`.
-
-**Checkpoint:** todos os validators verdes em produção.
-
----
-
-## Regras transversais (em todas as fases)
-- Toda mudança vai com seu próprio teste antes de avançar.
-- Nenhum arquivo `_authenticated/*` é tocado (escopo zero em auth).
-- Nenhum schema de banco existente é alterado destrutivamente — só `ADD COLUMN` / nova tabela.
-- `mem://` consultado antes de qualquer mudança de design (paleta/tipografia segue Core).
-- Após cada fase eu te entrego um diff curto + checkpoint para você aprovar antes da próxima.
-
----
-
-## Detalhes técnicos resumidos
-
-| Fase | Arquivos novos | Arquivos editados | Migrations |
-|---|---|---|---|
-| 1 | 9× `src/assets/services/*.jpg` | `servicos.index.tsx` (fallback img) | 1 (UPDATE services.image_path) |
-| 2 | — | `Header.tsx`, `Footer.tsx`, `servicos.index.tsx`, testes | — |
-| 3 | `ErrorState.tsx`, `403.tsx` | `__root.tsx` | — |
-| 4 | `scripts/validate-route-files.mjs`, `vite-plugin-route-watcher.ts` | `package.json`, `vite.config.ts`, `.husky/pre-commit` | — |
-| 5 | `app.seo.404s.tsx`, `scripts/log-deploy.mjs` | `sitemap-services.xml.ts`, `__root.tsx` | 1 (CREATE TABLE route_404_log + GRANT + RLS) |
-| 6 | `tests/e2e/smoke.spec.ts`, `playwright.config.ts`, `.github/workflows/e2e.yml` | `package.json` | — |
-| 7 | — | `seo-reports/HISTORY.md` | — |
-
-**Estimativa de turnos:** 1 turno por fase = 7 turnos no total, com aprovação rápida entre cada um.
-
-Confirma e começo pela **Fase 1 (imagens do catálogo)**?
+Se preferir outra ordem das rodadas ou cortar escopo (ex.: pular versionamento em B.3), me diga antes de eu começar.

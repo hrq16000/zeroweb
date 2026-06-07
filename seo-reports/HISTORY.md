@@ -206,3 +206,28 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - Dashboard `/app/seo-404s` expandido com 3 abas (404s, Redirects, Indexação) + alertas para paths com ≥5 hits 404 e rotas legadas ainda recebendo tráfego. Cada aba exporta CSV.
 - Novos server fns `listRedirects` e `listIndexCoverage` em `src/lib/route-404.functions.ts`.
 - Smoke dinâmico em `scripts/smoke-servicos.mjs` (`bun run smoke:servicos`) que busca slugs publicados no DB + landings fixas, valida HTTP 200, `<h1>`, CTA WhatsApp e canonical correto. Gera `seo-reports/smoke-servicos.json`.
+## 2026-06-07T04-52-30-750Z — https://0web.com.br
+- Rotas: **11** | Falhas: **0** | Relatório: `seo-reports/2026-06-07T04-52-30-750Z.json`
+  - ✅ `/servicos`
+  - ✅ `/servicos/automacao-com-ia`
+  - ✅ `/servicos/chatbot-whatsapp`
+  - ✅ `/servicos/criacao-de-sites`
+  - ✅ `/servicos/desenvolvimento-saas`
+  - ✅ `/servicos/gestao-redes-sociais`
+  - ✅ `/servicos/landing-pages`
+  - ✅ `/servicos/loja-virtual`
+  - ✅ `/servicos/marketing-digital`
+  - ✅ `/servicos/seo`
+  - ✅ `/servicos/sistemas-web`
+
+## 2026-06-07T04-52-59-477Z — Legacy 301 — https://0web.com.br
+- Rotas: **8** | Falhas: **0** | Relatório: `seo-reports/legacy-301-2026-06-07T04-52-59-477Z.json`
+  - ✅ `/trafego-pago` → 301 https://0web.com.br/servicos/trafego-pago
+  - ✅ `/trafego-pago-local` → 301 https://0web.com.br/servicos/trafego-pago-local
+  - ✅ `/consultoria` → 301 https://0web.com.br/servicos/consultoria
+  - ✅ `/google-meu-negocio` → 301 https://0web.com.br/servicos/google-meu-negocio
+  - ✅ `/marketplace` → 301 https://0web.com.br/servicos/marketplace
+  - ✅ `/parceiros` → 301 https://0web.com.br/servicos/parceiros
+  - ✅ `/presenca-digital` → 301 https://0web.com.br/servicos/presenca-digital
+  - ✅ `/site-express` → 301 https://0web.com.br/servicos/site-express
+
