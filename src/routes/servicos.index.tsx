@@ -12,7 +12,7 @@ import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { ShopHero } from "@/components/site/ShopHero";
-import { SmartServiceSearch } from "@/components/site/SmartServiceSearch";
+
 import {
   Accordion,
   AccordionContent,
@@ -263,31 +263,8 @@ function ServicosHub() {
         <h1 className="sr-only">Loja de serviços 0WEB</h1>
         <ShopHero slides={slides} />
 
-        {/* Barra de busca inteligente em destaque, estilo loja virtual */}
-        <section className="py-10 px-5 bg-gradient-to-b from-muted/40 to-background border-b border-border">
-          <div className="mx-auto max-w-6xl">
-            <div className="text-center mb-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold inline-flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5" /> O que você procura hoje?
-              </p>
-              <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight">
-                Encontre o serviço ideal em segundos
-              </h2>
-            </div>
-            <SmartServiceSearch
-              services={(services as Svc[]).map((s) => ({
-                slug: s.slug,
-                name: s.name,
-                category: s.category,
-                description: s.description,
-                keywords: s.keywords,
-              }))}
-              value={q}
-              onChange={(v) => startTransition(() => { setQ(v); setPage(1); })}
-              trending={["Site Express", "Tráfego pago", "SEO", "Google Meu Negócio", "Automação WhatsApp"]}
-            />
-          </div>
-        </section>
+        {/* Busca inteligente agora vive no header sticky (servicos.tsx) e
+            permanece presente em todas as páginas da loja virtual. */}
 
         {/* DESTAQUE: Site Express */}
         <section className="py-12 px-5">

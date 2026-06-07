@@ -1,74 +1,86 @@
-# Plano de execução — Loja Virtual + SEO Migration
+# Plano em 3 ondas
 
-Atualizado: 2026-06-07.
+Cada onda é entregue, testada e aprovada antes da próxima.
 
-## Entrega ATUAL (esta rodada)
+---
 
-**Loja virtual `/servicos` (UX visível)**
+## Onda 1 — UX & Suavidade (entrega agora)
 
-- [x] Tabela `hero_slides` (admin-managed, RLS pública read + admin write)
-- [x] 3 slides iniciais para `page = 'servicos'` (Catálogo, Site Express, Automação IA)
-- [x] Server fn `listHeroSlides({ page })` em `src/lib/hero-slides.functions.ts`
-- [x] Componente `ShopHero` — carrossel 3 slides + autoplay + dots/setas
-- [x] Componente `SmartServiceSearch` — autocomplete com sugestões (nome + categoria + keywords)
-- [x] Refatorar `src/routes/servicos.index.tsx` em modo loja: Hero carrossel → busca grande → categorias → grid de produtos (recentes primeiro + shuffle leve)
-- [x] Home (`Hero.tsx`) — CTA principal aponta para `/servicos` (já estava; reforçado visualmente)
-- [x] Página dinâmica `/servicos/$slug` continua usando o mesmo Header do site
+Objetivo: dar a sensação imediata de "está acontecendo algo" quando o usuário clica, e elegância nas transições.
 
-## Próximas rodadas (uma por vez, na ordem)
+1. **Loader global de navegação com a logo 0WEB**
+   - Componente `RouteLoader` em `__root.tsx` que escuta o estado de pending do TanStack Router (`useRouterState({ select: s => s.isLoading || s.isTransitioning })`).
+   - Overlay com a logo pulsando + barra de progresso fina no topo (estilo NProgress), fade-in após 120ms (não pisca em navegações instantâneas).
+   - Preload em hover já está ativo (`defaultPreload: "intent"`), mas reforçamos `preloadDelay` baixo.
 
-### Rodada 2 — Admin de slides + Featured manual
-- CRUD de `hero_slides` na rota `/app/site-config` (ou aba dentro de `/app/servicos`)
-- Upload de imagem para `service-images/hero/` (já existe bucket)
-- Drag-and-drop reorder
-- Preview ao vivo
-- Flag `show_in_home_featured` já existe em `services` → usar na home
+2. **Transições entre páginas**
+   - Fade + leve translate-y nas trocas de rota usando `framer-motion` `AnimatePresence` no `<Outlet />` do root, com `mode="wait"`.
+   - Respeita `prefers-reduced-motion`.
 
-### Rodada 3 — Migração SEO automática .tsx → DB
-- Script `scripts/migrate-services-seo.mjs` que:
-  1. Lê cada `src/routes/servicos.<slug>.tsx`
-  2. Extrai `head()` (title, description, JSON-LD, OG)
-  3. Extrai JSX principal e converte para HTML sanitizado em `rich_html`
-  4. Faz upsert no banco preservando seções (benefícios, garantia, depoimentos)
-- Dry-run + `--apply`
-- Relatório por serviço (campos preenchidos vs vazios)
+3. **Hero da loja com fade/cross suave**
+   - Refatorar `ShopHero.tsx`: crossfade entre slides (opacity + scale 1.02 → 1.0), Ken Burns sutil na imagem de fundo, easing `cubic-bezier(0.4, 0, 0.2, 1)`.
+   - Duração 1200ms, autoplay 7s, pausa no hover (já existe).
+   - Pré-carrega a próxima imagem.
 
-### Rodada 4 — Importador JSX → rich_html (server fn)
-- Server fn `importServiceFromLiteralRoute({ slug })`
-- Acessível via botão "Importar conteúdo da rota antiga" no painel
-- Usa o mesmo parser do script da Rodada 3
-- Mostra diff antes de salvar
+4. **Busca sticky em todas as páginas da loja**
+   - Extrair `SmartServiceSearch` para o layout `src/routes/servicos.tsx` (que hoje é só `<Outlet />`), com header sticky `top-0 z-40 backdrop-blur` contendo: logo mini + busca + ícone do carrinho (badge com contador).
+   - Aparece em `/servicos`, `/servicos/$slug` e futuras subrotas.
 
-### Rodada 5 — Checklist de publicação no painel
-- Nova aba "Publicação" no editor de serviço
-- Validações antes de habilitar `is_active`:
-  - [ ] Title (≤60 chars)
-  - [ ] Description (≤160 chars)
-  - [ ] OG image presente
-  - [ ] Canonical estável
-  - [ ] JSON-LD válido (parse + Service schema obrigatório)
-  - [ ] Fallback rico (rich_html OU benefits + process + faq)
-- Bloqueia "Publicar" se algum item vermelho; permite "Salvar rascunho"
-- Score visual (0–100) com peso configurável em `app_settings`
+5. **Micro-interações globais**
+   - Botões: `active:scale-[0.98] transition-transform`.
+   - Links de produto: hover com shadow-glow.
 
-### Rodada 6 — CI seo-diff
-- GitHub Action `seo-diff.yml` que roda em PR
-- Para cada slug alterado, executa `getServiceSeoDiff` e compara
-- Modos configuráveis via `app_settings.seo_diff_rules` (JSON):
-  ```json
-  {
-    "title":       { "mode": "block",  "threshold": 0 },
-    "description": { "mode": "block",  "threshold": 0 },
-    "og_image":    { "mode": "warn",   "threshold": 1 },
-    "jsonld":      { "mode": "score",  "threshold": 90 },
-    "canonical":   { "mode": "block",  "threshold": 0 }
-  }
-  ```
-- Painel admin edita esse JSON com presets (Estrito / Tolerante / Score)
-- Action lê o JSON via API pública `/api/public/seo-diff-rules` (read-only)
-- Bloqueia merge quando `mode=block` falha ou `score < threshold`
+---
 
-### Rodada 7 — Limpeza final
-- Após todos os serviços migrados e validados, deletar rotas literais `servicos.<slug>.tsx`
-- Adicionar redirect 301 do antigo path para `/servicos/<slug>` (já tratado pelo TanStack)
-- Atualizar `sitemap-services.xml` para usar apenas o DB
+## Onda 2 — Loja completa (produto + carrinho híbrido)
+
+1. **Página de produto enriquecida (`/servicos/$slug`)**
+   - Breadcrumb: Loja › Categoria › Produto.
+   - Botão grande "Adicionar ao carrinho" + "Comprar agora".
+   - Bloco "Outras categorias" (chips horizontais).
+   - Bloco "Itens relacionados" (mesma categoria, exclui o atual, 4 cards).
+
+2. **Carrinho híbrido**
+   - Tabela `cart_items` no banco + fallback `localStorage` para anônimos.
+   - Drawer lateral (`Sheet` do shadcn) aberto pelo ícone no header sticky.
+   - 1º item: livre. 2º item: toast "Salve seu carrinho com Google" + CTA login (não bloqueia).
+   - Ao logar, faz merge do localStorage → DB.
+
+3. **Catálogo: chips de categoria persistentes**
+   - Já existe parcialmente — promover para componente reutilizável usado em todas as views da loja.
+
+---
+
+## Onda 3 — Checkout via funil + Google + Pagamento (duplo caminho)
+
+1. **Tabela `orders`** (id, user_id, items jsonb, total, status, payment_method, whatsapp_handoff_at, stripe_session_id).
+
+2. **Fluxo de checkout = funil dinâmico existente**
+   - Reutilizar o motor de `dynamic_forms` para coletar: dados do negócio, prazo, observações.
+   - Passos do funil somam ao "cadastro universal" (`customer_identities` já existe).
+   - Login Google obrigatório no passo final via `lovable.auth.signInWithOAuth("google")`.
+
+3. **Tela final com 2 CTAs equivalentes**
+   - **Pagar agora**: Stripe integrado da Lovable (`payments--enable_stripe_payments`) → checkout session → success page.
+   - **Falar no WhatsApp**: gera link `wa.me` com resumo do pedido + ID + dados; marca `whatsapp_handoff_at` na order.
+
+4. **Painel do cliente** (`/app`)
+   - Aba "Meus pedidos" listando orders com status (aguardando pagamento / em conversa no WhatsApp / pago / em produção).
+
+---
+
+## Detalhes técnicos
+
+**Stack já presente**: TanStack Start + Router (preload intent ativo), framer-motion disponível, shadcn/ui, Supabase, `lovable.auth` para Google, `dynamic_forms` para funil.
+
+**Bibliotecas a adicionar**: nenhuma — `framer-motion` já está no projeto.
+
+**Migrations previstas**:
+- Onda 2: `cart_items (id, user_id nullable, session_id, service_id, qty, created_at)`.
+- Onda 3: `orders` + `order_items` + extensão de `customer_identities` se necessário.
+
+**Pagamento**: ativaremos `enable_stripe_payments` no início da Onda 3 (form do usuário).
+
+---
+
+Começo agora pela **Onda 1**. Após aprovação visual, sigo pra Onda 2.

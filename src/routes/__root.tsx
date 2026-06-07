@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WaFunnelProvider } from "../components/site/WaFunnelModal";
 import { AnalyticsBootstrap } from "../components/site/AnalyticsBootstrap";
 import { ErrorState } from "../components/site/ErrorState";
+import { RouteLoader } from "../components/site/RouteLoader";
 import { logNotFound } from "../lib/route-404.functions";
 
 function NotFoundComponent() {
@@ -206,6 +207,7 @@ function RootComponent() {
       <WaFunnelProvider>
         <AnalyticsBootstrap />
         <ScrollToTop />
+        <RouteLoader />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </WaFunnelProvider>
