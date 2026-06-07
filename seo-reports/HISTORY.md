@@ -166,3 +166,9 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
     gestao-redes-sociais
 - `/servicos` agora renderiza os 9 cards com imagem real (signed URL 7d). Fallback "Imagem pendente" preservado para futuros serviços sem capa.
 - Rotas `/servicos/$slug` validadas — todos os slugs resolvem para a página de detalhe (sem 404). Site Express continua em rota dedicada.
+
+## 2026-06-07 — Phase 2: Navigation & orphan pages
+- Footer: adicionada coluna "Especialidades" (Presença Digital, Tráfego Pago, Tráfego Local, Consultoria, Parceiros, Marketplace).
+- Footer: corrigido link SEO de `/servicos/seo` (404) para `/seo` (rota dedicada).
+- `/servicos`: nova seção "Especialidades complementares" com 6 cards apontando para as páginas dedicadas que estavam órfãs do catálogo.
+- Header já contempla: Início, Serviços, IA, Cases, Planos, FAQ, Blog, Marketplace, Contato.
