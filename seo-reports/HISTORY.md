@@ -197,3 +197,12 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
 - `scripts/log-deploy.mjs`: probe HEAD em 7 rotas legadas, valida status 301 + Location, anexa tabela markdown ao HISTORY.md. Uso: `node scripts/log-deploy.mjs https://0web.com.br`.
 
 **Próxima fase (6):** smoke tests Playwright + workflow GitHub Actions.
+
+## Fase 6 — Migração de rotas, alertas e indexação
+
+- Movidas 7 rotas raiz para `/servicos/{slug}`: trafego-pago-local, trafego-pago, presenca-digital, google-meu-negocio, consultoria, parceiros, marketplace.
+- Antigas rotas raiz substituídas por 301 redirects (TanStack `redirect({ statusCode: 301 })`) + linha equivalente em `public.redirects` para o handler de produção.
+- Links internos atualizados em Header, Footer, Solutions, RelatedLinksGrid, sitemap-pages, content-taxonomy, thank-you-content, seo-monitor.
+- Dashboard `/app/seo-404s` expandido com 3 abas (404s, Redirects, Indexação) + alertas para paths com ≥5 hits 404 e rotas legadas ainda recebendo tráfego. Cada aba exporta CSV.
+- Novos server fns `listRedirects` e `listIndexCoverage` em `src/lib/route-404.functions.ts`.
+- Smoke dinâmico em `scripts/smoke-servicos.mjs` (`bun run smoke:servicos`) que busca slugs publicados no DB + landings fixas, valida HTTP 200, `<h1>`, CTA WhatsApp e canonical correto. Gera `seo-reports/smoke-servicos.json`.

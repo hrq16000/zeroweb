@@ -47,12 +47,12 @@ function CategoryPage() {
   useEffect(() => { void fetchCat({ data: { slug } }).then(setData); }, [fetchCat, slug]);
 
   if (!data) return <div className="p-12 text-center text-muted-foreground">Carregando…</div>;
-  if (!data.category) return <div className="p-12 text-center"><h1>Categoria não encontrada</h1><Link to="/marketplace" className="text-primary">Voltar</Link></div>;
+  if (!data.category) return <div className="p-12 text-center"><h1>Categoria não encontrada</h1><Link to="/servicos/marketplace" className="text-primary">Voltar</Link></div>;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-5 py-10">
-        <Link to="/marketplace" className="text-sm text-muted-foreground">← Marketplace</Link>
+        <Link to="/servicos/marketplace" className="text-sm text-muted-foreground">← Marketplace</Link>
         <h1 className="text-3xl md:text-4xl font-display font-bold mt-4">{data.category.name}</h1>
         {data.category.description && <p className="text-muted-foreground mt-2 max-w-2xl">{data.category.description}</p>}
 

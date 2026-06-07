@@ -57,7 +57,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
+import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
+import { Route as ServicosPresencaDigitalRouteImport } from './routes/servicos.presenca-digital'
+import { Route as ServicosParceirosRouteImport } from './routes/servicos.parceiros'
+import { Route as ServicosMarketplaceRouteImport } from './routes/servicos.marketplace'
+import { Route as ServicosGoogleMeuNegocioRouteImport } from './routes/servicos.google-meu-negocio'
+import { Route as ServicosConsultoriaRouteImport } from './routes/servicos.consultoria'
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
@@ -367,9 +374,46 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicosTrafegoPagoLocalRoute =
+  ServicosTrafegoPagoLocalRouteImport.update({
+    id: '/trafego-pago-local',
+    path: '/trafego-pago-local',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const ServicosTrafegoPagoRoute = ServicosTrafegoPagoRouteImport.update({
+  id: '/trafego-pago',
+  path: '/trafego-pago',
+  getParentRoute: () => ServicosRoute,
+} as any)
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
   id: '/site-express',
   path: '/site-express',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosPresencaDigitalRoute = ServicosPresencaDigitalRouteImport.update({
+  id: '/presenca-digital',
+  path: '/presenca-digital',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosParceirosRoute = ServicosParceirosRouteImport.update({
+  id: '/parceiros',
+  path: '/parceiros',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosMarketplaceRoute = ServicosMarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosGoogleMeuNegocioRoute =
+  ServicosGoogleMeuNegocioRouteImport.update({
+    id: '/google-meu-negocio',
+    path: '/google-meu-negocio',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const ServicosConsultoriaRoute = ServicosConsultoriaRouteImport.update({
+  id: '/consultoria',
+  path: '/consultoria',
   getParentRoute: () => ServicosRoute,
 } as any)
 const ServicosSlugRoute = ServicosSlugRouteImport.update({
@@ -808,7 +852,14 @@ export interface FileRoutesByFullPath {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
+  '/servicos/marketplace': typeof ServicosMarketplaceRoute
+  '/servicos/parceiros': typeof ServicosParceirosRoute
+  '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
+  '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -923,7 +974,14 @@ export interface FileRoutesByTo {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
+  '/servicos/marketplace': typeof ServicosMarketplaceRoute
+  '/servicos/parceiros': typeof ServicosParceirosRoute
+  '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
+  '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
@@ -1042,7 +1100,14 @@ export interface FileRoutesById {
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
+  '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
+  '/servicos/marketplace': typeof ServicosMarketplaceRoute
+  '/servicos/parceiros': typeof ServicosParceirosRoute
+  '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
+  '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1161,7 +1226,14 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
+    | '/servicos/consultoria'
+    | '/servicos/google-meu-negocio'
+    | '/servicos/marketplace'
+    | '/servicos/parceiros'
+    | '/servicos/presenca-digital'
     | '/servicos/site-express'
+    | '/servicos/trafego-pago'
+    | '/servicos/trafego-pago-local'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1276,7 +1348,14 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
+    | '/servicos/consultoria'
+    | '/servicos/google-meu-negocio'
+    | '/servicos/marketplace'
+    | '/servicos/parceiros'
+    | '/servicos/presenca-digital'
     | '/servicos/site-express'
+    | '/servicos/trafego-pago'
+    | '/servicos/trafego-pago-local'
     | '/blog'
     | '/cases'
     | '/servicos'
@@ -1394,7 +1473,14 @@ export interface FileRouteTypes {
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
+    | '/servicos/consultoria'
+    | '/servicos/google-meu-negocio'
+    | '/servicos/marketplace'
+    | '/servicos/parceiros'
+    | '/servicos/presenca-digital'
     | '/servicos/site-express'
+    | '/servicos/trafego-pago'
+    | '/servicos/trafego-pago-local'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1863,11 +1949,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicos/trafego-pago-local': {
+      id: '/servicos/trafego-pago-local'
+      path: '/trafego-pago-local'
+      fullPath: '/servicos/trafego-pago-local'
+      preLoaderRoute: typeof ServicosTrafegoPagoLocalRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/trafego-pago': {
+      id: '/servicos/trafego-pago'
+      path: '/trafego-pago'
+      fullPath: '/servicos/trafego-pago'
+      preLoaderRoute: typeof ServicosTrafegoPagoRouteImport
+      parentRoute: typeof ServicosRoute
+    }
     '/servicos/site-express': {
       id: '/servicos/site-express'
       path: '/site-express'
       fullPath: '/servicos/site-express'
       preLoaderRoute: typeof ServicosSiteExpressRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/presenca-digital': {
+      id: '/servicos/presenca-digital'
+      path: '/presenca-digital'
+      fullPath: '/servicos/presenca-digital'
+      preLoaderRoute: typeof ServicosPresencaDigitalRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/parceiros': {
+      id: '/servicos/parceiros'
+      path: '/parceiros'
+      fullPath: '/servicos/parceiros'
+      preLoaderRoute: typeof ServicosParceirosRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/marketplace': {
+      id: '/servicos/marketplace'
+      path: '/marketplace'
+      fullPath: '/servicos/marketplace'
+      preLoaderRoute: typeof ServicosMarketplaceRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/google-meu-negocio': {
+      id: '/servicos/google-meu-negocio'
+      path: '/google-meu-negocio'
+      fullPath: '/servicos/google-meu-negocio'
+      preLoaderRoute: typeof ServicosGoogleMeuNegocioRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/consultoria': {
+      id: '/servicos/consultoria'
+      path: '/consultoria'
+      fullPath: '/servicos/consultoria'
+      preLoaderRoute: typeof ServicosConsultoriaRouteImport
       parentRoute: typeof ServicosRoute
     }
     '/servicos/$slug': {
@@ -2495,13 +2630,27 @@ const EstadosRouteWithChildren =
 
 interface ServicosRouteChildren {
   ServicosSlugRoute: typeof ServicosSlugRoute
+  ServicosConsultoriaRoute: typeof ServicosConsultoriaRoute
+  ServicosGoogleMeuNegocioRoute: typeof ServicosGoogleMeuNegocioRoute
+  ServicosMarketplaceRoute: typeof ServicosMarketplaceRoute
+  ServicosParceirosRoute: typeof ServicosParceirosRoute
+  ServicosPresencaDigitalRoute: typeof ServicosPresencaDigitalRoute
   ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
+  ServicosTrafegoPagoRoute: typeof ServicosTrafegoPagoRoute
+  ServicosTrafegoPagoLocalRoute: typeof ServicosTrafegoPagoLocalRoute
   ServicosIndexRoute: typeof ServicosIndexRoute
 }
 
 const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosSlugRoute: ServicosSlugRoute,
+  ServicosConsultoriaRoute: ServicosConsultoriaRoute,
+  ServicosGoogleMeuNegocioRoute: ServicosGoogleMeuNegocioRoute,
+  ServicosMarketplaceRoute: ServicosMarketplaceRoute,
+  ServicosParceirosRoute: ServicosParceirosRoute,
+  ServicosPresencaDigitalRoute: ServicosPresencaDigitalRoute,
   ServicosSiteExpressRoute: ServicosSiteExpressRoute,
+  ServicosTrafegoPagoRoute: ServicosTrafegoPagoRoute,
+  ServicosTrafegoPagoLocalRoute: ServicosTrafegoPagoLocalRoute,
   ServicosIndexRoute: ServicosIndexRoute,
 }
 

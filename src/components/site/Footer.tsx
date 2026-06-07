@@ -10,7 +10,7 @@ const cols: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "Landing Pages", to: "/servicos/landing-pages" },
       { label: "Site Express em 24h", to: "/servicos/site-express" },
       { label: "Loja Virtual", to: "/servicos/loja-virtual" },
-      { label: "Google Meu Negócio", to: "/google-meu-negocio" },
+      { label: "Google Meu Negócio", to: "/servicos/google-meu-negocio" },
       { label: "SEO", to: "/seo" },
     ],
   },
@@ -28,12 +28,12 @@ const cols: { title: string; links: { label: string; to: string }[] }[] = [
   {
     title: "Especialidades",
     links: [
-      { label: "Presença Digital", to: "/presenca-digital" },
-      { label: "Tráfego Pago", to: "/trafego-pago" },
-      { label: "Tráfego Local", to: "/trafego-pago-local" },
-      { label: "Consultoria", to: "/consultoria" },
-      { label: "Parceiros", to: "/parceiros" },
-      { label: "Marketplace", to: "/marketplace" },
+      { label: "Presença Digital", to: "/servicos/presenca-digital" },
+      { label: "Tráfego Pago", to: "/servicos/trafego-pago" },
+      { label: "Tráfego Local", to: "/servicos/trafego-pago-local" },
+      { label: "Consultoria", to: "/servicos/consultoria" },
+      { label: "Parceiros", to: "/servicos/parceiros" },
+      { label: "Marketplace", to: "/servicos/marketplace" },
     ],
   },
   {

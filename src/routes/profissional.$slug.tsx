@@ -27,7 +27,7 @@ function ProviderPage() {
   useEffect(() => { void fetchProvider({ data: { slug } }).then(setData); }, [fetchProvider, slug]);
 
   if (!data) return <div className="p-12 text-center text-muted-foreground">Carregando…</div>;
-  if (!data.provider) return <div className="p-12 text-center"><h1 className="text-2xl font-display">Profissional não encontrado</h1><Link to="/marketplace" className="text-primary mt-4 inline-block">Voltar ao marketplace</Link></div>;
+  if (!data.provider) return <div className="p-12 text-center"><h1 className="text-2xl font-display">Profissional não encontrado</h1><Link to="/servicos/marketplace" className="text-primary mt-4 inline-block">Voltar ao marketplace</Link></div>;
 
   const p = data.provider;
   const wa = p.whatsapp?.replace(/\D/g, "");
@@ -35,7 +35,7 @@ function ProviderPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-4xl mx-auto px-5 py-10">
-        <Link to="/marketplace" className="text-sm text-muted-foreground hover:text-foreground">← Marketplace</Link>
+        <Link to="/servicos/marketplace" className="text-sm text-muted-foreground hover:text-foreground">← Marketplace</Link>
         <header className="flex flex-col md:flex-row gap-6 mt-6 pb-8 border-b border-border">
           {p.avatar_url ? <img src={p.avatar_url} alt={p.display_name} className="w-32 h-32 rounded-full object-cover" /> : <div className="w-32 h-32 rounded-full bg-muted" />}
           <div className="flex-1">

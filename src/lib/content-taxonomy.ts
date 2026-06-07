@@ -61,7 +61,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Perfil da empresa no Google, Maps e busca local.",
     hubPath: "/blog/google-meu-negocio",
     pillarKeyword: "google meu negócio",
-    relatedServices: ["/google-meu-negocio"],
+    relatedServices: ["/servicos/google-meu-negocio"],
     relatedCities: true,
     subclusters: [
       { slug: "como-criar-perfil", title: "Como criar perfil GMN", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 3 },
@@ -129,7 +129,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Google Ads, Meta Ads e mídia de performance.",
     hubPath: "/blog/trafego-pago",
     pillarKeyword: "tráfego pago",
-    relatedServices: ["/trafego-pago"],
+    relatedServices: ["/servicos/trafego-pago"],
     relatedCities: true,
     subclusters: [
       { slug: "o-que-e-trafego-pago", title: "O que é tráfego pago", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 3 },
@@ -147,7 +147,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Estratégias geo-targetadas para captar clientes próximos.",
     hubPath: "/blog/marketing-local",
     pillarKeyword: "marketing local",
-    relatedServices: ["/seo", "/google-meu-negocio"],
+    relatedServices: ["/seo", "/servicos/google-meu-negocio"],
     relatedCities: true,
     subclusters: [
       { slug: "marketing-para-pequenas-empresas", title: "Marketing para pequenas empresas", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 4 },
@@ -176,7 +176,7 @@ export const CLUSTERS: Cluster[] = [
     description: "CRO, otimização de funil e ciência da conversão.",
     hubPath: "/blog/conversao",
     pillarKeyword: "otimização de conversão",
-    relatedServices: ["/criacao-sites", "/consultoria"],
+    relatedServices: ["/criacao-sites", "/servicos/consultoria"],
     subclusters: [
       { slug: "o-que-e-cro", title: "O que é CRO", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 3 },
       { slug: "ab-testing", title: "Testes A/B", intent: "informational", funnel: "mofu", priority: 2, commercialValue: 3 },
@@ -190,7 +190,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Geração, qualificação e fechamento de leads B2B/B2C.",
     hubPath: "/blog/vendas",
     pillarKeyword: "geração de leads",
-    relatedServices: ["/consultoria", "/trafego-pago"],
+    relatedServices: ["/servicos/consultoria", "/servicos/trafego-pago"],
     subclusters: [
       { slug: "geracao-de-leads", title: "Geração de leads", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 5 },
       { slug: "leads-qualificados", title: "Leads qualificados (MQL/SQL)", intent: "informational", funnel: "mofu", priority: 1, commercialValue: 4 },

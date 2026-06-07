@@ -13,7 +13,7 @@ export type ThankYouContent = {
   subtitle: string;
   whatsappMessage: string;
   planosLabel: string;
-  finalCtaTo: "/solicitar-orcamento" | "/trafego-pago-local" | "/planos" | "/servicos/site-express";
+  finalCtaTo: "/solicitar-orcamento" | "/servicos/trafego-pago-local" | "/planos" | "/servicos/site-express";
   finalCtaLabel: string;
   channel: "contato" | "servicos" | "trafego_pago_local" | "site_express" | "outro";
   stats: Stat[];
@@ -94,7 +94,7 @@ const MAP: Record<string, ThankYouContent> = {
     subtitle: "Vamos configurar suas campanhas no Google e Meta Ads. Em até 1h útil entramos em contato no WhatsApp.",
     whatsappMessage: "Olá! Quero começar com o tráfego pago local da 0WEB a partir de R$499/mês.",
     planosLabel: "Tráfego pago a partir de R$499/mês",
-    finalCtaTo: "/trafego-pago-local",
+    finalCtaTo: "/servicos/trafego-pago-local",
     finalCtaLabel: "Ver detalhes do pacote",
     socialProofHeadline: "Negócios locais vendendo mais com tráfego pago",
     stats: [

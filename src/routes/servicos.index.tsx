@@ -529,12 +529,12 @@ function ServicosHub() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {[
-                { to: "/presenca-digital", title: "Presença Digital", desc: "Estratégia completa para sua marca existir e converter online." },
-                { to: "/trafego-pago", title: "Tráfego Pago", desc: "Campanhas Google Ads e Meta com foco em ROI." },
-                { to: "/trafego-pago-local", title: "Tráfego Pago Local", desc: "Anúncios geolocalizados para negócios físicos." },
-                { to: "/google-meu-negocio", title: "Google Meu Negócio", desc: "Otimização do seu perfil para aparecer nas buscas locais." },
+                { to: "/servicos/presenca-digital", title: "Presença Digital", desc: "Estratégia completa para sua marca existir e converter online." },
+                { to: "/servicos/trafego-pago", title: "Tráfego Pago", desc: "Campanhas Google Ads e Meta com foco em ROI." },
+                { to: "/servicos/trafego-pago-local", title: "Tráfego Pago Local", desc: "Anúncios geolocalizados para negócios físicos." },
+                { to: "/servicos/google-meu-negocio", title: "Google Meu Negócio", desc: "Otimização do seu perfil para aparecer nas buscas locais." },
                 { to: "/seo", title: "SEO", desc: "Posicionamento orgânico no Google de forma sustentável." },
-                { to: "/consultoria", title: "Consultoria", desc: "Diagnóstico estratégico para acelerar resultados digitais." },
+                { to: "/servicos/consultoria", title: "Consultoria", desc: "Diagnóstico estratégico para acelerar resultados digitais." },
               ].map((s) => (
                 <Link
                   key={s.to}
@@ -557,7 +557,7 @@ function ServicosHub() {
         <RelatedLinksGrid
           title="Continue explorando a 0WEB"
           subtitle="Páginas pensadas para responder dúvidas e acelerar sua decisão."
-          only={["/planos", "/faq", "/cases", "/trafego-pago-local", "/servicos/seo", "/contato"]}
+          only={["/planos", "/faq", "/cases", "/servicos/trafego-pago-local", "/servicos/seo", "/contato"]}
         />
 
         <section className="py-16">

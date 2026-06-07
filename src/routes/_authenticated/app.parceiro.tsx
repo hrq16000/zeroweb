@@ -47,7 +47,7 @@ function PartnerDashboard() {
       <div className="p-8 max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold">Você ainda não é um parceiro</h1>
         <p className="mt-3 text-muted-foreground">
-          Cadastre-se publicamente em <Link to="/parceiros" className="text-primary">/parceiros</Link> para começar.
+          Cadastre-se publicamente em <Link to="/servicos/parceiros" className="text-primary">/parceiros</Link> para começar.
         </p>
       </div>
     );

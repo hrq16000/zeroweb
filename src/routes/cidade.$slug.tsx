@@ -26,7 +26,7 @@ export const Route = createFileRoute("/cidade/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             ...breadcrumbLd([
-              { name: "Marketplace", path: "/marketplace" },
+              { name: "Marketplace", path: "/servicos/marketplace" },
               { name: "Cidades", path: "/cidades" },
               { name: params.slug, path: `/cidade/${params.slug}` },
             ]),
@@ -50,13 +50,13 @@ function CityPage() {
     <div className="min-h-screen bg-background">
       <Breadcrumbs
         items={[
-          { name: "Marketplace", path: "/marketplace" },
+          { name: "Marketplace", path: "/servicos/marketplace" },
           { name: "Cidades", path: "/cidades" },
           { name: data.city ?? slug, path: `/cidade/${slug}` },
         ]}
       />
       <div className="max-w-6xl mx-auto px-5 py-10">
-        <Link to="/marketplace" className="text-sm text-muted-foreground">← Marketplace</Link>
+        <Link to="/servicos/marketplace" className="text-sm text-muted-foreground">← Marketplace</Link>
         <h1 className="text-3xl md:text-4xl font-display font-bold mt-4 capitalize">Profissionais em {data.city}</h1>
         <p className="text-muted-foreground mt-2">Empresas e prestadores verificados atendendo na região.</p>
 
