@@ -118,9 +118,16 @@ export const Route = createFileRoute("/servicos/$slug")({
 function ServicePage() {
   const data = Route.useLoaderData();
   const { slug } = Route.useParams();
-  const { open: openFunnel } = useWaFunnel();
   const otherSvcs = relatedServices(slug, 4);
   const hasGeo = GEO_SET.has(slug);
+  const funnels = data.funnels ?? {};
+
+  const priceLabel =
+    data.price == null
+      ? null
+      : data.price === 0
+        ? "Sob consulta"
+        : `R$ ${Number(data.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -135,6 +142,24 @@ function ServicePage() {
               <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
+
+            {(priceLabel || data.deliveryDays) && (
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                {priceLabel && (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                    <BadgeCheck className="w-4 h-4" />
+                    {data.price && data.price > 0 ? `A partir de ${priceLabel}` : priceLabel}
+                    {data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
+                  </span>
+                )}
+                {data.deliveryDays && (
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm">
+                    <Timer className="w-4 h-4" /> {data.deliveryDays}
+                  </span>
+                )}
+              </div>
+            )}
+
             {data.imageUrl && (
               <div
                 className="mt-8 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted"
@@ -152,19 +177,22 @@ function ServicePage() {
                 />
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                trackEvent("cta_click", { label: "service_whatsapp", location: slug });
-                trackConversion("whatsapp_click", { location: `service_${slug}` });
-                openFunnel(`service_${slug}`);
-              }}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"
-            >
-              {data.ctaLabel} <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="mt-8 flex justify-center">
+              <ServiceCTA
+                serviceSlug={slug}
+                funnels={funnels}
+                location="hero"
+                label={data.ctaLabel}
+              />
+            </div>
+            {data.conditions && (
+              <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
+                {data.conditions}
+              </p>
+            )}
           </div>
         </section>
+
 
 
         <section className="py-12 bg-muted/30">
