@@ -1,61 +1,120 @@
-# Plano: blocos A + B + C + D + validação externa
+## Objetivo
+Tornar `/servicos` uma loja virtual real, com 100% do conteúdo (cards, páginas de produto, home, menu, footer, sitemap, funis por CTA) editável em `/app/servicos` — sem precisar tocar em código.
 
-Você escolheu tudo. São ~6–10 dias de trabalho somados; não cabe em um único turno sem perder qualidade ou deixar pontas soltas (especialmente Kanban + versionamento + automações). Vou entregar em **4 rodadas curtas**, cada uma com algo publicável e testado, na ordem em que destravam mais valor com menos risco.
+---
 
-## Rodada 1 — agora (Bloco A + validação externa)
+## Fase 1 — Fonte única no banco (acaba a duplicação)
 
-Foco em fechar a base SEO antes de mexer em produto.
+1. **Migração de schema** — adicionar em `services`:
+   - `price`, `price_period` ("único", "/mês", "/projeto")
+   - `delivery_days` (prazo) e `conditions` (texto curto)
+   - `show_in_menu`, `show_in_footer`, `show_in_home_featured`, `show_in_sitemap` (booleans)
+   - `funnels jsonb` → `{ default, header, hero, card, detail, footer }` (slug do funil por local; `default` é fallback)
+   - `gallery jsonb` → array de `{ image_path, alt }` para galeria de produto
+   - `sections jsonb` → array ordenada `{ kind, title, body, items[] }` (hero, benefícios, processo, FAQ, depoimentos, CTA)
 
-1. **Validador Schema.org no build/CI**
-   - Estende `scripts/validate-schemas.mjs` para falhar quando `/servicos` e `/servicos/{slug}` não passarem em checks de Rich Results (Service, FAQPage, BreadcrumbList, WebPage).
-   - Roda no `prebuild` (já existe `scripts/validate-jsonld.mjs` — sem duplicar; combinar saídas).
-   - `SKIP_SCHEMA_VALIDATION=1` continua disponível para emergência.
+2. **Backfill** dos 10 órfãos hoje em `services-data.ts` (`site-express`, `site-24h`, `consultoria`, `seo`, `marketplace`, `parceiros`, `trafego-pago`, `trafego-pago-local`, `presenca-digital`, `google-meu-negocio`) — copiar conteúdo (problems/benefits/process/faq/keywords) para o banco com `image_path = NULL` (aparecem como "Capa pendente" no painel para você subir depois).
 
-2. **Playwright smoke `/servicos`**
-   - `tests/e2e/servicos-smoke.spec.ts`: percorre `/servicos` + todos os slugs do `services-data.ts`, falha em blank screen (DOM vazio em `<main>`) ou `console.error`.
-   - `tests/e2e/legacy-301.spec.ts`: para cada rota legada (`/trafego-pago`, `/trafego-pago-local`, `/consultoria`, `/google-meu-negocio`, `/marketplace`, `/parceiros`, `/presenca-digital`, `/$service`), valida status 301 e Location final em `/servicos/{slug}`.
-   - Integrado ao `package.json` script `test:e2e:smoke`.
+3. **Apagar** `src/lib/services-data.ts`, o mapa `FALLBACK_COVERS` e os imports de JPG locais — fim do bug de "Capa SEO" quebrada.
 
-3. **Validação externa em paralelo**
-   - Rodo Rich Results Test + Schema.org Validator nas URLs publicadas (`https://0web.com.br/servicos`, e 3 slugs representativos).
-   - Anexo resultado em `seo-reports/HISTORY.md` com erros/warnings categorizados.
+---
 
-4. **Auditoria de SocialProof no hub e leaf**
-   - Confirma carregamento do feed do CRUD em `/servicos` e `/servicos/{slug}` (sem repetição), via teste E2E que lê 6 ciclos consecutivos.
+## Fase 2 — Rotas: mover produtos para `/servicos/$slug`
 
-## Rodada 2 — bloco C (dashboard /app/seo-404s)
+Rotas a **deletar** (redirect 301 para `/servicos/<slug>`):
+- `/seo` → `/servicos/seo`
+- `/criacao-sites` → `/servicos/criacao-de-sites`
+- `/landing-pages` → `/servicos/landing-pages`
+- `/trafego-pago` → `/servicos/trafego-pago`
+- `/trafego-pago-local` → `/servicos/trafego-pago-local`
+- `/google-meu-negocio` → `/servicos/google-meu-negocio`
+- `/consultoria` → `/servicos/consultoria`
+- `/marketplace` → `/servicos/marketplace`
+- `/parceiros` → `/servicos/parceiros`
+- `/presenca-digital` → `/servicos/presenca-digital`
+- `/redes-sociais` → `/servicos/gestao-redes-sociais`
+- `/automacao` + `/ia` → `/servicos/automacao-com-ia`
+- `/desenvolvimento` → `/servicos/desenvolvimento-saas`
+- `/servicos.site-24h.tsx` etc. (rotas literais por slug) → removidas em favor de `/servicos/$slug` dinâmico
 
-- Export CSV de redirects quentes e alertas por período em `app.seo-404s.tsx` (server fn `exportRedirectsCsv` em `route-404.functions.ts`).
-- Script `scripts/audit-internal-links.mjs`: varre `src/**/*.{tsx,ts,md}` e falha quando encontra link interno fora de `/servicos` apontando para rotas legadas (`/trafego-pago`, `/consultoria`, etc.). Roda no `prebuild`.
-- Resultado da auditoria fica disponível no dashboard como aba "Links internos legados".
+Os 301 entram em `redirects` (tabela já existente) e são servidos pelo middleware de redirect.
 
-## Rodada 3 — bloco B (CRM/Funil + Automações)
+---
 
-Dividido em três entregas progressivas dentro da rodada para manter cada commit testável:
+## Fase 3 — Página `/servicos/$slug` (página de produto)
 
-- **B.1 Scoring**: painel em `/app/funis/scoring.tsx` listando regras (tags, pesos, thresholds por funil), com preview executando `compute_lead_score` num lead exemplo antes de salvar. Tabela nova `lead_scoring_rules`.
-- **B.2 Kanban**: `/app/funis/leads.tsx` ganha modo Kanban (`@dnd-kit`) sobre `lead_submissions.pipeline_stage` com bulk-actions (mover N, aplicar tag, atribuir).
-- **B.3 Builder + Versionamento + Automações**:
-  - Sidebar visual em `/app/funis/$id` (estágios, ordem, perguntas múltiplas, `skip_to`, progress por estágio).
-  - Versionamento: tabela `dynamic_form_versions` já existe — adicionar preview + publish/rollback + diff visual.
-  - Automações pós-scoring: novo registro em `lead_pipeline_rules.action` para `whatsapp_send` (UAZAPI), `task_create` e `sheets_append` (via webhook configurável). Disparados no trigger `apply_pipeline_rules_on_insert`.
+Lê 100% do banco via `getServicePublic`:
+- Galeria (capa + miniaturas)
+- Nome, preço, prazo, condições
+- Tabs/seções gerenciáveis (ordem definida no painel)
+- CTAs em 4 posições (header, hero, card lateral, footer) — cada um aciona `funnels.<posição>` ou cai no `funnels.default`
 
-## Rodada 4 — bloco D (Chatbot + LGPD)
+Sem conteúdo duplicado: tudo que estava na home/raiz vive aqui.
 
-- Dashboard `/app/funis/conversoes.tsx`: funil por etapa, fallback rate, top respostas por pergunta, drill-down por lead.
-- Área de testes: simulador embutido que roda funil sem persistir, mostrando branching.
-- Registro de consentimento LGPD: tabela `lgpd_consent_log` (lead_id, version_text, given_at, ip_hash, ua), exibido no detalhe do lead.
+---
 
-## O que entrego nesta resposta
+## Fase 4 — Vitrine `/servicos` (cara de loja)
 
-Apenas a **Rodada 1** completa. Ao final mostro o resultado dos validadores externos e qual deve ser o próximo "Prossiga".
+- Hero curto + busca + filtro por categoria + sort (relevância/preço/novo)
+- Grid 2/3/4 colunas com card: capa 16:9, badge categoria, título, preço, CTA único
+- Skeleton loaders, lazy-load de imagem, `loading="lazy"`, `aspect-ratio` fixo (zero CLS)
+- `scrollRestoration: true` no router + `scrollToTop` em todo Link de navegação (acaba o "clica e fica no nada")
 
-## Detalhes técnicos (Rodada 1)
+---
 
-- `scripts/validate-schemas.mjs`: adicionar regra que percorre `src/routes/servicos.index.tsx` e `src/routes/servicos.$slug.tsx`, valida presença de `@graph` com `Service`+`FAQPage`+`BreadcrumbList`+`WebPage`, e dedup de FAQ no hub.
-- Playwright já está nas devDeps? Se não, `bun add -d @playwright/test` e `playwright.config.ts` mínima (preview URL via env `E2E_BASE_URL`, fallback `http://localhost:8080`).
-- Validação externa via `code--fetch_website` no endpoint do Rich Results Test não funciona (precisa de API key/auth). Vou usar:
-  1. `scripts/run-schema-validator.mjs` que faz POST para `https://validator.schema.org/validate` e parseia retorno.
-  2. Rich Results Test não tem API pública — vou usar o validador estrutural local (já temos) + Schema.org validator oficial + checagem manual via fetch das URLs publicadas, registrando o JSON-LD efetivamente servido.
+## Fase 5 — Home enxuta + Footer + Mapa do Site (do banco)
 
-Se preferir outra ordem das rodadas ou cortar escopo (ex.: pular versionamento em B.3), me diga antes de eu começar.
+- **Home**: hero + 4 destaques (`show_in_home_featured=true`, ordenados por `display_order`) + 1 CTA "Ver todos os serviços". Remover blocos longos duplicados.
+- **Footer**: coluna "Serviços" gerada do banco (`show_in_footer=true`).
+- **Header menu**: dropdown "Serviços" listando `show_in_menu=true` por categoria.
+- **`/mapa-do-site`** pública: lista 100% das páginas por seção (serviços, blog, cases, institucional) — direto do banco.
+
+---
+
+## Fase 6 — Painel `/app/servicos` ampliado (gerência total)
+
+Adicionar ao dialog de edição:
+- Aba **Comercial**: preço, período, prazo, condições
+- Aba **Galeria**: upload múltiplo + reorder
+- Aba **Conteúdo**: editor de seções drag-and-drop (hero, benefícios, processo, FAQ, depoimentos, CTA)
+- Aba **Funis**: 6 dropdowns (default, header, hero, card, detail, footer) com os funis existentes — preview do funil ao lado
+- Aba **Visibilidade**: 4 toggles (menu, footer, home destaque, sitemap)
+- Aba **SEO**: title/description override + og_image
+
+Painel mostra alerta de saúde: serviços sem capa, sem preço, sem funil, sem seções.
+
+---
+
+## Fase 7 — Funis nos botões (100% configurável)
+
+Componente `<ServiceCTA service location="hero|card|header|footer|detail" />`:
+- Resolve `funnel = service.funnels[location] ?? service.funnels.default ?? globalDefaultFunnel`
+- Abre modal embutido com `<FunnelRunner slug={funnel} />` (componente já existe)
+- Toda CTA do site passa a usar esse componente — zero hardcode
+
+---
+
+## Fase 8 — Limpeza final
+
+- Remover `src/lib/services-data.ts`, `FALLBACK_COVERS`, 9 imports de JPG, 7 rotas literais `servicos.<slug>.tsx`
+- Validar com `scripts/validate-route-files.mjs`
+- Rodar smoke test `scripts/smoke-servicos.mjs`
+- Auditoria de links órfãos (script novo) — falha o build se uma rota existe mas não está em menu/footer/sitemap
+
+---
+
+## Ordem de execução proposta
+
+1. Migração de schema + backfill (Fase 1) — **sem quebrar nada visível**
+2. Página `/servicos/$slug` lendo novos campos (Fase 3) + vitrine (Fase 4)
+3. Painel ampliado (Fase 6) + componente CTA com funis (Fase 7) — **você já consegue gerenciar tudo**
+4. Redirects 301 + remoção de rotas duplicadas (Fase 2) + home/footer/mapa (Fase 5)
+5. Limpeza (Fase 8)
+
+Cada fase deploya independente; após a Fase 3 você já tem `/servicos` funcionando como vitrine real e os SEO/Site24h voltam com imagem (placeholder no painel até você subir).
+
+---
+
+## Sobre as imagens dos 10 órfãos
+
+Conforme sua resposta — **gerência 100% pelo painel**. Os 10 entram com `image_path = NULL` e aparecem com placeholder "Subir capa" tanto na vitrine quanto no painel. Você sobe quando quiser pelo `/app/servicos`. Sem IA, sem palpite.

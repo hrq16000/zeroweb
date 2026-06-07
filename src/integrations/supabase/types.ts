@@ -4138,12 +4138,16 @@ export type Database = {
         Row: {
           benefits: Json
           category: string
+          conditions: string | null
           created_at: string
           cta_label: string
           cta_target: string | null
+          delivery_days: string | null
           description: string
           display_order: number
           faq: Json
+          funnels: Json
+          gallery: Json
           h1: string
           id: string
           image_alt: string | null
@@ -4152,12 +4156,19 @@ export type Database = {
           is_featured: boolean
           keywords: Json
           name: string
+          price: number | null
           price_from: number | null
+          price_period: string | null
           problems: Json
           process: Json
+          sections: Json
           seo_description: string | null
           seo_title: string | null
           service_type: string
+          show_in_footer: boolean
+          show_in_home_featured: boolean
+          show_in_menu: boolean
+          show_in_sitemap: boolean
           slug: string
           tagline: string | null
           title: string
@@ -4166,12 +4177,16 @@ export type Database = {
         Insert: {
           benefits?: Json
           category: string
+          conditions?: string | null
           created_at?: string
           cta_label?: string
           cta_target?: string | null
+          delivery_days?: string | null
           description: string
           display_order?: number
           faq?: Json
+          funnels?: Json
+          gallery?: Json
           h1: string
           id?: string
           image_alt?: string | null
@@ -4180,12 +4195,19 @@ export type Database = {
           is_featured?: boolean
           keywords?: Json
           name: string
+          price?: number | null
           price_from?: number | null
+          price_period?: string | null
           problems?: Json
           process?: Json
+          sections?: Json
           seo_description?: string | null
           seo_title?: string | null
           service_type: string
+          show_in_footer?: boolean
+          show_in_home_featured?: boolean
+          show_in_menu?: boolean
+          show_in_sitemap?: boolean
           slug: string
           tagline?: string | null
           title: string
@@ -4194,12 +4216,16 @@ export type Database = {
         Update: {
           benefits?: Json
           category?: string
+          conditions?: string | null
           created_at?: string
           cta_label?: string
           cta_target?: string | null
+          delivery_days?: string | null
           description?: string
           display_order?: number
           faq?: Json
+          funnels?: Json
+          gallery?: Json
           h1?: string
           id?: string
           image_alt?: string | null
@@ -4208,12 +4234,19 @@ export type Database = {
           is_featured?: boolean
           keywords?: Json
           name?: string
+          price?: number | null
           price_from?: number | null
+          price_period?: string | null
           problems?: Json
           process?: Json
+          sections?: Json
           seo_description?: string | null
           seo_title?: string | null
           service_type?: string
+          show_in_footer?: boolean
+          show_in_home_featured?: boolean
+          show_in_menu?: boolean
+          show_in_sitemap?: boolean
           slug?: string
           tagline?: string | null
           title?: string
