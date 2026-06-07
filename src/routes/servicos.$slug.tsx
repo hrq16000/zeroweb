@@ -244,8 +244,9 @@ function ServicePage() {
               <h2 className="text-2xl lg:text-3xl font-bold mb-6">Galeria</h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {data.gallery
-                  .filter((g) => g.url)
-                  .map((g, i) => (
+                  .filter((g: GalleryItem) => g.url)
+                  .map((g: GalleryItem, i: number) => (
+
                     <div key={`${g.path}-${i}`} className="aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
                       <img
                         src={g.url ?? ""}
