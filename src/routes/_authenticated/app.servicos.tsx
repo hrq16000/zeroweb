@@ -47,8 +47,10 @@ import {
   deleteService,
   reorderServices,
   getServiceImageUploadUrl,
+  listFunnelsForServices,
   type ServiceRow,
 } from "@/lib/services-crud.functions";
+
 
 export const Route = createFileRoute("/_authenticated/app/servicos")({
   component: ServicesAdminPage,
@@ -332,6 +334,44 @@ function ServiceEditDialog({
             </Field>
           </div>
 
+          {/* Comercial (vitrine) */}
+          <div className="rounded-lg border border-border p-3 space-y-3">
+            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comercial · aparece no card e na página do produto</Label>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Field label="Preço (R$)">
+                <Input
+                  type="number" min={0} step="0.01"
+                  value={s.price ?? ""}
+                  onChange={(e) => set("price", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="499"
+                />
+              </Field>
+              <Field label="Período">
+                <Input
+                  value={s.price_period ?? ""}
+                  onChange={(e) => set("price_period", e.target.value)}
+                  placeholder="único · /mês · sob consulta"
+                />
+              </Field>
+              <Field label="Prazo de entrega">
+                <Input
+                  value={s.delivery_days ?? ""}
+                  onChange={(e) => set("delivery_days", e.target.value)}
+                  placeholder="24h · 7 dias · 15 dias"
+                />
+              </Field>
+            </div>
+            <Field label="Condições (texto livre, aparece na página)">
+              <Textarea
+                rows={2}
+                value={s.conditions ?? ""}
+                onChange={(e) => set("conditions", e.target.value)}
+                placeholder="Inclui domínio + SSL · pagamento único · suporte por 30 dias"
+              />
+            </Field>
+          </div>
+
+
           <Field label="Tagline curta">
             <Input value={s.tagline ?? ""} onChange={(e) => set("tagline", e.target.value)} />
           </Field>
@@ -408,6 +448,47 @@ function ServiceEditDialog({
             </Field>
           </div>
 
+          {/* Visibilidade — onde o serviço aparece */}
+          <div className="rounded-lg border border-border p-3">
+            <Label className="text-xs uppercase tracking-wider text-muted-foreground">Visibilidade · onde este serviço aparece</Label>
+            <div className="mt-2 grid sm:grid-cols-2 gap-2">
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_menu !== false}
+                  onCheckedChange={(v) => set("show_in_menu", v)}
+                />
+                Menu do site (header)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_footer !== false}
+                  onCheckedChange={(v) => set("show_in_footer", v)}
+                />
+                Rodapé do site
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={!!s.show_in_home_featured}
+                  onCheckedChange={(v) => set("show_in_home_featured", v)}
+                />
+                Destaque na Home (até 4)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Switch
+                  checked={s.show_in_sitemap !== false}
+                  onCheckedChange={(v) => set("show_in_sitemap", v)}
+                />
+                Mapa do site / sitemap.xml
+              </label>
+            </div>
+          </div>
+
+          {/* Funis por local do CTA */}
+          <FunnelsEditor
+            value={(s.funnels ?? {}) as Record<string, string | null | undefined>}
+            onChange={(v) => set("funnels", v as never)}
+          />
+
           {/* Flags */}
           <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-border">
             <label className="flex items-center gap-2 text-sm">
@@ -416,7 +497,7 @@ function ServiceEditDialog({
             </label>
             <label className="flex items-center gap-2 text-sm">
               <Switch checked={!!s.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
-              Destaque
+              Destaque (legado)
             </label>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Ordem</span>
@@ -428,6 +509,7 @@ function ServiceEditDialog({
               />
             </div>
           </div>
+
         </div>
 
         <DialogFooter>
@@ -576,6 +658,10 @@ function serializeForSave(s: EditState) {
     service_type: (s.service_type ?? "").trim(),
     tagline: s.tagline?.trim() || null,
     price_from: s.price_from ?? null,
+    price: (s as { price?: number | null }).price ?? null,
+    price_period: (s as { price_period?: string | null }).price_period?.toString().trim() || null,
+    delivery_days: (s as { delivery_days?: string | null }).delivery_days?.toString().trim() || null,
+    conditions: (s as { conditions?: string | null }).conditions?.toString().trim() || null,
     cta_label: (s.cta_label ?? "Solicitar proposta").trim(),
     cta_target: s.cta_target?.trim() || null,
     image_path: s.image_path ?? null,
@@ -589,6 +675,82 @@ function serializeForSave(s: EditState) {
     keywords: (s.keywords ?? []).map((x) => x.trim()).filter(Boolean),
     is_active: !!s.is_active,
     is_featured: !!s.is_featured,
+    show_in_menu: (s as { show_in_menu?: boolean }).show_in_menu !== false,
+    show_in_footer: (s as { show_in_footer?: boolean }).show_in_footer !== false,
+    show_in_home_featured: !!(s as { show_in_home_featured?: boolean }).show_in_home_featured,
+    show_in_sitemap: (s as { show_in_sitemap?: boolean }).show_in_sitemap !== false,
+    funnels: cleanFunnels((s as { funnels?: Record<string, string | null | undefined> }).funnels),
     display_order: Number(s.display_order ?? 100),
   };
 }
+
+function cleanFunnels(f: Record<string, string | null | undefined> | undefined) {
+  const out: Record<string, string | null> = {};
+  const keys = ["default", "header", "hero", "card", "detail", "footer"] as const;
+  for (const k of keys) {
+    const v = f?.[k];
+    const trimmed = typeof v === "string" ? v.trim() : "";
+    if (trimmed) out[k] = trimmed;
+  }
+  return out;
+}
+
+function FunnelsEditor({
+  value,
+  onChange,
+}: {
+  value: Record<string, string | null | undefined>;
+  onChange: (v: Record<string, string | null>) => void;
+}) {
+  const fnList = useServerFn(listFunnelsForServices);
+  const [options, setOptions] = useState<{ slug: string; name: string }[]>([]);
+  useEffect(() => {
+    fnList()
+      .then((r) => setOptions(r.funnels.map((f) => ({ slug: f.slug, name: f.name }))))
+      .catch(() => setOptions([]));
+  }, [fnList]);
+
+  const locations: { key: "default" | "header" | "hero" | "card" | "detail" | "footer"; label: string; hint: string }[] = [
+    { key: "default", label: "Padrão", hint: "Usado quando o local não tem funil próprio." },
+    { key: "header", label: "Header", hint: "Botão fixo no topo do site (quando exibido)." },
+    { key: "hero", label: "Hero", hint: "CTA principal da página do produto." },
+    { key: "card", label: "Cartão (vitrine)", hint: "Botão do card em /servicos." },
+    { key: "detail", label: "Página do produto", hint: "CTAs no meio da página de detalhes." },
+    { key: "footer", label: "Rodapé", hint: "CTA no rodapé do site." },
+  ];
+
+  const set = (k: string, v: string) => onChange({ ...(value as Record<string, string | null>), [k]: v || null });
+
+  return (
+    <div className="rounded-lg border border-border p-3 space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <Label className="text-xs uppercase tracking-wider text-muted-foreground">Funis por local do CTA</Label>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            Escolha um funil para cada local. Deixe em branco para herdar o "Padrão".
+            Crie funis em <code className="text-[10px]">/painel</code> &rarr; Funis dinâmicos.
+          </p>
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-3">
+        {locations.map((l) => (
+          <div key={l.key}>
+            <Label className="text-xs uppercase tracking-wider text-muted-foreground">{l.label}</Label>
+            <select
+              value={(value?.[l.key] as string) ?? ""}
+              onChange={(e) => set(l.key, e.target.value)}
+              className="mt-1 w-full h-9 px-2 rounded-md border border-input bg-background text-sm"
+            >
+              <option value="">— herdar / sem funil —</option>
+              {options.map((o) => (
+                <option key={o.slug} value={o.slug}>{o.name} ({o.slug})</option>
+              ))}
+            </select>
+            <p className="text-[10px] text-muted-foreground mt-1">{l.hint}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

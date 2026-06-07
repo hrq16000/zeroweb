@@ -23,6 +23,15 @@ async function assertAdmin(userId: string) {
   if (!isAdmin) throw new Error("Forbidden: admin role required");
 }
 
+export type ServiceFunnels = {
+  default?: string | null;
+  header?: string | null;
+  hero?: string | null;
+  card?: string | null;
+  detail?: string | null;
+  footer?: string | null;
+};
+
 export interface ServiceRow {
   id: string;
   slug: string;
@@ -34,6 +43,11 @@ export interface ServiceRow {
   service_type: string;
   tagline: string | null;
   price_from: number | null;
+  // Comercial (novo)
+  price: number | null;
+  price_period: string | null;
+  delivery_days: string | null;
+  conditions: string | null;
   cta_label: string;
   cta_target: string | null;
   image_path: string | null;
@@ -48,9 +62,17 @@ export interface ServiceRow {
   keywords: string[];
   is_active: boolean;
   is_featured: boolean;
+  // Visibilidade (novo)
+  show_in_menu: boolean;
+  show_in_footer: boolean;
+  show_in_home_featured: boolean;
+  show_in_sitemap: boolean;
+  // Funis por local (novo)
+  funnels: ServiceFunnels;
   display_order: number;
   updated_at?: string;
 }
+
 
 function asArr<T>(v: unknown): T[] {
   if (Array.isArray(v)) return v as T[];
@@ -80,6 +102,10 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     service_type: row.service_type as string,
     tagline: (row.tagline as string) ?? null,
     price_from: (row.price_from as number) ?? null,
+    price: (row.price as number) ?? null,
+    price_period: (row.price_period as string) ?? null,
+    delivery_days: (row.delivery_days as string) ?? null,
+    conditions: (row.conditions as string) ?? null,
     cta_label: (row.cta_label as string) ?? "Solicitar proposta",
     cta_target: (row.cta_target as string) ?? null,
     image_path,
@@ -94,10 +120,16 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     keywords: asArr<string>(row.keywords),
     is_active: Boolean(row.is_active),
     is_featured: Boolean(row.is_featured),
+    show_in_menu: row.show_in_menu === undefined ? true : Boolean(row.show_in_menu),
+    show_in_footer: row.show_in_footer === undefined ? true : Boolean(row.show_in_footer),
+    show_in_home_featured: row.show_in_home_featured === undefined ? false : Boolean(row.show_in_home_featured),
+    show_in_sitemap: row.show_in_sitemap === undefined ? true : Boolean(row.show_in_sitemap),
+    funnels: (row.funnels && typeof row.funnels === "object" ? row.funnels : {}) as ServiceFunnels,
     display_order: Number(row.display_order ?? 100),
     updated_at: row.updated_at as string | undefined,
   };
 }
+
 
 // Public — only active.
 export const listServicesPublic = createServerFn({ method: "GET" }).handler(async () => {
@@ -139,6 +171,10 @@ const upsertSchema = z.object({
   service_type: z.string().min(1).max(80),
   tagline: z.string().max(200).nullable().optional(),
   price_from: z.number().min(0).nullable().optional(),
+  price: z.number().min(0).nullable().optional(),
+  price_period: z.string().max(40).nullable().optional(),
+  delivery_days: z.string().max(60).nullable().optional(),
+  conditions: z.string().max(2000).nullable().optional(),
   cta_label: z.string().min(1).max(60),
   cta_target: z.string().max(400).nullable().optional(),
   image_path: z.string().max(400).nullable().optional(),
@@ -152,8 +188,23 @@ const upsertSchema = z.object({
   keywords: z.array(z.string().min(1).max(80)).max(30).default([]),
   is_active: z.boolean().default(true),
   is_featured: z.boolean().default(false),
+  show_in_menu: z.boolean().default(true),
+  show_in_footer: z.boolean().default(true),
+  show_in_home_featured: z.boolean().default(false),
+  show_in_sitemap: z.boolean().default(true),
+  funnels: z
+    .object({
+      default: z.string().max(120).nullable().optional(),
+      header: z.string().max(120).nullable().optional(),
+      hero: z.string().max(120).nullable().optional(),
+      card: z.string().max(120).nullable().optional(),
+      detail: z.string().max(120).nullable().optional(),
+      footer: z.string().max(120).nullable().optional(),
+    })
+    .default({}),
   display_order: z.number().int().min(0).max(10000).default(100),
 });
+
 
 export const upsertService = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -237,3 +288,19 @@ export const getServiceImageUploadUrl = createServerFn({ method: "POST" })
       publicUrl: publicImageUrl(path),
     };
   });
+
+// Lista funis publicados para selecionar nos CTAs do serviço.
+export const listFunnelsForServices = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin((context as { userId: string }).userId);
+    const sb = await getAdmin();
+    const { data, error } = await sb
+      .from("dynamic_forms")
+      .select("slug,name,status")
+      .order("name", { ascending: true });
+    if (error) throw new Error(error.message);
+    type Row = { slug: string; name: string; status: string | null };
+    return { funnels: (data ?? []) as Row[] };
+  });
+
