@@ -49,13 +49,11 @@ export function RouteLoader() {
       >
         <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
         <div className="relative flex flex-col items-center gap-4">
-          <img
-            src={logoAsset.url}
+          <BrandLogo
+            size={72}
             alt=""
-            width={72}
-            height={72}
-            className="animate-logo-pulse drop-shadow-[0_8px_30px_color-mix(in_oklab,var(--primary)_40%,transparent)] object-contain"
-            style={{ width: 72, height: 72, aspectRatio: "1 / 1" }}
+            priority
+            className="animate-logo-pulse drop-shadow-[0_8px_30px_color-mix(in_oklab,var(--primary)_40%,transparent)]"
           />
           <span className="text-xs uppercase tracking-[0.3em] font-bold text-muted-foreground">
             Carregando
