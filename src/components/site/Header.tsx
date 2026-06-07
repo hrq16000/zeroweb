@@ -1,33 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, MessageCircle, LogIn } from "lucide-react";
+import { Menu, X, MessageCircle, LogIn, ChevronDown } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { listServicesNav } from "@/lib/services-nav.functions";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
-const nav: { to: string; label: string }[] = [
+const staticNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
-  { to: "/servicos", label: "Serviços" },
-  { to: "/servicos/automacao-com-ia", label: "IA" },
   { to: "/cases", label: "Cases" },
   { to: "/planos", label: "Planos" },
   { to: "/faq", label: "FAQ" },
   { to: "/blog", label: "Blog" },
-  { to: "/servicos/marketplace", label: "Marketplace" },
   { to: "/contato", label: "Contato" },
 ];
+
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const { open: openFunnel } = useWaFunnel();
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { data: navData } = useQuery({
+    queryKey: ["services-nav"],
+    queryFn: () => listServicesNav(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const menuServices = navData?.menu ?? [];
+
 
   useEffect(() => {
     setOpen(false);
+    setServicesOpen(false);
   }, [pathname]);
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -81,7 +91,68 @@ export function Header() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-          {nav.map((n) => (
+          <Link
+            to="/"
+            className="hover:text-foreground transition-colors"
+            activeProps={{ className: "text-foreground" }}
+            activeOptions={{ exact: true }}
+          >
+            Início
+          </Link>
+
+          {/* Dropdown Serviços (gerenciado pelo painel via show_in_menu) */}
+          <div
+            className="relative"
+            onMouseEnter={() => setServicesOpen(true)}
+            onMouseLeave={() => setServicesOpen(false)}
+          >
+            <Link
+              to="/servicos"
+              className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+              activeProps={{ className: "text-foreground" }}
+              onClick={() => setServicesOpen(false)}
+            >
+              Serviços
+              {menuServices.length > 0 && <ChevronDown className="w-3.5 h-3.5" />}
+            </Link>
+            <AnimatePresence>
+              {servicesOpen && menuServices.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50"
+                >
+                  <div className="w-[28rem] max-h-[70vh] overflow-y-auto rounded-2xl border border-border bg-card shadow-elegant p-3 grid grid-cols-2 gap-1">
+                    {menuServices.map((s) => (
+                      <Link
+                        key={s.slug}
+                        to="/servicos/$slug"
+                        params={{ slug: s.slug }}
+                        onClick={() => setServicesOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-muted text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
+                        <span className="block font-medium">{s.name}</span>
+                        <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {s.category}
+                        </span>
+                      </Link>
+                    ))}
+                    <Link
+                      to="/servicos"
+                      onClick={() => setServicesOpen(false)}
+                      className="col-span-2 mt-1 text-center text-sm font-semibold text-primary hover:underline py-2"
+                    >
+                      Ver catálogo completo →
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {staticNav.slice(1).map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -92,6 +163,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
+
 
         <div className="hidden lg:flex items-center gap-3">
           <button
@@ -139,7 +211,25 @@ export function Header() {
             className="lg:hidden overflow-hidden glass border-t border-border"
           >
             <div className="px-5 py-4 flex flex-col gap-3">
-              {nav.map((n) => (
+              <Link
+                to="/servicos"
+                onClick={() => setOpen(false)}
+                className="py-2 text-foreground/80 hover:text-foreground font-semibold"
+              >
+                Serviços ({menuServices.length || "—"})
+              </Link>
+              {menuServices.slice(0, 8).map((s) => (
+                <Link
+                  key={s.slug}
+                  to="/servicos/$slug"
+                  params={{ slug: s.slug }}
+                  onClick={() => setOpen(false)}
+                  className="pl-4 py-1.5 text-sm text-foreground/70 hover:text-foreground"
+                >
+                  · {s.name}
+                </Link>
+              ))}
+              {staticNav.map((n) => (
                 <Link
                   key={n.to}
                   to={n.to}
@@ -149,6 +239,7 @@ export function Header() {
                   {n.label}
                 </Link>
               ))}
+
               <Link
                 to="/auth"
                 onClick={() => setOpen(false)}
