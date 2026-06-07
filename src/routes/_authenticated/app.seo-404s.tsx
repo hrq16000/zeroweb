@@ -66,13 +66,15 @@ function SeoNotFoundPage() {
   const [coverage, setCoverage] = useState<RowCoverage[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("");
+  const [period, setPeriod] = useState<7 | 30 | 90 | 0>(30);
 
   async function load() {
     setLoading(true);
     try {
+      const periodArg = period === 0 ? {} : { sinceDays: period };
       const [a, b, c] = await Promise.all([
-        listFn({ data: { limit: 200 } }),
-        redirFn(),
+        listFn({ data: { limit: 200, ...periodArg } }),
+        redirFn({ data: periodArg }),
         coverageFn(),
       ]);
       setRows((a.rows ?? []) as Row404[]);
@@ -85,7 +87,8 @@ function SeoNotFoundPage() {
 
   useEffect(() => {
     void load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period]);
 
   const filtered = useMemo(
     () => rows.filter((r) => !filter || r.path.toLowerCase().includes(filter.toLowerCase())),
@@ -97,12 +100,26 @@ function SeoNotFoundPage() {
     [rows],
   );
 
-  const legacyHits = useMemo(
-    () => redirects.filter((r) => (r.hits ?? 0) > 0).slice(0, 10),
+  const hotRedirects = useMemo(
+    () =>
+      [...redirects]
+        .filter((r) => (r.hits ?? 0) > 0)
+        .sort((a, b) => (b.hits ?? 0) - (a.hits ?? 0))
+        .slice(0, 10),
     [redirects],
   );
 
+  // Alerta automático: rota legada que voltou a receber tráfego no período
+  const legacyResurfaced = useMemo(() => {
+    if (!period) return hotRedirects;
+    const since = Date.now() - period * 86400_000;
+    return redirects.filter(
+      (r) => r.last_hit_at && new Date(r.last_hit_at).getTime() >= since && (r.hits ?? 0) > 0,
+    );
+  }, [redirects, period, hotRedirects]);
+
   const total = filtered.reduce((sum, r) => sum + (r.hits ?? 0), 0);
+  const periodLabel = period === 0 ? "todo o período" : `últimos ${period}d`;
 
   return (
     <div className="p-6 space-y-6">
@@ -111,13 +128,26 @@ function SeoNotFoundPage() {
           <h1 className="text-2xl font-bold">SEO · 404s, Redirects e Indexação</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Painel para acompanhar rotas quebradas, redirecionamentos legados e cobertura de
-            indexação do site.
+            indexação do site · {periodLabel}.
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={load} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-          Atualizar
-        </Button>
+        <div className="flex items-center gap-2">
+          <select
+            value={period}
+            onChange={(e) => setPeriod(Number(e.target.value) as 7 | 30 | 90 | 0)}
+            className="border border-input bg-background rounded-md px-3 py-2 text-sm"
+            aria-label="Período"
+          >
+            <option value={7}>Últimos 7 dias</option>
+            <option value={30}>Últimos 30 dias</option>
+            <option value={90}>Últimos 90 dias</option>
+            <option value={0}>Tudo</option>
+          </select>
+          <Button variant="outline" size="sm" onClick={load} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Atualizar
+          </Button>
+        </div>
       </header>
 
       {topAlerts.length > 0 && (
@@ -139,17 +169,36 @@ function SeoNotFoundPage() {
         </div>
       )}
 
-      {legacyHits.length > 0 && (
+      {legacyResurfaced.length > 0 && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-4 w-4 text-amber-600" />
             <h2 className="font-semibold text-sm">
-              Rotas legadas ainda recebendo tráfego ({legacyHits.length})
+              Rotas legadas com tráfego no período ({legacyResurfaced.length})
             </h2>
           </div>
           <ul className="text-sm space-y-1">
-            {legacyHits.map((r) => (
+            {legacyResurfaced.map((r) => (
               <li key={r.from_path} className="flex justify-between gap-4">
+                <code className="text-xs">
+                  {r.from_path} → {r.to_path}
+                </code>
+                <span className="text-muted-foreground text-xs">
+                  {r.hits} hits ·{" "}
+                  {r.last_hit_at ? new Date(r.last_hit_at).toLocaleDateString("pt-BR") : "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {hotRedirects.length > 0 && (
+        <div className="rounded-lg border bg-muted/30 p-4">
+          <h2 className="font-semibold text-sm mb-2">🔥 Redirects mais quentes</h2>
+          <ul className="text-sm space-y-1">
+            {hotRedirects.map((r) => (
+              <li key={`hot-${r.from_path}`} className="flex justify-between gap-4">
                 <code className="text-xs">
                   {r.from_path} → {r.to_path}
                 </code>

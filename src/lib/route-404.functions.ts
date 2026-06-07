@@ -66,15 +66,25 @@ export const logNotFound = createServerFn({ method: "POST" })
 export const listNotFound = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ limit: z.number().int().min(1).max(500).default(100) }).parse(d ?? {}),
+    z
+      .object({
+        limit: z.number().int().min(1).max(500).default(100),
+        sinceDays: z.number().int().min(1).max(365).optional(),
+      })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const { data: rows, error } = await supabase
+    let q = supabase
       .from("route_404_log")
       .select("path,hits,referrer,user_agent,first_seen,last_seen")
       .order("hits", { ascending: false })
       .limit(data.limit);
+    if (data.sinceDays) {
+      const since = new Date(Date.now() - data.sinceDays * 86400_000).toISOString();
+      q = q.gte("last_seen", since);
+    }
+    const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { rows: rows ?? [] };
   });
@@ -82,14 +92,22 @@ export const listNotFound = createServerFn({ method: "POST" })
 /** Lista admin: redirects 301 cadastrados + hits. */
 export const listRedirects = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+  .inputValidator((d: unknown) =>
+    z.object({ sinceDays: z.number().int().min(1).max(365).optional() }).parse(d ?? {}),
+  )
+  .handler(async ({ data, context }) => {
+    let q = context.supabase
       .from("redirects")
       .select("from_path,to_path,status_code,enabled,hits,last_hit_at,notes")
       .order("hits", { ascending: false })
       .limit(500);
+    if (data.sinceDays) {
+      const since = new Date(Date.now() - data.sinceDays * 86400_000).toISOString();
+      q = q.gte("last_hit_at", since);
+    }
+    const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return { rows: data ?? [] };
+    return { rows: rows ?? [] };
   });
 
 /** Lista admin: snapshots de cobertura de indexação (últimos 30 dias). */
