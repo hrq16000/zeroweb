@@ -244,6 +244,7 @@ export function CartDrawer() {
                     void import("@/lib/persistence").then(({ persistEvent }) =>
                       persistEvent("cart_checkout_click", { items: items.length, total }),
                     );
+                    reportStep("checkout_started", items, { paymentChannel: "site", paymentStatus: "pending" });
                     setOpen(false);
                     window.location.href = "/checkout";
                   }}
@@ -267,6 +268,7 @@ export function CartDrawer() {
                       void import("@/lib/persistence").then(({ persistEvent }) =>
                         persistEvent("whatsapp_click", { items: items.length, total, location: "cart_drawer" }),
                       );
+                      reportStep("handoff_whatsapp", items, { paymentChannel: "whatsapp", paymentStatus: "handoff" });
                     }}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
