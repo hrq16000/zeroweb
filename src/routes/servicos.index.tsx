@@ -490,10 +490,7 @@ function ServicosHub() {
                         />
                       </div>
                     ) : (
-                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex flex-col items-center justify-center gap-1">
-                        <Sparkles className="w-8 h-8 text-primary/40" />
-                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">Imagem pendente</span>
-                      </div>
+                      <ServiceImageFallback slug={s.slug} name={s.name} category={s.category} />
                     )}
                     <div className="p-4 flex-1 flex flex-col">
                       <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
