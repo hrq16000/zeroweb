@@ -254,7 +254,8 @@ export function SmartServiceSearch({
           placeholder={livePlaceholder}
           aria-autocomplete="list"
           aria-expanded={showPanel}
-          className="w-full h-14 pl-12 pr-12 rounded-2xl border-2 border-border bg-card text-base shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition placeholder:text-muted-foreground/80"
+          style={{ fontSize: `${fontPx}px` }}
+          className="w-full h-14 pl-12 pr-12 rounded-2xl border-2 border-border bg-card shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary transition placeholder:text-muted-foreground/80"
         />
         {value ? (
           <button
