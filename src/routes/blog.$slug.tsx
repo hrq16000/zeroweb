@@ -267,7 +267,7 @@ function PostPage() {
                 <p className="mt-1 font-semibold text-lg">
                   {post.relatedServiceSlug
                     .replace(/-/g, " ")
-                    .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    .replace(/\b\w/g, (c: string) => c.toUpperCase())}
                 </p>
               </div>
               <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-0.5 transition">
