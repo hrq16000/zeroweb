@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, Download, RefreshCw } from "lucide-react";
 import { listNotFound, listRedirects, listIndexCoverage } from "@/lib/route-404.functions";
+import { auditLegacyLinks } from "@/lib/legacy-audit.functions";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -231,6 +232,7 @@ function SeoNotFoundPage() {
           <TabsTrigger value="404s">404s ({rows.length})</TabsTrigger>
           <TabsTrigger value="redirects">Redirects ({redirects.length})</TabsTrigger>
           <TabsTrigger value="coverage">Indexação ({coverage.length})</TabsTrigger>
+          <TabsTrigger value="legacy">Links legacy</TabsTrigger>
         </TabsList>
 
         <TabsContent value="404s" className="space-y-3">
@@ -394,7 +396,105 @@ function SeoNotFoundPage() {
             </table>
           </div>
         </TabsContent>
+
+        <TabsContent value="legacy" className="space-y-3">
+          <LegacyLinksPanel />
+        </TabsContent>
       </Tabs>
     </div>
   );
 }
+
+function LegacyLinksPanel() {
+  const fn = useServerFn(auditLegacyLinks);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Awaited<ReturnType<typeof fn>> | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const run = async () => {
+    setLoading(true);
+    setErr(null);
+    try {
+      setData(await fn());
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { void run(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h3 className="text-sm font-semibold">Auditoria de links legacy</h3>
+          <p className="text-xs text-muted-foreground">
+            Referências a rotas legacy (<code>/seo</code>, <code>/criacao-sites</code>, etc.) em rotas, conteúdo rico e CTAs.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={run} disabled={loading}>
+            <RefreshCw className={`w-3.5 h-3.5 mr-1 ${loading ? "animate-spin" : ""}`} />
+            {loading ? "Varrendo…" : "Re-varrer"}
+          </Button>
+          {data && data.hits.length > 0 && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                downloadCsv(
+                  `legacy-links-${new Date().toISOString().slice(0, 10)}.csv`,
+                  data.hits as unknown as Array<Record<string, unknown>>,
+                  ["source", "location", "path", "context"],
+                )
+              }
+            >
+              <Download className="w-3.5 h-3.5 mr-1" />
+              CSV
+            </Button>
+          )}
+        </div>
+      </div>
+      {err && <p className="text-sm text-destructive">Erro: {err}</p>}
+      {data && (
+        <>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {data.byPath.map((b) => (
+              <span key={b.path} className="text-xs px-2 py-1 rounded-md bg-muted border border-border">
+                <code>{b.path}</code> · {b.count}
+              </span>
+            ))}
+            {data.byPath.length === 0 && (
+              <span className="text-xs text-emerald-600">Nenhum link legacy encontrado 🎉</span>
+            )}
+          </div>
+          <div className="overflow-auto rounded-lg border border-border">
+            <table className="w-full text-xs">
+              <thead className="bg-muted text-left">
+                <tr>
+                  <th className="px-2 py-1.5">Origem</th>
+                  <th className="px-2 py-1.5">Local</th>
+                  <th className="px-2 py-1.5">Path</th>
+                  <th className="px-2 py-1.5">Contexto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.hits.map((h, i) => (
+                  <tr key={i} className="border-t border-border">
+                    <td className="px-2 py-1.5">{h.source}</td>
+                    <td className="px-2 py-1.5 font-mono">{h.location}</td>
+                    <td className="px-2 py-1.5"><code>{h.path}</code></td>
+                    <td className="px-2 py-1.5 text-muted-foreground">{h.context}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
