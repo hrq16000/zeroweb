@@ -99,7 +99,6 @@ export function getAttribution(): Attribution {
     return {
       page_path: "/",
       page_url: "",
-      referrer: null,
       utm_source: "(direct)",
       utm_medium: "(none)",
       utm_campaign: "(none)",
@@ -108,14 +107,15 @@ export function getAttribution(): Attribution {
   try {
     const url = new URL(window.location.href);
     const get = (k: string) => url.searchParams.get(k) || undefined;
+    const ref = typeof document !== "undefined" ? document.referrer || undefined : undefined;
     const out: Attribution = {
       page_path: url.pathname + url.search,
       page_url: window.location.href,
-      referrer: typeof document !== "undefined" ? document.referrer || null : null,
       utm_source: get("utm_source") || "(direct)",
       utm_medium: get("utm_medium") || "(none)",
       utm_campaign: get("utm_campaign") || "(none)",
     };
+    if (ref) out.referrer = ref;
     const term = get("utm_term");
     const content = get("utm_content");
     if (term) out.utm_term = term;
@@ -125,10 +125,10 @@ export function getAttribution(): Attribution {
     return {
       page_path: "/",
       page_url: "",
-      referrer: null,
       utm_source: "(direct)",
       utm_medium: "(none)",
       utm_campaign: "(none)",
     };
   }
 }
+
