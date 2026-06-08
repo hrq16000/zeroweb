@@ -17,6 +17,7 @@ import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcam
 import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-diagnostico'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapSolutionsDotxmlRouteImport } from './routes/sitemap-solutions[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
@@ -184,6 +185,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapSolutionsDotxmlRoute = SitemapSolutionsDotxmlRouteImport.update({
+  id: '/sitemap-solutions.xml',
+  path: '/sitemap-solutions.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
@@ -906,6 +912,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
@@ -1042,6 +1049,7 @@ export interface FileRoutesByTo {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
@@ -1180,6 +1188,7 @@ export interface FileRoutesById {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
@@ -1319,6 +1328,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
@@ -1455,6 +1465,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
@@ -1592,6 +1603,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
@@ -1731,6 +1743,7 @@ export interface RootRouteChildren {
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
+  SitemapSolutionsDotxmlRoute: typeof SitemapSolutionsDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   SolicitarDiagnosticoRoute: typeof SolicitarDiagnosticoRoute
@@ -1832,6 +1845,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-solutions.xml': {
+      id: '/sitemap-solutions.xml'
+      path: '/sitemap-solutions.xml'
+      fullPath: '/sitemap-solutions.xml'
+      preLoaderRoute: typeof SitemapSolutionsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-services.xml': {
@@ -2983,6 +3003,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
+  SitemapSolutionsDotxmlRoute: SitemapSolutionsDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   SolicitarDiagnosticoRoute: SolicitarDiagnosticoRoute,
