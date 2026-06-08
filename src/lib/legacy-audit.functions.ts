@@ -50,9 +50,11 @@ async function assertAdmin(userId: string) {
 }
 
 async function* walk(dir: string): AsyncGenerator<string> {
-  let entries: Awaited<ReturnType<typeof readdir>>;
+  let entries: { name: string; isDirectory(): boolean }[];
   try {
-    entries = await readdir(dir, { withFileTypes: true });
+    entries = (await readdir(dir, { withFileTypes: true })) as unknown as {
+      name: string; isDirectory(): boolean;
+    }[];
   } catch {
     return;
   }
