@@ -23,12 +23,15 @@ async function ensureAdmin(userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SeoAuditRow = {
   id: string;
   kind: "seo_diff" | "legacy_links";
   ran_at: string;
-  summary: Record<string, unknown>;
-  details: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  summary: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  details: any;
   delta_pct: number | null;
   status: "pending" | "approved" | "rejected";
   approved_by: string | null;
@@ -80,17 +83,16 @@ export const adminApproveSeoAudit = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {
+    const patch = {
       status: data.status,
       notes: data.notes ?? null,
+      approved_by:
+        data.status === "approved" || data.status === "rejected" ? context.userId : null,
+      approved_at:
+        data.status === "approved" || data.status === "rejected"
+          ? new Date().toISOString()
+          : null,
     };
-    if (data.status === "approved" || data.status === "rejected") {
-      patch.approved_by = context.userId;
-      patch.approved_at = new Date().toISOString();
-    } else {
-      patch.approved_by = null;
-      patch.approved_at = null;
-    }
     const { error } = await supabaseAdmin
       .from("seo_audit_history")
       .update(patch)
@@ -103,8 +105,10 @@ export const adminApproveSeoAudit = createServerFn({ method: "POST" })
 // Não exposto como serverFn pública — usa supabaseAdmin direto.
 export async function recordSeoAuditEntry(input: {
   kind: "seo_diff" | "legacy_links";
-  summary: Record<string, unknown>;
-  details: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  summary: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  details: any;
   delta_pct?: number | null;
 }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
