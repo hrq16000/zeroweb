@@ -138,11 +138,11 @@ export const auditLegacyLinks = createServerFn({ method: "GET" })
     // 3) hero_slides.cta_url
     const { data: slides } = await supabaseAdmin
       .from("hero_slides")
-      .select("id, title, cta_url, cta_secondary_url");
+      .select("id, title, cta_href, cta_secondary_href");
     for (const row of (slides ?? []) as Array<{
-      id: string; title: string; cta_url: string | null; cta_secondary_url: string | null;
+      id: string; title: string; cta_href: string | null; cta_secondary_href: string | null;
     }>) {
-      for (const url of [row.cta_url, row.cta_secondary_url]) {
+      for (const url of [row.cta_href, row.cta_secondary_href]) {
         if (!url) continue;
         for (const p of LEGACY_PATHS) {
           if (url.startsWith(p)) {
