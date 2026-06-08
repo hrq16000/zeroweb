@@ -22,6 +22,10 @@ export type IntentLandingProps = {
   faq: { q: string; a: string }[];
   socialProof?: { name: string; role: string; quote: string }[];
   schemaService: { name: string; description: string };
+  /** Se passado, troca o CTA principal pelo FunnelCTAButton dinâmico. */
+  funnelSlug?: string;
+  /** Slug do serviço atual, usado pelo funil dinâmico. */
+  serviceSlug?: string;
 };
 
 export function IntentLanding(p: IntentLandingProps) {
