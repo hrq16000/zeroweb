@@ -7,6 +7,8 @@ type Props = {
   pageType: FunnelPageType;
   serviceSlug?: string;
   serviceFunnels?: Record<string, string>;
+  /** Força um slug específico ignorando a resolução padrão de useFunnel. */
+  funnelSlug?: string;
   label?: string;
   className?: string;
   location?: string;
