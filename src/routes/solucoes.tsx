@@ -156,7 +156,7 @@ function SolucoesPage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
-                        <ServiceImageFallback name={s.name} category={s.category} />
+                        <ServiceImageFallback slug={s.slug} name={s.name} category={s.category} />
                       )}
                     </Link>
                     <div className="p-3 sm:p-4">
