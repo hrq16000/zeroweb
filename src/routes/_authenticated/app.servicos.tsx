@@ -51,6 +51,7 @@ import {
   listFunnelsForServices,
   type ServiceRow,
 } from "@/lib/services-crud.functions";
+import { rebuildServiceSeo } from "@/lib/seo-importer.functions";
 
 
 export const Route = createFileRoute("/_authenticated/app/servicos")({
