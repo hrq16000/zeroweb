@@ -28,6 +28,7 @@ const SocialProof = lazy(() => import("@/components/site/SocialProof").then((m) 
 const ExitIntent = lazy(() => import("@/components/site/ExitIntent").then((m) => ({ default: m.ExitIntent })));
 const ConsentBanner = lazy(() => import("@/components/site/ConsentBanner").then((m) => ({ default: m.ConsentBanner })));
 const ScrollTracker = lazy(() => import("@/components/site/ScrollTracker").then((m) => ({ default: m.ScrollTracker })));
+const HomeChatbot = lazy(() => import("@/components/chatbot/HomeChatbot").then((m) => ({ default: m.HomeChatbot })));
 
 const Skel = ({ h = "h-64" }: { h?: string }) => (
   <div className={`${h} w-full animate-pulse bg-muted/30`} aria-hidden="true" />
@@ -157,6 +158,7 @@ function Index() {
         <SocialProof />
         <ExitIntent />
         <ConsentBanner />
+        <HomeChatbot />
       </Suspense>
     </div>
   );
