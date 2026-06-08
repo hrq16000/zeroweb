@@ -148,8 +148,8 @@ function CheckoutPage() {
 
   async function handlePayNow() {
     if (!session) return handleGoogle();
-    // Stripe está desativado no admin → redireciona o fluxo para WhatsApp,
-    // mantendo o pedido salvo internamente como pendente de pagamento.
+    if (items.length === 0) return;
+    // Stripe desativado no admin → cai para WhatsApp, salvando como pendente.
     if (!settings.stripeEnabled) {
       toast("Pagamento online ainda não está ativo", {
         description: "Vamos finalizar pelo WhatsApp. Seu pedido fica salvo como pendente de pagamento.",
@@ -157,11 +157,47 @@ function CheckoutPage() {
       });
       return handleWhatsApp();
     }
-    toast("Stripe em integração final", {
-      description: "Em instantes liberamos o link de pagamento. Por enquanto, finalize pelo WhatsApp.",
-      action: { label: "WhatsApp", onClick: () => void handleWhatsApp() },
-      duration: 7000,
-    });
+    setSubmitting("stripe");
+    try {
+      const { order } = await createOrder({
+        data: {
+          items: items.map(({ slug, name, category, price, pricePeriod, imageUrl, qty }) => ({
+            slug, name, category, price: price ?? null, pricePeriod: pricePeriod ?? null,
+            imageUrl: imageUrl ?? null, qty,
+          })),
+          notes: notes || undefined,
+          customerName: name || undefined,
+          customerPhone: phone || undefined,
+        },
+      });
+      void import("@/lib/analytics").then(({ trackConversion }) =>
+        trackConversion("checkout_stripe_start", { order_id: order.id, total, items: items.length, location: "checkout" }),
+      );
+      void import("@/lib/persistence").then(({ persistEvent }) =>
+        persistEvent("checkout_stripe_start", { order_id: order.id, total, items: items.length }),
+      );
+      const res = await createStripeCheckoutSession({
+        data: {
+          orderId: order.id,
+          successUrl: `${window.location.origin}/app`,
+          cancelUrl: `${window.location.origin}/checkout`,
+        },
+      });
+      if (!res.enabled || !res.url) {
+        toast("Stripe ainda não está conectado", {
+          description: "Vamos finalizar pelo WhatsApp.",
+          action: { label: "WhatsApp", onClick: () => void handleWhatsApp() },
+          duration: 6000,
+        });
+        return;
+      }
+      clearCart();
+      window.location.href = res.url;
+    } catch (e) {
+      toast.error("Não foi possível iniciar o pagamento", { description: (e as Error).message });
+    } finally {
+      setSubmitting("none");
+    }
   }
 
 
