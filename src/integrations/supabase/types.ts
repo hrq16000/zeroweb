@@ -404,6 +404,54 @@ export type Database = {
         }
         Relationships: []
       }
+      cart_funnel_progress: {
+        Row: {
+          cart_snapshot: Json
+          created_at: string
+          id: string
+          metadata: Json
+          payment_channel: Database["public"]["Enums"]["cart_payment_channel"]
+          payment_ref: string | null
+          payment_status: Database["public"]["Enums"]["cart_payment_status"]
+          session_key: string
+          step: string
+          total_amount: number | null
+          updated_at: string
+          user_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          cart_snapshot?: Json
+          created_at?: string
+          id?: string
+          metadata?: Json
+          payment_channel?: Database["public"]["Enums"]["cart_payment_channel"]
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["cart_payment_status"]
+          session_key: string
+          step?: string
+          total_amount?: number | null
+          updated_at?: string
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          cart_snapshot?: Json
+          created_at?: string
+          id?: string
+          metadata?: Json
+          payment_channel?: Database["public"]["Enums"]["cart_payment_channel"]
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["cart_payment_status"]
+          session_key?: string
+          step?: string
+          total_amount?: number | null
+          updated_at?: string
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       commission_rules: {
         Row: {
           active: boolean
@@ -4101,6 +4149,48 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_audit_history: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          delta_pct: number | null
+          details: Json
+          id: string
+          kind: Database["public"]["Enums"]["seo_audit_kind"]
+          notes: string | null
+          ran_at: string
+          status: Database["public"]["Enums"]["seo_audit_status"]
+          summary: Json
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          delta_pct?: number | null
+          details?: Json
+          id?: string
+          kind: Database["public"]["Enums"]["seo_audit_kind"]
+          notes?: string | null
+          ran_at?: string
+          status?: Database["public"]["Enums"]["seo_audit_status"]
+          summary?: Json
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          delta_pct?: number | null
+          details?: Json
+          id?: string
+          kind?: Database["public"]["Enums"]["seo_audit_kind"]
+          notes?: string | null
+          ran_at?: string
+          status?: Database["public"]["Enums"]["seo_audit_status"]
+          summary?: Json
+        }
+        Relationships: []
+      }
       seo_monitor_runs: {
         Row: {
           alerted: boolean
@@ -5077,6 +5167,14 @@ export type Database = {
         | "parceiro"
         | "admin_integrations"
         | "dev"
+      cart_payment_channel: "site" | "whatsapp" | "unknown"
+      cart_payment_status:
+        | "open"
+        | "pending"
+        | "paid"
+        | "failed"
+        | "cancelled"
+        | "handoff"
       commission_type:
         | "fixo"
         | "percentual"
@@ -5122,6 +5220,8 @@ export type Database = {
         | "partner"
         | "franqueadora"
         | "gestor"
+      seo_audit_kind: "seo_diff" | "legacy_links"
+      seo_audit_status: "pending" | "approved" | "rejected"
       template_kind:
         | "landing_page"
         | "funnel"
@@ -5267,6 +5367,15 @@ export const Constants = {
         "admin_integrations",
         "dev",
       ],
+      cart_payment_channel: ["site", "whatsapp", "unknown"],
+      cart_payment_status: [
+        "open",
+        "pending",
+        "paid",
+        "failed",
+        "cancelled",
+        "handoff",
+      ],
       commission_type: [
         "fixo",
         "percentual",
@@ -5318,6 +5427,8 @@ export const Constants = {
         "franqueadora",
         "gestor",
       ],
+      seo_audit_kind: ["seo_diff", "legacy_links"],
+      seo_audit_status: ["pending", "approved", "rejected"],
       template_kind: [
         "landing_page",
         "funnel",
