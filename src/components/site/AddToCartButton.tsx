@@ -29,7 +29,6 @@ export function AddToCartButton({ item, variant = "outline", size = "lg", classN
             action: {
               label: "Entrar",
               onClick: () => {
-                // Onda 3: lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin })
                 window.location.href = "/auth";
               },
             },
@@ -38,6 +37,13 @@ export function AddToCartButton({ item, variant = "outline", size = "lg", classN
         }
       },
     });
+    // CRO tracking — captura intenção de compra por serviço
+    void import("@/lib/analytics").then(({ trackEvent }) =>
+      trackEvent("add_to_cart", { slug: item.slug, name: item.name, price: item.price ?? 0, category: item.category ?? "" }),
+    );
+    void import("@/lib/persistence").then(({ persistEvent }) =>
+      persistEvent("add_to_cart", { slug: item.slug, name: item.name, price: item.price ?? null }),
+    );
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
     toast.success(`${item.name} adicionado`, {
@@ -46,6 +52,7 @@ export function AddToCartButton({ item, variant = "outline", size = "lg", classN
       duration: 3500,
     });
   }
+
 
   return (
     <Button

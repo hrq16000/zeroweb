@@ -184,6 +184,12 @@ export function CartDrawer() {
                   size="lg"
                   className="w-full"
                   onClick={() => {
+                    void import("@/lib/analytics").then(({ trackConversion }) =>
+                      trackConversion("cart_checkout_click", { items: items.length, total, location: "cart_drawer" }),
+                    );
+                    void import("@/lib/persistence").then(({ persistEvent }) =>
+                      persistEvent("cart_checkout_click", { items: items.length, total }),
+                    );
                     setOpen(false);
                     window.location.href = "/checkout";
                   }}
@@ -196,7 +202,19 @@ export function CartDrawer() {
                   asChild
                   className="w-full"
                 >
-                  <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={buildWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      void import("@/lib/analytics").then(({ trackWhatsAppClick }) =>
+                        trackWhatsAppClick("cart_drawer", { items: items.length, total }),
+                      );
+                      void import("@/lib/persistence").then(({ persistEvent }) =>
+                        persistEvent("whatsapp_click", { items: items.length, total, location: "cart_drawer" }),
+                      );
+                    }}
+                  >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Fechar pelo WhatsApp
                   </a>

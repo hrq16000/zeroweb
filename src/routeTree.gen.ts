@@ -119,6 +119,7 @@ import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppFunisIndexRouteImport } from './routes/_authenticated/app.funis.index'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
+import { Route as ApiPublicHooksStripeRouteImport } from './routes/api/public/hooks/stripe'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
 import { Route as ApiPublicHooksLicenseUsageSnapshotRouteImport } from './routes/api/public/hooks/license-usage-snapshot'
 import { Route as ApiPublicHooksLhciIngestRouteImport } from './routes/api/public/hooks/lhci-ingest'
@@ -709,6 +710,11 @@ const ApiPublicHooksVisitorsCleanupRoute =
     path: '/api/public/hooks/visitors-cleanup',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksStripeRoute = ApiPublicHooksStripeRouteImport.update({
+  id: '/api/public/hooks/stripe',
+  path: '/api/public/hooks/stripe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksSeoMonitorRoute =
   ApiPublicHooksSeoMonitorRouteImport.update({
     id: '/api/public/hooks/seo-monitor',
@@ -948,6 +954,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
+  '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
@@ -1076,6 +1083,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
+  '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
@@ -1208,6 +1216,7 @@ export interface FileRoutesById {
   '/api/public/hooks/lhci-ingest': typeof ApiPublicHooksLhciIngestRoute
   '/api/public/hooks/license-usage-snapshot': typeof ApiPublicHooksLicenseUsageSnapshotRoute
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
+  '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/_authenticated/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/_authenticated/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
@@ -1340,6 +1349,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
+    | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis/'
     | '/app/funis/pipeline/regras'
@@ -1468,6 +1478,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
+    | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis'
     | '/app/funis/pipeline/regras'
@@ -1599,6 +1610,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/lhci-ingest'
     | '/api/public/hooks/license-usage-snapshot'
     | '/api/public/hooks/seo-monitor'
+    | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
     | '/_authenticated/app/funis/'
     | '/_authenticated/app/funis/pipeline/regras'
@@ -1684,6 +1696,7 @@ export interface RootRouteChildren {
   ApiPublicHooksLhciIngestRoute: typeof ApiPublicHooksLhciIngestRoute
   ApiPublicHooksLicenseUsageSnapshotRoute: typeof ApiPublicHooksLicenseUsageSnapshotRoute
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
+  ApiPublicHooksStripeRoute: typeof ApiPublicHooksStripeRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
 }
 
@@ -2459,6 +2472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksVisitorsCleanupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/stripe': {
+      id: '/api/public/hooks/stripe'
+      path: '/api/public/hooks/stripe'
+      fullPath: '/api/public/hooks/stripe'
+      preLoaderRoute: typeof ApiPublicHooksStripeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/seo-monitor': {
       id: '/api/public/hooks/seo-monitor'
       path: '/api/public/hooks/seo-monitor'
@@ -2879,6 +2899,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksLicenseUsageSnapshotRoute:
     ApiPublicHooksLicenseUsageSnapshotRoute,
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
+  ApiPublicHooksStripeRoute: ApiPublicHooksStripeRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
 }
 export const routeTree = rootRouteImport
