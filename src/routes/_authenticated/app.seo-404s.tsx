@@ -171,11 +171,28 @@ function SeoNotFoundPage() {
 
       {legacyResurfaced.length > 0 && (
         <div className="rounded-lg border border-amber-500/40 bg-amber-500/5 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
-            <h2 className="font-semibold text-sm">
-              Rotas legadas com tráfego no período ({legacyResurfaced.length})
-            </h2>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <h2 className="font-semibold text-sm">
+                Rotas legadas com tráfego no período ({legacyResurfaced.length})
+              </h2>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                downloadCsv(
+                  `legacy-redirects-${period || "all"}d-${new Date()
+                    .toISOString()
+                    .slice(0, 10)}.csv`,
+                  legacyResurfaced as unknown as Array<Record<string, unknown>>,
+                  ["from_path", "to_path", "status_code", "hits", "last_hit_at", "notes"],
+                )
+              }
+            >
+              <Download className="h-4 w-4 mr-2" /> CSV legacy
+            </Button>
           </div>
           <ul className="text-sm space-y-1">
             {legacyResurfaced.map((r) => (

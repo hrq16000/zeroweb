@@ -38,6 +38,7 @@ import { Route as PainelCrmRouteImport } from './routes/painel-crm'
 import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ObrigadoRouteImport } from './routes/obrigado'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as IaRouteImport } from './routes/ia'
 import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
@@ -286,6 +287,11 @@ const ObrigadoRoute = ObrigadoRouteImport.update({
 const MarketplaceRoute = MarketplaceRouteImport.update({
   id: '/marketplace',
   path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
+  id: '/mapa-do-site',
+  path: '/mapa-do-site',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingPagesRoute = LandingPagesRouteImport.update({
@@ -851,6 +857,7 @@ export interface FileRoutesByFullPath {
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
@@ -983,6 +990,7 @@ export interface FileRoutesByTo {
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
@@ -1115,6 +1123,7 @@ export interface FileRoutesById {
   '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/ia': typeof IaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
   '/painel': typeof PainelRoute
@@ -1249,6 +1258,7 @@ export interface FileRouteTypes {
     | '/google-meu-negocio'
     | '/ia'
     | '/landing-pages'
+    | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
     | '/painel'
@@ -1381,6 +1391,7 @@ export interface FileRouteTypes {
     | '/google-meu-negocio'
     | '/ia'
     | '/landing-pages'
+    | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
     | '/painel'
@@ -1512,6 +1523,7 @@ export interface FileRouteTypes {
     | '/google-meu-negocio'
     | '/ia'
     | '/landing-pages'
+    | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
     | '/painel'
@@ -1646,6 +1658,7 @@ export interface RootRouteChildren {
   GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   IaRoute: typeof IaRoute
   LandingPagesRoute: typeof LandingPagesRoute
+  MapaDoSiteRoute: typeof MapaDoSiteRoute
   MarketplaceRoute: typeof MarketplaceRoute
   ObrigadoRoute: typeof ObrigadoRoute
   PainelRoute: typeof PainelRoute
@@ -1915,6 +1928,13 @@ declare module '@tanstack/react-router' {
       path: '/marketplace'
       fullPath: '/marketplace'
       preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa-do-site': {
+      id: '/mapa-do-site'
+      path: '/mapa-do-site'
+      fullPath: '/mapa-do-site'
+      preLoaderRoute: typeof MapaDoSiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing-pages': {
@@ -2855,6 +2875,7 @@ const rootRouteChildren: RootRouteChildren = {
   GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   IaRoute: IaRoute,
   LandingPagesRoute: LandingPagesRoute,
+  MapaDoSiteRoute: MapaDoSiteRoute,
   MarketplaceRoute: MarketplaceRoute,
   ObrigadoRoute: ObrigadoRoute,
   PainelRoute: PainelRoute,
@@ -2926,13 +2947,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
