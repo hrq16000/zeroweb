@@ -623,6 +623,7 @@ function ServiceEditDialog({
                   })}
                 </div>
               </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="funis" className="grid gap-4 mt-4">
