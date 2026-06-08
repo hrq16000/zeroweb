@@ -259,7 +259,7 @@ export function HomeChatbot() {
               "fixed bottom-5 left-5 z-[60] inline-flex items-center gap-2.5",
               "rounded-full bg-primary text-primary-foreground font-semibold",
               "pl-4 pr-5 py-3 shadow-xl shadow-primary/30 hover:scale-[1.03] transition",
-              pulse ? "animate-pulse-soft" : "",
+              pulse ? "animate-pulse" : "",
             ].join(" ")}
           >
             <span className="grid place-items-center w-7 h-7 rounded-full bg-primary-foreground/15">
