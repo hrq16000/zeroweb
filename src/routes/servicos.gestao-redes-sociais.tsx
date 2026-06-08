@@ -562,8 +562,16 @@ function GestaoRedesSociaisPage() {
               </div>
             ))}
           </div>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_entregaveis"
+            title="Quer o detalhamento do plano ideal pro seu negócio?"
+            sub="Recebe em até 1h útil uma proposta com o volume exato de posts, reels e relatórios."
+          />
         </div>
       </section>
+
 
       {/* TABELA COMPARATIVA */}
       <section className="py-20 bg-surface">
@@ -625,12 +633,21 @@ function GestaoRedesSociaisPage() {
           <p className="mt-4 text-center text-xs text-muted-foreground">
             Todos os planos: mensal · sem contrato · sem fidelidade · cancela quando quiser
           </p>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_comparativo"
+            title="Na dúvida entre Profissional e Avançado?"
+            sub="Te ajudamos a escolher com base no seu volume real de conteúdo e canais."
+            variant="muted"
+          />
         </div>
       </section>
 
       {/* EXEMPLOS REAIS — calendário, métricas, relatório */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
+
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Como é na prática</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
@@ -787,8 +804,16 @@ function GestaoRedesSociaisPage() {
               ))}
             </div>
           </div>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_exemplos"
+            title="Quer receber esse mesmo relatório com a sua marca?"
+            sub="Peça um diagnóstico gratuito — analisamos seu Instagram e mostramos o que mudar."
+          />
         </div>
       </section>
+
 
       {/* SIMULADOR */}
       <section className="py-20 bg-gradient-to-br from-muted/30 to-fuchsia-50/30 dark:from-slate-900/40 dark:to-fuchsia-950/20">
