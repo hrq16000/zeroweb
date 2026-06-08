@@ -48,6 +48,7 @@ const empresaCol: FooterCol = {
   title: "Empresa",
   links: [
     { label: "Todos os Serviços", to: "/servicos" },
+    { label: "Soluções", to: "/solucoes" },
     { label: "Cases", to: "/cases" },
     { label: "Planos", to: "/planos" },
     { label: "Sobre", to: "/sobre" },
