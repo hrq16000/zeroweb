@@ -69,6 +69,9 @@ export interface ServiceRow {
   keywords: string[];
   is_active: boolean;
   is_featured: boolean;
+  // Flag manual: prevalece sobre o fallback automático (preço NULL/0).
+  // null = automático conforme preço.
+  is_solution: boolean | null;
   // Visibilidade (novo)
   show_in_menu: boolean;
   show_in_footer: boolean;
