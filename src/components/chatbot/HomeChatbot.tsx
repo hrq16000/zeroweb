@@ -418,11 +418,22 @@ export function HomeChatbot() {
                     type="tel"
                     placeholder="WhatsApp (com DDD)"
                     value={phoneInput}
-                    onChange={(e) => setPhoneInput(maskPhone(e.target.value))}
+                    onChange={(e) => {
+                      setPhoneInput(maskPhone(e.target.value));
+                      if (phoneError) setPhoneError(null);
+                    }}
                     inputMode="tel"
                     autoComplete="tel"
-                    className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className={[
+                      "w-full rounded-xl border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2",
+                      phoneError
+                        ? "border-red-400 focus:ring-red-300"
+                        : "border-border focus:ring-primary/30",
+                    ].join(" ")}
                   />
+                  {phoneError && (
+                    <p className="text-[11px] text-red-500 -mt-1">{phoneError}</p>
+                  )}
                   <button
                     type="button"
                     onClick={handleSubmitLead}
