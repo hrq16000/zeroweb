@@ -319,14 +319,13 @@ function GMBPage() {
                   Conectamos sua empresa a mais clientes todos os dias.
                 </p>
               </div>
-              <a
-                href={wa("Quero falar com a 0WEB sobre o Google Meu Negócio.", "gmb_cta_final")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "gmb_cta_final", label: "Saiba Mais" })}
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="google-meu-negocio"
+                label="Solicitar orçamento gratuito"
+                location="gmb_cta_final"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-7 py-4 hover:scale-[1.02] transition"
-              >
-                Saiba Mais no WhatsApp <ArrowRight className="w-4 h-4" />
-              </a>
+              />
             </div>
           </div>
 

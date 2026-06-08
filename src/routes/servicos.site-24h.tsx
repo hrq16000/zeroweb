@@ -461,6 +461,23 @@ function Site24hPage() {
         </div>
       </section>
 
+      <section className="py-16 bg-muted/20">
+        <div className="mx-auto max-w-3xl px-5 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold">Pronto para começar?</h2>
+          <p className="mt-2 text-muted-foreground">
+            Responda 7 perguntas rápidas e receba um orçamento personalizado.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="site-24h"
+              label="Solicitar orçamento gratuito"
+              location="site24h_cta_final"
+            />
+          </div>
+        </div>
+      </section>
+
       <Footer />
       <WhatsAppFloat />
     </div>
