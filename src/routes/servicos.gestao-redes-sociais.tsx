@@ -562,8 +562,16 @@ function GestaoRedesSociaisPage() {
               </div>
             ))}
           </div>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_entregaveis"
+            title="Quer o detalhamento do plano ideal pro seu negócio?"
+            sub="Recebe em até 1h útil uma proposta com o volume exato de posts, reels e relatórios."
+          />
         </div>
       </section>
+
 
       {/* TABELA COMPARATIVA */}
       <section className="py-20 bg-surface">
@@ -625,12 +633,21 @@ function GestaoRedesSociaisPage() {
           <p className="mt-4 text-center text-xs text-muted-foreground">
             Todos os planos: mensal · sem contrato · sem fidelidade · cancela quando quiser
           </p>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_comparativo"
+            title="Na dúvida entre Profissional e Avançado?"
+            sub="Te ajudamos a escolher com base no seu volume real de conteúdo e canais."
+            variant="muted"
+          />
         </div>
       </section>
 
       {/* EXEMPLOS REAIS — calendário, métricas, relatório */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
+
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Como é na prática</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
@@ -787,8 +804,16 @@ function GestaoRedesSociaisPage() {
               ))}
             </div>
           </div>
+
+          <CtaStrip
+            wa={wa}
+            location="redes_pos_exemplos"
+            title="Quer receber esse mesmo relatório com a sua marca?"
+            sub="Peça um diagnóstico gratuito — analisamos seu Instagram e mostramos o que mudar."
+          />
         </div>
       </section>
+
 
       {/* SIMULADOR */}
       <section className="py-20 bg-gradient-to-br from-muted/30 to-fuchsia-50/30 dark:from-slate-900/40 dark:to-fuchsia-950/20">
@@ -879,3 +904,65 @@ function GestaoRedesSociaisPage() {
     </div>
   );
 }
+
+function CtaStrip({
+  wa,
+  location,
+  title,
+  sub,
+  variant = "default",
+}: {
+  wa: (msg: string, content: string) => string;
+  location: string;
+  title: string;
+  sub: string;
+  variant?: "default" | "muted";
+}) {
+  const waHref = wa(`${title} — Vim pela página de Gestão de Redes Sociais.`, location);
+  return (
+    <div
+      className={[
+        "mt-10 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between",
+        variant === "muted"
+          ? "bg-card border border-border shadow-elegant"
+          : "bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white shadow-2xl",
+      ].join(" ")}
+    >
+      <div className="max-w-xl">
+        <h3 className="text-xl lg:text-2xl font-bold">{title}</h3>
+        <p className={["mt-1.5 text-sm", variant === "muted" ? "text-muted-foreground" : "text-white/85"].join(" ")}>
+          {sub}
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-3 shrink-0">
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackWhatsAppClick(location, { label: "Falar no WhatsApp" })}
+          className={[
+            "inline-flex items-center gap-2 rounded-full font-bold px-5 py-3 transition hover:scale-[1.02]",
+            variant === "muted"
+              ? "bg-fuchsia-500 text-white"
+              : "bg-white text-fuchsia-700",
+          ].join(" ")}
+        >
+          <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+        </a>
+        <Link
+          to="/solicitar-diagnostico"
+          onClick={() => trackEvent("cta_click", { label: "Solicitar diagnóstico", location })}
+          className={[
+            "inline-flex items-center gap-2 rounded-full font-semibold px-5 py-3 transition hover:scale-[1.02] border",
+            variant === "muted"
+              ? "border-border bg-background hover:bg-muted"
+              : "border-white/40 text-white hover:bg-white/10",
+          ].join(" ")}
+        >
+          Solicitar diagnóstico <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+

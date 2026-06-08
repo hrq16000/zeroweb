@@ -18,7 +18,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
-import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
+import { FunnelModalWrapper } from "@/components/funnel/FunnelModalWrapper";
+import { trackEvent } from "@/lib/analytics";
 import { absUrl, ORG_REF, breadcrumbLd } from "@/lib/seo";
 
 const SLUG = "site-24h";
@@ -158,12 +159,20 @@ const TESTIMONIALS = [
 
 function Site24hPage() {
   const [open, setOpen] = useState(false);
-  const cta = () => setOpen(true);
+  const cta = () => {
+    trackEvent("cta_click", { label: "funnel_cta", location: "site24h_legacy_cta", funnel: "funnel-service" });
+    setOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <SiteExpressFunnelModal open={open} onOpenChange={setOpen} source="site_24h" />
+      <FunnelModalWrapper
+        open={open}
+        onClose={() => setOpen(false)}
+        funnelSlug="funnel-service"
+        serviceSlug="site-24h"
+      />
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border/60">
