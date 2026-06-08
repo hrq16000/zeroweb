@@ -77,15 +77,26 @@ export function IntentLanding(p: IntentLandingProps) {
               transition={{ delay: 0.15 }}
               className="mt-8 flex flex-wrap items-center justify-center gap-3"
             >
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleCta("hero_wa")}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
-              >
-                {p.ctaLabel} <ArrowRight className="w-4 h-4" />
-              </a>
+              {p.funnelSlug ? (
+                <FunnelCTAButton
+                  pageType="service"
+                  serviceSlug={p.serviceSlug}
+                  funnelSlug={p.funnelSlug}
+                  label={p.ctaLabel}
+                  location={`lp_${p.intent}_hero`}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
+                />
+              ) : (
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleCta("hero_wa")}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
+                >
+                  {p.ctaLabel} <ArrowRight className="w-4 h-4" />
+                </a>
+              )}
               <Link
                 to="/contato"
                 onClick={() => handleCta("hero_form")}
