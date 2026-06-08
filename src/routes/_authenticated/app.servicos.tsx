@@ -51,6 +51,7 @@ import {
   listFunnelsForServices,
   type ServiceRow,
 } from "@/lib/services-crud.functions";
+import { rebuildServiceSeo } from "@/lib/seo-importer.functions";
 
 
 export const Route = createFileRoute("/_authenticated/app/servicos")({
@@ -64,6 +65,8 @@ function ServicesAdminPage() {
   const fnUpsert = useServerFn(upsertService);
   const fnDelete = useServerFn(deleteService);
   const fnReorder = useServerFn(reorderServices);
+  const fnRebuildSeo = useServerFn(rebuildServiceSeo);
+  const [rebuilding, setRebuilding] = useState(false);
 
   const [rows, setRows] = useState<ServiceRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,9 +138,35 @@ function ServicesAdminPage() {
             Gerencie os cards exibidos em <code className="text-xs">/servicos</code>. Arraste para reordenar.
           </p>
         </div>
-        <Button onClick={() => setEditing({ _isNew: true, is_active: true, display_order: (rows.length + 1) * 10 })}>
-          <Plus className="w-4 h-4 mr-1" /> Novo serviço
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            disabled={rebuilding}
+            onClick={async () => {
+              if (rebuilding) return;
+              const force = window.confirm(
+                "Reconstruir SEO de TODOS os serviços?\n\nOK = reescrever tudo (force).\nCancelar = preencher só os vazios.",
+              );
+              setRebuilding(true);
+              try {
+                const r = await fnRebuildSeo({ data: { force } });
+                toast.success(
+                  `SEO recalculado · ${r.updated} atualizados · ${r.skipped} já com conteúdo`,
+                );
+                void reload();
+              } catch (e) {
+                toast.error("Falha ao reconstruir SEO", { description: (e as Error).message });
+              } finally {
+                setRebuilding(false);
+              }
+            }}
+          >
+            {rebuilding ? "Reconstruindo…" : "Reconstruir SEO (rich_html + JSON-LD)"}
+          </Button>
+          <Button onClick={() => setEditing({ _isNew: true, is_active: true, display_order: (rows.length + 1) * 10 })}>
+            <Plus className="w-4 h-4 mr-1" /> Novo serviço
+          </Button>
+        </div>
       </div>
 
       {/* Auditoria: serviços ativos sem imagem real */}
