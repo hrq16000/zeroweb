@@ -215,6 +215,8 @@ const fileFallback = (s: ServiceData): PublicServiceFull => ({
   showInFooter: true,
   showInHomeFeatured: true,
   showInSitemap: true,
+  isSolutionFlag: null,
+  isSolution: false,
   funnels: {},
   gallery: [],
   sections: [],
