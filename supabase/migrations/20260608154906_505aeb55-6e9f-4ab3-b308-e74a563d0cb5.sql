@@ -1,0 +1,1 @@
+ALTER TABLE public.editorial_calendar ADD COLUMN IF NOT EXISTS related_service_slug TEXT;

@@ -1555,6 +1555,7 @@ export type Database = {
           notes: string | null
           priority: number
           published_url: string | null
+          related_service_slug: string | null
           scheduled_for: string | null
           slug: string
           status: string
@@ -1572,6 +1573,7 @@ export type Database = {
           notes?: string | null
           priority?: number
           published_url?: string | null
+          related_service_slug?: string | null
           scheduled_for?: string | null
           slug: string
           status?: string
@@ -1589,6 +1591,7 @@ export type Database = {
           notes?: string | null
           priority?: number
           published_url?: string | null
+          related_service_slug?: string | null
           scheduled_for?: string | null
           slug?: string
           status?: string
