@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { listCatalog, listCategories } from "@/lib/marketplace.functions";
 import { ORIGIN } from "@/lib/seo";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 export const Route = createFileRoute("/servicos/marketplace")({
   head: () => ({
@@ -126,6 +127,23 @@ function MarketplacePage() {
             </div>
           </>
         )}
+      </section>
+
+      <section className="py-16">
+        <div className="mx-auto max-w-3xl px-5 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold">Não achou o profissional certo?</h2>
+          <p className="mt-2 text-muted-foreground">
+            Conte para nós o que você precisa e indicamos o parceiro ideal.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="marketplace"
+              label="Quero uma indicação"
+              location="marketplace_cta_final"
+            />
+          </div>
+        </div>
       </section>
     </div>
   );

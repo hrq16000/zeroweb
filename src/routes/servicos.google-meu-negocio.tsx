@@ -7,6 +7,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import cover from "@/assets/google-meu-negocio-capa.png.asset.json";

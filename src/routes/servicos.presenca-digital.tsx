@@ -9,6 +9,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
