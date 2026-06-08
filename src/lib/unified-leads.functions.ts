@@ -26,7 +26,7 @@ export const listUnifiedLeads = createServerFn({ method: "GET" })
     const allowed = (roles ?? []).some((r) => r.role === "admin" || r.role === "super_admin");
     if (!allowed) throw new Error("forbidden");
 
-    let q = supabaseAdmin
+    let q = (supabaseAdmin as any)
       .from("vw_unified_leads")
       .select("*")
       .order("updated_at", { ascending: false })
@@ -34,6 +34,7 @@ export const listUnifiedLeads = createServerFn({ method: "GET" })
     if (data.origem && data.origem !== "all") q = q.eq("origem", data.origem);
     if (data.etapa && data.etapa !== "all") q = q.eq("etapa_atual", data.etapa);
     const { data: rows, error } = await q;
+
     if (error) throw error;
 
     const list = (rows ?? []) as UnifiedLead[];
