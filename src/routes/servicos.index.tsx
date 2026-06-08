@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer, Shuffle } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -434,14 +434,6 @@ function ServicosHub() {
                     <option value="relevance">Relevância</option>
                   </select>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => startTransition(() => { setShuffleSeed(Math.floor(Math.random() * 1e6) + 1); setSort("shop"); setPage(1); })}
-                  title="Embaralhar vitrine"
-                  className="h-10 px-3 rounded-full border border-border bg-card text-sm inline-flex items-center gap-2 hover:border-primary"
-                >
-                  <Shuffle className="w-3.5 h-3.5" /> Embaralhar
-                </button>
               </div>
             </div>
 
