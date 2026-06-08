@@ -204,12 +204,14 @@ function SiteExpressPage() {
               transition={{ delay: 0.15 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
-              <button
-                onClick={openFunnel}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold uppercase tracking-wide px-7 py-4 text-sm shadow-lg shadow-orange-600/30 transition"
-              >
-                Quero meu site em 24h <ArrowRight className="w-5 h-5" />
-              </button>
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="site-express"
+                funnelSlug="funnel-site-express"
+                label="Quero meu site em 24h"
+                className={ctaClass}
+                location="site_express_hero"
+              />
               <div className="text-sm text-gray-500 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-orange-600" />
                 Do pagamento ao site no ar em menos de 24h
