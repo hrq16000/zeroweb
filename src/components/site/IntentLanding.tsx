@@ -6,6 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { useEffect } from "react";
 
 export type IntentLandingProps = {
