@@ -528,10 +528,11 @@ function ServicosHub() {
                     ) : (
                       <ServiceImageFallback slug={s.slug} name={s.name} category={s.category} />
                     )}
-                    <div className="p-4 flex-1 flex flex-col">
-                      <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
-                      <h4 className="mt-1 font-semibold text-base leading-snug">{s.name}</h4>
-                      <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{s.description}</p>
+                    <div className="p-3 sm:p-4 flex-1 flex flex-col">
+                      <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold line-clamp-1">{s.category}</p>
+                      <h4 className="mt-1 font-semibold text-sm sm:text-base leading-snug line-clamp-2">{s.name}</h4>
+                      <p className="mt-1 text-xs sm:text-sm text-muted-foreground line-clamp-2 hidden sm:block">{s.description}</p>
+
                       <div className="mt-auto pt-3">
                         {(s.price != null || s.deliveryDays) && (
                           <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
