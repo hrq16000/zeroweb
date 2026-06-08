@@ -52,6 +52,8 @@ import {
   type ServiceRow,
 } from "@/lib/services-crud.functions";
 import { rebuildServiceSeo } from "@/lib/seo-importer.functions";
+import { checkServiceForPublish, type CheckStatus } from "@/lib/services-publish-check";
+import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 
 
 export const Route = createFileRoute("/_authenticated/app/servicos")({
@@ -306,7 +308,15 @@ function ServiceEditDialog({
     }
   };
 
+  const report = useMemo(() => checkServiceForPublish(s as Partial<ServiceRow>), [s]);
+
   const submit = async () => {
+    if (s.is_active && !report.canPublish) {
+      toast.error("Não dá pra publicar ainda", {
+        description: `${report.blocking} item(ns) bloqueando — revise o checklist abaixo.`,
+      });
+      return;
+    }
     setSaving(true);
     try { await onSave(s); } finally { setSaving(false); }
   };
