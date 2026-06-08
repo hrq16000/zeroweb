@@ -618,6 +618,68 @@ function ServiceEditDialog({
   );
 }
 
+function PublishChecklist({
+  report,
+  isActive,
+  onToggleActive,
+}: {
+  report: ReturnType<typeof checkServiceForPublish>;
+  isActive: boolean;
+  onToggleActive: (v: boolean) => void;
+}) {
+  const icon = (s: CheckStatus) =>
+    s === "ok" ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> :
+    s === "warn" ? <AlertTriangle className="w-4 h-4 text-amber-500" /> :
+    <XCircle className="w-4 h-4 text-destructive" />;
+  const barColor = report.canPublish ? "bg-emerald-500" : report.blocking > 2 ? "bg-destructive" : "bg-amber-500";
+  return (
+    <div className="mt-4 rounded-lg border border-border bg-muted/30 p-4">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div>
+          <h4 className="text-sm font-semibold">Checklist de publicação</h4>
+          <p className="text-xs text-muted-foreground">
+            {report.canPublish
+              ? "Tudo pronto. Pode publicar."
+              : `${report.blocking} bloqueio(s) — corrija para liberar a publicação.`}
+          </p>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold tabular-nums">{report.score}%</div>
+          <div className="h-1.5 w-24 rounded-full bg-border overflow-hidden mt-1">
+            <div className={`h-full ${barColor} transition-all`} style={{ width: `${report.score}%` }} />
+          </div>
+        </div>
+      </div>
+      <ul className="space-y-1.5">
+        {report.items.map((it) => (
+          <li key={it.id} className="flex items-start gap-2 text-sm">
+            {icon(it.status)}
+            <div className="flex-1 min-w-0">
+              <span className="font-medium">{it.label}</span>
+              <span className="text-muted-foreground"> — {it.message}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <label className="mt-4 flex items-center gap-2 text-sm border-t border-border pt-3">
+        <Switch
+          checked={isActive}
+          disabled={!report.canPublish && !isActive}
+          onCheckedChange={onToggleActive}
+        />
+        <span className="font-medium">
+          {isActive ? "Publicado (visível em /servicos)" : "Rascunho"}
+        </span>
+        {!report.canPublish && !isActive && (
+          <span className="text-xs text-muted-foreground ml-auto">Resolva os bloqueios para ativar</span>
+        )}
+      </label>
+    </div>
+  );
+}
+
+
+
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
