@@ -1,31 +1,36 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, expect, test } from "bun:test";
 import { BrandLogo } from "./BrandLogo";
 
 /**
- * Regressão visual: garante que o logo sempre carrega com aspect-ratio 1:1
- * e object-contain, em qualquer breakpoint (desktop/tablet/mobile). Se
- * algum estilo for removido por engano, o teste quebra.
+ * Regressão visual leve: garante que o BrandLogo sempre é renderizado
+ * com aspect-ratio 1:1, object-contain e dimensões coerentes em
+ * mobile/tablet/desktop. Se alguém remover por engano essas regras,
+ * o teste quebra antes do logo aparecer achatado em produção.
  */
-describe("BrandLogo aspect-ratio", () => {
-  const sizes = [
+describe("BrandLogo aspect-ratio invariantes", () => {
+  const breakpoints = [
     { label: "mobile", size: 24 },
     { label: "tablet", size: 32 },
     { label: "desktop", size: 72 },
   ];
 
-  for (const { label, size } of sizes) {
-    it(`mantém proporção e object-contain em ${label} (${size}px)`, () => {
-      const { container } = render(<BrandLogo size={size} priority />);
-      const img = container.querySelector("img")!;
-      expect(img).toBeTruthy();
-      expect(img.getAttribute("width")).toBe(String(size));
-      expect(img.getAttribute("height")).toBe(String(size));
-      expect(img.className).toContain("object-contain");
-      expect(img.className).toContain("shrink-0");
-      expect(img.style.aspectRatio.replace(/\s/g, "")).toBe("1/1");
-      expect(img.style.width).toBe(`${size}px`);
-      expect(img.style.height).toBe(`${size}px`);
+  for (const { label, size } of breakpoints) {
+    test(`${label} (${size}px) mantém object-contain + aspect-ratio 1/1`, () => {
+      const el = BrandLogo({ size, priority: true }) as {
+        props: {
+          width: number;
+          height: number;
+          className: string;
+          style: { width: number; height: number; aspectRatio: string };
+        };
+      };
+      expect(el.props.width).toBe(size);
+      expect(el.props.height).toBe(size);
+      expect(el.props.className).toContain("object-contain");
+      expect(el.props.className).toContain("shrink-0");
+      expect(el.props.style.width).toBe(size);
+      expect(el.props.style.height).toBe(size);
+      expect(el.props.style.aspectRatio.replace(/\s/g, "")).toBe("1/1");
     });
   }
 });
