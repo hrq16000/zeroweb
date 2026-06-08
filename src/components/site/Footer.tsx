@@ -173,7 +173,7 @@ export function Footer() {
           <div className="flex flex-wrap gap-5">
             <Link to="/politica-privacidade" className="hover:text-accent">Política de Privacidade</Link>
             <Link to="/termos" className="hover:text-accent">Termos de Uso</Link>
-            <a href="/sitemap.xml" className="hover:text-accent">Mapa do Site</a>
+            <a href="/mapa-do-site" className="hover:text-accent">Mapa do Site</a>
           </div>
         </div>
       </div>
