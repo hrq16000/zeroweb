@@ -156,6 +156,14 @@ function MarketplacePage() {
           </div>
         </div>
       </section>
+
+      <RelatedLinksGrid
+        title="Serviços relacionados"
+        subtitle="Soluções da 0WEB para empresas e prestadores."
+        only={["/servicos/criacao-de-sites", "/servicos/presenca-digital", "/servicos/gestao-redes-sociais"]}
+      />
+
+      <Footer />
     </div>
   );
 }
