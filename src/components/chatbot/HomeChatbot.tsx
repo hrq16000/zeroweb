@@ -201,8 +201,21 @@ export function HomeChatbot() {
     if (submitting) return;
     const nome = nameInput.trim();
     const whatsapp = phoneInput.trim();
-    if (nome.length < 2 || whatsapp.replace(/\D/g, "").length < 10) return;
+
+    const phoneCheck = validateWhatsApp(whatsapp);
+    if (nome.length < 2 || !phoneCheck.valid) {
+      if (!phoneCheck.valid) {
+        setPhoneError(phoneCheck.error ?? "Número inválido.");
+        trackEvent("chatbot_input_error", { field: "whatsapp", reason: phoneCheck.error ?? "invalid" });
+      }
+      if (nome.length < 2) {
+        trackEvent("chatbot_input_error", { field: "name", reason: "too_short" });
+      }
+      return;
+    }
+    setPhoneError(null);
     setSubmitting(true);
+    trackEvent("chatbot_submit_attempt", { step: 3 });
 
     pushUser(`${nome} · ${whatsapp}`);
 
@@ -232,13 +245,14 @@ export function HomeChatbot() {
       console.error("[HomeChatbot] insert exception", err);
     }
 
-    trackEvent("chatbot_lead", {
+    trackConversion("chatbot_lead", {
       servico: state.servico?.slug,
       perfil: state.perfil,
       prazo: state.prazo,
     });
 
     setState((s) => ({ ...s, nome, whatsapp, step: 4 }));
+    trackEvent("chatbot_step", { step: 4 });
     pushBot(
       `Ótimo, ${nome}! 🎉 Vou te direcionar para ${state.servico?.name ?? "o serviço"} agora. Você também pode receber um retorno pelo WhatsApp em breve.`,
     );
