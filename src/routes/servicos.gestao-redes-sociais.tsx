@@ -904,3 +904,65 @@ function GestaoRedesSociaisPage() {
     </div>
   );
 }
+
+function CtaStrip({
+  wa,
+  location,
+  title,
+  sub,
+  variant = "default",
+}: {
+  wa: (msg: string, content: string) => string;
+  location: string;
+  title: string;
+  sub: string;
+  variant?: "default" | "muted";
+}) {
+  const waHref = wa(`${title} — Vim pela página de Gestão de Redes Sociais.`, location);
+  return (
+    <div
+      className={[
+        "mt-10 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between",
+        variant === "muted"
+          ? "bg-card border border-border shadow-elegant"
+          : "bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white shadow-2xl",
+      ].join(" ")}
+    >
+      <div className="max-w-xl">
+        <h3 className="text-xl lg:text-2xl font-bold">{title}</h3>
+        <p className={["mt-1.5 text-sm", variant === "muted" ? "text-muted-foreground" : "text-white/85"].join(" ")}>
+          {sub}
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-3 shrink-0">
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackWhatsAppClick(location, { label: "Falar no WhatsApp" })}
+          className={[
+            "inline-flex items-center gap-2 rounded-full font-bold px-5 py-3 transition hover:scale-[1.02]",
+            variant === "muted"
+              ? "bg-fuchsia-500 text-white"
+              : "bg-white text-fuchsia-700",
+          ].join(" ")}
+        >
+          <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+        </a>
+        <Link
+          to="/solicitar-diagnostico"
+          onClick={() => trackEvent("cta_click", { label: "Solicitar diagnóstico", location })}
+          className={[
+            "inline-flex items-center gap-2 rounded-full font-semibold px-5 py-3 transition hover:scale-[1.02] border",
+            variant === "muted"
+              ? "border-border bg-background hover:bg-muted"
+              : "border-white/40 text-white hover:bg-white/10",
+          ].join(" ")}
+        >
+          Solicitar diagnóstico <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
