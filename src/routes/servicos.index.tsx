@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer, Shuffle } from "lucide-react";
 import { Header } from "@/components/site/Header";
@@ -30,7 +30,21 @@ const SERVICE_LIST = Object.values(SERVICES);
 const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
 const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
 
+type ServicosSearch = { q?: string; cat?: string; sort?: SortKey; page?: number };
+
 export const Route = createFileRoute("/servicos/")({
+  validateSearch: (raw: Record<string, unknown>): ServicosSearch => {
+    const q = typeof raw.q === "string" ? raw.q.slice(0, 100) : undefined;
+    const cat = typeof raw.cat === "string" ? raw.cat.slice(0, 60) : undefined;
+    const sortRaw = typeof raw.sort === "string" ? raw.sort : undefined;
+    const sort: SortKey | undefined =
+      sortRaw === "shop" || sortRaw === "recent" || sortRaw === "alpha" || sortRaw === "relevance"
+        ? sortRaw
+        : undefined;
+    const pageNum = Number(raw.page);
+    const page = Number.isFinite(pageNum) && pageNum >= 1 ? Math.floor(pageNum) : undefined;
+    return { q, cat, sort, page };
+  },
   head: () => {
     const url = absUrl("/servicos");
     const title = "Serviços da 0WEB · Sites, SEO, IA, Marketing Digital e Sistemas";
@@ -208,14 +222,35 @@ function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
 
 function ServicosHub() {
   const { services, slides } = Route.useLoaderData();
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/servicos" });
   type Svc = (typeof services)[number];
-  const [q, setQ] = useState("");
-  const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<SortKey>("shop");
-  const [activeCat, setActiveCat] = useState<string>("all");
+  const [q, setQ] = useState(search.q ?? "");
+  const [page, setPage] = useState(search.page ?? 1);
+  const [sort, setSort] = useState<SortKey>(search.sort ?? "shop");
+  const [activeCat, setActiveCat] = useState<string>(search.cat ?? "all");
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [isPending, startTransition] = useTransition();
   const PER_PAGE = 12;
+
+  // Sincroniza estado → URL (debounced para a busca) para preservar SEO,
+  // navegação back/forward e compartilhamento de links filtrados.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      navigate({
+        search: () => ({
+          q: q.trim() ? q.trim() : undefined,
+          cat: activeCat !== "all" ? activeCat : undefined,
+          sort: sort !== "shop" ? sort : undefined,
+          page: page > 1 ? page : undefined,
+        }),
+        replace: true,
+        resetScroll: false,
+      });
+    }, 250);
+    return () => clearTimeout(t);
+  }, [q, activeCat, sort, page, navigate]);
+
 
   // Atribui um seed após hidratar para não causar mismatch entre SSR e cliente.
   useEffect(() => {
@@ -536,7 +571,7 @@ function ServicosHub() {
               >
                 <button
                   type="button"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  onClick={() => setPage((p: number) => Math.max(1, p - 1))}
                   disabled={safePage === 1}
                   className="px-3 h-9 rounded-full border border-border text-sm disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -559,7 +594,7 @@ function ServicosHub() {
                 ))}
                 <button
                   type="button"
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() => setPage((p: number) => Math.min(totalPages, p + 1))}
                   disabled={safePage === totalPages}
                   className="px-3 h-9 rounded-full border border-border text-sm disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
