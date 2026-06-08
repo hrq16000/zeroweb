@@ -140,7 +140,9 @@ export function SmartServiceSearch({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const typing = useTypingPlaceholder(!focused && !value, SEO_INTENTS);
-  const livePlaceholder = placeholder ?? `${typing}${!focused ? "▍" : ""}`;
+  // O typing animado sempre vence quando o campo está vazio e sem foco.
+  // `placeholder` (estático) vira apenas fallback para leitores de tela.
+  const livePlaceholder = !focused && !value ? `${typing}▍` : placeholder ?? "";
 
   const suggestions = useMemo(() => {
     const term = value.trim();
