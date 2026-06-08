@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Bell, FolderKanban, FileText, LifeBuoy, BarChart3, User, LogOut, Shield, Home, Globe,
   Layers, Target, BookOpen, Eye, KeyRound, Network, LayoutTemplate, Fingerprint, Plug,
-  Search, Briefcase, Menu, Activity, ShoppingCart, CreditCard, Users, ImageOff,
+  Search, Briefcase, Menu, Activity, ShoppingCart, CreditCard, Users, ImageOff, Inbox,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
