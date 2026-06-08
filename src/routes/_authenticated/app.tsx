@@ -30,6 +30,8 @@ const CLIENT_NAV: NavItem[] = [
 const ADMIN_NAV: NavItem[] = [
   { to: "/app/admin", icon: Shield, label: "Painel admin" },
   { to: "/app/usuarios", icon: Users, label: "Usuários" },
+  { to: "/app/leads", icon: Inbox, label: "Leads unificados" },
+
   { to: "/app/servicos", icon: Briefcase, label: "Serviços" },
   { to: "/app/servicos-imagens", icon: ImageOff, label: "Imagens órfãs" },
   { to: "/app/pedidos", icon: ShoppingCart, label: "Pedidos" },
