@@ -873,6 +873,10 @@ function serializeForSave(s: EditState) {
     keywords: (s.keywords ?? []).map((x) => x.trim()).filter(Boolean),
     is_active: !!s.is_active,
     is_featured: !!s.is_featured,
+    is_solution:
+      (s as { is_solution?: boolean | null }).is_solution === undefined
+        ? null
+        : ((s as { is_solution?: boolean | null }).is_solution ?? null),
     show_in_menu: (s as { show_in_menu?: boolean }).show_in_menu !== false,
     show_in_footer: (s as { show_in_footer?: boolean }).show_in_footer !== false,
     show_in_home_featured: !!(s as { show_in_home_featured?: boolean }).show_in_home_featured,
