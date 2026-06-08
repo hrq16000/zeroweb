@@ -107,6 +107,8 @@ export type PublicServiceFull = ServiceData & {
   showInFooter: boolean;
   showInHomeFeatured: boolean;
   showInSitemap: boolean;
+  isSolution: boolean;
+  isSolutionFlag: boolean | null;
   funnels: Record<string, string>;
   gallery: GalleryItem[];
   sections: { title: string; body: string }[];
