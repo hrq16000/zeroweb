@@ -175,7 +175,11 @@ export function HomeChatbot() {
     );
   }
 
-  async function handleSubmitLead() {
+  /**
+   * Validate Step 3 inputs and move to the review/preview card. The actual
+   * insert only happens after the user confirms in the review screen.
+   */
+  function handleReviewLead() {
     if (submitting) return;
     const nome = nameInput.trim();
     const whatsapp = phoneInput.trim();
@@ -207,8 +211,23 @@ export function HomeChatbot() {
     }
     if (hasError) return;
 
+    setState((s) => ({ ...s, reviewing: true, nome, whatsapp }));
+    trackEvent("chatbot_step", { step: 3, substep: "review", ...getAttribution() });
+  }
+
+  function handleEditFromReview() {
+    setState((s) => ({ ...s, reviewing: false }));
+    trackEvent("chatbot_review_edit", { ...getAttribution() });
+  }
+
+  async function handleSubmitLead() {
+    if (submitting) return;
+    const nome = (state.nome ?? nameInput).trim();
+    const whatsapp = (state.whatsapp ?? phoneInput).trim();
+    setSubmitError(null);
     setSubmitting(true);
     trackEvent("chatbot_submit_attempt", { step: 3, ...getAttribution() });
+
 
     const attribution = getAttribution();
     const payload = {
