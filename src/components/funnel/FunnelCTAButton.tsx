@@ -24,16 +24,19 @@ export function FunnelCTAButton({
   pageType,
   serviceSlug,
   serviceFunnels,
+  funnelSlug: funnelSlugOverride,
   label = "Solicitar orçamento gratuito",
   className,
   location,
   showArrow = true,
 }: Props) {
-  const { isOpen, openFunnel, closeFunnel, funnelSlug } = useFunnel(
-    pageType,
-    serviceSlug,
-    serviceFunnels,
-  );
+  const {
+    isOpen,
+    openFunnel,
+    closeFunnel,
+    funnelSlug: resolvedFunnelSlug,
+  } = useFunnel(pageType, serviceSlug, serviceFunnels);
+  const funnelSlug = funnelSlugOverride ?? resolvedFunnelSlug;
 
   return (
     <>
