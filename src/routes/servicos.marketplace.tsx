@@ -48,7 +48,14 @@ function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border">
+      <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: "Marketplace", path: "/servicos/marketplace" },
+        ]}
+      />
+      <header className="border-b border-border mt-6">
         <div className="max-w-6xl mx-auto px-5 py-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">Marketplace 0WEB</h1>
           <p className="text-muted-foreground max-w-2xl">
