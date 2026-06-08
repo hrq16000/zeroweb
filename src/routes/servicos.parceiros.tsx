@@ -171,6 +171,11 @@ function ParceirosPage() {
           </form>
         </div>
       </main>
+      <RelatedLinksGrid
+        title="Serviços relacionados"
+        subtitle="Como nossos parceiros geram resultado para empresas."
+        only={["/servicos/consultoria", "/servicos/presenca-digital", "/servicos/landing-pages"]}
+      />
       <Footer />
     </div>
   );
