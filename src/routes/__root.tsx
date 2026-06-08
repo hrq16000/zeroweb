@@ -17,6 +17,7 @@ import { AnalyticsBootstrap } from "../components/site/AnalyticsBootstrap";
 import { ErrorState } from "../components/site/ErrorState";
 import { RouteLoader } from "../components/site/RouteLoader";
 import { CartDrawer } from "../components/site/CartDrawer";
+import { AuthErrorGuard } from "../components/site/AuthErrorGuard";
 import { Toaster } from "../components/ui/sonner";
 import { logNotFound } from "../lib/route-404.functions";
 
@@ -208,6 +209,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <WaFunnelProvider>
         <AnalyticsBootstrap />
+        <AuthErrorGuard />
         <ScrollToTop />
         <RouteLoader />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
