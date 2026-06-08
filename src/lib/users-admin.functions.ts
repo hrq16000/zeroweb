@@ -94,9 +94,10 @@ export const adminListUsers = createServerFn({ method: "POST" })
 
     if (data.role !== "all") {
       if (data.role === "customer") {
-        mut = mut.filter((u) => u.roles.length === 0);
+        mut = mut.filter((u: { roles: string[] }) => u.roles.length === 0);
       } else {
-        mut = mut.filter((u) => u.roles.includes(data.role));
+        const want = data.role;
+        mut = mut.filter((u: { roles: string[] }) => u.roles.includes(want));
       }
     }
 
@@ -110,21 +111,33 @@ export const adminGetUserDetail = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await assertAdmin(context.supabase, context.userId);
     const sb = await admin();
-    const [profileR, rolesR, ordersR, leadsR, funnelR, visitsR, identitiesR] = await Promise.all([
-      sb.from("profiles").select("*").eq("id", data.userId).maybeSingle(),
+    const profileR = await sb.from("profiles").select("*").eq("id", data.userId).maybeSingle();
+    const profileEmail: string = profileR?.data?.email ?? "";
+    const leadsQuery = profileEmail
+      ? sb
+          .from("lead_submissions")
+          .select(
+            "id, name, email, phone, source, offer_slug, status, score, score_label, temperature, pipeline_stage, answers_json, created_at, last_interaction",
+          )
+          .or(`user_id.eq.${data.userId},email.eq.${profileEmail}`)
+      : sb
+          .from("lead_submissions")
+          .select(
+            "id, name, email, phone, source, offer_slug, status, score, score_label, temperature, pipeline_stage, answers_json, created_at, last_interaction",
+          )
+          .eq("user_id", data.userId);
+
+    const [rolesR, ordersR, leadsR, funnelR, visitsR, identitiesR] = await Promise.all([
       sb.from("user_roles").select("role").eq("user_id", data.userId),
       sb
         .from("orders")
-        .select("id, items, total, status, payment_method, customer_name, customer_email, customer_phone, notes, metadata, created_at, paid_at, whatsapp_handoff_at")
+        .select(
+          "id, items, total, status, payment_method, customer_name, customer_email, customer_phone, notes, metadata, created_at, paid_at, whatsapp_handoff_at",
+        )
         .eq("user_id", data.userId)
         .order("created_at", { ascending: false })
         .limit(100),
-      sb
-        .from("lead_submissions")
-        .select("id, name, email, phone, source, offer_slug, status, score, score_label, temperature, pipeline_stage, answers_json, created_at, last_interaction")
-        .or(`user_id.eq.${data.userId},email.eq.${(profileR as { data?: { email?: string } }).data?.email ?? ""}`)
-        .order("created_at", { ascending: false })
-        .limit(50),
+      leadsQuery.order("created_at", { ascending: false }).limit(50),
       sb
         .from("wa_funnel_sessions")
         .select("id, funnel_slug, current_step, answers, status, created_at, updated_at")
