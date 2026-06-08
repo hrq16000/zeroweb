@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, ArrowRight } from "lucide-react";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackConversion } from "@/lib/analytics";
 
 // FK to dynamic_forms.id (slug 'home-chatbot')
 const FORM_ID = "c2fc4661-b5c1-4bd9-92b0-fc6b803fe686";
@@ -31,12 +31,42 @@ type State = {
 
 const initialState: State = { step: 0, messages: [] };
 
+const BR_DDD = new Set([
+  11,12,13,14,15,16,17,18,19,
+  21,22,24,27,28,
+  31,32,33,34,35,37,38,
+  41,42,43,44,45,46,47,48,49,
+  51,53,54,55,
+  61,62,63,64,65,66,67,68,69,
+  71,73,74,75,77,79,
+  81,82,83,84,85,86,87,88,89,
+  91,92,93,94,95,96,97,98,99,
+]);
+
 function maskPhone(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d;
   if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+function validateWhatsApp(raw: string): { valid: boolean; error?: string } {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length < 10) {
+    return { valid: false, error: "Informe o DDD + número completo." };
+  }
+  if (digits.length > 11) {
+    return { valid: false, error: "Número com muitos dígitos." };
+  }
+  const ddd = parseInt(digits.slice(0, 2), 10);
+  if (!BR_DDD.has(ddd)) {
+    return { valid: false, error: "DDD inválido. Verifique o código de área." };
+  }
+  if (digits.length === 11 && digits[2] !== "9") {
+    return { valid: false, error: "Celular deve começar com 9 após o DDD." };
+  }
+  return { valid: true };
 }
 
 function uid() {
@@ -72,6 +102,7 @@ export function HomeChatbot() {
   const [typing, setTyping] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [phoneInput, setPhoneInput] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -170,8 +201,21 @@ export function HomeChatbot() {
     if (submitting) return;
     const nome = nameInput.trim();
     const whatsapp = phoneInput.trim();
-    if (nome.length < 2 || whatsapp.replace(/\D/g, "").length < 10) return;
+
+    const phoneCheck = validateWhatsApp(whatsapp);
+    if (nome.length < 2 || !phoneCheck.valid) {
+      if (!phoneCheck.valid) {
+        setPhoneError(phoneCheck.error ?? "Número inválido.");
+        trackEvent("chatbot_input_error", { field: "whatsapp", reason: phoneCheck.error ?? "invalid" });
+      }
+      if (nome.length < 2) {
+        trackEvent("chatbot_input_error", { field: "name", reason: "too_short" });
+      }
+      return;
+    }
+    setPhoneError(null);
     setSubmitting(true);
+    trackEvent("chatbot_submit_attempt", { step: 3 });
 
     pushUser(`${nome} · ${whatsapp}`);
 
@@ -201,13 +245,14 @@ export function HomeChatbot() {
       console.error("[HomeChatbot] insert exception", err);
     }
 
-    trackEvent("chatbot_lead", {
+    trackConversion("chatbot_lead", {
       servico: state.servico?.slug,
       perfil: state.perfil,
       prazo: state.prazo,
     });
 
     setState((s) => ({ ...s, nome, whatsapp, step: 4 }));
+    trackEvent("chatbot_step", { step: 4 });
     pushBot(
       `Ótimo, ${nome}! 🎉 Vou te direcionar para ${state.servico?.name ?? "o serviço"} agora. Você também pode receber um retorno pelo WhatsApp em breve.`,
     );
@@ -373,11 +418,22 @@ export function HomeChatbot() {
                     type="tel"
                     placeholder="WhatsApp (com DDD)"
                     value={phoneInput}
-                    onChange={(e) => setPhoneInput(maskPhone(e.target.value))}
+                    onChange={(e) => {
+                      setPhoneInput(maskPhone(e.target.value));
+                      if (phoneError) setPhoneError(null);
+                    }}
                     inputMode="tel"
                     autoComplete="tel"
-                    className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className={[
+                      "w-full rounded-xl border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2",
+                      phoneError
+                        ? "border-red-400 focus:ring-red-300"
+                        : "border-border focus:ring-primary/30",
+                    ].join(" ")}
                   />
+                  {phoneError && (
+                    <p className="text-[11px] text-red-500 -mt-1">{phoneError}</p>
+                  )}
                   <button
                     type="button"
                     onClick={handleSubmitLead}
