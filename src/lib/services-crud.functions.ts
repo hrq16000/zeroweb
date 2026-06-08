@@ -138,6 +138,10 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     keywords: asArr<string>(row.keywords),
     is_active: Boolean(row.is_active),
     is_featured: Boolean(row.is_featured),
+    is_solution:
+      row.is_solution === null || row.is_solution === undefined
+        ? null
+        : Boolean(row.is_solution),
     show_in_menu: row.show_in_menu === undefined ? true : Boolean(row.show_in_menu),
     show_in_footer: row.show_in_footer === undefined ? true : Boolean(row.show_in_footer),
     show_in_home_featured: row.show_in_home_featured === undefined ? false : Boolean(row.show_in_home_featured),
