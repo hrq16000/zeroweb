@@ -86,7 +86,7 @@ export function saveState(s: State): void {
 export type Attribution = {
   page_path: string;
   page_url: string;
-  referrer: string | null;
+  referrer?: string;
   utm_source: string;
   utm_medium: string;
   utm_campaign: string;
