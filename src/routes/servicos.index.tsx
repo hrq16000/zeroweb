@@ -12,6 +12,7 @@ import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { ShopHero } from "@/components/site/ShopHero";
+import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 
 import {
   Accordion,
