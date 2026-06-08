@@ -563,13 +563,70 @@ export function HomeChatbot() {
                   <button
                     type="submit"
                     disabled={!canSubmit}
-                    aria-label="Enviar contato"
+                    aria-label="Revisar dados antes de enviar"
                     className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                   >
-                    {submitting ? "Enviando…" : "Enviar"}
-                    {!submitting && <Send className="w-4 h-4" aria-hidden="true" />}
+                    Revisar e enviar
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </form>
+              )}
+
+              {!typing && state.step === 3 && state.reviewing && (
+                <div
+                  className="space-y-3 pt-1"
+                  role="group"
+                  aria-label="Revise seus dados antes de enviar"
+                >
+                  <div className="rounded-xl border border-border bg-card/80 p-3 text-sm space-y-1.5">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
+                      Confira seus dados
+                    </p>
+                    <p>
+                      <span className="text-muted-foreground">Nome: </span>
+                      <span className="font-medium">{nameInput.trim()}</span>
+                    </p>
+                    <p>
+                      <span className="text-muted-foreground">WhatsApp: </span>
+                      <span className="font-medium">{phoneInput.trim()}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      ✓ Você aceitou a Política de Privacidade.
+                    </p>
+                  </div>
+
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-2.5 py-2 text-[11px] text-red-700"
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden="true" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSubmitLead}
+                      disabled={submitting}
+                      aria-label="Confirmar e enviar contato"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      {submitting ? "Enviando…" : "Confirmar e enviar"}
+                      {!submitting && <Send className="w-4 h-4" aria-hidden="true" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleEditFromReview}
+                      disabled={submitting}
+                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-transparent text-foreground font-medium py-2 text-xs hover:bg-muted/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                      Editar dados
+                    </button>
+                  </div>
+                </div>
               )}
 
               {!typing && state.step === 4 && (
