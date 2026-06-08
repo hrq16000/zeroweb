@@ -101,7 +101,13 @@ function ParceirosPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32 lg:pt-40 pb-24">
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: "Programa de Parceiros", path: "/servicos/parceiros" },
+        ]}
+      />
+      <main className="pt-6 lg:pt-8 pb-24">
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">Programa de parceiros</p>
           <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05]">
