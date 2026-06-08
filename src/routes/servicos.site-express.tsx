@@ -152,8 +152,12 @@ export const Route = createFileRoute("/servicos/site-express")({
 });
 
 function SiteExpressPage() {
-  const [open, setOpen] = useState(false);
-  const openFunnel = () => setOpen(true);
+  const ctaClass =
+    "w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold uppercase tracking-wide px-7 py-4 text-sm shadow-lg shadow-orange-600/30 transition";
+  const ctaWhiteClass =
+    "mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg transition";
+  const ctaFinalClass =
+    "mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-8 py-4 text-sm shadow-xl transition";
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
