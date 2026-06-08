@@ -144,3 +144,31 @@ html { scroll-behavior: smooth; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Rich SEO HTML — gerado por seo-importer e renderizado em /servicos/$slug */
+.prose .rich-intro .lead { font-size: 1.125rem; font-weight: 500; }
+.prose .grid-list { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+@media (min-width: 640px) { .prose .grid-list { grid-template-columns: 1fr 1fr; } }
+.prose .grid-list > li {
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  background: hsl(var(--card));
+  margin: 0;
+}
+.prose .process-list { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
+@media (min-width: 768px) { .prose .process-list { grid-template-columns: 1fr 1fr; } }
+.prose .process-list > li {
+  padding: 1rem 1.25rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  background: hsl(var(--card));
+}
+.prose .process-list .step-num {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: hsl(var(--primary));
+}
+.prose .process-list h3 { margin: 0.25rem 0 0.25rem; font-size: 1.05rem; }
+.prose .rich-guarantee { padding: 1rem 1.25rem; border-left: 4px solid hsl(var(--primary)); background: color-mix(in oklab, hsl(var(--primary)) 6%, transparent); border-radius: 0.5rem; }
+.prose .rich-conditions { font-size: 0.85rem; color: hsl(var(--muted-foreground)); }
