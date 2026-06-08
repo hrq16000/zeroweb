@@ -72,7 +72,6 @@ function ServicosLayout() {
               services={searchable}
               value={q}
               onChange={setQ}
-              placeholder="Buscar serviço, categoria..."
               trending={["Site Express", "Tráfego pago", "SEO", "Google Meu Negócio"]}
             />
           </div>

@@ -140,7 +140,9 @@ export function SmartServiceSearch({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const typing = useTypingPlaceholder(!focused && !value, SEO_INTENTS);
-  const livePlaceholder = placeholder ?? `${typing}${!focused ? "▍" : ""}`;
+  // O typing animado sempre vence quando o campo está vazio e sem foco.
+  // `placeholder` (estático) vira apenas fallback para leitores de tela.
+  const livePlaceholder = !focused && !value ? `${typing}▍` : placeholder ?? "";
 
   const suggestions = useMemo(() => {
     const term = value.trim();
@@ -163,11 +165,23 @@ export function SmartServiceSearch({
   const seoChips = useMemo(() => SEO_INTENTS.slice(0, 8), []);
 
   useEffect(() => {
-    function onDoc(e: MouseEvent) {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    function onAway(e: Event) {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (!ref.current?.contains(target)) setOpen(false);
     }
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    // pointerdown cobre mouse + touch + caneta; touchstart como fallback em iOS antigo.
+    document.addEventListener("pointerdown", onAway, true);
+    document.addEventListener("touchstart", onAway, { passive: true });
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onAway, true);
+      document.removeEventListener("touchstart", onAway);
+      document.removeEventListener("keydown", onKey);
+    };
   }, []);
 
   useEffect(() => {
