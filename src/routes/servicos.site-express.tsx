@@ -163,6 +163,12 @@ function SiteExpressPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: "Site Express em 24h", path: "/servicos/site-express" },
+        ]}
+      />
       <main>
         {/* HERO */}
         <section className="relative overflow-hidden pt-28 pb-16 px-5 bg-gradient-to-b from-orange-50 via-white to-white">
