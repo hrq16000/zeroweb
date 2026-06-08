@@ -6,7 +6,7 @@ export type UnifiedLead = {
   nome: string;
   origem: "carrinho" | "funil";
   etapa_atual: string;
-  dados_extras: Record<string, unknown>;
+  dados_extras: Record<string, any>;
   created_at: string;
   updated_at: string;
 };
