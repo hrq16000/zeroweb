@@ -33,6 +33,7 @@ type DbServiceRow = {
   show_in_footer: boolean | null;
   show_in_home_featured: boolean | null;
   show_in_sitemap: boolean | null;
+  is_solution: boolean | null;
   funnels: unknown;
   gallery: unknown;
   sections: unknown;
