@@ -13,6 +13,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { ScrollTracker } from "@/components/site/ScrollTracker";
@@ -94,8 +95,14 @@ function CasePage() {
     <div className="min-h-screen bg-background text-foreground scroll-smooth">
       <ScrollTracker />
       <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Cases", path: "/cases" },
+          { name: c.brand, path: `/cases/${c.slug}` },
+        ]}
+      />
 
-      <main className="pt-32 pb-24">
+      <main className="pt-6 pb-24">
         {/* Hero */}
         <section className={`relative overflow-hidden bg-gradient-to-br ${c.color} text-white`}>
           <div className="absolute inset-0 bg-mesh opacity-30 pointer-events-none" />
