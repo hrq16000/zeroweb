@@ -72,7 +72,7 @@ function validate(q: FunnelQuestion, value: unknown): string | null {
   return null;
 }
 
-export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
+export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel: FunnelDefinition; embedded?: boolean; onComplete?: () => void }) {
   const submit = useServerFn(submitFunnel);
   const ordered = useMemo(
     () => [...funnel.questions].sort((a, b) => a.order_index - b.order_index),
@@ -143,7 +143,8 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
         saveAttributionSnapshot(attr);
       } catch { /* noop */ }
       setDone({ whatsapp: result.whatsapp_user_url });
-      if (result.whatsapp_user_url) {
+      if (onComplete) setTimeout(() => onComplete(), 1200);
+      if (result.whatsapp_user_url && !embedded) {
         // Open after a short beat so the success state can render.
         setTimeout(() => { window.location.href = result.whatsapp_user_url!; }, 900);
       }
@@ -210,7 +211,7 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6 bg-background text-foreground">
+      <div className={`${embedded ? "py-10" : "min-h-screen"} flex items-center justify-center px-6 bg-background text-foreground`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -219,7 +220,7 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
           <div className="mx-auto h-16 w-16 rounded-full bg-primary/15 grid place-items-center">
             <Check className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight">Recebido! 🚀</h1>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">Recebido! 🚀</h2>
           <p className="text-muted-foreground">
             {done.whatsapp
               ? "Estamos abrindo o WhatsApp para você concluir o atendimento."
@@ -236,9 +237,9 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className={`${embedded ? "" : "min-h-screen"} bg-background text-foreground flex flex-col`}>
       {/* Progress */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-muted/40 z-50">
+      <div className={`${embedded ? "sticky top-0" : "fixed top-0 left-0 right-0"} h-1 bg-muted/40 z-50`}>
         <motion.div
           className="h-full bg-primary"
           initial={false}
@@ -247,14 +248,14 @@ export function FunnelRunner({ funnel }: { funnel: FunnelDefinition }) {
         />
       </div>
 
-      <header className="px-6 pt-6 flex items-center justify-between text-xs text-muted-foreground">
+      <header className={`${embedded ? "px-5 pt-4" : "px-6 pt-6"} flex items-center justify-between text-xs text-muted-foreground`}>
         <span className="inline-flex items-center gap-2 font-medium">
           <Sparkles className="h-3.5 w-3.5 text-primary" /> {funnel.name}
         </span>
         <span>{currentIdx + 1} / {total}</span>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-6">
+      <main className={`flex-1 flex items-center justify-center ${embedded ? "px-5 py-6" : "px-6"}`}>
         <div className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div

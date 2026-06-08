@@ -9,6 +9,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
@@ -372,14 +373,13 @@ function PresencaDigitalPage() {
                   Fale conosco no WhatsApp agora mesmo e comece a aparecer no Google esta semana.
                 </p>
               </div>
-              <a
-                href={wa("Quero falar com a 0WEB sobre Presença Digital (R$399/mês).", "presdig_cta_final")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick("presdig_cta_final", { label: "Fale Conosco" })}
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="presenca-digital"
+                label="Solicitar orçamento gratuito"
+                location="presdig_cta_final"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-7 py-4 hover:scale-[1.02] transition"
-              >
-                Fale Conosco no WhatsApp <ArrowRight className="w-4 h-4" />
-              </a>
+              />
             </div>
           </div>
 

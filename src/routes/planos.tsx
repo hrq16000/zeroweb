@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
 import { Check, Sparkles } from "lucide-react";
 import { whatsappUrl } from "@/lib/site-config";
 
@@ -184,6 +185,7 @@ function PlansPage() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <FloatingFunnelCTA location="planos_page" />
     </div>
   );
 }

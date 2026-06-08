@@ -17,6 +17,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
 import { absUrl, ORG_REF, breadcrumbLd } from "@/lib/seo";
 
@@ -457,6 +458,23 @@ function Site24hPage() {
             <span className="inline-flex items-center gap-1.5">
               <TrendingUp className="h-4 w-4 text-primary" /> Foco em conversão
             </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-muted/20">
+        <div className="mx-auto max-w-3xl px-5 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold">Pronto para começar?</h2>
+          <p className="mt-2 text-muted-foreground">
+            Responda 7 perguntas rápidas e receba um orçamento personalizado.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="site-24h"
+              label="Solicitar orçamento gratuito"
+              location="site24h_cta_final"
+            />
           </div>
         </div>
       </section>
