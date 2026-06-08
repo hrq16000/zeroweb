@@ -8,7 +8,16 @@ import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
-const staticNav: { to: string; label: string }[] = [
+// Desktop nav (Cases, Planos, FAQ ficam só no footer — Header enxuto)
+const desktopNav: { to: string; label: string }[] = [
+  { to: "/", label: "Início" },
+  { to: "/solucoes", label: "Soluções" },
+  { to: "/sobre", label: "Sobre" },
+  { to: "/blog", label: "Blog" },
+];
+
+// Mobile mantém todos os links de suporte
+const mobileNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
   { to: "/solucoes", label: "Soluções" },
   { to: "/cases", label: "Cases" },
@@ -154,7 +163,7 @@ export function Header() {
             </AnimatePresence>
           </div>
 
-          {staticNav.slice(1).map((n) => (
+          {desktopNav.slice(1).map((n) => (
             <Link
               key={n.to}
               to={n.to}
@@ -256,7 +265,7 @@ export function Header() {
 
                 <div className="h-px bg-border my-2" />
 
-                {staticNav.map((n) => (
+                {mobileNav.map((n) => (
                   <Link
                     key={n.to}
                     to={n.to}
