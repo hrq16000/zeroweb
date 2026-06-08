@@ -594,7 +594,7 @@ function ServicosHub() {
                 ))}
                 <button
                   type="button"
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() => setPage((p: number) => Math.min(totalPages, p + 1))}
                   disabled={safePage === totalPages}
                   className="px-3 h-9 rounded-full border border-border text-sm disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
