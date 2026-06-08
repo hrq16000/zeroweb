@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
 import { ArrowRight, TrendingUp } from "lucide-react";
 
 const URL = "https://0web.com.br/cases";
@@ -125,6 +126,7 @@ function CasesPage() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <FloatingFunnelCTA location="cases_page" />
     </div>
   );
 }

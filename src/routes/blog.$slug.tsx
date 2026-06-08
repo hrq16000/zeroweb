@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { BlogPostFunnelCTA } from "@/components/funnel/BlogPostFunnelCTA";
 import { CTA } from "@/components/site/CTA";
 import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
@@ -222,6 +223,8 @@ function PostPage() {
             );
           })()}
         </article>
+
+        <BlogPostFunnelCTA postSlug={post.slug} />
 
         {related.length > 0 && (
           <section className="mx-auto max-w-7xl px-5 lg:px-8 mt-20">

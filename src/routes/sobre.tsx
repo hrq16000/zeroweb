@@ -4,6 +4,7 @@ import { Award, Users, Rocket, Heart, Target, Sparkles } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
 
 const TITLE = "Sobre a 0WEB · Tecnologia que gera crescimento desde 2006";
 const DESC =
@@ -164,6 +165,7 @@ function SobrePage() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <FloatingFunnelCTA location="sobre_page" />
     </div>
   );
 }
