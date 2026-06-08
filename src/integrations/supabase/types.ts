@@ -5167,6 +5167,7 @@ export type Database = {
         | "parceiro"
         | "admin_integrations"
         | "dev"
+        | "super_admin"
       cart_payment_channel: "site" | "whatsapp" | "unknown"
       cart_payment_status:
         | "open"
@@ -5366,6 +5367,7 @@ export const Constants = {
         "parceiro",
         "admin_integrations",
         "dev",
+        "super_admin",
       ],
       cart_payment_channel: ["site", "whatsapp", "unknown"],
       cart_payment_status: [
