@@ -3,122 +3,33 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageCircle, X, Send, ArrowRight, AlertTriangle } from "lucide-react";
+import { MessageCircle, X, Send, ArrowRight, AlertTriangle, Pencil } from "lucide-react";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, trackConversion } from "@/lib/analytics";
+import {
+  STORAGE_KEY,
+  initialState,
+  maskPhone,
+  validateWhatsApp,
+  loadState,
+  saveState,
+  getAttribution,
+  type State,
+  type Step,
+  type Msg,
+} from "./chatbot-utils";
 
 // FK to dynamic_forms.id (slug 'home-chatbot')
 const FORM_ID = "c2fc4661-b5c1-4bd9-92b0-fc6b803fe686";
-const STORAGE_KEY = "0web_chatbot_state";
 const TYPING_MS = 600;
+void STORAGE_KEY;
 
-type Msg =
-  | { id: string; role: "bot"; text: string }
-  | { id: string; role: "user"; text: string };
-
-type Step = 0 | 1 | 2 | 3 | 4;
-
-type State = {
-  step: Step;
-  messages: Msg[];
-  servico?: { slug: string; name: string };
-  perfil?: string;
-  prazo?: string;
-  nome?: string;
-  whatsapp?: string;
-  // Persisted draft inputs so a refresh on Step 3 keeps what user typed
-  draftName?: string;
-  draftPhone?: string;
-  consent?: boolean;
-};
-
-const initialState: State = { step: 0, messages: [] };
-
-const BR_DDD = new Set([
-  11,12,13,14,15,16,17,18,19,
-  21,22,24,27,28,
-  31,32,33,34,35,37,38,
-  41,42,43,44,45,46,47,48,49,
-  51,53,54,55,
-  61,62,63,64,65,66,67,68,69,
-  71,73,74,75,77,79,
-  81,82,83,84,85,86,87,88,89,
-  91,92,93,94,95,96,97,98,99,
-]);
-
-function maskPhone(v: string) {
-  const d = v.replace(/\D/g, "").slice(0, 11);
-  if (d.length <= 2) return d;
-  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-}
-
-function validateWhatsApp(raw: string): { valid: boolean; error?: string } {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length < 10) {
-    return { valid: false, error: "Informe o DDD + número completo." };
-  }
-  if (digits.length > 11) {
-    return { valid: false, error: "Número com muitos dígitos." };
-  }
-  const ddd = parseInt(digits.slice(0, 2), 10);
-  if (!BR_DDD.has(ddd)) {
-    return { valid: false, error: "DDD inválido. Verifique o código de área." };
-  }
-  if (digits.length === 11 && digits[2] !== "9") {
-    return { valid: false, error: "Celular deve começar com 9 após o DDD." };
-  }
-  return { valid: true };
-}
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function loadState(): State {
-  if (typeof window === "undefined") return initialState;
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return initialState;
-    const parsed = JSON.parse(raw) as State;
-    // Keep the conversation across refreshes even after completion so the user
-    // can re-trigger the CTA without losing context. If they previously got to
-    // Step 4, drop them back at the final screen with their data intact.
-    return parsed;
-  } catch {
-    return initialState;
-  }
-}
-
-function saveState(s: State) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    /* ignore */
-  }
-}
-
-function getAttribution() {
-  if (typeof window === "undefined") return {};
-  try {
-    const url = new URL(window.location.href);
-    const utm: Record<string, string> = {};
-    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((k) => {
-      const v = url.searchParams.get(k);
-      if (v) utm[k] = v;
-    });
-    return {
-      page_path: url.pathname + url.search,
-      page_url: window.location.href,
-      referrer: typeof document !== "undefined" ? document.referrer || null : null,
-      ...utm,
-    };
-  } catch {
-    return {};
-  }
-}
 
 export function HomeChatbot() {
   const [open, setOpen] = useState(false);
@@ -264,7 +175,11 @@ export function HomeChatbot() {
     );
   }
 
-  async function handleSubmitLead() {
+  /**
+   * Validate Step 3 inputs and move to the review/preview card. The actual
+   * insert only happens after the user confirms in the review screen.
+   */
+  function handleReviewLead() {
     if (submitting) return;
     const nome = nameInput.trim();
     const whatsapp = phoneInput.trim();
@@ -296,8 +211,23 @@ export function HomeChatbot() {
     }
     if (hasError) return;
 
+    setState((s) => ({ ...s, reviewing: true, nome, whatsapp }));
+    trackEvent("chatbot_step", { step: 3, substep: "review", ...getAttribution() });
+  }
+
+  function handleEditFromReview() {
+    setState((s) => ({ ...s, reviewing: false }));
+    trackEvent("chatbot_review_edit", { ...getAttribution() });
+  }
+
+  async function handleSubmitLead() {
+    if (submitting) return;
+    const nome = (state.nome ?? nameInput).trim();
+    const whatsapp = (state.whatsapp ?? phoneInput).trim();
+    setSubmitError(null);
     setSubmitting(true);
     trackEvent("chatbot_submit_attempt", { step: 3, ...getAttribution() });
+
 
     const attribution = getAttribution();
     const payload = {
@@ -364,7 +294,7 @@ export function HomeChatbot() {
       ...attribution,
     });
 
-    setState((s) => ({ ...s, nome, whatsapp, step: 4 }));
+    setState((s) => ({ ...s, nome, whatsapp, step: 4, reviewing: false }));
     trackEvent("chatbot_step", { step: 4, ...attribution });
     pushBot(
       `Ótimo, ${nome}! 🎉 Vou te direcionar para ${state.servico?.name ?? "o serviço"} agora. Você também pode receber um retorno pelo WhatsApp em breve.`,
@@ -527,12 +457,12 @@ export function HomeChatbot() {
                 </ChipsRow>
               )}
 
-              {!typing && state.step === 3 && (
+              {!typing && state.step === 3 && !state.reviewing && (
                 <form
                   className="space-y-2 pt-1"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmitLead();
+                    handleReviewLead();
                   }}
                 >
                   <label htmlFor="chatbot-name" className="sr-only">
@@ -633,13 +563,70 @@ export function HomeChatbot() {
                   <button
                     type="submit"
                     disabled={!canSubmit}
-                    aria-label="Enviar contato"
+                    aria-label="Revisar dados antes de enviar"
                     className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                   >
-                    {submitting ? "Enviando…" : "Enviar"}
-                    {!submitting && <Send className="w-4 h-4" aria-hidden="true" />}
+                    Revisar e enviar
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </form>
+              )}
+
+              {!typing && state.step === 3 && state.reviewing && (
+                <div
+                  className="space-y-3 pt-1"
+                  role="group"
+                  aria-label="Revise seus dados antes de enviar"
+                >
+                  <div className="rounded-xl border border-border bg-card/80 p-3 text-sm space-y-1.5">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
+                      Confira seus dados
+                    </p>
+                    <p>
+                      <span className="text-muted-foreground">Nome: </span>
+                      <span className="font-medium">{nameInput.trim()}</span>
+                    </p>
+                    <p>
+                      <span className="text-muted-foreground">WhatsApp: </span>
+                      <span className="font-medium">{phoneInput.trim()}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      ✓ Você aceitou a Política de Privacidade.
+                    </p>
+                  </div>
+
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-2.5 py-2 text-[11px] text-red-700"
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden="true" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSubmitLead}
+                      disabled={submitting}
+                      aria-label="Confirmar e enviar contato"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      {submitting ? "Enviando…" : "Confirmar e enviar"}
+                      {!submitting && <Send className="w-4 h-4" aria-hidden="true" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleEditFromReview}
+                      disabled={submitting}
+                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-transparent text-foreground font-medium py-2 text-xs hover:bg-muted/60 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                      Editar dados
+                    </button>
+                  </div>
+                </div>
               )}
 
               {!typing && state.step === 4 && (
