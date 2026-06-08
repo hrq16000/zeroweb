@@ -1,0 +1,40 @@
+name: SEO Diff
+
+on:
+  pull_request:
+    paths:
+      - 'src/routes/**'
+      - 'src/lib/seo*'
+      - 'src/lib/services-*'
+      - 'seo-reports/seo-diff.config.json'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'URL base contra a qual rodar o diff'
+        required: false
+        default: 'https://0web.com.br'
+
+jobs:
+  seo-diff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run seo-diff
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://0web.com.br' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: node scripts/run-seo-diff.mjs
+
+      - name: Run catalog images check
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: node scripts/validate-catalog-images.mjs
