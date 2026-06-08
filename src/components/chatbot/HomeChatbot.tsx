@@ -3,122 +3,34 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageCircle, X, Send, ArrowRight, AlertTriangle } from "lucide-react";
+import { MessageCircle, X, Send, ArrowRight, AlertTriangle, Pencil } from "lucide-react";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, trackConversion } from "@/lib/analytics";
+import {
+  STORAGE_KEY,
+  initialState,
+  maskPhone,
+  validateWhatsApp,
+  loadState,
+  saveState,
+  getAttribution,
+  type State,
+  type Step,
+  type Msg,
+} from "./chatbot-utils";
 
 // FK to dynamic_forms.id (slug 'home-chatbot')
 const FORM_ID = "c2fc4661-b5c1-4bd9-92b0-fc6b803fe686";
-const STORAGE_KEY = "0web_chatbot_state";
 const TYPING_MS = 600;
-
-type Msg =
-  | { id: string; role: "bot"; text: string }
-  | { id: string; role: "user"; text: string };
-
-type Step = 0 | 1 | 2 | 3 | 4;
-
-type State = {
-  step: Step;
-  messages: Msg[];
-  servico?: { slug: string; name: string };
-  perfil?: string;
-  prazo?: string;
-  nome?: string;
-  whatsapp?: string;
-  // Persisted draft inputs so a refresh on Step 3 keeps what user typed
-  draftName?: string;
-  draftPhone?: string;
-  consent?: boolean;
-};
-
-const initialState: State = { step: 0, messages: [] };
-
-const BR_DDD = new Set([
-  11,12,13,14,15,16,17,18,19,
-  21,22,24,27,28,
-  31,32,33,34,35,37,38,
-  41,42,43,44,45,46,47,48,49,
-  51,53,54,55,
-  61,62,63,64,65,66,67,68,69,
-  71,73,74,75,77,79,
-  81,82,83,84,85,86,87,88,89,
-  91,92,93,94,95,96,97,98,99,
-]);
-
-function maskPhone(v: string) {
-  const d = v.replace(/\D/g, "").slice(0, 11);
-  if (d.length <= 2) return d;
-  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-}
-
-function validateWhatsApp(raw: string): { valid: boolean; error?: string } {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length < 10) {
-    return { valid: false, error: "Informe o DDD + número completo." };
-  }
-  if (digits.length > 11) {
-    return { valid: false, error: "Número com muitos dígitos." };
-  }
-  const ddd = parseInt(digits.slice(0, 2), 10);
-  if (!BR_DDD.has(ddd)) {
-    return { valid: false, error: "DDD inválido. Verifique o código de área." };
-  }
-  if (digits.length === 11 && digits[2] !== "9") {
-    return { valid: false, error: "Celular deve começar com 9 após o DDD." };
-  }
-  return { valid: true };
-}
+void STORAGE_KEY;
+void Step;
+void Msg;
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-function loadState(): State {
-  if (typeof window === "undefined") return initialState;
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return initialState;
-    const parsed = JSON.parse(raw) as State;
-    // Keep the conversation across refreshes even after completion so the user
-    // can re-trigger the CTA without losing context. If they previously got to
-    // Step 4, drop them back at the final screen with their data intact.
-    return parsed;
-  } catch {
-    return initialState;
-  }
-}
-
-function saveState(s: State) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    /* ignore */
-  }
-}
-
-function getAttribution() {
-  if (typeof window === "undefined") return {};
-  try {
-    const url = new URL(window.location.href);
-    const utm: Record<string, string> = {};
-    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((k) => {
-      const v = url.searchParams.get(k);
-      if (v) utm[k] = v;
-    });
-    return {
-      page_path: url.pathname + url.search,
-      page_url: window.location.href,
-      referrer: typeof document !== "undefined" ? document.referrer || null : null,
-      ...utm,
-    };
-  } catch {
-    return {};
-  }
-}
 
 export function HomeChatbot() {
   const [open, setOpen] = useState(false);
