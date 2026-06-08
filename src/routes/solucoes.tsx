@@ -100,6 +100,7 @@ export const Route = createFileRoute("/solucoes")({
 
 function SolucoesPage() {
   const { solutions } = Route.useLoaderData();
+  type Sol = (typeof solutions)[number];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
