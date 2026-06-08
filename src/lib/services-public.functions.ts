@@ -157,6 +157,8 @@ function mapRow(
     showInFooter: row.show_in_footer ?? true,
     showInHomeFeatured: row.show_in_home_featured ?? true,
     showInSitemap: row.show_in_sitemap ?? true,
+    isSolutionFlag: row.is_solution ?? null,
+    isSolution: isServiceSolution({ is_solution: row.is_solution, price: row.price }),
     funnels: asFunnels(row.funnels),
     gallery,
     sections: asSections(row.sections),
