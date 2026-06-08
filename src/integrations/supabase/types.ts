@@ -4361,6 +4361,7 @@ export type Database = {
           image_path: string | null
           is_active: boolean
           is_featured: boolean
+          is_solution: boolean | null
           keywords: Json
           name: string
           og_image_path: string | null
@@ -4404,6 +4405,7 @@ export type Database = {
           image_path?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_solution?: boolean | null
           keywords?: Json
           name: string
           og_image_path?: string | null
@@ -4447,6 +4449,7 @@ export type Database = {
           image_path?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_solution?: boolean | null
           keywords?: Json
           name?: string
           og_image_path?: string | null
@@ -5072,6 +5075,18 @@ export type Database = {
         }
         Relationships: []
       }
+      vw_unified_leads: {
+        Row: {
+          created_at: string | null
+          dados_extras: Json | null
+          etapa_atual: string | null
+          id_lead: string | null
+          nome: string | null
+          origem: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       anonymize_visitantes_rastreio_old: { Args: never; Returns: number }
@@ -5167,6 +5182,7 @@ export type Database = {
         | "parceiro"
         | "admin_integrations"
         | "dev"
+        | "super_admin"
       cart_payment_channel: "site" | "whatsapp" | "unknown"
       cart_payment_status:
         | "open"
@@ -5366,6 +5382,7 @@ export const Constants = {
         "parceiro",
         "admin_integrations",
         "dev",
+        "super_admin",
       ],
       cart_payment_channel: ["site", "whatsapp", "unknown"],
       cart_payment_status: [

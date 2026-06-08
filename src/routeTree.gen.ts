@@ -113,6 +113,7 @@ import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authenticated/app.master'
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppLicensesRouteImport } from './routes/_authenticated/app.licenses'
+import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticated/app.leads'
 import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
 import { Route as AuthenticatedAppIndexacaoRouteImport } from './routes/_authenticated/app.indexacao'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
@@ -678,6 +679,11 @@ const AuthenticatedAppLicensesRoute =
     path: '/licenses',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppLeadsRoute = AuthenticatedAppLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppIntegracoesRoute =
   AuthenticatedAppIntegracoesRouteImport.update({
     id: '/integracoes',
@@ -944,6 +950,7 @@ export interface FileRoutesByFullPath {
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -1077,6 +1084,7 @@ export interface FileRoutesByTo {
   '/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/app/master': typeof AuthenticatedAppMasterRoute
@@ -1214,6 +1222,7 @@ export interface FileRoutesById {
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
   '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
   '/_authenticated/app/master': typeof AuthenticatedAppMasterRoute
@@ -1351,6 +1360,7 @@ export interface FileRouteTypes {
     | '/app/editorial'
     | '/app/indexacao'
     | '/app/integracoes'
+    | '/app/leads'
     | '/app/licenses'
     | '/app/marketplace'
     | '/app/master'
@@ -1484,6 +1494,7 @@ export interface FileRouteTypes {
     | '/app/editorial'
     | '/app/indexacao'
     | '/app/integracoes'
+    | '/app/leads'
     | '/app/licenses'
     | '/app/marketplace'
     | '/app/master'
@@ -1620,6 +1631,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/editorial'
     | '/_authenticated/app/indexacao'
     | '/_authenticated/app/integracoes'
+    | '/_authenticated/app/leads'
     | '/_authenticated/app/licenses'
     | '/_authenticated/app/marketplace'
     | '/_authenticated/app/master'
@@ -2481,6 +2493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppLicensesRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/leads': {
+      id: '/_authenticated/app/leads'
+      path: '/leads'
+      fullPath: '/app/leads'
+      preLoaderRoute: typeof AuthenticatedAppLeadsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/integracoes': {
       id: '/_authenticated/app/integracoes'
       path: '/integracoes'
@@ -2780,6 +2799,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
   AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
+  AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
   AuthenticatedAppMasterRoute: typeof AuthenticatedAppMasterRoute
@@ -2815,6 +2835,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
   AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
+  AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
     AuthenticatedAppMarketplaceRouteWithChildren,

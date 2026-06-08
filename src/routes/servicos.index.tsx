@@ -474,7 +474,7 @@ function ServicosHub() {
             </div>
 
             {isPending ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" aria-busy="true" aria-live="polite">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4" aria-busy="true" aria-live="polite">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
                     <Skeleton className="aspect-video w-full rounded-none" />
@@ -502,7 +502,7 @@ function ServicosHub() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
                 {paginated.map((s) => (
                   <Link
                     key={s.slug}
@@ -528,10 +528,11 @@ function ServicosHub() {
                     ) : (
                       <ServiceImageFallback slug={s.slug} name={s.name} category={s.category} />
                     )}
-                    <div className="p-4 flex-1 flex flex-col">
-                      <p className="text-[10px] uppercase tracking-wider text-primary font-bold">{s.category}</p>
-                      <h4 className="mt-1 font-semibold text-base leading-snug">{s.name}</h4>
-                      <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{s.description}</p>
+                    <div className="p-3 sm:p-4 flex-1 flex flex-col">
+                      <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-primary font-bold line-clamp-1">{s.category}</p>
+                      <h4 className="mt-1 font-semibold text-sm sm:text-base leading-snug line-clamp-2">{s.name}</h4>
+                      <p className="mt-1 text-xs sm:text-sm text-muted-foreground line-clamp-2 hidden sm:block">{s.description}</p>
+
                       <div className="mt-auto pt-3">
                         {(s.price != null || s.deliveryDays) && (
                           <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
