@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, Sparkles } from "lucide-react";
 import {
@@ -19,6 +19,49 @@ import {
   formatBRL,
   type CartItem,
 } from "@/lib/cart";
+import { saveCartFunnelStep } from "@/lib/cart-funnel.functions";
+import { getVisitorId } from "@/lib/visitor";
+
+function getSessionKey() {
+  if (typeof window === "undefined") return "ssr";
+  let k = localStorage.getItem("0web_cart_session");
+  if (!k) {
+    k = `cart_${crypto.randomUUID()}`;
+    localStorage.setItem("0web_cart_session", k);
+  }
+  return k;
+}
+
+function reportStep(
+  step: string,
+  items: CartItem[],
+  extra: { paymentChannel?: "site" | "whatsapp" | "unknown"; paymentStatus?: string } = {},
+) {
+  try {
+    const total = cartTotal(items);
+    void saveCartFunnelStep({
+      data: {
+        sessionKey: getSessionKey(),
+        visitorId: getVisitorId(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        step: step as any,
+        cart: items.map((i) => ({
+          slug: i.slug,
+          name: i.name,
+          qty: i.qty,
+          price: i.price ?? null,
+          pricePeriod: i.pricePeriod ?? null,
+          category: i.category ?? null,
+        })),
+        totalAmount: total || null,
+        ...extra,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any).catch(() => {});
+  } catch {
+    /* noop */
+  }
+}
 
 /**
  * Drawer do carrinho híbrido. Ouve:
