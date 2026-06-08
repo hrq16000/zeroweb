@@ -1,3 +1,4 @@
+// DEPRECATED: substituído por dynamic_form 'funnel-site-express'. Remover após confirmar 0 usos.
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";

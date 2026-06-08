@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -17,7 +16,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import {
   Accordion,
   AccordionContent,
@@ -152,8 +151,12 @@ export const Route = createFileRoute("/servicos/site-express")({
 });
 
 function SiteExpressPage() {
-  const [open, setOpen] = useState(false);
-  const openFunnel = () => setOpen(true);
+  const ctaClass =
+    "w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold uppercase tracking-wide px-7 py-4 text-sm shadow-lg shadow-orange-600/30 transition";
+  const ctaWhiteClass =
+    "mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg transition";
+  const ctaFinalClass =
+    "mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-8 py-4 text-sm shadow-xl transition";
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -200,12 +203,14 @@ function SiteExpressPage() {
               transition={{ delay: 0.15 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
-              <button
-                onClick={openFunnel}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold uppercase tracking-wide px-7 py-4 text-sm shadow-lg shadow-orange-600/30 transition"
-              >
-                Quero meu site em 24h <ArrowRight className="w-5 h-5" />
-              </button>
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="site-express"
+                funnelSlug="funnel-site-express"
+                label="Quero meu site em 24h"
+                className={ctaClass}
+                location="site_express_hero"
+              />
               <div className="text-sm text-gray-500 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-orange-600" />
                 Do pagamento ao site no ar em menos de 24h
@@ -375,12 +380,14 @@ function SiteExpressPage() {
                 ))}
               </ul>
 
-              <button
-                onClick={openFunnel}
-                className="mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg transition"
-              >
-                Quero meu site agora <ArrowRight className="w-5 h-5" />
-              </button>
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="site-express"
+                funnelSlug="funnel-site-express"
+                label="Quero meu site agora"
+                className={ctaWhiteClass}
+                location="site_express_pricing"
+              />
             </div>
             <p className="mt-4 text-center text-xs text-gray-500">
               Agências cobram R$ 3.000 a R$ 8.000 pelo mesmo escopo.
@@ -445,12 +452,14 @@ function SiteExpressPage() {
             <p className="mt-4 text-lg opacity-95">
               Em menos de 24h o seu site pode estar no ar — vendendo enquanto você dorme.
             </p>
-            <button
-              onClick={openFunnel}
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-8 py-4 text-sm shadow-xl transition"
-            >
-              Quero meu site em 24h <ArrowRight className="w-5 h-5" />
-            </button>
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="site-express"
+              funnelSlug="funnel-site-express"
+              label="Quero meu site em 24h"
+              className={ctaFinalClass}
+              location="site_express_final"
+            />
             <p className="mt-6 text-sm opacity-90">
               <Link to="/servicos" className="underline hover:opacity-100">Ver todos os serviços da 0WEB</Link>
             </p>
@@ -459,8 +468,6 @@ function SiteExpressPage() {
       </main>
       <Footer />
       <WhatsAppFloat />
-
-      <SiteExpressFunnelModal open={open} onOpenChange={setOpen} source="site_express" />
     </div>
   );
 }

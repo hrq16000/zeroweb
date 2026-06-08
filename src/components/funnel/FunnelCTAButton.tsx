@@ -7,6 +7,8 @@ type Props = {
   pageType: FunnelPageType;
   serviceSlug?: string;
   serviceFunnels?: Record<string, string>;
+  /** Força um slug específico ignorando a resolução padrão de useFunnel. */
+  funnelSlug?: string;
   label?: string;
   className?: string;
   location?: string;
@@ -22,16 +24,19 @@ export function FunnelCTAButton({
   pageType,
   serviceSlug,
   serviceFunnels,
+  funnelSlug: funnelSlugOverride,
   label = "Solicitar orçamento gratuito",
   className,
   location,
   showArrow = true,
 }: Props) {
-  const { isOpen, openFunnel, closeFunnel, funnelSlug } = useFunnel(
-    pageType,
-    serviceSlug,
-    serviceFunnels,
-  );
+  const {
+    isOpen,
+    openFunnel,
+    closeFunnel,
+    funnelSlug: resolvedFunnelSlug,
+  } = useFunnel(pageType, serviceSlug, serviceFunnels);
+  const funnelSlug = funnelSlugOverride ?? resolvedFunnelSlug;
 
   return (
     <>

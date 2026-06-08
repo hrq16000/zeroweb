@@ -10,6 +10,8 @@ export const Route = createFileRoute("/servicos/trafego-pago")({
   component: () => (
     <IntentLanding
       slug="trafego-pago"
+      funnelSlug="funnel-service"
+      serviceSlug="trafego-pago"
       intent="trafego-pago"
       offerSlug="diagnostico-gratuito"
       eyebrow="Tráfego pago"
