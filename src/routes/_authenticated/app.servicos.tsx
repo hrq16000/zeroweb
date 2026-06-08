@@ -590,7 +590,39 @@ function ServiceEditDialog({
                   Mapa do site / sitemap.xml
                 </label>
               </div>
-            </div>
+              <div className="mt-4 pt-3 border-t border-border">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Tipo no catálogo
+                </Label>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Soluções aparecem em <code>/solucoes</code> (sem checkout). Produtos vão para <code>/servicos</code>.
+                  Sem marcar nada, vira solução automaticamente quando preço é vazio ou zero.
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  {([
+                    { v: null, label: "Automático (pelo preço)" },
+                    { v: false, label: "Forçar como Produto" },
+                    { v: true, label: "Forçar como Solução" },
+                  ] as const).map((opt) => {
+                    const current = (s as { is_solution?: boolean | null }).is_solution ?? null;
+                    const active = current === opt.v;
+                    return (
+                      <button
+                        key={String(opt.v)}
+                        type="button"
+                        onClick={() => set("is_solution" as never, opt.v as never)}
+                        className={`px-3 py-1.5 rounded-full border transition-colors ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "border-border hover:border-primary"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
           </TabsContent>
 
           <TabsContent value="funis" className="grid gap-4 mt-4">
