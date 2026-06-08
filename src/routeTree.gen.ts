@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrafegoPagoLocalRouteImport } from './routes/trafego-pago-local'
 import { Route as TrafegoPagoRouteImport } from './routes/trafego-pago'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as SolucoesRouteImport } from './routes/solucoes'
 import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
 import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-diagnostico'
 import { Route as SobreRouteImport } from './routes/sobre'
@@ -158,6 +159,11 @@ const TrafegoPagoRoute = TrafegoPagoRouteImport.update({
 const TermosRoute = TermosRouteImport.update({
   id: '/termos',
   path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolucoesRoute = SolucoesRouteImport.update({
+  id: '/solucoes',
+  path: '/solucoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SolicitarOrcamentoRoute = SolicitarOrcamentoRouteImport.update({
@@ -904,6 +910,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1039,6 +1046,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1176,6 +1184,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1314,6 +1323,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1449,6 +1459,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1585,6 +1596,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1723,6 +1735,7 @@ export interface RootRouteChildren {
   SobreRoute: typeof SobreRoute
   SolicitarDiagnosticoRoute: typeof SolicitarDiagnosticoRoute
   SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
+  SolucoesRoute: typeof SolucoesRoute
   TermosRoute: typeof TermosRoute
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   TrafegoPagoLocalRoute: typeof TrafegoPagoLocalRoute
@@ -1784,6 +1797,13 @@ declare module '@tanstack/react-router' {
       path: '/termos'
       fullPath: '/termos'
       preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solucoes': {
+      id: '/solucoes'
+      path: '/solucoes'
+      fullPath: '/solucoes'
+      preLoaderRoute: typeof SolucoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/solicitar-orcamento': {
@@ -2967,6 +2987,7 @@ const rootRouteChildren: RootRouteChildren = {
   SobreRoute: SobreRoute,
   SolicitarDiagnosticoRoute: SolicitarDiagnosticoRoute,
   SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
+  SolucoesRoute: SolucoesRoute,
   TermosRoute: TermosRoute,
   TrafegoPagoRoute: TrafegoPagoRoute,
   TrafegoPagoLocalRoute: TrafegoPagoLocalRoute,
