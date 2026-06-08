@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, Sparkles } from "lucide-react";
 import {
@@ -19,6 +19,49 @@ import {
   formatBRL,
   type CartItem,
 } from "@/lib/cart";
+import { saveCartFunnelStep } from "@/lib/cart-funnel.functions";
+import { getVisitorId } from "@/lib/visitor";
+
+function getSessionKey() {
+  if (typeof window === "undefined") return "ssr";
+  let k = localStorage.getItem("0web_cart_session");
+  if (!k) {
+    k = `cart_${crypto.randomUUID()}`;
+    localStorage.setItem("0web_cart_session", k);
+  }
+  return k;
+}
+
+function reportStep(
+  step: string,
+  items: CartItem[],
+  extra: { paymentChannel?: "site" | "whatsapp" | "unknown"; paymentStatus?: string } = {},
+) {
+  try {
+    const total = cartTotal(items);
+    void saveCartFunnelStep({
+      data: {
+        sessionKey: getSessionKey(),
+        visitorId: getVisitorId(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        step: step as any,
+        cart: items.map((i) => ({
+          slug: i.slug,
+          name: i.name,
+          qty: i.qty,
+          price: i.price ?? null,
+          pricePeriod: i.pricePeriod ?? null,
+          category: i.category ?? null,
+        })),
+        totalAmount: total || null,
+        ...extra,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any).catch(() => {});
+  } catch {
+    /* noop */
+  }
+}
 
 /**
  * Drawer do carrinho híbrido. Ouve:
@@ -33,12 +76,23 @@ import {
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
+  const lastSnapshot = useRef<string>("");
 
   useEffect(() => {
-    const sync = () => setItems(readCart());
+    const sync = () => {
+      const next = readCart();
+      setItems(next);
+      const sig = JSON.stringify(next.map((i) => [i.slug, i.qty]));
+      if (sig !== lastSnapshot.current) {
+        lastSnapshot.current = sig;
+        if (next.length > 0) reportStep("cart_update", next);
+      }
+    };
     const onOpen = () => {
       sync();
       setOpen(true);
+      const current = readCart();
+      if (current.length > 0) reportStep("cart_open", current);
     };
     sync();
     window.addEventListener("0web:cart-open", onOpen);
@@ -190,6 +244,7 @@ export function CartDrawer() {
                     void import("@/lib/persistence").then(({ persistEvent }) =>
                       persistEvent("cart_checkout_click", { items: items.length, total }),
                     );
+                    reportStep("checkout_started", items, { paymentChannel: "site", paymentStatus: "pending" });
                     setOpen(false);
                     window.location.href = "/checkout";
                   }}
@@ -213,6 +268,7 @@ export function CartDrawer() {
                       void import("@/lib/persistence").then(({ persistEvent }) =>
                         persistEvent("whatsapp_click", { items: items.length, total, location: "cart_drawer" }),
                       );
+                      reportStep("handoff_whatsapp", items, { paymentChannel: "whatsapp", paymentStatus: "handoff" });
                     }}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />

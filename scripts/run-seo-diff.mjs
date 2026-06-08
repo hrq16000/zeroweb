@@ -100,6 +100,33 @@ for (const s of services) {
 console.log("slug\tdT\tdD\tdOg\tjson\tBREACH");
 for (const r of report) console.log(`${r.slug}\t${r.dT}\t${r.dD}\t${r.dOg}\t${r.jsonMismatch ? "MISSING" : "ok"}\t${r.breach ? "❌" : "✓"}`);
 
+// Persiste no histórico admin (seo_audit_history). Best-effort: requer SUPABASE_SERVICE_ROLE_KEY.
+const SVC = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (SVC) {
+  try {
+    const totalReports = report.length || 1;
+    const avgDelta =
+      report.reduce((s, r) => s + Number(r.dT) + Number(r.dD) + Number(r.dOg), 0) / (3 * totalReports);
+    await fetch(`${URL_BASE.replace(/\/$/, "")}/rest/v1/seo_audit_history`, {
+      method: "POST",
+      headers: {
+        apikey: SVC,
+        Authorization: `Bearer ${SVC}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        kind: "seo_diff",
+        summary: { scanned: report.length, failures, maxDelta: CONFIG.maxDelta, avgDelta },
+        details: { base: BASE, report },
+        delta_pct: Number((avgDelta * 100).toFixed(2)),
+      }),
+    });
+  } catch (e) {
+    console.warn(`[seo-diff] history insert failed: ${e.message}`);
+  }
+}
+
 if (failures > 0) {
   console.error(`\n[seo-diff] ❌ ${failures} service(s) excederam delta=${CONFIG.maxDelta}`);
   process.exit(1);

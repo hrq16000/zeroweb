@@ -20,7 +20,7 @@ export const Route = createFileRoute("/mapa-do-site")({
       },
       { name: "robots", content: "index,follow" },
     ],
-    links: [{ rel: "canonical", href: "/mapa-do-site" }],
+    links: [{ rel: "canonical", href: "https://0web.com.br/mapa-do-site" }],
   }),
   component: SiteMapPage,
 });
