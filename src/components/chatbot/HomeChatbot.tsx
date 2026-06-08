@@ -24,8 +24,7 @@ import {
 const FORM_ID = "c2fc4661-b5c1-4bd9-92b0-fc6b803fe686";
 const TYPING_MS = 600;
 void STORAGE_KEY;
-void Step;
-void Msg;
+
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
