@@ -517,8 +517,12 @@ function ServicosHub() {
                             )}
                           </div>
                         )}
-                        <span className="inline-flex items-center justify-center w-full gap-1 text-sm font-semibold rounded-full bg-foreground text-background px-3 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                          Ver produto <ArrowRight className="w-3.5 h-3.5" />
+                        <span
+                          className="inline-flex items-center justify-center w-full gap-1 text-sm font-semibold rounded-full bg-foreground text-background px-3 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                          title={s.name}
+                        >
+                          <span className="truncate">{s.name}</span>
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
                         </span>
                       </div>
                     </div>
