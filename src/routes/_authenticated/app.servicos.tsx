@@ -622,6 +622,21 @@ function ServiceEditDialog({
                     );
                   })}
                 </div>
+                {(() => {
+                  const flag = (s as { is_solution?: boolean | null }).is_solution ?? null;
+                  const price = Number((s as { price?: number | null }).price ?? 0);
+                  if (flag === false && !(price > 0)) {
+                    return (
+                      <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-950/30 px-3 py-2 text-[12px] text-amber-900 dark:text-amber-200">
+                        <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                        <span>
+                          Marcado como <strong>Produto</strong>, mas sem preço definido. Defina um <strong>preço &gt; 0</strong> na aba <em>Comercial</em> ou troque para <strong>Automático/Solução</strong>, senão o item não vai aparecer na loja <code>/servicos</code>.
+                        </span>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </div>
           </TabsContent>
