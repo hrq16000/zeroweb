@@ -352,6 +352,12 @@ function GMBPage() {
         </div>
       </section>
 
+      <RelatedLinksGrid
+        title="Serviços relacionados"
+        subtitle="Acelere ainda mais a sua presença no Google."
+        only={["/servicos/seo", "/servicos/trafego-pago-local", "/servicos/presenca-digital"]}
+      />
+
       <Footer />
       <WhatsAppFloat />
     </div>
