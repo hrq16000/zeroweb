@@ -222,14 +222,35 @@ function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
 
 function ServicosHub() {
   const { services, slides } = Route.useLoaderData();
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/servicos" });
   type Svc = (typeof services)[number];
-  const [q, setQ] = useState("");
-  const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<SortKey>("shop");
-  const [activeCat, setActiveCat] = useState<string>("all");
+  const [q, setQ] = useState(search.q ?? "");
+  const [page, setPage] = useState(search.page ?? 1);
+  const [sort, setSort] = useState<SortKey>(search.sort ?? "shop");
+  const [activeCat, setActiveCat] = useState<string>(search.cat ?? "all");
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [isPending, startTransition] = useTransition();
   const PER_PAGE = 12;
+
+  // Sincroniza estado → URL (debounced para a busca) para preservar SEO,
+  // navegação back/forward e compartilhamento de links filtrados.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      navigate({
+        search: () => ({
+          q: q.trim() ? q.trim() : undefined,
+          cat: activeCat !== "all" ? activeCat : undefined,
+          sort: sort !== "shop" ? sort : undefined,
+          page: page > 1 ? page : undefined,
+        }),
+        replace: true,
+        resetScroll: false,
+      });
+    }, 250);
+    return () => clearTimeout(t);
+  }, [q, activeCat, sort, page, navigate]);
+
 
   // Atribui um seed após hidratar para não causar mismatch entre SSR e cliente.
   useEffect(() => {
