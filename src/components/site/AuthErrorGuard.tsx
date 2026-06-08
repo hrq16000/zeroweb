@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getAuthErrorInfo, handleServerFnAuthError } from "@/components/site/auth-error-guard.helpers";
 
 /**
  * Captura erros globais de Unauthorized vindos de chamadas serverFn
@@ -17,6 +19,7 @@ import { toast } from "sonner";
  */
 export function AuthErrorGuard() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -24,47 +27,29 @@ export function AuthErrorGuard() {
 
     let signingOut = false;
 
-    const isAuthError = (err: unknown): boolean => {
-      if (!err) return false;
-      const e = err as { message?: string; status?: number; statusCode?: number };
-      const msg = String(e.message ?? err);
-      const status = e.status ?? e.statusCode;
-      return (
-        /unauthorized|no authorization header|invalid jwt|jwt expired|forbidden/i.test(msg) ||
-        status === 401 ||
-        status === 403
-      );
-    };
-
     const handleAuthError = async (origin: string, err: unknown) => {
       if (signingOut) return;
-      const isProtected = /^\/(app|painel)/.test(pathname);
-      // Log estruturado (sem expor token/sessão).
-      console.warn("[AuthErrorGuard] 401/403 capturado", {
-        origin,
-        pathname,
-        message: String((err as { message?: string })?.message ?? err).slice(0, 200),
-        timestamp: new Date().toISOString(),
-      });
-      if (!isProtected) return; // página pública: ignora
       signingOut = true;
-      try {
-        await supabase.auth.signOut();
-      } catch {
-        /* noop */
-      }
-      toast.error("Sua sessão expirou. Faça login novamente.");
-      navigate({ to: "/auth", replace: true });
+      const result = await handleServerFnAuthError({
+        origin,
+        error: err,
+        pathname,
+        queryClient,
+        signOut: () => supabase.auth.signOut(),
+        toastError: toast.error,
+        navigateToAuth: () => navigate({ to: "/auth", replace: true }),
+      });
+      if (result !== "handled") signingOut = false;
     };
 
     const onRejection = (ev: PromiseRejectionEvent) => {
-      if (isAuthError(ev.reason)) {
+      if (getAuthErrorInfo(ev.reason).isAuthError) {
         ev.preventDefault();
         void handleAuthError("unhandledrejection", ev.reason);
       }
     };
     const onError = (ev: ErrorEvent) => {
-      if (isAuthError(ev.error ?? ev.message)) {
+      if (getAuthErrorInfo(ev.error ?? ev.message).isAuthError) {
         ev.preventDefault();
         void handleAuthError("error", ev.error ?? ev.message);
       }
@@ -76,7 +61,7 @@ export function AuthErrorGuard() {
       window.removeEventListener("unhandledrejection", onRejection);
       window.removeEventListener("error", onError);
     };
-  }, [navigate, pathname]);
+  }, [navigate, pathname, queryClient]);
 
   return null;
 }

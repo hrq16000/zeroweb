@@ -244,15 +244,23 @@ export const upsertService = createServerFn({ method: "POST" })
       // Slug is immutable on edit.
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, slug: _ignore, ...rest } = data;
+      const payload = {
+        ...rest,
+        is_solution: rest.price != null && Number(rest.price) > 0 ? false : (rest.is_solution ?? null),
+      };
       const { data: out, error } = await sb
-        .from("services").update(rest).eq("id", id).select().single();
+        .from("services").update(payload).eq("id", id).select().single();
       if (error) throw new Error(error.message);
       return { service: normalize(out as Record<string, unknown>) };
     }
     if (!data.slug) throw new Error("slug obrigatório ao criar");
     const { id: _omit, ...payload } = data;
+    const normalizedPayload = {
+      ...payload,
+      is_solution: payload.price != null && Number(payload.price) > 0 ? false : (payload.is_solution ?? null),
+    };
     const { data: out, error } = await sb
-      .from("services").insert(payload).select().single();
+      .from("services").insert(normalizedPayload).select().single();
     if (error) throw new Error(error.message);
     return { service: normalize(out as Record<string, unknown>) };
   });
