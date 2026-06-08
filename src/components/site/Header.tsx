@@ -203,62 +203,90 @@ export function Header() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            id="mobile-nav"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden overflow-hidden glass border-t border-border"
-          >
-            <div className="px-5 py-4 flex flex-col gap-3">
-              <Link
-                to="/servicos"
-                onClick={() => setOpen(false)}
-                className="py-2 text-foreground/80 hover:text-foreground font-semibold"
-              >
-                Serviços ({menuServices.length || "—"})
-              </Link>
-              {menuServices.slice(0, 8).map((s) => (
+          <>
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-x-0 bottom-0 top-[64px] bg-background/70 backdrop-blur-sm z-40"
+              onClick={() => setOpen(false)}
+              aria-hidden
+            />
+            <motion.div
+              key="panel"
+              id="mobile-nav"
+              initial={{ y: -12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -12, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 320, damping: 30 }}
+              className="lg:hidden absolute left-0 right-0 top-full z-50 bg-background border-t border-border shadow-elegant max-h-[calc(100vh-64px)] overflow-y-auto"
+            >
+              <nav className="px-5 py-5 flex flex-col gap-1">
                 <Link
-                  key={s.slug}
-                  to="/servicos/$slug"
-                  params={{ slug: s.slug }}
+                  to="/servicos"
                   onClick={() => setOpen(false)}
-                  className="pl-4 py-1.5 text-sm text-foreground/70 hover:text-foreground"
+                  className="flex items-center justify-between px-3 py-3 rounded-xl bg-muted/60 text-foreground font-semibold hover:bg-muted transition-colors"
                 >
-                  · {s.name}
+                  <span>Serviços</span>
+                  <span className="text-xs font-mono text-primary">{menuServices.length || "—"}</span>
                 </Link>
-              ))}
-              {staticNav.map((n) => (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  onClick={() => setOpen(false)}
-                  className="py-2 text-foreground/80 hover:text-foreground"
-                >
-                  {n.label}
-                </Link>
-              ))}
+                <div className="mt-1 mb-2 grid gap-0.5">
+                  {menuServices.slice(0, 10).map((s, i) => (
+                    <motion.div
+                      key={s.slug}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.04 + i * 0.025 }}
+                    >
+                      <Link
+                        to="/servicos/$slug"
+                        params={{ slug: s.slug }}
+                        onClick={() => setOpen(false)}
+                        className="block pl-6 pr-3 py-2 text-sm text-foreground/85 hover:text-primary hover:bg-muted/40 rounded-lg transition-colors"
+                      >
+                        {s.name}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
 
-              <Link
-                to="/auth"
-                onClick={() => setOpen(false)}
-                className="mt-2 text-center rounded-full border border-border font-medium px-5 py-2.5 inline-flex items-center justify-center gap-2"
-              >
-                <LogIn className="w-4 h-4" /> Conectar
-              </Link>
-              <Link
-                to="/contato"
-                onClick={() => {
-                  trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
-                  setOpen(false);
-                }}
-                className="text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3"
-              >
-                Solicitar Diagnóstico
-              </Link>
-            </div>
-          </motion.div>
+                <div className="h-px bg-border my-2" />
+
+                {staticNav.map((n) => (
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2.5 rounded-lg text-foreground/85 hover:text-foreground hover:bg-muted/40 font-medium transition-colors"
+                  >
+                    {n.label}
+                  </Link>
+                ))}
+
+                <div className="h-px bg-border my-2" />
+
+                <Link
+                  to="/auth"
+                  onClick={() => setOpen(false)}
+                  className="text-center rounded-full border border-border font-medium px-5 py-2.5 inline-flex items-center justify-center gap-2 hover:border-primary hover:text-primary transition-colors"
+                >
+                  <LogIn className="w-4 h-4" /> Conectar
+                </Link>
+                <Link
+                  to="/contato"
+                  onClick={() => {
+                    trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
+                    setOpen(false);
+                  }}
+                  className="mt-1 text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3 shadow-glow-primary hover:opacity-95 transition"
+                >
+                  Solicitar Diagnóstico
+                </Link>
+              </nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
