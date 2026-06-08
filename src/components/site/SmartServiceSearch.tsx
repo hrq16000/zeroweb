@@ -24,7 +24,7 @@ type Props = {
  * portfólio de serviços"). Usadas para placeholder rotativo e
  * auto-sugestões quando o campo está vazio.
  */
-const SEO_INTENTS: string[] = [
+export const SEO_INTENTS: string[] = [
   "preciso de um site em 24 horas",
   "quero criar meu portfólio de serviços",
   "site rápido e profissional para minha empresa",
@@ -47,7 +47,7 @@ const SEO_INTENTS: string[] = [
   "presença digital completa para PMEs",
 ];
 
-function expandKeywords(s: SearchableService): string[] {
+export function expandKeywords(s: SearchableService): string[] {
   const base = [s.name, s.category, ...(s.keywords ?? [])];
   const lower = s.name.toLowerCase();
   // Variações comerciais comuns
@@ -61,7 +61,7 @@ function expandKeywords(s: SearchableService): string[] {
   return [...base, ...variants];
 }
 
-function scoreMatch(s: SearchableService, term: string): number {
+export function scoreMatch(s: SearchableService, term: string): number {
   if (!term) return 0;
   const t = term.toLowerCase();
   let score = 0;
