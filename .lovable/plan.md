@@ -1,43 +1,43 @@
-## Já está pronto no projeto (não vou refazer — seria regressão)
 
-| Pedido | Status | Onde |
-| --- | --- | --- |
-| Header dropdown de serviços do banco (`show_in_menu` + `display_order`) | ✅ | `src/components/site/Header.tsx` consome `listServicesNav()` |
-| Footer lê `show_in_footer` ordenado | ✅ | `src/components/site/Footer.tsx` |
-| Grade de 4 cards na home (`show_in_home_featured`) com imagem real + CTA | ✅ | `src/components/site/FeaturedServices.tsx` |
-| `sitemap-services.xml` respeita `show_in_sitemap` | ✅ | `src/routes/sitemap-services[.]xml.ts` |
-| `ServiceCTA` com funil por local + fallback `funnels.default` | ✅ | `src/components/site/ServiceCTA.tsx` |
-| Painel admin permite editar `show_in_*`, `display_order`, `funnels`, checklist de publicação | ✅ | `src/routes/_authenticated/app.servicos.tsx` (ondas anteriores) |
-| Carrinho drawer + Add-to-cart + login nudge Google | ✅ | `CartDrawer.tsx`, `AddToCartButton.tsx`, `cart.ts` |
-| Campos comerciais (`price`, `pricePeriod`, `deliveryDays`, `conditions`) na vitrine e no detalhe | ✅ | `servicos.index.tsx` linhas 501-513, `servicos.$slug.tsx` linhas 130-205 |
-| Categorias e itens relacionados no catálogo com Add-to-cart | ✅ | `servicos.index.tsx` (filtros por categoria) + `RelatedLinksGrid.tsx` |
-| Tela admin de leads/visitas por etapa do funil | ✅ parcial | `/app/usuarios` (aba Leads/Funis) + `/app/dynamic-funnels` |
+# Plano de execução — 4 ondas
 
-## Próxima onda (executo agora, sem perguntar)
+Memorizei: **Home / Soluções / Serviços** são frentes distintas. Soluções pode usar IA + SEO agressivo (Discovery). Serviços = fotos reais. Item sem price → Solução.
 
-Foco em 3 entregas pequenas, independentes, todas plugadas ao admin:
+---
 
-### Onda A — Histórico persistido de seo-diff + auditoria legacy
-- Migração: tabela `seo_audit_history` (`id`, `kind` enum `seo_diff|legacy_links`, `ran_at`, `summary jsonb`, `details jsonb`, `delta_pct`, `status`, `approved_by`, `approved_at`, `notes`) + GRANTs + RLS admin-only.
-- ServerFn `adminListSeoAuditHistory` (filtros por data/kind/status) e `adminApproveSeoAudit({id, approved})`.
-- Os scripts `scripts/run-seo-diff.mjs` e a serverFn de legacy-audit passam a gravar 1 row por execução.
-- UI em `/app/seo-404s` ganha aba "Histórico" com tabela + filtros + botão "Aprovar".
+## ONDA 1 — Página de Gestão de Redes Sociais (enriquecer)
 
-### Onda B — Checkout ligado ao funil do carrinho
-- Migração: tabela `cart_funnel_progress` (`id`, `user_id`, `visitor_id`, `step`, `cart_snapshot jsonb`, `payment_status`, `payment_channel` enum `site|whatsapp`, `updated_at`) + GRANTs + RLS por `auth.uid()` / admin.
-- ServerFn `saveCartFunnelStep` chamada pelo `CartDrawer` e por `checkout.tsx` em cada transição.
-- Webhook Stripe (já existente em `routes/api/public/hooks/stripe.ts`) atualiza `payment_status` para `paid|failed`.
-- O drawer "Finalizar pelo WhatsApp" marca `payment_channel=whatsapp` e `step=handoff_whatsapp`.
-- Aparece em `/app/usuarios` → drawer do usuário → nova aba "Carrinho/Funil".
+Arquivo único: `src/routes/servicos.gestao-redes-sociais.tsx` (já existe, vou expandir).
 
-### Onda C — QA + SEO finais
-- Rodo `scripts/smoke-servicos.mjs`, `scripts/validate-canonicals.mjs`, `scripts/validate-jsonld.mjs`, `scripts/validate-catalog-images.mjs` e `scripts/validate-sitemaps.mjs` em paralelo.
-- Corrijo o que vier vermelho (links mortos, scroll-to-top, schema FAQ ausente em algum slug).
-- Se Lighthouse já roda no CI, só anoto resultado; não vou re-orquestrar.
+1. **Entregáveis detalhados por plano** (cards expansíveis): posts/semana, stories/semana, reels, roteiros, artes, copy, gravação/edição, revisão de calendário, relatório mensal — com números exatos e exemplos reais ("Ex.: 2 posts carrossel + 2 posts estáticos por semana").
+2. **Tabela comparativa visual** dos 4 planos com colunas: Canais · Posts/mês · Stories/mês · Reels · Mídia incluída · SLA aprovação · Suporte · Relatórios. Highlight no plano Profissional.
+3. **Seção "Exemplos reais"**:
+   - Mockup de calendário editorial (HTML/CSS puro, sem imagem) com posts plotados.
+   - Mockup de painel de métricas (cards com alcance, engajamento, seguidores) — números reais médios.
+   - Mockup de layout de relatório mensal (PDF preview em HTML).
+   - 3 fotos reais Unsplash de feed/posts (sem IA).
+4. **Simulador de plano** (componente novo `RedesSimulator.tsx`): inputs de nicho (select), nº de canais (1-4), objetivo (alcance/engajamento/vendas) → recomenda plano + CTA "Diagnóstico no WhatsApp".
 
-### Fora desta onda (regressão)
-- Refazer Header/Footer/Featured/CTA/cart/checklist — já existem.
-- Tela nova de "leads por etapa" do zero — `/app/usuarios` e `/app/dynamic-funnels` já cobrem; vou só adicionar link cruzado se faltar.
-- Trocar provider de pagamento — escopo separado.
+## ONDA 2 — Correções de catálogo (Serviços/Soluções)
 
-Critério de pronto por onda: migração aplicada, serverFn protegida por admin role, UI plugada ao painel, build verde.
+5. **Vitrine `/servicos`**: confirmar que produtos com price real aparecem; ajustar query/filtro se houver bug. Já populamos preços; validar UI.
+6. **`/solucoes`**: adicionar grid linkando para páginas de itens **sem price** (Soluções), com CTA "Solicitar cadastro/orçamento". Cada card → rota da solução ou fallback.
+7. **Fallback de rota sem price**: no `servicos.$slug.tsx`, se `price` for nulo, renderizar variante "Solução" (sem botão de compra, com CTA de diagnóstico e link cruzado para /solucoes).
+8. **Validação no painel**: em `app.servicos`, ao salvar item marcado como Produto (is_solution=false) sem price > 0, mostrar warning/bloqueio e sugerir marcar como Solução.
+
+## ONDA 3 — Suavização visual da loja
+
+9. Aplicar bordas mais arredondadas (`rounded-3xl`), sombras suaves multi-camada, gradientes sutis nos cards de `/servicos` e `/solucoes`. Tipografia mais aerada. Hover com lift + glow. Tokens em `src/styles.css` (`--shadow-soft`, `--radius-card`).
+
+## ONDA 4 — Testes E2E + SEO Discovery em Soluções
+
+10. Playwright/Vitest: navegação `/servicos` ↔ `/solucoes`, estado vazio + CTA, render de fallback sem price.
+11. Reforço SEO em `/solucoes/*`: JSON-LD `Article` + `Product`, og:image (IA permitida), headings agressivos, breadcrumb, FAQPage.
+
+---
+
+## Recomendação
+
+Começar pela **ONDA 1** agora (é a continuação direta da página que acabamos de criar — alto impacto, escopo claro). As demais ondas vou tocar em sequência após sua confirmação de cada uma, para não atropelar e manter os PRs pequenos.
+
+**Confirma começar pela Onda 1?** (Se quiser priorizar outra onda primeiro, me diga qual.)

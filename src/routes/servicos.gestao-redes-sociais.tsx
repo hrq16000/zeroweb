@@ -5,7 +5,9 @@ import {
   CheckCircle2, ArrowRight, Sparkles, Instagram, Facebook, Linkedin,
   Calendar, BarChart3, MessageCircle, Camera, Palette, Video, Hash,
   Users, TrendingUp, Clock, ShieldCheck, Star, Flame,
+  FileText, Check, Minus, Heart, Eye, MessageSquare, MousePointerClick,
 } from "lucide-react";
+import { RedesSimulator } from "@/components/site/RedesSimulator";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -435,8 +437,369 @@ function GestaoRedesSociaisPage() {
         </div>
       </section>
 
+      {/* ENTREGÁVEIS DETALHADOS POR PLANO */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">Entregáveis reais</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
+              O que <span className="text-gradient">exatamente</span> você recebe por mês
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Sem letras miúdas. Cada plano tem números fixos de posts, stories, reels, roteiros e relatórios.
+            </p>
+          </div>
+
+          <div className="mt-10 grid lg:grid-cols-2 gap-5">
+            {[
+              {
+                plano: "Essencial",
+                cor: "border-border",
+                semana: ["2 posts no feed por semana", "3 stories por semana", "1 carrossel ou 1 estático por semana"],
+                mes: [
+                  "8 posts no feed (4 estáticos + 4 carrosséis)",
+                  "12 stories editados com identidade visual",
+                  "1 calendário editorial aprovado todo dia 25",
+                  "Edição/tratamento das fotos que você enviar",
+                  "Hashtags e legendas escritas por copywriter",
+                  "1 relatório mensal com prints e leitura simples",
+                ],
+                naoTem: ["Reels", "Gravação presencial", "Resposta a DMs", "Tráfego pago"],
+              },
+              {
+                plano: "Profissional",
+                cor: "border-fuchsia-400 ring-2 ring-fuchsia-300/30",
+                semana: ["3 posts no feed por semana", "5 stories por semana", "1 Reel a cada 15 dias"],
+                mes: [
+                  "12 posts no feed (carrosséis + estáticos + 1 vídeo)",
+                  "20 stories com enquetes, caixinhas e CTAs",
+                  "2 Reels editados (roteiro + edição + trilha + legendas)",
+                  "Calendário editorial com aprovação quinzenal",
+                  "Design com identidade visual aplicada",
+                  "Copywriting persuasivo (gancho + corpo + CTA) em todas as peças",
+                  "Resposta a comentários e DMs em até 30 min (horário comercial)",
+                  "2 relatórios quinzenais com insights estratégicos",
+                ],
+                naoTem: ["Gravação presencial recorrente", "Tráfego pago"],
+              },
+              {
+                plano: "Avançado",
+                cor: "border-border",
+                semana: ["4 posts no feed por semana", "7-8 stories por semana", "1 Reel/TikTok por semana"],
+                mes: [
+                  "16 posts no feed em 3 redes (IG + FB + TikTok)",
+                  "30 stories com sequência narrativa semanal",
+                  "4 Reels/TikToks (roteiro, gravação no celular ou edição do material enviado, trilha, legendas)",
+                  "1 sessão presencial de 2h (região metropolitana) para captar 1 mês de conteúdo",
+                  "Gestão completa de comentários e DMs em horário comercial",
+                  "Roteiros para vídeos + storyboard das gravações",
+                  "Relatório semanal + 1 reunião mensal de estratégia (30 min)",
+                ],
+                naoTem: ["LinkedIn", "Tráfego pago incluso"],
+              },
+              {
+                plano: "Premium",
+                cor: "border-border",
+                semana: ["6 posts no feed por semana", "10 stories por semana", "2 Reels por semana"],
+                mes: [
+                  "24 posts no feed em 4 redes (IG, FB, TikTok e LinkedIn)",
+                  "40 stories com narrativa cross-channel",
+                  "8 Reels/vídeos curtos (roteiro + gravação + edição profissional)",
+                  "2 sessões presenciais de gravação no mês",
+                  "Tráfego pago incluso: até R$300 de verba + gestão da campanha",
+                  "Gestão de comunidade (responde tudo, escala para você só o que importa)",
+                  "SLA de resposta em até 2h (úteis e fim de semana)",
+                  "Relatório semanal + dashboard ao vivo + reunião quinzenal",
+                ],
+                naoTem: [],
+              },
+            ].map((p) => (
+              <div key={p.plano} className={`rounded-3xl border ${p.cor} bg-card p-7 shadow-sm`}>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h3 className="text-2xl font-bold">{p.plano}</h3>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Volume mensal
+                  </span>
+                </div>
+
+                <div className="mt-5 rounded-2xl bg-muted/40 p-4">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-primary mb-2">Ritmo semanal</p>
+                  <ul className="space-y-1 text-sm">
+                    {p.semana.map((s) => (
+                      <li key={s} className="flex items-start gap-2">
+                        <Calendar className="w-3.5 h-3.5 mt-1 text-primary shrink-0" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-5">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 mb-2">Inclui no mês</p>
+                  <ul className="space-y-2 text-sm">
+                    {p.mes.map((m) => (
+                      <li key={m} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 mt-0.5 text-emerald-500 shrink-0" />
+                        <span>{m}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {p.naoTem.length > 0 && (
+                  <div className="mt-5">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Não incluso</p>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      {p.naoTem.map((n) => (
+                        <li key={n} className="flex items-start gap-2">
+                          <Minus className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                          <span>{n}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TABELA COMPARATIVA */}
+      <section className="py-20 bg-surface">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">Compare lado a lado</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
+              O que <span className="text-gradient">muda</span> entre os planos
+            </h2>
+          </div>
+
+          <div className="mt-10 overflow-x-auto rounded-3xl border border-border bg-card shadow-elegant">
+            <table className="w-full text-sm min-w-[820px]">
+              <thead>
+                <tr className="bg-muted/50 text-left">
+                  <th className="p-4 font-semibold">Critério</th>
+                  <th className="p-4 font-semibold text-center">Essencial</th>
+                  <th className="p-4 font-semibold text-center bg-fuchsia-50 dark:bg-fuchsia-950/30 text-fuchsia-700 dark:text-fuchsia-300">
+                    Profissional <span className="block text-[10px] uppercase tracking-wider">Mais escolhido</span>
+                  </th>
+                  <th className="p-4 font-semibold text-center">Avançado</th>
+                  <th className="p-4 font-semibold text-center">Premium</th>
+                </tr>
+              </thead>
+              <tbody className="[&_tr:nth-child(even)]:bg-muted/20">
+                {[
+                  ["Canais incluídos", "1 (Instagram)", "2 (IG + FB)", "3 (IG + FB + TikTok)", "4 (+ LinkedIn)"],
+                  ["Posts no feed / mês", "8", "12", "16", "24"],
+                  ["Stories / mês", "12", "20", "30", "40"],
+                  ["Reels / mês", "—", "2", "4", "8"],
+                  ["Sessão de gravação presencial", "—", "—", "1 / mês", "2 / mês"],
+                  ["Resposta a DMs e comentários", "—", "Até 30 min", "Completa (horário comercial)", "Comunidade (SLA 2h)"],
+                  ["SLA de aprovação do calendário", "Até 5 dias úteis", "Até 3 dias úteis", "Até 2 dias úteis", "Até 24h"],
+                  ["Tráfego pago incluso", "—", "—", "—", "Até R$300/mês"],
+                  ["Suporte", "WhatsApp comercial", "WhatsApp comercial", "WhatsApp + reunião mensal", "Prioritário + reunião quinzenal"],
+                  ["Relatórios", "Mensal", "Quinzenal", "Semanal", "Semanal + dashboard ao vivo"],
+                  ["Preço / mês", "R$149,99", "R$349,90", "R$699,90", "R$1.290,00"],
+                ].map(([crit, ...vals]) => (
+                  <tr key={crit} className="border-t border-border">
+                    <td className="p-4 font-medium">{crit}</td>
+                    {vals.map((v, i) => (
+                      <td
+                        key={i}
+                        className={[
+                          "p-4 text-center",
+                          i === 1 ? "bg-fuchsia-50/50 dark:bg-fuchsia-950/20 font-semibold" : "",
+                          v === "—" ? "text-muted-foreground" : "",
+                        ].join(" ")}
+                      >
+                        {v === "—" ? <Minus className="w-4 h-4 mx-auto" /> : v}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Todos os planos: mensal · sem contrato · sem fidelidade · cancela quando quiser
+          </p>
+        </div>
+      </section>
+
+      {/* EXEMPLOS REAIS — calendário, métricas, relatório */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">Como é na prática</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-bold">
+              Veja o que <span className="text-gradient">você recebe</span> de verdade
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Calendário editorial, painel de métricas e modelo de relatório — exemplos reais (sem imagem de IA).
+            </p>
+          </div>
+
+          {/* Calendário editorial mockup */}
+          <div className="mt-12 grid lg:grid-cols-2 gap-8 items-start">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-elegant">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-fuchsia-500" />
+                  <h3 className="font-bold">Calendário editorial · Novembro</h3>
+                </div>
+                <span className="text-[11px] text-emerald-600 font-semibold bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded-full">
+                  Aprovado pelo cliente
+                </span>
+              </div>
+              <div className="grid grid-cols-7 gap-1 text-[11px]">
+                {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => (
+                  <div key={i} className="text-center font-semibold text-muted-foreground p-1">{d}</div>
+                ))}
+                {Array.from({ length: 30 }).map((_, i) => {
+                  const day = i + 1;
+                  const posts: Record<number, { tipo: string; cor: string }> = {
+                    3: { tipo: "Reel", cor: "bg-fuchsia-500" },
+                    5: { tipo: "Post", cor: "bg-blue-500" },
+                    7: { tipo: "Story", cor: "bg-amber-400" },
+                    10: { tipo: "Carrossel", cor: "bg-emerald-500" },
+                    12: { tipo: "Reel", cor: "bg-fuchsia-500" },
+                    14: { tipo: "Post", cor: "bg-blue-500" },
+                    17: { tipo: "Story", cor: "bg-amber-400" },
+                    19: { tipo: "Carrossel", cor: "bg-emerald-500" },
+                    21: { tipo: "Reel", cor: "bg-fuchsia-500" },
+                    24: { tipo: "Post", cor: "bg-blue-500" },
+                    26: { tipo: "Story", cor: "bg-amber-400" },
+                    28: { tipo: "Carrossel", cor: "bg-emerald-500" },
+                  };
+                  const p = posts[day];
+                  return (
+                    <div
+                      key={day}
+                      className="aspect-square rounded-md border border-border p-1 flex flex-col items-start hover:bg-muted/40 transition"
+                    >
+                      <span className="text-[10px] text-muted-foreground">{day}</span>
+                      {p && (
+                        <span className={`mt-auto w-full text-[8px] text-white font-bold px-1 py-0.5 rounded ${p.cor} truncate`}>
+                          {p.tipo}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3 text-[11px]">
+                {[
+                  ["bg-fuchsia-500", "Reels"],
+                  ["bg-blue-500", "Posts"],
+                  ["bg-emerald-500", "Carrosséis"],
+                  ["bg-amber-400", "Stories"],
+                ].map(([c, l]) => (
+                  <span key={l} className="flex items-center gap-1.5">
+                    <span className={`w-2.5 h-2.5 rounded-sm ${c}`} /> {l}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Painel de métricas mockup */}
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-elegant">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-fuchsia-500" />
+                  <h3 className="font-bold">Performance · Últimos 30 dias</h3>
+                </div>
+                <span className="text-[11px] text-fuchsia-600 font-semibold">@suamarca</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { icon: Eye, label: "Alcance", v: "47.2k", delta: "+38%", color: "text-emerald-500" },
+                  { icon: Heart, label: "Curtidas", v: "3.1k", delta: "+22%", color: "text-emerald-500" },
+                  { icon: MessageSquare, label: "Comentários", v: "284", delta: "+51%", color: "text-emerald-500" },
+                  { icon: MousePointerClick, label: "Cliques no link", v: "612", delta: "+14%", color: "text-emerald-500" },
+                ].map((m) => (
+                  <div key={m.label} className="rounded-xl border border-border p-3">
+                    <div className="flex items-center gap-2 text-muted-foreground text-[11px]">
+                      <m.icon className="w-3.5 h-3.5" /> {m.label}
+                    </div>
+                    <p className="mt-1.5 text-2xl font-display font-black">{m.v}</p>
+                    <p className={`text-[11px] font-semibold ${m.color}`}>{m.delta} vs. mês anterior</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-xl bg-muted/40 p-4">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  Engajamento por formato
+                </p>
+                <div className="space-y-2">
+                  {[
+                    { l: "Reels", pct: 92 },
+                    { l: "Carrosséis", pct: 71 },
+                    { l: "Posts", pct: 48 },
+                    { l: "Stories", pct: 34 },
+                  ].map((b) => (
+                    <div key={b.l}>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span>{b.l}</span>
+                        <span className="font-semibold">{b.pct}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-fuchsia-500 to-purple-600"
+                          style={{ width: `${b.pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <p className="mt-3 text-[10px] text-muted-foreground italic">
+                * Dados ilustrativos baseados em médias de clientes da 0WEB.
+              </p>
+            </div>
+          </div>
+
+          {/* Layout de relatório */}
+          <div className="mt-8 rounded-3xl border border-border bg-card p-6 lg:p-8 shadow-elegant">
+            <div className="flex items-center gap-2 mb-5">
+              <FileText className="w-5 h-5 text-fuchsia-500" />
+              <h3 className="font-bold">Modelo de relatório mensal · 12 páginas em PDF</h3>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                { n: "01", t: "Capa & resumo executivo", d: "Visão de 30 segundos para a diretoria" },
+                { n: "02", t: "Métricas principais", d: "Alcance, engajamento, seguidores, mensagens" },
+                { n: "03", t: "Top 3 posts do mês", d: "O que mais funcionou e por quê" },
+                { n: "04", t: "Análise por formato", d: "Performance de Reels, posts e stories" },
+                { n: "05", t: "Comunidade", d: "Crescimento, perfil de quem te segue, principais DMs" },
+                { n: "06", t: "Concorrência", d: "O que players do seu nicho estão fazendo" },
+                { n: "07", t: "Aprendizados", d: "O que mudamos com base nos dados" },
+                { n: "08", t: "Próximos passos", d: "Plano editorial e foco do próximo mês" },
+              ].map((s) => (
+                <div key={s.n} className="rounded-2xl bg-muted/30 p-4 hover:bg-muted/50 transition">
+                  <span className="text-[10px] font-bold text-fuchsia-500">PG {s.n}</span>
+                  <p className="mt-1 font-semibold text-sm">{s.t}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">{s.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SIMULADOR */}
+      <section className="py-20 bg-gradient-to-br from-muted/30 to-fuchsia-50/30 dark:from-slate-900/40 dark:to-fuchsia-950/20">
+        <div className="mx-auto max-w-5xl px-5 lg:px-8">
+          <RedesSimulator />
+        </div>
+      </section>
+
       {/* PROCESSO */}
       <section className="py-20">
+
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Como trabalhamos</p>
