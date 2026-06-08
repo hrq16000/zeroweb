@@ -108,10 +108,22 @@ function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    void fetchProfile().then((r) => setMe(r as never));
-    void fetchNotif().then((r) =>
-      setUnread((r.rows as { read_at: string | null }[]).filter((n) => !n.read_at).length)
-    );
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled || !data.session) return;
+      try {
+        const r = await fetchProfile();
+        if (!cancelled) setMe(r as never);
+      } catch { /* ignore unauth/transient */ }
+      try {
+        const r = await fetchNotif();
+        if (!cancelled) {
+          setUnread((r.rows as { read_at: string | null }[]).filter((n) => !n.read_at).length);
+        }
+      } catch { /* ignore unauth/transient */ }
+    })();
+    return () => { cancelled = true; };
   }, [fetchProfile, fetchNotif, location.pathname]);
 
   // fecha o drawer ao navegar
