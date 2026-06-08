@@ -4361,6 +4361,7 @@ export type Database = {
           image_path: string | null
           is_active: boolean
           is_featured: boolean
+          is_solution: boolean | null
           keywords: Json
           name: string
           og_image_path: string | null
@@ -4404,6 +4405,7 @@ export type Database = {
           image_path?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_solution?: boolean | null
           keywords?: Json
           name: string
           og_image_path?: string | null
@@ -4447,6 +4449,7 @@ export type Database = {
           image_path?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_solution?: boolean | null
           keywords?: Json
           name?: string
           og_image_path?: string | null
@@ -5069,6 +5072,18 @@ export type Database = {
           name: string | null
           partner_id: string | null
           revenue_cents_30d: number | null
+        }
+        Relationships: []
+      }
+      vw_unified_leads: {
+        Row: {
+          created_at: string | null
+          dados_extras: Json | null
+          etapa_atual: string | null
+          id_lead: string | null
+          nome: string | null
+          origem: string | null
+          updated_at: string | null
         }
         Relationships: []
       }
