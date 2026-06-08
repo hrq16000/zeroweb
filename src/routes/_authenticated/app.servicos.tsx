@@ -596,7 +596,7 @@ function ServiceEditDialog({
                 </Label>
                 <p className="text-[11px] text-muted-foreground mt-1">
                   Soluções aparecem em <code>/solucoes</code> (sem checkout). Produtos vão para <code>/servicos</code>.
-                  Sem marcar nada, vira solução automaticamente quando preço é vazio ou zero.
+                  Com preço real, o item sempre vira produto mesmo que a flag tenha sido marcada antes.
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2 text-xs">
                   {([

@@ -189,16 +189,18 @@ function ServicePage() {
                 location="hero"
                 label={data.ctaLabel}
               />
-              <AddToCartButton
-                item={{
-                  slug,
-                  name: data.name,
-                  category: data.category,
-                  price: data.price ?? null,
-                  pricePeriod: data.pricePeriod ?? null,
-                  imageUrl: data.imageUrl ?? null,
-                }}
-              />
+              {data.price != null && data.price > 0 ? (
+                <AddToCartButton
+                  item={{
+                    slug,
+                    name: data.name,
+                    category: data.category,
+                    price: data.price,
+                    pricePeriod: data.pricePeriod ?? null,
+                    imageUrl: data.imageUrl ?? null,
+                  }}
+                />
+              ) : null}
             </div>
             {data.conditions && (
               <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
