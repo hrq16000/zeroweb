@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageCircle, X, Send, ArrowRight } from "lucide-react";
+import { MessageCircle, X, Send, ArrowRight, AlertTriangle } from "lucide-react";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent, trackConversion } from "@/lib/analytics";
@@ -27,6 +27,10 @@ type State = {
   prazo?: string;
   nome?: string;
   whatsapp?: string;
+  // Persisted draft inputs so a refresh on Step 3 keeps what user typed
+  draftName?: string;
+  draftPhone?: string;
+  consent?: boolean;
 };
 
 const initialState: State = { step: 0, messages: [] };
@@ -79,7 +83,9 @@ function loadState(): State {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return initialState;
     const parsed = JSON.parse(raw) as State;
-    if (parsed.step >= 4) return initialState; // completed → fresh
+    // Keep the conversation across refreshes even after completion so the user
+    // can re-trigger the CTA without losing context. If they previously got to
+    // Step 4, drop them back at the final screen with their data intact.
     return parsed;
   } catch {
     return initialState;
@@ -94,6 +100,26 @@ function saveState(s: State) {
   }
 }
 
+function getAttribution() {
+  if (typeof window === "undefined") return {};
+  try {
+    const url = new URL(window.location.href);
+    const utm: Record<string, string> = {};
+    ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((k) => {
+      const v = url.searchParams.get(k);
+      if (v) utm[k] = v;
+    });
+    return {
+      page_path: url.pathname + url.search,
+      page_url: window.location.href,
+      referrer: typeof document !== "undefined" ? document.referrer || null : null,
+      ...utm,
+    };
+  } catch {
+    return {};
+  }
+}
+
 export function HomeChatbot() {
   const [open, setOpen] = useState(false);
   const [pulse, setPulse] = useState(true);
@@ -102,9 +128,15 @@ export function HomeChatbot() {
   const [typing, setTyping] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [phoneInput, setPhoneInput] = useState("");
+  const [consent, setConsent] = useState(false);
   const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
 
   const fetchNav = useServerFn(listServicesNav);
@@ -117,7 +149,14 @@ export function HomeChatbot() {
 
   // Hydrate from sessionStorage on mount (client only)
   useEffect(() => {
-    setState(loadState());
+    const s = loadState();
+    setState(s);
+    if (s.draftName) setNameInput(s.draftName);
+    if (s.draftPhone) {
+      // Re-apply mask in case storage format ever changed
+      setPhoneInput(maskPhone(s.draftPhone));
+    }
+    if (s.consent) setConsent(true);
     setHydrated(true);
   }, []);
 
@@ -125,6 +164,18 @@ export function HomeChatbot() {
   useEffect(() => {
     if (hydrated) saveState(state);
   }, [state, hydrated]);
+
+  // Persist draft inputs + consent as user types (Step 3)
+  useEffect(() => {
+    if (!hydrated) return;
+    setState((s) => ({
+      ...s,
+      draftName: nameInput,
+      draftPhone: phoneInput,
+      consent,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nameInput, phoneInput, consent, hydrated]);
 
   // Pulse animation: 4s
   useEffect(() => {
@@ -138,6 +189,22 @@ export function HomeChatbot() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [state.messages, typing, state.step]);
+
+  // Focus management when panel opens
+  useEffect(() => {
+    if (open && closeBtnRef.current) {
+      // Defer to next tick so the panel is mounted
+      window.setTimeout(() => closeBtnRef.current?.focus(), 50);
+    }
+  }, [open]);
+
+  // Focus phone field when a validation error appears
+  useEffect(() => {
+    if (phoneError && phoneRef.current) phoneRef.current.focus();
+  }, [phoneError]);
+  useEffect(() => {
+    if (nameError && nameRef.current) nameRef.current.focus();
+  }, [nameError]);
 
   // Step 0 opening message (on widget open, if no messages yet)
   useEffect(() => {
@@ -167,7 +234,7 @@ export function HomeChatbot() {
   function handleOpen() {
     setOpen(true);
     setPulse(false);
-    trackEvent("chatbot_open", { location: "home" });
+    trackEvent("chatbot_open", { location: "home", ...getAttribution() });
   }
   function handleClose() {
     setOpen(false);
@@ -177,21 +244,21 @@ export function HomeChatbot() {
   function chooseService(slug: string, name: string) {
     pushUser(name);
     setState((s) => ({ ...s, servico: { slug, name }, step: 1 }));
-    trackEvent("chatbot_step", { step: 1, servico: slug });
+    trackEvent("chatbot_step", { step: 1, servico: slug, ...getAttribution() });
     pushBot(`Ótimo! Esse serviço é para uso pessoal ou empresarial?`);
   }
 
   function choosePerfil(v: string) {
     pushUser(v);
     setState((s) => ({ ...s, perfil: v, step: 2 }));
-    trackEvent("chatbot_step", { step: 2, perfil: v });
+    trackEvent("chatbot_step", { step: 2, perfil: v, ...getAttribution() });
     pushBot("Qual é seu prazo?");
   }
 
   function choosePrazo(v: string) {
     pushUser(v);
     setState((s) => ({ ...s, prazo: v, step: 3 }));
-    trackEvent("chatbot_step", { step: 3, prazo: v });
+    trackEvent("chatbot_step", { step: 3, prazo: v, ...getAttribution() });
     pushBot(
       "Perfeito! Para te conectar com o especialista certo, preciso do seu nome e WhatsApp:",
     );
@@ -201,24 +268,38 @@ export function HomeChatbot() {
     if (submitting) return;
     const nome = nameInput.trim();
     const whatsapp = phoneInput.trim();
+    setSubmitError(null);
 
     const phoneCheck = validateWhatsApp(whatsapp);
-    if (nome.length < 2 || !phoneCheck.valid) {
-      if (!phoneCheck.valid) {
-        setPhoneError(phoneCheck.error ?? "Número inválido.");
-        trackEvent("chatbot_input_error", { field: "whatsapp", reason: phoneCheck.error ?? "invalid" });
-      }
-      if (nome.length < 2) {
-        trackEvent("chatbot_input_error", { field: "name", reason: "too_short" });
-      }
+    let hasError = false;
+    if (nome.length < 2) {
+      setNameError("Informe seu nome (mínimo 2 letras).");
+      trackEvent("chatbot_input_error", { field: "name", reason: "too_short" });
+      hasError = true;
+    } else {
+      setNameError(null);
+    }
+    if (!phoneCheck.valid) {
+      setPhoneError(phoneCheck.error ?? "Número inválido.");
+      trackEvent("chatbot_input_error", {
+        field: "whatsapp",
+        reason: phoneCheck.error ?? "invalid",
+      });
+      hasError = true;
+    } else {
+      setPhoneError(null);
+    }
+    if (!consent) {
+      setSubmitError("Você precisa aceitar o uso dos seus dados para continuar.");
+      trackEvent("chatbot_input_error", { field: "consent", reason: "not_checked" });
       return;
     }
-    setPhoneError(null);
+    if (hasError) return;
+
     setSubmitting(true);
-    trackEvent("chatbot_submit_attempt", { step: 3 });
+    trackEvent("chatbot_submit_attempt", { step: 3, ...getAttribution() });
 
-    pushUser(`${nome} · ${whatsapp}`);
-
+    const attribution = getAttribution();
     const payload = {
       form_id: FORM_ID,
       contact_name: nome,
@@ -229,30 +310,62 @@ export function HomeChatbot() {
         prazo: state.prazo ?? null,
         nome,
         whatsapp,
+        consent_lgpd: true,
+        consent_at: new Date().toISOString(),
       },
       metadata_json: {
         source: "home-chatbot",
         source_url: typeof window !== "undefined" ? window.location.href : null,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
         submitted_at: new Date().toISOString(),
+        attribution,
       },
     };
 
     try {
       const { error } = await supabase.from("dynamic_form_leads").insert(payload);
-      if (error) console.error("[HomeChatbot] insert error", error);
+      if (error) {
+        console.error("[HomeChatbot] insert error", error);
+        const isNetwork =
+          /network|failed to fetch|load failed/i.test(error.message || "");
+        const friendly = isNetwork
+          ? "Sem conexão com o servidor. Verifique sua internet e tente novamente."
+          : "Não conseguimos registrar agora. Tente novamente em instantes.";
+        setSubmitError(friendly);
+        trackEvent("chatbot_submit_error", {
+          reason: isNetwork ? "network" : "insert_error",
+          message: error.message,
+        });
+        setSubmitting(false);
+        return;
+      }
     } catch (err) {
       console.error("[HomeChatbot] insert exception", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      const isNetwork = /network|failed to fetch|load failed/i.test(msg);
+      setSubmitError(
+        isNetwork
+          ? "Sem conexão com o servidor. Verifique sua internet e tente novamente."
+          : "Ocorreu um erro inesperado. Tente novamente.",
+      );
+      trackEvent("chatbot_submit_error", {
+        reason: isNetwork ? "network" : "exception",
+        message: msg,
+      });
+      setSubmitting(false);
+      return;
     }
 
+    pushUser(`${nome} · ${whatsapp}`);
     trackConversion("chatbot_lead", {
       servico: state.servico?.slug,
       perfil: state.perfil,
       prazo: state.prazo,
+      ...attribution,
     });
 
     setState((s) => ({ ...s, nome, whatsapp, step: 4 }));
-    trackEvent("chatbot_step", { step: 4 });
+    trackEvent("chatbot_step", { step: 4, ...attribution });
     pushBot(
       `Ótimo, ${nome}! 🎉 Vou te direcionar para ${state.servico?.name ?? "o serviço"} agora. Você também pode receber um retorno pelo WhatsApp em breve.`,
     );
@@ -279,13 +392,12 @@ export function HomeChatbot() {
   // Services chips
   const servicesChips = useMemo(() => {
     const list = nav?.menu ?? [];
-    // Cap to a reasonable number to keep chip list readable
     return list.slice(0, 8);
   }, [nav]);
 
-  const phoneValid = phoneInput.replace(/\D/g, "").length >= 10;
+  const phoneValid = validateWhatsApp(phoneInput).valid;
   const nameValid = nameInput.trim().length >= 2;
-  const canSubmit = phoneValid && nameValid && !submitting;
+  const canSubmit = phoneValid && nameValid && consent && !submitting;
 
   return (
     <>
@@ -299,16 +411,19 @@ export function HomeChatbot() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             onClick={handleOpen}
-            aria-label="Abrir chat de ajuda"
+            aria-label="Abrir chat de ajuda da 0web"
+            aria-haspopup="dialog"
+            aria-expanded={open}
             className={[
               "fixed bottom-5 left-5 z-[60] inline-flex items-center gap-2.5",
               "rounded-full bg-primary text-primary-foreground font-semibold",
               "pl-4 pr-5 py-3 shadow-xl shadow-primary/30 hover:scale-[1.03] transition",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2",
               pulse ? "animate-pulse" : "",
             ].join(" ")}
           >
             <span className="grid place-items-center w-7 h-7 rounded-full bg-primary-foreground/15">
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4" aria-hidden="true" />
             </span>
             <span className="text-sm">Como posso te ajudar?</span>
           </motion.button>
@@ -326,37 +441,46 @@ export function HomeChatbot() {
             transition={{ duration: 0.18 }}
             className={[
               "fixed z-[60] flex flex-col bg-card text-foreground border border-border shadow-2xl overflow-hidden",
-              // Mobile fullscreen / Desktop floating panel
               "inset-0 sm:inset-auto sm:bottom-5 sm:left-5 sm:rounded-2xl",
               "sm:w-[360px] sm:h-[480px]",
             ].join(" ")}
             role="dialog"
-            aria-label="Chat 0web"
+            aria-modal="false"
+            aria-labelledby="chatbot-title"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") handleClose();
+            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
               <div className="flex items-center gap-2.5">
                 <span className="grid place-items-center w-8 h-8 rounded-full bg-primary-foreground/15">
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 </span>
                 <div>
-                  <p className="text-sm font-bold leading-tight">0web Assistente</p>
+                  <p id="chatbot-title" className="text-sm font-bold leading-tight">
+                    0web Assistente
+                  </p>
                   <p className="text-[11px] opacity-80 leading-tight">Resposta em minutos</p>
                 </div>
               </div>
               <button
+                ref={closeBtnRef}
                 type="button"
                 onClick={handleClose}
                 aria-label="Fechar chat"
-                className="grid place-items-center w-8 h-8 rounded-full hover:bg-primary-foreground/15 transition"
+                className="grid place-items-center w-8 h-8 rounded-full hover:bg-primary-foreground/15 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/60"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
 
             {/* Messages */}
             <div
               ref={scrollRef}
+              role="log"
+              aria-live="polite"
+              aria-label="Conversa do chatbot"
               className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-background/40"
             >
               {state.messages.map((m) => (
@@ -366,7 +490,7 @@ export function HomeChatbot() {
 
               {/* Step-specific UI */}
               {!typing && state.step === 0 && state.messages.length > 0 && (
-                <ChipsRow>
+                <ChipsRow label="Selecione um serviço">
                   {servicesChips.length === 0 && (
                     <span className="text-xs text-muted-foreground px-2 py-1">
                       Carregando serviços…
@@ -384,7 +508,7 @@ export function HomeChatbot() {
               )}
 
               {!typing && state.step === 1 && (
-                <ChipsRow>
+                <ChipsRow label="Selecione o perfil">
                   {["Uso pessoal / freela", "Empresa pequena", "Empresa média/grande"].map((v) => (
                     <Chip key={v} onClick={() => choosePerfil(v)}>
                       {v}
@@ -394,7 +518,7 @@ export function HomeChatbot() {
               )}
 
               {!typing && state.step === 2 && (
-                <ChipsRow>
+                <ChipsRow label="Selecione o prazo">
                   {["Urgente — essa semana", "Até 30 dias", "Só estou pesquisando"].map((v) => (
                     <Chip key={v} onClick={() => choosePrazo(v)}>
                       {v}
@@ -404,17 +528,50 @@ export function HomeChatbot() {
               )}
 
               {!typing && state.step === 3 && (
-                <div className="space-y-2 pt-1">
+                <form
+                  className="space-y-2 pt-1"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmitLead();
+                  }}
+                >
+                  <label htmlFor="chatbot-name" className="sr-only">
+                    Seu nome
+                  </label>
                   <input
+                    id="chatbot-name"
+                    ref={nameRef}
                     type="text"
                     placeholder="Seu nome"
                     value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
+                    onChange={(e) => {
+                      setNameInput(e.target.value);
+                      if (nameError) setNameError(null);
+                    }}
                     autoComplete="name"
                     maxLength={80}
-                    className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    required
+                    aria-invalid={!!nameError}
+                    aria-describedby={nameError ? "chatbot-name-err" : undefined}
+                    className={[
+                      "w-full rounded-xl border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2",
+                      nameError
+                        ? "border-red-400 focus:ring-red-300"
+                        : "border-border focus:ring-primary/30",
+                    ].join(" ")}
                   />
+                  {nameError && (
+                    <p id="chatbot-name-err" role="alert" className="text-[11px] text-red-500 -mt-1">
+                      {nameError}
+                    </p>
+                  )}
+
+                  <label htmlFor="chatbot-phone" className="sr-only">
+                    WhatsApp com DDD
+                  </label>
                   <input
+                    id="chatbot-phone"
+                    ref={phoneRef}
                     type="tel"
                     placeholder="WhatsApp (com DDD)"
                     value={phoneInput}
@@ -424,6 +581,9 @@ export function HomeChatbot() {
                     }}
                     inputMode="tel"
                     autoComplete="tel"
+                    required
+                    aria-invalid={!!phoneError}
+                    aria-describedby={phoneError ? "chatbot-phone-err" : undefined}
                     className={[
                       "w-full rounded-xl border bg-card px-3 py-2.5 text-sm focus:outline-none focus:ring-2",
                       phoneError
@@ -432,18 +592,54 @@ export function HomeChatbot() {
                     ].join(" ")}
                   />
                   {phoneError && (
-                    <p className="text-[11px] text-red-500 -mt-1">{phoneError}</p>
+                    <p id="chatbot-phone-err" role="alert" className="text-[11px] text-red-500 -mt-1">
+                      {phoneError}
+                    </p>
                   )}
+
+                  <label className="flex items-start gap-2 pt-1 text-[11px] text-muted-foreground leading-snug cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-border accent-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                      aria-describedby="chatbot-consent-desc"
+                      required
+                    />
+                    <span id="chatbot-consent-desc">
+                      Concordo com o uso dos meus dados para contato comercial conforme a{" "}
+                      <a
+                        href="/politica-privacidade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline text-primary"
+                      >
+                        Política de Privacidade
+                      </a>
+                      .
+                    </span>
+                  </label>
+
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2 rounded-lg border border-red-300 bg-red-50 px-2.5 py-2 text-[11px] text-red-700"
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" aria-hidden="true" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
+
                   <button
-                    type="button"
-                    onClick={handleSubmitLead}
+                    type="submit"
                     disabled={!canSubmit}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition"
+                    aria-label="Enviar contato"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm disabled:opacity-50 hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                   >
                     {submitting ? "Enviando…" : "Enviar"}
-                    {!submitting && <Send className="w-4 h-4" />}
+                    {!submitting && <Send className="w-4 h-4" aria-hidden="true" />}
                   </button>
-                </div>
+                </form>
               )}
 
               {!typing && state.step === 4 && (
@@ -452,15 +648,15 @@ export function HomeChatbot() {
                     <button
                       type="button"
                       onClick={goToService}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm hover:opacity-95 transition"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-2.5 text-sm hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                     >
-                      Ver {state.servico.name} <ArrowRight className="w-4 h-4" />
+                      Ver {state.servico.name} <ArrowRight className="w-4 h-4" aria-hidden="true" />
                     </button>
                   )}
                   <button
                     type="button"
                     onClick={goToAllServices}
-                    className="w-full text-center text-xs font-medium text-primary hover:underline py-1.5"
+                    className="w-full text-center text-xs font-medium text-primary hover:underline py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded"
                   >
                     Ver todos os serviços
                   </button>
@@ -495,7 +691,7 @@ function MessageBubble({ role, text }: { role: "bot" | "user"; text: string }) {
 
 function TypingDots() {
   return (
-    <div className="flex justify-start">
+    <div className="flex justify-start" aria-label="Assistente está digitando">
       <div className="rounded-2xl rounded-tl-sm bg-muted px-3.5 py-3 inline-flex items-center gap-1">
         {[0, 1, 2].map((i) => (
           <span
@@ -509,8 +705,12 @@ function TypingDots() {
   );
 }
 
-function ChipsRow({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-wrap gap-2 pt-1">{children}</div>;
+function ChipsRow({ children, label }: { children: React.ReactNode; label?: string }) {
+  return (
+    <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label={label}>
+      {children}
+    </div>
+  );
 }
 
 function Chip({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
@@ -518,7 +718,7 @@ function Chip({ children, onClick }: { children: React.ReactNode; onClick: () =>
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center rounded-full border border-primary/40 bg-primary/5 text-foreground hover:bg-primary hover:text-primary-foreground transition px-3 py-1.5 text-xs font-medium"
+      className="inline-flex items-center rounded-full border border-primary/40 bg-primary/5 text-foreground hover:bg-primary hover:text-primary-foreground transition px-3 py-1.5 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     >
       {children}
     </button>
