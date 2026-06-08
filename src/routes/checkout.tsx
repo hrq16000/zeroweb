@@ -126,6 +126,13 @@ function CheckoutPage() {
       });
       await markOrderWhatsAppHandoff({ data: { orderId: order.id } });
       const msg = buildWhatsAppMessage(items, total, order.id);
+      // CRO tracking — handoff WhatsApp
+      void import("@/lib/analytics").then(({ trackConversion }) =>
+        trackConversion("checkout_whatsapp_handoff", { order_id: order.id, total, items: items.length, location: "checkout" }),
+      );
+      void import("@/lib/persistence").then(({ persistEvent }) =>
+        persistEvent("checkout_whatsapp_handoff", { order_id: order.id, total, items: items.length }),
+      );
       clearCart();
       const wa = settings.whatsappNumber || DEFAULT_WHATSAPP;
       window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
