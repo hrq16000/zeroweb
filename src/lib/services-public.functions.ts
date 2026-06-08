@@ -196,7 +196,7 @@ async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
 }
 
 const COLS =
-  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
+  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,is_solution,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
 
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
