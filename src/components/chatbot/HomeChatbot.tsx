@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, ArrowRight } from "lucide-react";
 import { listServicesNav } from "@/lib/services-nav.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackConversion } from "@/lib/analytics";
 
 // FK to dynamic_forms.id (slug 'home-chatbot')
 const FORM_ID = "c2fc4661-b5c1-4bd9-92b0-fc6b803fe686";
