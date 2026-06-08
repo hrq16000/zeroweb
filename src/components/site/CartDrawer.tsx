@@ -76,12 +76,23 @@ function reportStep(
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
+  const lastSnapshot = useRef<string>("");
 
   useEffect(() => {
-    const sync = () => setItems(readCart());
+    const sync = () => {
+      const next = readCart();
+      setItems(next);
+      const sig = JSON.stringify(next.map((i) => [i.slug, i.qty]));
+      if (sig !== lastSnapshot.current) {
+        lastSnapshot.current = sig;
+        if (next.length > 0) reportStep("cart_update", next);
+      }
+    };
     const onOpen = () => {
       sync();
       setOpen(true);
+      const current = readCart();
+      if (current.length > 0) reportStep("cart_open", current);
     };
     sync();
     window.addEventListener("0web:cart-open", onOpen);
