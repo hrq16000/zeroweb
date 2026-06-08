@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer, Shuffle } from "lucide-react";
 import { Header } from "@/components/site/Header";
