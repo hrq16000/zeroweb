@@ -136,6 +136,7 @@ export function SmartServiceSearch({
   const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(false);
   const [highlight, setHighlight] = useState(0);
+  const [fontPx, setFontPx] = useState(16);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -143,6 +144,33 @@ export function SmartServiceSearch({
   // O typing animado sempre vence quando o campo está vazio e sem foco.
   // `placeholder` (estático) vira apenas fallback para leitores de tela.
   const livePlaceholder = !focused && !value ? `${typing}▍` : placeholder ?? "";
+
+  // Auto-fit: encolhe a fonte do input quando a frase (placeholder ou valor)
+  // ultrapassa a área visível. Mantém legibilidade em mobile sem cortar texto.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const input = inputRef.current;
+    if (!input) return;
+    const text = (value || livePlaceholder).replace(/▍$/, "");
+    if (!text) {
+      setFontPx(16);
+      return;
+    }
+    // Espaço útil: largura do input menos paddings (pl-12 + pr-12 ≈ 96px).
+    const available = Math.max(0, input.clientWidth - 96);
+    const canvas = document.createElement("canvas");
+    const ctx2d = canvas.getContext("2d");
+    if (!ctx2d) return;
+    const family = getComputedStyle(input).fontFamily || "sans-serif";
+    let size = 16;
+    const min = 11;
+    while (size > min) {
+      ctx2d.font = `${size}px ${family}`;
+      if (ctx2d.measureText(text).width <= available) break;
+      size -= 0.5;
+    }
+    setFontPx(size);
+  }, [value, livePlaceholder]);
 
   const suggestions = useMemo(() => {
     const term = value.trim();
