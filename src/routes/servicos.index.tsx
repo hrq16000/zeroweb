@@ -179,10 +179,12 @@ export const Route = createFileRoute("/servicos/")({
   loader: async () => {
     const { listServicesPublic } = await import("@/lib/services-public.functions");
     const { listHeroSlides } = await import("@/lib/hero-slides.functions");
-    const [{ services }, { slides }] = await Promise.all([
+    const [{ services: allServices }, { slides }] = await Promise.all([
       listServicesPublic(),
       listHeroSlides({ data: { page: "servicos" } }),
     ]);
+    // Catálogo /servicos lista apenas PRODUTOS. Soluções vão para /solucoes.
+    const services = allServices.filter((s) => !s.isSolution);
     return { services, slides };
   },
   errorComponent: ({ error }) => (

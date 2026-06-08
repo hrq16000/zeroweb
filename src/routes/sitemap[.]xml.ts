@@ -22,6 +22,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const children = [
           "sitemap-pages.xml",
           "sitemap-services.xml",
+          "sitemap-solutions.xml",
           "sitemap-cities.xml",
           "sitemap-city-services.xml",
           "sitemap-blog.xml",

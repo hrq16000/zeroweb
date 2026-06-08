@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrafegoPagoLocalRouteImport } from './routes/trafego-pago-local'
 import { Route as TrafegoPagoRouteImport } from './routes/trafego-pago'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as SolucoesRouteImport } from './routes/solucoes'
 import { Route as SolicitarOrcamentoRouteImport } from './routes/solicitar-orcamento'
 import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-diagnostico'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapSolutionsDotxmlRouteImport } from './routes/sitemap-solutions[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
@@ -160,6 +162,11 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SolucoesRoute = SolucoesRouteImport.update({
+  id: '/solucoes',
+  path: '/solucoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SolicitarOrcamentoRoute = SolicitarOrcamentoRouteImport.update({
   id: '/solicitar-orcamento',
   path: '/solicitar-orcamento',
@@ -178,6 +185,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapSolutionsDotxmlRoute = SitemapSolutionsDotxmlRouteImport.update({
+  id: '/sitemap-solutions.xml',
+  path: '/sitemap-solutions.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
@@ -900,10 +912,12 @@ export interface FileRoutesByFullPath {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1035,10 +1049,12 @@ export interface FileRoutesByTo {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1172,10 +1188,12 @@ export interface FileRoutesById {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/solicitar-diagnostico': typeof SolicitarDiagnosticoRoute
   '/solicitar-orcamento': typeof SolicitarOrcamentoRoute
+  '/solucoes': typeof SolucoesRoute
   '/termos': typeof TermosRoute
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
@@ -1310,10 +1328,12 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1445,10 +1465,12 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1581,10 +1603,12 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
     | '/solicitar-diagnostico'
     | '/solicitar-orcamento'
+    | '/solucoes'
     | '/termos'
     | '/trafego-pago'
     | '/trafego-pago-local'
@@ -1719,10 +1743,12 @@ export interface RootRouteChildren {
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
+  SitemapSolutionsDotxmlRoute: typeof SitemapSolutionsDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   SolicitarDiagnosticoRoute: typeof SolicitarDiagnosticoRoute
   SolicitarOrcamentoRoute: typeof SolicitarOrcamentoRoute
+  SolucoesRoute: typeof SolucoesRoute
   TermosRoute: typeof TermosRoute
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   TrafegoPagoLocalRoute: typeof TrafegoPagoLocalRoute
@@ -1786,6 +1812,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solucoes': {
+      id: '/solucoes'
+      path: '/solucoes'
+      fullPath: '/solucoes'
+      preLoaderRoute: typeof SolucoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/solicitar-orcamento': {
       id: '/solicitar-orcamento'
       path: '/solicitar-orcamento'
@@ -1812,6 +1845,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-solutions.xml': {
+      id: '/sitemap-solutions.xml'
+      path: '/sitemap-solutions.xml'
+      fullPath: '/sitemap-solutions.xml'
+      preLoaderRoute: typeof SitemapSolutionsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-services.xml': {
@@ -2963,10 +3003,12 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
+  SitemapSolutionsDotxmlRoute: SitemapSolutionsDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   SolicitarDiagnosticoRoute: SolicitarDiagnosticoRoute,
   SolicitarOrcamentoRoute: SolicitarOrcamentoRoute,
+  SolucoesRoute: SolucoesRoute,
   TermosRoute: TermosRoute,
   TrafegoPagoRoute: TrafegoPagoRoute,
   TrafegoPagoLocalRoute: TrafegoPagoLocalRoute,

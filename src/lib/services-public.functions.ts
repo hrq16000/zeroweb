@@ -4,6 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { SERVICES, type ServiceData, type ServiceCategory } from "@/lib/services-data";
+import { isServiceSolution } from "@/lib/is-solution";
 
 type DbServiceRow = {
   slug: string;
@@ -32,6 +33,7 @@ type DbServiceRow = {
   show_in_footer: boolean | null;
   show_in_home_featured: boolean | null;
   show_in_sitemap: boolean | null;
+  is_solution: boolean | null;
   funnels: unknown;
   gallery: unknown;
   sections: unknown;
@@ -105,6 +107,8 @@ export type PublicServiceFull = ServiceData & {
   showInFooter: boolean;
   showInHomeFeatured: boolean;
   showInSitemap: boolean;
+  isSolution: boolean;
+  isSolutionFlag: boolean | null;
   funnels: Record<string, string>;
   gallery: GalleryItem[];
   sections: { title: string; body: string }[];
@@ -153,6 +157,8 @@ function mapRow(
     showInFooter: row.show_in_footer ?? true,
     showInHomeFeatured: row.show_in_home_featured ?? true,
     showInSitemap: row.show_in_sitemap ?? true,
+    isSolutionFlag: row.is_solution ?? null,
+    isSolution: isServiceSolution({ is_solution: row.is_solution, price: row.price }),
     funnels: asFunnels(row.funnels),
     gallery,
     sections: asSections(row.sections),
@@ -190,7 +196,7 @@ async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
 }
 
 const COLS =
-  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
+  "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,is_solution,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
 
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
@@ -209,6 +215,8 @@ const fileFallback = (s: ServiceData): PublicServiceFull => ({
   showInFooter: true,
   showInHomeFeatured: true,
   showInSitemap: true,
+  isSolutionFlag: null,
+  isSolution: false,
   funnels: {},
   gallery: [],
   sections: [],

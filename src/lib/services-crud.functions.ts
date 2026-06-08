@@ -69,6 +69,9 @@ export interface ServiceRow {
   keywords: string[];
   is_active: boolean;
   is_featured: boolean;
+  // Flag manual: prevalece sobre o fallback automático (preço NULL/0).
+  // null = automático conforme preço.
+  is_solution: boolean | null;
   // Visibilidade (novo)
   show_in_menu: boolean;
   show_in_footer: boolean;
@@ -135,6 +138,10 @@ function normalize(row: Record<string, unknown>): ServiceRow {
     keywords: asArr<string>(row.keywords),
     is_active: Boolean(row.is_active),
     is_featured: Boolean(row.is_featured),
+    is_solution:
+      row.is_solution === null || row.is_solution === undefined
+        ? null
+        : Boolean(row.is_solution),
     show_in_menu: row.show_in_menu === undefined ? true : Boolean(row.show_in_menu),
     show_in_footer: row.show_in_footer === undefined ? true : Boolean(row.show_in_footer),
     show_in_home_featured: row.show_in_home_featured === undefined ? false : Boolean(row.show_in_home_featured),
@@ -208,6 +215,7 @@ const upsertSchema = z.object({
   keywords: z.array(z.string().min(1).max(80)).max(30).default([]),
   is_active: z.boolean().default(true),
   is_featured: z.boolean().default(false),
+  is_solution: z.boolean().nullable().optional(),
   show_in_menu: z.boolean().default(true),
   show_in_footer: z.boolean().default(true),
   show_in_home_featured: z.boolean().default(false),
