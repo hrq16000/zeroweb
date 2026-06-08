@@ -245,6 +245,37 @@ function PostPage() {
             </div>
           </section>
         )}
+
+        {post.relatedServiceSlug && (
+          <section className="mx-auto max-w-3xl px-5 lg:px-8 mt-16">
+            <h2 className="text-xl font-bold">Serviço relacionado a este post</h2>
+            <Link
+              to="/servicos/$slug"
+              params={{ slug: post.relatedServiceSlug }}
+              onClick={() =>
+                trackEvent("blog_related_service_click", {
+                  post: post.slug,
+                  service: post.relatedServiceSlug,
+                })
+              }
+              className="mt-4 flex items-center justify-between rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-card to-card p-5 hover:shadow-elegant transition group"
+            >
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                  Serviço 0WEB
+                </p>
+                <p className="mt-1 font-semibold text-lg">
+                  {post.relatedServiceSlug
+                    .replace(/-/g, " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase())}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-0.5 transition">
+                Ver serviço <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
+          </section>
+        )}
       </main>
       <CTA />
       <Footer />
