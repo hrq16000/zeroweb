@@ -17,7 +17,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { SiteExpressFunnelModal } from "@/components/site/SiteExpressFunnelModal";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import {
   Accordion,
   AccordionContent,
