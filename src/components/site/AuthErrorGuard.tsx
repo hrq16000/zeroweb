@@ -54,11 +54,7 @@ export function AuthErrorGuard() {
         /* noop */
       }
       toast.error("Sua sessão expirou. Faça login novamente.");
-      navigate({
-        to: "/auth",
-        search: { redirect: pathname },
-        replace: true,
-      });
+      navigate({ to: "/auth", replace: true });
     };
 
     const onRejection = (ev: PromiseRejectionEvent) => {
