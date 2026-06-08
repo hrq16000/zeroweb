@@ -4,6 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { SERVICES, type ServiceData, type ServiceCategory } from "@/lib/services-data";
+import { isServiceSolution } from "@/lib/is-solution";
 
 type DbServiceRow = {
   slug: string;
