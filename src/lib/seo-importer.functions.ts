@@ -128,68 +128,39 @@ function buildRichHtml(row: Row): string {
   return parts.join("\n");
 }
 
-/** Gera blocos JSON-LD adicionais (Service + FAQPage + BreadcrumbList). */
+/**
+ * Gera blocos JSON-LD ADICIONAIS (não duplica o que a rota /servicos/$slug
+ * já emite — Service, FAQPage, BreadcrumbList, WebPage). Aqui só
+ * adicionamos o bloco Product+Offer quando há preço explícito, dando ao
+ * Google sinais de e-commerce (preço, moeda, disponibilidade).
+ */
 function buildSchemaJsonLd(row: Row): Row[] {
   const slug = String(row.slug ?? "");
   const url = `${ORIGIN}/servicos/${slug}`;
   const name = String(row.name ?? "");
   const description = String(row.description ?? "");
-  const faq = asObjArr<{ q?: string; a?: string }>(row.faq);
   const price = row.price != null ? Number(row.price) : null;
 
-  const blocks: Row[] = [];
+  if (price == null || !(price > 0)) return [];
 
-  // Service / Offer
-  const serviceBlock: Row = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name,
-    description,
-    url,
-    serviceType: row.service_type ?? row.category,
-    areaServed: { "@type": "Country", name: "BR" },
-    provider: {
-      "@type": "Organization",
-      name: "0WEB",
-      url: ORIGIN,
-    },
-  };
-  if (price != null && price > 0) {
-    serviceBlock.offers = {
-      "@type": "Offer",
-      price: price.toFixed(2),
-      priceCurrency: "BRL",
-      availability: "https://schema.org/InStock",
-      url,
-    };
-  }
-  blocks.push(serviceBlock);
-
-  // FAQ
-  if (faq.length) {
-    blocks.push({
+  return [
+    {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({
-        "@type": "Question",
-        name: String(f.q ?? ""),
-        acceptedAnswer: { "@type": "Answer", text: String(f.a ?? "") },
-      })),
-    });
-  }
-
-  // Breadcrumb
-  blocks.push({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Início", item: ORIGIN },
-      { "@type": "ListItem", position: 2, name: "Serviços", item: `${ORIGIN}/servicos` },
-      { "@type": "ListItem", position: 3, name, item: url },
-    ],
-  });
-
-  return blocks;
+      "@type": "Product",
+      name,
+      description,
+      url,
+      brand: { "@type": "Brand", name: "0WEB" },
+      offers: {
+        "@type": "Offer",
+        price: price.toFixed(2),
+        priceCurrency: "BRL",
+        availability: "https://schema.org/InStock",
+        url,
+        seller: { "@type": "Organization", name: "0WEB" },
+      },
+    },
+  ];
 }
 
 export type RebuildResult = {
