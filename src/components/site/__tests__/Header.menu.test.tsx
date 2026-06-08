@@ -12,9 +12,11 @@ const headerSrc = readFileSync(
 );
 
 describe("Header menu", () => {
-  test("inclui Serviços e IA com slugs do catálogo", () => {
-    expect(headerSrc).toMatch(/{\s*to:\s*"\/servicos"\s*,\s*label:\s*"Serviços"\s*}/);
-    expect(headerSrc).toMatch(/{\s*to:\s*"\/servicos\/automacao-com-ia"\s*,\s*label:\s*"IA"\s*}/);
+  test("inclui dropdown de Serviços e links institucionais principais", () => {
+    expect(headerSrc).toMatch(/to="\/servicos"/);
+    expect(headerSrc).toMatch(/params=\{\{ slug: s\.slug \}\}/);
+    expect(headerSrc).toMatch(/{\s*to:\s*"\/solucoes"\s*,\s*label:\s*"Soluções"\s*}/);
+    expect(headerSrc).toMatch(/{\s*to:\s*"\/sobre"\s*,\s*label:\s*"Sobre"\s*}/);
   });
 
   test("não usa rotas legadas /ia, /seo, /criacao-sites no nav", () => {
@@ -26,7 +28,7 @@ describe("Header menu", () => {
   });
 
   test("fecha menu ao trocar de rota (useEffect depende de pathname)", () => {
-    expect(headerSrc).toMatch(/useEffect\(\(\)\s*=>\s*{\s*setOpen\(false\);\s*}\s*,\s*\[pathname\]\)/);
+    expect(headerSrc).toMatch(/useEffect\(\(\)\s*=>\s*{[\s\S]*setOpen\(false\);[\s\S]*setServicesOpen\(false\);[\s\S]*}\s*,\s*\[pathname\]\)/);
   });
 
   test("fecha menu ao clicar fora (mousedown/touchstart) e Escape", () => {

@@ -17,7 +17,7 @@ const fallbackCols: FooterCol[] = [
       { label: "Landing Pages", slug: "landing-pages" },
       { label: "Loja Virtual", slug: "loja-virtual" },
       { label: "Google Meu Negócio", slug: "google-meu-negocio" },
-      { label: "SEO", to: "/seo" },
+      { label: "SEO", slug: "seo" },
     ],
   },
   {

@@ -202,26 +202,6 @@ export const Route = createFileRoute("/servicos/")({
 
 type SortKey = "shop" | "recent" | "alpha" | "relevance";
 
-// Shuffle determinístico (Fisher-Yates com seed simples) por janelas de N,
-// preservando o viés de "mais recentes primeiro": embaralha apenas dentro
-// de blocos, então os primeiros itens continuam vindo dos mais recentes.
-function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
-  const out = [...arr];
-  let s = seed || 1;
-  const rand = () => {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  };
-  for (let start = 0; start < out.length; start += windowSize) {
-    const end = Math.min(start + windowSize, out.length);
-    for (let i = end - 1; i > start; i--) {
-      const j = start + Math.floor(rand() * (i - start + 1));
-      [out[i], out[j]] = [out[j], out[i]];
-    }
-  }
-  return out;
-}
-
 function ServicosHub() {
   const { services, slides } = Route.useLoaderData();
   const search = Route.useSearch();
@@ -231,7 +211,6 @@ function ServicosHub() {
   const [page, setPage] = useState(search.page ?? 1);
   const [sort, setSort] = useState<SortKey>(search.sort ?? "shop");
   const [activeCat, setActiveCat] = useState<string>(search.cat ?? "all");
-  const [shuffleSeed, setShuffleSeed] = useState(0);
   const [isPending, startTransition] = useTransition();
   const PER_PAGE = 12;
 
@@ -252,12 +231,6 @@ function ServicosHub() {
     }, 250);
     return () => clearTimeout(t);
   }, [q, activeCat, sort, page, navigate]);
-
-
-  // Atribui um seed após hidratar para não causar mismatch entre SSR e cliente.
-  useEffect(() => {
-    setShuffleSeed(Math.floor(Date.now() / 1000));
-  }, []);
 
   const allCategories = useMemo(() => {
     const s = new Set<string>();
@@ -282,9 +255,9 @@ function ServicosHub() {
     if (sort === "alpha") return [...list].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     if (sort === "relevance") return list;
     if (sort === "recent") return recentFirst;
-    // "shop" (default): mais recentes primeiro com leve shuffle pós-mount
-    return shuffleSeed > 0 ? windowedShuffle(recentFirst, 4, shuffleSeed) : recentFirst;
-  }, [services, q, sort, activeCat, shuffleSeed]);
+    // "shop" (default): vitrine em ordem estável, sem embaralhar.
+    return recentFirst;
+  }, [services, q, sort, activeCat]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
@@ -300,6 +273,17 @@ function ServicosHub() {
       <main className="pt-6">
         <h1 className="sr-only">Loja de serviços 0WEB</h1>
         <ShopHero slides={slides} />
+
+        <section className="px-5 pt-8">
+          <div className="mx-auto max-w-6xl rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p className="text-sm text-muted-foreground">
+              Projetos sem preço fechado foram movidos para a página de soluções consultivas.
+            </p>
+            <Link to="/solucoes" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+              Ver Soluções <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
 
         {/* Busca inteligente agora vive no header sticky (servicos.tsx) e
             permanece presente em todas as páginas da loja virtual. */}
@@ -428,7 +412,7 @@ function ServicosHub() {
                     }}
                     className="h-10 px-3 rounded-full border border-border bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <option value="shop">Vitrine (recentes + variados)</option>
+                    <option value="shop">Vitrine</option>
                     <option value="recent">Mais recentes</option>
                     <option value="alpha">Alfabética (A→Z)</option>
                     <option value="relevance">Relevância</option>
@@ -480,6 +464,25 @@ function ServicosHub() {
                     </div>
                   </div>
                 ))}
+              </div>
+            ) : services.length === 0 ? (
+              <div className="mx-auto max-w-2xl text-center py-14 rounded-3xl border border-dashed border-border bg-card px-6">
+                <AlertCircle className="w-9 h-9 text-muted-foreground mx-auto" />
+                <h3 className="mt-4 text-xl font-bold">Nenhum produto com preço publicado</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  A vitrine exibe apenas produtos com valor cadastrado. Se você quer publicar um novo item, solicite o cadastramento.
+                </p>
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <Link
+                    to="/contato"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
+                  >
+                    Solicitar cadastramento <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link to="/solucoes" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">
+                    Ver soluções sem preço
+                  </Link>
+                </div>
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-12">

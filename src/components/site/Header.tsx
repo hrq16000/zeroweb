@@ -10,8 +10,10 @@ import logoAsset from "@/assets/logo-0web.png.asset.json";
 
 const staticNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
+  { to: "/solucoes", label: "Soluções" },
   { to: "/cases", label: "Cases" },
   { to: "/planos", label: "Planos" },
+  { to: "/sobre", label: "Sobre" },
   { to: "/faq", label: "FAQ" },
   { to: "/blog", label: "Blog" },
   { to: "/contato", label: "Contato" },
