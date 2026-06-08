@@ -294,7 +294,7 @@ export function HomeChatbot() {
       ...attribution,
     });
 
-    setState((s) => ({ ...s, nome, whatsapp, step: 4 }));
+    setState((s) => ({ ...s, nome, whatsapp, step: 4, reviewing: false }));
     trackEvent("chatbot_step", { step: 4, ...attribution });
     pushBot(
       `Ótimo, ${nome}! 🎉 Vou te direcionar para ${state.servico?.name ?? "o serviço"} agora. Você também pode receber um retorno pelo WhatsApp em breve.`,
