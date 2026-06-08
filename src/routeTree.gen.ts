@@ -69,6 +69,7 @@ import { Route as ServicosPresencaDigitalRouteImport } from './routes/servicos.p
 import { Route as ServicosParceirosRouteImport } from './routes/servicos.parceiros'
 import { Route as ServicosMarketplaceRouteImport } from './routes/servicos.marketplace'
 import { Route as ServicosGoogleMeuNegocioRouteImport } from './routes/servicos.google-meu-negocio'
+import { Route as ServicosGestaoRedesSociaisRouteImport } from './routes/servicos.gestao-redes-sociais'
 import { Route as ServicosConsultoriaRouteImport } from './routes/servicos.consultoria'
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
@@ -448,6 +449,12 @@ const ServicosGoogleMeuNegocioRoute =
   ServicosGoogleMeuNegocioRouteImport.update({
     id: '/google-meu-negocio',
     path: '/google-meu-negocio',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const ServicosGestaoRedesSociaisRoute =
+  ServicosGestaoRedesSociaisRouteImport.update({
+    id: '/gestao-redes-sociais',
+    path: '/gestao-redes-sociais',
     getParentRoute: () => ServicosRoute,
   } as any)
 const ServicosConsultoriaRoute = ServicosConsultoriaRouteImport.update({
@@ -945,6 +952,7 @@ export interface FileRoutesByFullPath {
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/gestao-redes-sociais': typeof ServicosGestaoRedesSociaisRoute
   '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
@@ -1081,6 +1089,7 @@ export interface FileRoutesByTo {
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/gestao-redes-sociais': typeof ServicosGestaoRedesSociaisRoute
   '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
@@ -1221,6 +1230,7 @@ export interface FileRoutesById {
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
   '/servicos/consultoria': typeof ServicosConsultoriaRoute
+  '/servicos/gestao-redes-sociais': typeof ServicosGestaoRedesSociaisRoute
   '/servicos/google-meu-negocio': typeof ServicosGoogleMeuNegocioRoute
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
@@ -1361,6 +1371,7 @@ export interface FileRouteTypes {
     | '/r/$code'
     | '/servicos/$slug'
     | '/servicos/consultoria'
+    | '/servicos/gestao-redes-sociais'
     | '/servicos/google-meu-negocio'
     | '/servicos/marketplace'
     | '/servicos/parceiros'
@@ -1497,6 +1508,7 @@ export interface FileRouteTypes {
     | '/r/$code'
     | '/servicos/$slug'
     | '/servicos/consultoria'
+    | '/servicos/gestao-redes-sociais'
     | '/servicos/google-meu-negocio'
     | '/servicos/marketplace'
     | '/servicos/parceiros'
@@ -1636,6 +1648,7 @@ export interface FileRouteTypes {
     | '/r/$code'
     | '/servicos/$slug'
     | '/servicos/consultoria'
+    | '/servicos/gestao-redes-sociais'
     | '/servicos/google-meu-negocio'
     | '/servicos/marketplace'
     | '/servicos/parceiros'
@@ -2209,6 +2222,13 @@ declare module '@tanstack/react-router' {
       path: '/google-meu-negocio'
       fullPath: '/servicos/google-meu-negocio'
       preLoaderRoute: typeof ServicosGoogleMeuNegocioRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/gestao-redes-sociais': {
+      id: '/servicos/gestao-redes-sociais'
+      path: '/gestao-redes-sociais'
+      fullPath: '/servicos/gestao-redes-sociais'
+      preLoaderRoute: typeof ServicosGestaoRedesSociaisRouteImport
       parentRoute: typeof ServicosRoute
     }
     '/servicos/consultoria': {
@@ -2933,6 +2953,7 @@ const EstadosRouteWithChildren =
 interface ServicosRouteChildren {
   ServicosSlugRoute: typeof ServicosSlugRoute
   ServicosConsultoriaRoute: typeof ServicosConsultoriaRoute
+  ServicosGestaoRedesSociaisRoute: typeof ServicosGestaoRedesSociaisRoute
   ServicosGoogleMeuNegocioRoute: typeof ServicosGoogleMeuNegocioRoute
   ServicosMarketplaceRoute: typeof ServicosMarketplaceRoute
   ServicosParceirosRoute: typeof ServicosParceirosRoute
@@ -2947,6 +2968,7 @@ interface ServicosRouteChildren {
 const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosSlugRoute: ServicosSlugRoute,
   ServicosConsultoriaRoute: ServicosConsultoriaRoute,
+  ServicosGestaoRedesSociaisRoute: ServicosGestaoRedesSociaisRoute,
   ServicosGoogleMeuNegocioRoute: ServicosGoogleMeuNegocioRoute,
   ServicosMarketplaceRoute: ServicosMarketplaceRoute,
   ServicosParceirosRoute: ServicosParceirosRoute,
