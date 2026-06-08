@@ -4,6 +4,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, Download, RefreshCw } from "lucide-react";
 import { listNotFound, listRedirects, listIndexCoverage } from "@/lib/route-404.functions";
 import { auditLegacyLinks } from "@/lib/legacy-audit.functions";
+import {
+  adminListSeoAuditHistory,
+  adminApproveSeoAudit,
+  type SeoAuditRow,
+} from "@/lib/seo-audit-history.functions";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -233,6 +238,7 @@ function SeoNotFoundPage() {
           <TabsTrigger value="redirects">Redirects ({redirects.length})</TabsTrigger>
           <TabsTrigger value="coverage">Indexação ({coverage.length})</TabsTrigger>
           <TabsTrigger value="legacy">Links legacy</TabsTrigger>
+          <TabsTrigger value="history">Histórico SEO</TabsTrigger>
         </TabsList>
 
         <TabsContent value="404s" className="space-y-3">
@@ -399,6 +405,10 @@ function SeoNotFoundPage() {
 
         <TabsContent value="legacy" className="space-y-3">
           <LegacyLinksPanel />
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-3">
+          <SeoAuditHistoryPanel />
         </TabsContent>
       </Tabs>
     </div>
