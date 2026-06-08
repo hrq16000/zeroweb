@@ -1,0 +1,386 @@
+{
+  "redirects": [
+    {
+      "from": "/automacao",
+      "expected": "/servicos/automacao-com-ia",
+      "status": 301,
+      "location": "/servicos/automacao-com-ia",
+      "ok": true
+    },
+    {
+      "from": "/consultoria",
+      "expected": "/servicos/consultoria",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/consultoria",
+      "ok": true
+    },
+    {
+      "from": "/landing-pages",
+      "expected": "/servicos/landing-pages",
+      "status": 301,
+      "location": "/servicos/landing-pages",
+      "ok": true
+    },
+    {
+      "from": "/marketplace",
+      "expected": "/servicos/marketplace",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/marketplace",
+      "ok": true
+    },
+    {
+      "from": "/parceiros",
+      "expected": "/servicos/parceiros",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/parceiros",
+      "ok": true
+    },
+    {
+      "from": "/presenca-digital",
+      "expected": "/servicos/presenca-digital",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/presenca-digital",
+      "ok": true
+    },
+    {
+      "from": "/redes-sociais",
+      "expected": "/servicos/gestao-redes-sociais",
+      "status": 301,
+      "location": "/servicos/gestao-redes-sociais",
+      "ok": true
+    },
+    {
+      "from": "/criacao-sites",
+      "expected": "/servicos/criacao-de-sites",
+      "status": 301,
+      "location": "/servicos/criacao-de-sites",
+      "ok": true
+    },
+    {
+      "from": "/desenvolvimento",
+      "expected": "/servicos/desenvolvimento-saas",
+      "status": 301,
+      "location": "/servicos/desenvolvimento-saas",
+      "ok": true
+    },
+    {
+      "from": "/seo",
+      "expected": "/servicos/seo",
+      "status": 301,
+      "location": "/servicos/seo",
+      "ok": true
+    },
+    {
+      "from": "/trafego-pago",
+      "expected": "/servicos/trafego-pago",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/trafego-pago",
+      "ok": true
+    },
+    {
+      "from": "/trafego-pago-local",
+      "expected": "/servicos/trafego-pago-local",
+      "status": 301,
+      "location": "https://0web.com.br/servicos/trafego-pago-local",
+      "ok": true
+    },
+    {
+      "from": "/ia",
+      "expected": "/servicos/automacao-com-ia",
+      "status": 0,
+      "error": "fetch failed",
+      "ok": false
+    },
+    {
+      "from": "/google-meu-negocio",
+      "expected": "/servicos/google-meu-negocio",
+      "status": 0,
+      "error": "fetch failed",
+      "ok": false
+    }
+  ],
+  "links": [
+    {
+      "path": "/",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/sobre",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/cases",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/faq",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/contato",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/servicos/automacao-com-ia",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/chatbot-whatsapp",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/landing-pages",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/loja-virtual",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/marketing-digital",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/marketplace",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/parceiros",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/consultoria",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/presenca-digital",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/desenvolvimento-saas",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/servicos/gestao-redes-sociais",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/servicos/seo",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/site-24h",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/sistemas-web",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/criacao-de-sites",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/trafego-pago-local",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/google-meu-negocio",
+      "status": 0,
+      "ok": false
+    },
+    {
+      "path": "/servicos/site-express",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/trafego-pago",
+      "status": 200,
+      "ok": true
+    }
+  ],
+  "chrome": [
+    {
+      "path": "/servicos/seo",
+      "device": "desktop",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": true,
+      "ok": true
+    },
+    {
+      "path": "/servicos/seo",
+      "device": "mobile",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": true,
+      "ok": true
+    },
+    {
+      "path": "/servicos/google-meu-negocio",
+      "device": "desktop",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/servicos/google-meu-negocio",
+      "device": "mobile",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/sobre",
+      "device": "desktop",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/sobre",
+      "device": "mobile",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/faq",
+      "device": "desktop",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/faq",
+      "device": "mobile",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/cases",
+      "device": "desktop",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "/cases",
+      "device": "mobile",
+      "status": 200,
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false,
+      "ok": false
+    },
+    {
+      "path": "404",
+      "status": 404,
+      "ok": false
+    }
+  ],
+  "seo": [
+    {
+      "path": "/",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    },
+    {
+      "path": "/servicos/seo",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    },
+    {
+      "path": "/servicos/google-meu-negocio",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    },
+    {
+      "path": "/blog",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    },
+    {
+      "path": "/faq",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    },
+    {
+      "path": "/sobre",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true,
+      "ok": true
+    }
+  ],
+  "summary": {
+    "base": "https://0web.com.br",
+    "at": "2026-06-08T17-44-14-908Z",
+    "fail": 18
+  }
+}
