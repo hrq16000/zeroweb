@@ -1,49 +1,43 @@
-# Plano de melhorias (5 ondas)
+## Já está pronto no projeto (não vou refazer — seria regressão)
 
-O escopo pedido é grande; vou executar em ondas pequenas e independentes para não regredir nada. Cada onda entrega valor sozinha e plugada ao painel admin. Vou tocar **somente o que está marcado como melhoria**.
+| Pedido | Status | Onde |
+| --- | --- | --- |
+| Header dropdown de serviços do banco (`show_in_menu` + `display_order`) | ✅ | `src/components/site/Header.tsx` consome `listServicesNav()` |
+| Footer lê `show_in_footer` ordenado | ✅ | `src/components/site/Footer.tsx` |
+| Grade de 4 cards na home (`show_in_home_featured`) com imagem real + CTA | ✅ | `src/components/site/FeaturedServices.tsx` |
+| `sitemap-services.xml` respeita `show_in_sitemap` | ✅ | `src/routes/sitemap-services[.]xml.ts` |
+| `ServiceCTA` com funil por local + fallback `funnels.default` | ✅ | `src/components/site/ServiceCTA.tsx` |
+| Painel admin permite editar `show_in_*`, `display_order`, `funnels`, checklist de publicação | ✅ | `src/routes/_authenticated/app.servicos.tsx` (ondas anteriores) |
+| Carrinho drawer + Add-to-cart + login nudge Google | ✅ | `CartDrawer.tsx`, `AddToCartButton.tsx`, `cart.ts` |
+| Campos comerciais (`price`, `pricePeriod`, `deliveryDays`, `conditions`) na vitrine e no detalhe | ✅ | `servicos.index.tsx` linhas 501-513, `servicos.$slug.tsx` linhas 130-205 |
+| Categorias e itens relacionados no catálogo com Add-to-cart | ✅ | `servicos.index.tsx` (filtros por categoria) + `RelatedLinksGrid.tsx` |
+| Tela admin de leads/visitas por etapa do funil | ✅ parcial | `/app/usuarios` (aba Leads/Funis) + `/app/dynamic-funnels` |
 
-## Onda 1 — Checklist de publicação no admin (`services`)
-- Adicionar painel "Validação de publicação" em `/app/servicos` no drawer do serviço.
-- Checklist server-side (serverFn admin) validando por serviço:
-  - `seo_title` 30–60 chars
-  - `seo_description` 80–160 chars
-  - `og_image` ou `image_path` presente (URL acessível)
-  - `canonical_path` consistente com `/servicos/<slug>`
-  - `schema_jsonld` válido (`@context`, `@type`)
-  - `rich_html` não vazio
-- Botão "Publicar" só habilita se 100% verde. Persiste `published=true`.
-- Migration idempotente para colunas em falta caso necessário.
+## Próxima onda (executo agora, sem perguntar)
 
-## Onda 2 — Upload de imagens dos serviços órfãos
-- Nova rota admin `/app/servicos/imagens` listando serviços sem `image_path`.
-- Mostra slug, nome, status público (rota existe?), upload direto no bucket `service-images` (privado → signed URL).
-- ServerFn `adminUploadServiceImage` (validação Zod, tamanho/MIME, atualiza `services.image_path` + `og_image`).
-- Link cruzado no painel principal de Serviços ("X serviços sem capa").
+Foco em 3 entregas pequenas, independentes, todas plugadas ao admin:
 
-## Onda 3 — Auditoria de links legacy em `/app/seo-404s`
-- Novo bloco "Links internos legacy" na página existente.
-- ServerFn admin varre `src/routes/**` + `rich_html` no DB e lista ocorrências de `/seo`, `/criacao-sites`, `/landing-pages`, `/trafego-pago`, `/google-meu-negocio`, etc. fora de `/servicos/$slug`.
-- Botão "Exportar CSV" e "Marcar como corrigido".
-- Reaproveita o redirect engine já existente.
+### Onda A — Histórico persistido de seo-diff + auditoria legacy
+- Migração: tabela `seo_audit_history` (`id`, `kind` enum `seo_diff|legacy_links`, `ran_at`, `summary jsonb`, `details jsonb`, `delta_pct`, `status`, `approved_by`, `approved_at`, `notes`) + GRANTs + RLS admin-only.
+- ServerFn `adminListSeoAuditHistory` (filtros por data/kind/status) e `adminApproveSeoAudit({id, approved})`.
+- Os scripts `scripts/run-seo-diff.mjs` e a serverFn de legacy-audit passam a gravar 1 row por execução.
+- UI em `/app/seo-404s` ganha aba "Histórico" com tabela + filtros + botão "Aprovar".
 
-## Onda 4 — Teste de catálogo (CI)
-- Script `scripts/validate-catalog-images.mjs`: para cada serviço esperado (`SERVICOS_ESPERADOS`) garantir `imageUrl` não-nulo + HEAD 200.
-- Plugado no `package.json` em `test:catalog` e adicionado ao workflow existente de CI (lighthouse / seo-jsonld).
-- Falha o build se algum órfão real.
+### Onda B — Checkout ligado ao funil do carrinho
+- Migração: tabela `cart_funnel_progress` (`id`, `user_id`, `visitor_id`, `step`, `cart_snapshot jsonb`, `payment_status`, `payment_channel` enum `site|whatsapp`, `updated_at`) + GRANTs + RLS por `auth.uid()` / admin.
+- ServerFn `saveCartFunnelStep` chamada pelo `CartDrawer` e por `checkout.tsx` em cada transição.
+- Webhook Stripe (já existente em `routes/api/public/hooks/stripe.ts`) atualiza `payment_status` para `paid|failed`.
+- O drawer "Finalizar pelo WhatsApp" marca `payment_channel=whatsapp` e `step=handoff_whatsapp`.
+- Aparece em `/app/usuarios` → drawer do usuário → nova aba "Carrinho/Funil".
 
-## Onda 5 — CI seo-diff por PR
-- GitHub Action `.github/workflows/seo-diff.yml` rodando `scripts/run-seo-diff.mjs` (a criar) que invoca o serverFn `seo-diff` já existente contra preview do PR.
-- Limites configuráveis em `seo-reports/seo-diff.config.json` (delta % máximo para Title/Description/OG/JSON-LD).
-- Bloqueia merge se delta > limite. Comenta no PR com diff.
+### Onda C — QA + SEO finais
+- Rodo `scripts/smoke-servicos.mjs`, `scripts/validate-canonicals.mjs`, `scripts/validate-jsonld.mjs`, `scripts/validate-catalog-images.mjs` e `scripts/validate-sitemaps.mjs` em paralelo.
+- Corrijo o que vier vermelho (links mortos, scroll-to-top, schema FAQ ausente em algum slug).
+- Se Lighthouse já roda no CI, só anoto resultado; não vou re-orquestrar.
 
----
+### Fora desta onda (regressão)
+- Refazer Header/Footer/Featured/CTA/cart/checklist — já existem.
+- Tela nova de "leads por etapa" do zero — `/app/usuarios` e `/app/dynamic-funnels` já cobrem; vou só adicionar link cruzado se faltar.
+- Trocar provider de pagamento — escopo separado.
 
-### Fora deste plano (já avisado: regressão)
-- Trocar carrinho atual / login (já existe Google-only + drawer + funil).
-- Refatorar `/servicos/$slug` (já é DB-driven desde a onda anterior).
-- Remover `.tsx` legacy de serviços (precisa onda de 301 que você adiou).
-
-### Critério de pronto por onda
-Cada onda termina com: rota nova no admin funcional, serverFn protegida por `requireSupabaseAuth` + role admin, build verde, e um teste/smoke quando aplicável.
-
-Vou começar pela **Onda 1** assim que aprovar (ou posso ir direto se preferir — me avise se quer pular alguma).
+Critério de pronto por onda: migração aplicada, serverFn protegida por admin role, UI plugada ao painel, build verde.
