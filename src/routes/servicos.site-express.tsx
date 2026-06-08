@@ -381,12 +381,14 @@ function SiteExpressPage() {
                 ))}
               </ul>
 
-              <button
-                onClick={openFunnel}
-                className="mt-7 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg transition"
-              >
-                Quero meu site agora <ArrowRight className="w-5 h-5" />
-              </button>
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug="site-express"
+                funnelSlug="funnel-site-express"
+                label="Quero meu site agora"
+                className={ctaWhiteClass}
+                location="site_express_pricing"
+              />
             </div>
             <p className="mt-4 text-center text-xs text-gray-500">
               Agências cobram R$ 3.000 a R$ 8.000 pelo mesmo escopo.
