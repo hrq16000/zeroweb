@@ -65,6 +65,8 @@ function ServicesAdminPage() {
   const fnUpsert = useServerFn(upsertService);
   const fnDelete = useServerFn(deleteService);
   const fnReorder = useServerFn(reorderServices);
+  const fnRebuildSeo = useServerFn(rebuildServiceSeo);
+  const [rebuilding, setRebuilding] = useState(false);
 
   const [rows, setRows] = useState<ServiceRow[]>([]);
   const [loading, setLoading] = useState(true);
