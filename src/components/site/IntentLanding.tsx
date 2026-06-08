@@ -4,6 +4,8 @@ import { CheckCircle2, ArrowRight, Star, Sparkles } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
@@ -26,6 +28,10 @@ export type IntentLandingProps = {
   funnelSlug?: string;
   /** Slug do serviço atual, usado pelo funil dinâmico. */
   serviceSlug?: string;
+  /** Nome amigável exibido nos breadcrumbs (padrão = headline). */
+  breadcrumbName?: string;
+  /** Caminhos /servicos/<slug> exibidos como serviços relacionados antes do Footer. */
+  relatedServicePaths?: string[];
 };
 
 export function IntentLanding(p: IntentLandingProps) {
@@ -40,12 +46,21 @@ export function IntentLanding(p: IntentLandingProps) {
 
   const waLink = whatsappUrl(p.whatsappMessage, `lp_${p.intent}`);
 
+  const breadcrumbName = p.breadcrumbName ?? p.headline;
+  const servicePath = p.serviceSlug ? `/servicos/${p.serviceSlug}` : `/servicos/${p.slug}`;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: breadcrumbName, path: servicePath },
+        ]}
+      />
       <main>
         {/* HERO */}
-        <section className="relative overflow-hidden pt-28 pb-20 px-6">
+        <section className="relative overflow-hidden pt-10 pb-20 px-6">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
