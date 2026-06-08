@@ -457,12 +457,12 @@ export function HomeChatbot() {
                 </ChipsRow>
               )}
 
-              {!typing && state.step === 3 && (
+              {!typing && state.step === 3 && !state.reviewing && (
                 <form
                   className="space-y-2 pt-1"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleSubmitLead();
+                    handleReviewLead();
                   }}
                 >
                   <label htmlFor="chatbot-name" className="sr-only">
