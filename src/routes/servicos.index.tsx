@@ -30,7 +30,21 @@ const SERVICE_LIST = Object.values(SERVICES);
 const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
 const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
 
+type ServicosSearch = { q?: string; cat?: string; sort?: SortKey; page?: number };
+
 export const Route = createFileRoute("/servicos/")({
+  validateSearch: (raw: Record<string, unknown>): ServicosSearch => {
+    const q = typeof raw.q === "string" ? raw.q.slice(0, 100) : undefined;
+    const cat = typeof raw.cat === "string" ? raw.cat.slice(0, 60) : undefined;
+    const sortRaw = typeof raw.sort === "string" ? raw.sort : undefined;
+    const sort: SortKey | undefined =
+      sortRaw === "shop" || sortRaw === "recent" || sortRaw === "alpha" || sortRaw === "relevance"
+        ? sortRaw
+        : undefined;
+    const pageNum = Number(raw.page);
+    const page = Number.isFinite(pageNum) && pageNum >= 1 ? Math.floor(pageNum) : undefined;
+    return { q, cat, sort, page };
+  },
   head: () => {
     const url = absUrl("/servicos");
     const title = "Serviços da 0WEB · Sites, SEO, IA, Marketing Digital e Sistemas";
