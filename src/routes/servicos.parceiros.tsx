@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { applyAsPartner } from "@/lib/partners.functions";
 import { CheckCircle2 } from "lucide-react";
 
