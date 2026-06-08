@@ -453,12 +453,14 @@ function SiteExpressPage() {
             <p className="mt-4 text-lg opacity-95">
               Em menos de 24h o seu site pode estar no ar — vendendo enquanto você dorme.
             </p>
-            <button
-              onClick={openFunnel}
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 hover:bg-orange-50 font-bold uppercase tracking-wide px-8 py-4 text-sm shadow-xl transition"
-            >
-              Quero meu site em 24h <ArrowRight className="w-5 h-5" />
-            </button>
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="site-express"
+              funnelSlug="funnel-site-express"
+              label="Quero meu site em 24h"
+              className={ctaFinalClass}
+              location="site_express_final"
+            />
             <p className="mt-6 text-sm opacity-90">
               <Link to="/servicos" className="underline hover:opacity-100">Ver todos os serviços da 0WEB</Link>
             </p>
