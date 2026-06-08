@@ -215,6 +215,7 @@ const upsertSchema = z.object({
   keywords: z.array(z.string().min(1).max(80)).max(30).default([]),
   is_active: z.boolean().default(true),
   is_featured: z.boolean().default(false),
+  is_solution: z.boolean().nullable().optional(),
   show_in_menu: z.boolean().default(true),
   show_in_footer: z.boolean().default(true),
   show_in_home_featured: z.boolean().default(false),
