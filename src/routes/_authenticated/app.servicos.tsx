@@ -601,10 +601,17 @@ function ServiceEditDialog({
           </TabsContent>
         </Tabs>
 
+        <PublishChecklist
+          report={report}
+          isActive={!!s.is_active}
+          onToggleActive={(v) => set("is_active", v)}
+        />
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={saving}>Cancelar</Button>
-          <Button onClick={submit} disabled={saving}>{saving ? "Salvando…" : "Salvar"}</Button>
+          <Button onClick={submit} disabled={saving}>
+            {saving ? "Salvando…" : s.is_active ? "Salvar e publicar" : "Salvar rascunho"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
