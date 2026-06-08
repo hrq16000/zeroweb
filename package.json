@@ -21,7 +21,9 @@
     "img:optimize": "node scripts/optimize-blog-images.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "node scripts/install-git-hooks.mjs"
+    "prepare": "node scripts/install-git-hooks.mjs",
+    "catalog:images": "node scripts/validate-catalog-images.mjs",
+    "seo:diff": "node scripts/run-seo-diff.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

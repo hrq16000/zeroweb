@@ -99,6 +99,7 @@ import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppUsuariosRouteImport } from './routes/_authenticated/app.usuarios'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
+import { Route as AuthenticatedAppServicosImagensRouteImport } from './routes/_authenticated/app.servicos-imagens'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
 import { Route as AuthenticatedAppSeo404sRouteImport } from './routes/_authenticated/app.seo-404s'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
@@ -599,6 +600,12 @@ const AuthenticatedAppSupportRoute = AuthenticatedAppSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppServicosImagensRoute =
+  AuthenticatedAppServicosImagensRouteImport.update({
+    id: '/servicos-imagens',
+    path: '/servicos-imagens',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppServicosRoute =
   AuthenticatedAppServicosRouteImport.update({
     id: '/servicos',
@@ -950,6 +957,7 @@ export interface FileRoutesByFullPath {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
+  '/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
@@ -1082,6 +1090,7 @@ export interface FileRoutesByTo {
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
+  '/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
@@ -1218,6 +1227,7 @@ export interface FileRoutesById {
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
+  '/_authenticated/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/usuarios': typeof AuthenticatedAppUsuariosRoute
@@ -1354,6 +1364,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/seo-404s'
     | '/app/servicos'
+    | '/app/servicos-imagens'
     | '/app/support'
     | '/app/templates'
     | '/app/usuarios'
@@ -1486,6 +1497,7 @@ export interface FileRouteTypes {
     | '/app/reports'
     | '/app/seo-404s'
     | '/app/servicos'
+    | '/app/servicos-imagens'
     | '/app/support'
     | '/app/templates'
     | '/app/usuarios'
@@ -1621,6 +1633,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/reports'
     | '/_authenticated/app/seo-404s'
     | '/_authenticated/app/servicos'
+    | '/_authenticated/app/servicos-imagens'
     | '/_authenticated/app/support'
     | '/_authenticated/app/templates'
     | '/_authenticated/app/usuarios'
@@ -2370,6 +2383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSupportRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/servicos-imagens': {
+      id: '/_authenticated/app/servicos-imagens'
+      path: '/servicos-imagens'
+      fullPath: '/app/servicos-imagens'
+      preLoaderRoute: typeof AuthenticatedAppServicosImagensRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/servicos': {
       id: '/_authenticated/app/servicos'
       path: '/servicos'
@@ -2773,6 +2793,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSeo404sRoute: typeof AuthenticatedAppSeo404sRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRouteWithChildren
+  AuthenticatedAppServicosImagensRoute: typeof AuthenticatedAppServicosImagensRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppUsuariosRoute: typeof AuthenticatedAppUsuariosRoute
@@ -2808,6 +2829,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSeo404sRoute: AuthenticatedAppSeo404sRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRouteWithChildren,
+  AuthenticatedAppServicosImagensRoute: AuthenticatedAppServicosImagensRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppUsuariosRoute: AuthenticatedAppUsuariosRoute,
@@ -2969,13 +2991,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Bell, FolderKanban, FileText, LifeBuoy, BarChart3, User, LogOut, Shield, Home, Globe,
   Layers, Target, BookOpen, Eye, KeyRound, Network, LayoutTemplate, Fingerprint, Plug,
-  Search, Briefcase, Menu, Activity, ShoppingCart, CreditCard, Users,
+  Search, Briefcase, Menu, Activity, ShoppingCart, CreditCard, Users, ImageOff,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
@@ -31,6 +31,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/app/admin", icon: Shield, label: "Painel admin" },
   { to: "/app/usuarios", icon: Users, label: "Usuários" },
   { to: "/app/servicos", icon: Briefcase, label: "Serviços" },
+  { to: "/app/servicos-imagens", icon: ImageOff, label: "Imagens órfãs" },
   { to: "/app/pedidos", icon: ShoppingCart, label: "Pedidos" },
   { to: "/app/pagamentos", icon: CreditCard, label: "Pagamentos" },
   { to: "/app/master", icon: Globe, label: "Dashboard Master" },
