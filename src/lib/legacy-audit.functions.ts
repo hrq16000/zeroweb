@@ -161,10 +161,25 @@ export const auditLegacyLinks = createServerFn({ method: "GET" })
     const byPath = new Map<string, number>();
     for (const h of hits) byPath.set(h.path, (byPath.get(h.path) ?? 0) + 1);
 
-    return {
+    const summary = {
       total: hits.length,
       byPath: Array.from(byPath.entries()).map(([path, count]) => ({ path, count })).sort((a, b) => b.count - a.count),
-      hits: hits.slice(0, 500), // hard cap
+      hits: hits.slice(0, 500),
       scannedAt: new Date().toISOString(),
     };
+
+    // Persiste no histórico admin (não bloqueia o retorno se falhar).
+    try {
+      const { recordSeoAuditEntry } = await import("./seo-audit-history.functions");
+      await recordSeoAuditEntry({
+        kind: "legacy_links",
+        summary: { total: summary.total, byPath: summary.byPath, scannedAt: summary.scannedAt },
+        details: { hits: summary.hits },
+        delta_pct: summary.total === 0 ? 0 : null,
+      });
+    } catch (e) {
+      console.error("[auditLegacyLinks] history insert failed", e);
+    }
+
+    return summary;
   });
