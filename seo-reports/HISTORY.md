@@ -231,3 +231,26 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
   - ✅ `/presenca-digital` → 301 https://0web.com.br/servicos/presenca-digital
   - ✅ `/site-express` → 301 https://0web.com.br/servicos/site-express
 
+## 2026-06-08T02-52-42-344Z — https://0web.com.br
+- Rotas: **20** | Falhas: **9** | Relatório: `seo-reports/2026-06-08T02-52-42-344Z.json`
+  - ✅ `/servicos`
+  - ✅ `/servicos/automacao-com-ia`
+  - ✅ `/servicos/chatbot-whatsapp`
+  - ❌ (2) `/servicos/consultoria`
+  - ✅ `/servicos/criacao-de-sites`
+  - ✅ `/servicos/desenvolvimento-saas`
+  - ✅ `/servicos/gestao-redes-sociais`
+  - ❌ (2) `/servicos/google-meu-negocio`
+  - ✅ `/servicos/landing-pages`
+  - ✅ `/servicos/loja-virtual`
+  - ✅ `/servicos/marketing-digital`
+  - ❌ (1) `/servicos/marketplace`
+  - ❌ (1) `/servicos/parceiros`
+  - ❌ (2) `/servicos/presenca-digital`
+  - ✅ `/servicos/seo`
+  - ✅ `/servicos/sistemas-web`
+  - ❌ (1) `/servicos/site-24h`
+  - ❌ (2) `/servicos/site-express`
+  - ❌ (2) `/servicos/trafego-pago`
+  - ❌ (2) `/servicos/trafego-pago-local`
+
