@@ -133,7 +133,7 @@ function SolucoesPage() {
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-                {solutions.map((s, i) => (
+                {solutions.map((s: Sol, i: number) => (
                   <motion.article
                     key={s.slug}
                     initial={{ opacity: 0, y: 10 }}
