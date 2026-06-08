@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -201,26 +201,6 @@ export const Route = createFileRoute("/servicos/")({
 });
 
 type SortKey = "shop" | "recent" | "alpha" | "relevance";
-
-// Shuffle determinístico (Fisher-Yates com seed simples) por janelas de N,
-// preservando o viés de "mais recentes primeiro": embaralha apenas dentro
-// de blocos, então os primeiros itens continuam vindo dos mais recentes.
-function windowedShuffle<T>(arr: T[], windowSize: number, seed: number): T[] {
-  const out = [...arr];
-  let s = seed || 1;
-  const rand = () => {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
-  };
-  for (let start = 0; start < out.length; start += windowSize) {
-    const end = Math.min(start + windowSize, out.length);
-    for (let i = end - 1; i > start; i--) {
-      const j = start + Math.floor(rand() * (i - start + 1));
-      [out[i], out[j]] = [out[j], out[i]];
-    }
-  }
-  return out;
-}
 
 function ServicosHub() {
   const { services, slides } = Route.useLoaderData();
