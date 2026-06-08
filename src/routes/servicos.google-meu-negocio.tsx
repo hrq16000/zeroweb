@@ -7,6 +7,8 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
@@ -98,6 +100,12 @@ function GMBPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: "Google Meu Negócio", path: "/servicos/google-meu-negocio" },
+        ]}
+      />
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#020617] via-[#0a1330] to-[#0b1a3d] text-white">
@@ -343,6 +351,12 @@ function GMBPage() {
           </p>
         </div>
       </section>
+
+      <RelatedLinksGrid
+        title="Serviços relacionados"
+        subtitle="Acelere ainda mais a sua presença no Google."
+        only={["/servicos/seo", "/servicos/trafego-pago-local", "/servicos/presenca-digital"]}
+      />
 
       <Footer />
       <WhatsAppFloat />

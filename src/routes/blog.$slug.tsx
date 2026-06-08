@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { BlogPostFunnelCTA } from "@/components/funnel/BlogPostFunnelCTA";
 import { CTA } from "@/components/site/CTA";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
 import { Picture } from "@/components/site/Picture";
@@ -112,17 +113,15 @@ function PostPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32 lg:pt-40 pb-24">
+      <Breadcrumbs
+        items={[
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ]}
+      />
+      <main className="pt-6 lg:pt-8 pb-24">
         <article className="mx-auto max-w-3xl px-5 lg:px-8">
-          <nav className="text-sm text-muted-foreground">
-            <Link to="/" className="hover:text-foreground">Início</Link>
-            <span className="mx-2">/</span>
-            <Link to="/blog" className="hover:text-foreground">Blog</Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground">{post.category}</span>
-          </nav>
-
-          <span className="mt-6 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium">
+          <span className="inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium">
             {post.category}
           </span>
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
@@ -244,6 +243,37 @@ function PostPage() {
                 </Link>
               ))}
             </div>
+          </section>
+        )}
+
+        {post.relatedServiceSlug && (
+          <section className="mx-auto max-w-3xl px-5 lg:px-8 mt-16">
+            <h2 className="text-xl font-bold">Serviço relacionado a este post</h2>
+            <Link
+              to="/servicos/$slug"
+              params={{ slug: post.relatedServiceSlug }}
+              onClick={() =>
+                trackEvent("blog_related_service_click", {
+                  post: post.slug,
+                  service: post.relatedServiceSlug,
+                })
+              }
+              className="mt-4 flex items-center justify-between rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-card to-card p-5 hover:shadow-elegant transition group"
+            >
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                  Serviço 0WEB
+                </p>
+                <p className="mt-1 font-semibold text-lg">
+                  {post.relatedServiceSlug
+                    .replace(/-/g, " ")
+                    .replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-0.5 transition">
+                Ver serviço <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
           </section>
         )}
       </main>

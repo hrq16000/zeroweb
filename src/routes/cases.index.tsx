@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
@@ -88,8 +89,9 @@ function CasesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
+      <Breadcrumbs items={[{ name: "Cases", path: "/cases" }]} />
       <main>
-        <section className="pt-28 pb-12 px-6 text-center">
+        <section className="pt-6 pb-12 px-6 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-6">
             <TrendingUp className="w-3.5 h-3.5" /> Resultados reais
           </div>

@@ -17,6 +17,8 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
+import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { FunnelModalWrapper } from "@/components/funnel/FunnelModalWrapper";
 import { trackEvent } from "@/lib/analytics";
@@ -167,6 +169,12 @@ function Site24hPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
+      <Breadcrumbs
+        items={[
+          { name: "Serviços", path: "/servicos" },
+          { name: "Site em 24h", path: "/servicos/site-24h" },
+        ]}
+      />
       <FunnelModalWrapper
         open={open}
         onClose={() => setOpen(false)}
@@ -487,6 +495,12 @@ function Site24hPage() {
           </div>
         </div>
       </section>
+
+      <RelatedLinksGrid
+        title="Serviços relacionados"
+        subtitle="Continue evoluindo a presença digital do seu negócio."
+        only={["/servicos/criacao-de-sites", "/servicos/landing-pages", "/servicos/presenca-digital"]}
+      />
 
       <Footer />
       <WhatsAppFloat />

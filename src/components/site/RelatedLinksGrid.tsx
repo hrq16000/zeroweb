@@ -11,9 +11,16 @@ type Item = {
 
 const ALL: Item[] = [
   { to: "/servicos/trafego-pago-local", title: "Tráfego pago para negócios locais", desc: "Anúncios no Google e Meta a partir de R$499/mês, sem contrato.", anchor: "Ver tráfego pago local", icon: Megaphone },
+  { to: "/servicos/trafego-pago", title: "Tráfego pago (Google e Meta Ads)", desc: "Campanhas com CPA otimizado e atribuição completa.", anchor: "Quero rodar anúncios", icon: Megaphone },
   { to: "/servicos/criacao-de-sites", title: "Criação de sites profissionais", desc: "Sites rápidos, otimizados para SEO e prontos para converter.", anchor: "Criar meu site agora", icon: Globe },
+  { to: "/servicos/site-24h", title: "Site profissional em 24h", desc: "Pacote único de R$499 — site sob medida no ar em até 24 horas.", anchor: "Quero meu site em 24h", icon: Globe },
+  { to: "/servicos/landing-pages", title: "Landing Pages que convertem", desc: "Páginas otimizadas para captação de leads e vendas diretas.", anchor: "Quero uma LP", icon: Globe },
   { to: "/servicos/seo", title: "SEO e primeiras posições no Google", desc: "Plano de SEO local e nacional com foco em ROI mensurável.", anchor: "Quero rankear no Google", icon: Search },
-  { to: "/servicos/automacao-com-ia", title: "Automação e IA no WhatsApp", desc: "Atendimento, qualificação de leads e fluxos com IA no WhatsApp.", anchor: "Automatizar meu atendimento", icon: Bot },
+  { to: "/servicos/google-meu-negocio", title: "Google Meu Negócio", desc: "Otimização do perfil para aparecer no Maps e na busca local.", anchor: "Aparecer no Maps", icon: Search },
+  { to: "/servicos/presenca-digital", title: "Presença Digital completa", desc: "Plano integrado a partir de R$399/mês — site, GMN, ads e WhatsApp.", anchor: "Quero presença digital", icon: Layers },
+  { to: "/servicos/gestao-redes-sociais", title: "Gestão de Redes Sociais", desc: "Conteúdo, criativos e engajamento para sua marca crescer.", anchor: "Cuidar das redes", icon: MessageCircle },
+  { to: "/servicos/automacao-com-ia", title: "Automação e IA no WhatsApp", desc: "Atendimento, qualificação de leads e fluxos com IA.", anchor: "Automatizar atendimento", icon: Bot },
+  { to: "/servicos/consultoria", title: "Consultoria estratégica", desc: "Diagnóstico, planejamento e execução guiada por dados.", anchor: "Quero consultoria", icon: Award },
   { to: "/planos", title: "Planos e preços", desc: "Compare os planos da 0WEB e escolha o ideal para o seu momento.", anchor: "Ver planos completos", icon: Layers },
   { to: "/cases", title: "Cases de sucesso", desc: "Histórias reais de empresas que cresceram com a 0WEB.", anchor: "Ver cases reais", icon: Award },
   { to: "/faq", title: "Perguntas frequentes", desc: "Tire dúvidas sobre prazos, valores, contratos e suporte.", anchor: "Tirar minhas dúvidas", icon: HelpCircle },

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Award, Users, Rocket, Heart, Target, Sparkles } from "lucide-react";
 import { Header } from "@/components/site/Header";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
@@ -63,7 +64,8 @@ function SobrePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32 pb-24">
+      <Breadcrumbs items={[{ name: "Sobre", path: "/sobre" }]} />
+      <main className="pt-6 pb-24">
         <section className="mx-auto max-w-5xl px-5 lg:px-8">
           <motion.p
             initial={{ opacity: 0, y: 10 }}

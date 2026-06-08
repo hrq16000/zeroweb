@@ -6,8 +6,25 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { AuthorBio } from "@/components/site/AuthorBio";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CLUSTERS, CLUSTER_RELATIONS, type Cluster } from "@/lib/content-taxonomy";
 import { posts as ALL_POSTS } from "@/lib/blog-data";
+
+// Mapeamento cluster → slug de serviço (Bloco 3 da reorganização IA).
+// Quando o cluster tem um serviço comercial equivalente, exibimos banner
+// "Conheça nosso serviço de [tema]" no topo do hub.
+const CLUSTER_TO_SERVICE: Record<string, { slug: string; label: string }> = {
+  seo: { slug: "seo", label: "SEO" },
+  "google-meu-negocio": { slug: "google-meu-negocio", label: "Google Meu Negócio" },
+  sites: { slug: "criacao-de-sites", label: "criação de sites" },
+  "landing-pages": { slug: "landing-pages", label: "Landing Pages" },
+  ia: { slug: "automacao-com-ia", label: "IA e automação" },
+  automacao: { slug: "automacao-com-ia", label: "automação com IA" },
+  "trafego-pago": { slug: "trafego-pago", label: "tráfego pago" },
+  "marketing-local": { slug: "trafego-pago-local", label: "tráfego pago local" },
+  conversao: { slug: "landing-pages", label: "Landing Pages de conversão" },
+  vendas: { slug: "consultoria", label: "consultoria estratégica" },
+};
 
 export function HubPage({ cluster }: { cluster: Cluster }) {
   const related = (CLUSTER_RELATIONS[cluster.slug] ?? [])
@@ -19,20 +36,41 @@ export function HubPage({ cluster }: { cluster: Cluster }) {
   const mofu = cluster.subclusters.filter((s) => s.funnel === "mofu");
   const tofu = cluster.subclusters.filter((s) => s.funnel === "tofu");
 
+  const heroService = CLUSTER_TO_SERVICE[cluster.slug];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32 lg:pt-40 pb-24">
+      <Breadcrumbs
+        items={[
+          { name: "Blog", path: "/blog" },
+          { name: cluster.title, path: cluster.hubPath },
+        ]}
+      />
+      <main className="pt-6 lg:pt-8 pb-24">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
-          <nav className="text-sm text-muted-foreground" aria-label="breadcrumb">
-            <Link to="/" className="hover:text-foreground">Início</Link>
-            <span className="mx-2">/</span>
-            <Link to="/blog" className="hover:text-foreground">Blog</Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground">{cluster.title}</span>
-          </nav>
+          {/* Banner: Serviço relacionado a este tema */}
+          {heroService && (
+            <Link
+              to="/servicos/$slug"
+              params={{ slug: heroService.slug }}
+              className="block rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-card to-card p-5 lg:p-6 mb-10 hover:shadow-elegant transition group"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Serviço relacionado
+              </p>
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg lg:text-xl font-bold">
+                  Conheça nosso serviço de <span className="text-gradient">{heroService.label}</span>
+                </h2>
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-0.5 transition">
+                  Ver serviço <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Link>
+          )}
 
-          <p className="mt-6 text-sm font-semibold uppercase tracking-wider text-primary">
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
             Hub Temático — Autoridade em {cluster.title}
           </p>
           <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05]">
