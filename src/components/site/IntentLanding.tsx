@@ -207,6 +207,13 @@ export function IntentLanding(p: IntentLandingProps) {
           )}
         </section>
       </main>
+      {p.relatedServicePaths && p.relatedServicePaths.length > 0 && (
+        <RelatedLinksGrid
+          title="Serviços relacionados"
+          subtitle="Outras frentes que combinam com este serviço."
+          only={p.relatedServicePaths}
+        />
+      )}
       <Footer />
       <WhatsAppFloat />
       <script
