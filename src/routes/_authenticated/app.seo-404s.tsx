@@ -508,3 +508,168 @@ function LegacyLinksPanel() {
   );
 }
 
+function SeoAuditHistoryPanel() {
+  const listFn = useServerFn(adminListSeoAuditHistory);
+  const approveFn = useServerFn(adminApproveSeoAudit);
+  const [rows, setRows] = useState<SeoAuditRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [kind, setKind] = useState<"" | "seo_diff" | "legacy_links">("");
+  const [status, setStatus] = useState<"" | "pending" | "approved" | "rejected">("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+
+  async function load() {
+    setLoading(true);
+    setErr(null);
+    try {
+      const payload: Record<string, unknown> = { limit: 100 };
+      if (kind) payload.kind = kind;
+      if (status) payload.status = status;
+      if (from) payload.from = new Date(from).toISOString();
+      if (to) payload.to = new Date(to + "T23:59:59").toISOString();
+      const r = await listFn({ data: payload });
+      setRows(r.rows);
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind, status, from, to]);
+
+  async function setStatusOf(id: string, next: "approved" | "rejected" | "pending") {
+    await approveFn({ data: { id, status: next } });
+    await load();
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-end gap-3">
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">Tipo</label>
+          <select
+            value={kind}
+            onChange={(e) => setKind(e.target.value as typeof kind)}
+            className="border border-input bg-background rounded-md px-2 py-1.5 text-sm"
+          >
+            <option value="">Todos</option>
+            <option value="seo_diff">SEO diff</option>
+            <option value="legacy_links">Links legacy</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as typeof status)}
+            className="border border-input bg-background rounded-md px-2 py-1.5 text-sm"
+          >
+            <option value="">Todos</option>
+            <option value="pending">Pendente</option>
+            <option value="approved">Aprovado</option>
+            <option value="rejected">Reprovado</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">De</label>
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="border border-input bg-background rounded-md px-2 py-1.5 text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-1">Até</label>
+          <input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="border border-input bg-background rounded-md px-2 py-1.5 text-sm"
+          />
+        </div>
+        <Button variant="outline" size="sm" onClick={load} disabled={loading}>
+          <RefreshCw className={`w-3.5 h-3.5 mr-1 ${loading ? "animate-spin" : ""}`} />
+          Atualizar
+        </Button>
+      </div>
+
+      {err && <p className="text-sm text-destructive">Erro: {err}</p>}
+
+      <div className="overflow-auto rounded-lg border border-border">
+        <table className="w-full text-xs">
+          <thead className="bg-muted text-left">
+            <tr>
+              <th className="px-2 py-1.5">Quando</th>
+              <th className="px-2 py-1.5">Tipo</th>
+              <th className="px-2 py-1.5">Δ %</th>
+              <th className="px-2 py-1.5">Resumo</th>
+              <th className="px-2 py-1.5">Status</th>
+              <th className="px-2 py-1.5 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
+                  {loading ? "Carregando…" : "Sem registros no período."}
+                </td>
+              </tr>
+            ) : (
+              rows.map((r) => (
+                <tr key={r.id} className="border-t border-border align-top">
+                  <td className="px-2 py-1.5 whitespace-nowrap">
+                    {new Date(r.ran_at).toLocaleString("pt-BR")}
+                  </td>
+                  <td className="px-2 py-1.5">
+                    {r.kind === "seo_diff" ? "SEO diff" : "Links legacy"}
+                  </td>
+                  <td className="px-2 py-1.5">
+                    {r.delta_pct == null ? "—" : `${Number(r.delta_pct).toFixed(2)}%`}
+                  </td>
+                  <td className="px-2 py-1.5 text-muted-foreground max-w-md">
+                    <code className="text-[10px]">
+                      {JSON.stringify(r.summary).slice(0, 160)}
+                    </code>
+                  </td>
+                  <td className="px-2 py-1.5">
+                    <span
+                      className={
+                        r.status === "approved"
+                          ? "text-emerald-600"
+                          : r.status === "rejected"
+                            ? "text-destructive"
+                            : "text-amber-600"
+                      }
+                    >
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-2 py-1.5 text-right space-x-1">
+                    {r.status !== "approved" && (
+                      <Button size="sm" variant="outline" onClick={() => setStatusOf(r.id, "approved")}>
+                        Aprovar
+                      </Button>
+                    )}
+                    {r.status !== "rejected" && (
+                      <Button size="sm" variant="outline" onClick={() => setStatusOf(r.id, "rejected")}>
+                        Reprovar
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+
