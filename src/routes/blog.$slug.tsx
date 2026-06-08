@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { BlogPostFunnelCTA } from "@/components/funnel/BlogPostFunnelCTA";
 import { CTA } from "@/components/site/CTA";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { getPost, posts, inlineImages } from "@/lib/blog-data";
 import { coverForCategory } from "@/components/site/Blog";
 import { Picture } from "@/components/site/Picture";
@@ -112,17 +113,15 @@ function PostPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-32 lg:pt-40 pb-24">
+      <Breadcrumbs
+        items={[
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ]}
+      />
+      <main className="pt-6 lg:pt-8 pb-24">
         <article className="mx-auto max-w-3xl px-5 lg:px-8">
-          <nav className="text-sm text-muted-foreground">
-            <Link to="/" className="hover:text-foreground">Início</Link>
-            <span className="mx-2">/</span>
-            <Link to="/blog" className="hover:text-foreground">Blog</Link>
-            <span className="mx-2">/</span>
-            <span className="text-foreground">{post.category}</span>
-          </nav>
-
-          <span className="mt-6 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium">
+          <span className="inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium">
             {post.category}
           </span>
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">

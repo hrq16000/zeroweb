@@ -7,6 +7,8 @@ export type BlogPost = {
   readTime: string;
   content: string;
   cover?: string;
+  /** Slug do serviço comercial associado (ex.: "seo", "criacao-de-sites"). */
+  relatedServiceSlug?: string;
 };
 
 export const categories = [
