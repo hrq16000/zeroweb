@@ -1,0 +1,306 @@
+{
+  "redirects": [
+    {
+      "from": "/automacao",
+      "expected": "/servicos/automacao-com-ia",
+      "status": 302,
+      "location": "https://0web.com.br/automacao",
+      "ok": false
+    },
+    {
+      "from": "/consultoria",
+      "expected": "/servicos/consultoria",
+      "status": 302,
+      "location": "https://0web.com.br/consultoria",
+      "ok": false
+    },
+    {
+      "from": "/criacao-sites",
+      "expected": "/servicos/criacao-de-sites",
+      "status": 302,
+      "location": "https://0web.com.br/criacao-sites",
+      "ok": false
+    },
+    {
+      "from": "/desenvolvimento",
+      "expected": "/servicos/desenvolvimento-saas",
+      "status": 302,
+      "location": "https://0web.com.br/desenvolvimento",
+      "ok": false
+    },
+    {
+      "from": "/google-meu-negocio",
+      "expected": "/servicos/google-meu-negocio",
+      "status": 302,
+      "location": "https://0web.com.br/google-meu-negocio",
+      "ok": false
+    },
+    {
+      "from": "/ia",
+      "expected": "/servicos/automacao-com-ia",
+      "status": 302,
+      "location": "https://0web.com.br/ia",
+      "ok": false
+    },
+    {
+      "from": "/landing-pages",
+      "expected": "/servicos/landing-pages",
+      "status": 302,
+      "location": "https://0web.com.br/landing-pages",
+      "ok": false
+    },
+    {
+      "from": "/marketplace",
+      "expected": "/servicos/marketplace",
+      "status": 302,
+      "location": "https://0web.com.br/marketplace",
+      "ok": false
+    },
+    {
+      "from": "/parceiros",
+      "expected": "/servicos/parceiros",
+      "status": 302,
+      "location": "https://0web.com.br/parceiros",
+      "ok": false
+    },
+    {
+      "from": "/presenca-digital",
+      "expected": "/servicos/presenca-digital",
+      "status": 302,
+      "location": "https://0web.com.br/presenca-digital",
+      "ok": false
+    },
+    {
+      "from": "/redes-sociais",
+      "expected": "/servicos/gestao-redes-sociais",
+      "status": 302,
+      "location": "https://0web.com.br/redes-sociais",
+      "ok": false
+    },
+    {
+      "from": "/seo",
+      "expected": "/servicos/seo",
+      "status": 302,
+      "location": "https://0web.com.br/seo",
+      "ok": false
+    },
+    {
+      "from": "/trafego-pago",
+      "expected": "/servicos/trafego-pago",
+      "status": 302,
+      "location": "https://0web.com.br/trafego-pago",
+      "ok": false
+    },
+    {
+      "from": "/trafego-pago-local",
+      "expected": "/servicos/trafego-pago-local",
+      "status": 302,
+      "location": "https://0web.com.br/trafego-pago-local",
+      "ok": false
+    }
+  ],
+  "links": [
+    {
+      "path": "/",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/sobre",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/faq",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/cases",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/contato",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "path": "/servicos/automacao-com-ia",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/chatbot-whatsapp",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/consultoria",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/criacao-de-sites",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/desenvolvimento-saas",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/gestao-redes-sociais",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/google-meu-negocio",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/landing-pages",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/loja-virtual",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/marketing-digital",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/marketplace",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/parceiros",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/presenca-digital",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/seo",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/sistemas-web",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/site-24h",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/site-express",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/trafego-pago",
+      "status": 302,
+      "ok": false
+    },
+    {
+      "path": "/servicos/trafego-pago-local",
+      "status": 302,
+      "ok": false
+    }
+  ],
+  "chrome": [
+    {
+      "path": "/",
+      "header": true,
+      "footer": true,
+      "breadcrumbs": true
+    },
+    {
+      "path": "/servicos/seo",
+      "header": true,
+      "footer": true,
+      "breadcrumbs": true
+    },
+    {
+      "path": "/blog",
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false
+    },
+    {
+      "path": "/sobre",
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false
+    },
+    {
+      "path": "/cases",
+      "header": true,
+      "footer": true,
+      "breadcrumbs": false
+    },
+    {
+      "path": "404",
+      "status": 404,
+      "ok": false
+    }
+  ],
+  "seo": [
+    {
+      "path": "/",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true
+    },
+    {
+      "path": "/servicos/seo",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true
+    },
+    {
+      "path": "/blog",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true
+    },
+    {
+      "path": "/faq",
+      "og": true,
+      "canonical": true,
+      "jsonld": true,
+      "faqOk": true
+    }
+  ],
+  "summary": {
+    "base": "https://zeroweb.lovable.app",
+    "at": "2026-06-08T17-41-45-022Z",
+    "fail": 38
+  }
+}
