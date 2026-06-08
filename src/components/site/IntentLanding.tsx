@@ -168,15 +168,28 @@ export function IntentLanding(p: IntentLandingProps) {
         <section className="py-20 px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-display">Pronto para começar?</h2>
           <p className="mt-3 text-muted-foreground">Resposta em até 1 hora útil.</p>
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => handleCta("footer_wa")}
-            className="mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
-          >
-            {p.ctaLabel} <ArrowRight className="w-4 h-4" />
-          </a>
+          {p.funnelSlug ? (
+            <div className="mt-7 inline-flex">
+              <FunnelCTAButton
+                pageType="service"
+                serviceSlug={p.serviceSlug}
+                funnelSlug={p.funnelSlug}
+                label={p.ctaLabel}
+                location={`lp_${p.intent}_footer`}
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
+              />
+            </div>
+          ) : (
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleCta("footer_wa")}
+              className="mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
+            >
+              {p.ctaLabel} <ArrowRight className="w-4 h-4" />
+            </a>
+          )}
         </section>
       </main>
       <Footer />
