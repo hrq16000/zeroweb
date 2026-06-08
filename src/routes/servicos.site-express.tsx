@@ -469,8 +469,6 @@ function SiteExpressPage() {
       </main>
       <Footer />
       <WhatsAppFloat />
-
-      <SiteExpressFunnelModal open={open} onOpenChange={setOpen} source="site_express" />
     </div>
   );
 }
