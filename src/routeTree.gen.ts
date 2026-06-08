@@ -96,6 +96,7 @@ import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$c
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as ApiPublicHealthDbRouteImport } from './routes/api/public/health-db'
 import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authenticated/app.visitantes'
+import { Route as AuthenticatedAppUsuariosRouteImport } from './routes/_authenticated/app.usuarios'
 import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
@@ -581,6 +582,12 @@ const AuthenticatedAppVisitantesRoute =
     path: '/visitantes',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppUsuariosRoute =
+  AuthenticatedAppUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppTemplatesRoute =
   AuthenticatedAppTemplatesRouteImport.update({
     id: '/templates',
@@ -945,6 +952,7 @@ export interface FileRoutesByFullPath {
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
@@ -1076,6 +1084,7 @@ export interface FileRoutesByTo {
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
@@ -1211,6 +1220,7 @@ export interface FileRoutesById {
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/_authenticated/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
@@ -1346,6 +1356,7 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/app/support'
     | '/app/templates'
+    | '/app/usuarios'
     | '/app/visitantes'
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
@@ -1477,6 +1488,7 @@ export interface FileRouteTypes {
     | '/app/servicos'
     | '/app/support'
     | '/app/templates'
+    | '/app/usuarios'
     | '/app/visitantes'
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
@@ -1611,6 +1623,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/support'
     | '/_authenticated/app/templates'
+    | '/_authenticated/app/usuarios'
     | '/_authenticated/app/visitantes'
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
@@ -2336,6 +2349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppVisitantesRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/usuarios': {
+      id: '/_authenticated/app/usuarios'
+      path: '/usuarios'
+      fullPath: '/app/usuarios'
+      preLoaderRoute: typeof AuthenticatedAppUsuariosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/templates': {
       id: '/_authenticated/app/templates'
       path: '/templates'
@@ -2755,6 +2775,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRouteWithChildren
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
   AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
+  AuthenticatedAppUsuariosRoute: typeof AuthenticatedAppUsuariosRoute
   AuthenticatedAppVisitantesRoute: typeof AuthenticatedAppVisitantesRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAppAuditoriaIdentidadeRoute: typeof AuthenticatedAppAuditoriaIdentidadeRoute
@@ -2789,6 +2810,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRouteWithChildren,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
   AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
+  AuthenticatedAppUsuariosRoute: AuthenticatedAppUsuariosRoute,
   AuthenticatedAppVisitantesRoute: AuthenticatedAppVisitantesRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAppAuditoriaIdentidadeRoute:
