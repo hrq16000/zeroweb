@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, X, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Sparkles, X, ArrowRight, ArrowLeft, Check, Loader2, MessageCircle, ExternalLink } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { persistLead } from "@/lib/persistence";
 import { trackConversion } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const STORAGE_KEY = "0web_lead_widget_v1";
 const TOTAL_STEPS = 4;
@@ -284,23 +285,44 @@ export function LeadWidget() {
             {/* Body */}
             <div className="p-4 max-h-[60vh] overflow-y-auto">
               {state.done ? (
-                <div className="text-center py-4">
+                <div className="text-center py-2">
                   <div className="mx-auto w-12 h-12 rounded-full bg-primary/15 grid place-items-center mb-3">
                     <Check className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-1">Obrigado, {state.name.split(" ")[0]}!</h3>
+                  <h3 className="font-semibold text-foreground mb-1">
+                    Obrigado, {state.name.split(" ")[0]}!
+                  </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Vamos te chamar no WhatsApp em instantes com a proposta personalizada.
+                    Recebemos seu pedido. Quer adiantar a conversa agora pelo WhatsApp?
                   </p>
-                  <button
-                    onClick={() => {
-                      reset();
-                      setOpen(false);
-                    }}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Enviar outro pedido
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    <a
+                      href={whatsappUrl(
+                        `Olá! Sou ${state.name}. Acabei de pedir uma proposta sobre ${state.serviceLabel ?? "seu serviço"}${state.budget ? ` (orçamento: ${BUDGETS.find((b) => b.id === state.budget)?.label})` : ""}.`,
+                        "lead_widget_confirm",
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackConversion("lead_widget_wa_click", { service: state.service ?? undefined })}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] text-white text-sm font-medium h-10 px-4 hover:opacity-90 transition-opacity"
+                    >
+                      <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
+                    </a>
+                    <a
+                      href="/app/leads"
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-border text-foreground text-xs font-medium h-9 px-4 hover:bg-muted/50 transition-colors"
+                    >
+                      Ver meus pedidos <ExternalLink className="w-3 h-3" />
+                    </a>
+                    <button
+                      onClick={() => {
+                        reset();
+                      }}
+                      className="text-xs text-muted-foreground hover:text-foreground mt-1"
+                    >
+                      Enviar outro pedido
+                    </button>
+                  </div>
                 </div>
               ) : state.step === 0 ? (
                 <div>

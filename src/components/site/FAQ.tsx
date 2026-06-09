@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus } from "lucide-react";
+import { Plus, BookOpen } from "lucide-react";
 
 const faqs = [
   { q: "Quanto tempo leva para criar meu site?", a: "Sites institucionais ficam prontos entre 10 e 25 dias, dependendo do escopo. Landing pages podem sair em até 7 dias." },
@@ -61,6 +62,18 @@ export function FAQ() {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-border bg-card p-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Não encontrou sua resposta? Aprofunde-se em sites, SEO, tráfego pago e IA no nosso blog.
+          </p>
+          <Link
+            to="/blog"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            <BookOpen className="w-4 h-4" /> Ler artigos do blog
+          </Link>
         </div>
       </div>
     </section>
