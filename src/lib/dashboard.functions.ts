@@ -7,6 +7,21 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+async function assertAdmin(userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const [{ data: roleRow }, { data: isSuper }] = await Promise.all([
+    supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle(),
+    supabaseAdmin.rpc("is_super_admin", { _uid: userId }),
+  ]);
+  if (!roleRow && !isSuper) throw new Error("Acesso negado");
+}
 
 const RangeSchema = z.object({
   days: z.number().int().min(1).max(365).default(30),
