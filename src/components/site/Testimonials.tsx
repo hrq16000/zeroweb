@@ -138,6 +138,9 @@ export function Testimonials() {
             aria-live="polite"
             aria-atomic="true"
           >
+            <span className="sr-only" role="status">
+              Depoimento {i + 1} de {total}: {cur.name}, {cur.role}.
+            </span>
             <AnimatePresence mode="wait">
               <motion.blockquote
                 key={i}
