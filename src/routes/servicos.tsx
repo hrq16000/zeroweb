@@ -103,7 +103,7 @@ function ServicosLayout() {
                 )}
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.nav>
 
