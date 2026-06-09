@@ -10,6 +10,8 @@ import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
 import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/lib/services-public.functions";
 import { AddToCartButton } from "@/components/site/AddToCartButton";
+import { ServicePurchasePanel } from "@/components/site/ServicePurchasePanel";
+import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarousel";
 
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
