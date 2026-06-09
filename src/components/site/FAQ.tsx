@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus } from "lucide-react";
+import { Plus, BookOpen } from "lucide-react";
 
 const faqs = [
   { q: "Quanto tempo leva para criar meu site?", a: "Sites institucionais ficam prontos entre 10 e 25 dias, dependendo do escopo. Landing pages podem sair em até 7 dias." },
