@@ -47,8 +47,8 @@ export function HomeSpotlight() {
             </div>
 
             <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] uppercase">
-              Anúncios sem site otimizado?{" "}
-              <span className="text-gradient">você perde até 70% dos leads.</span>
+              {headline.pre}{" "}
+              <span className="text-gradient">{headline.em}</span>
             </h2>
 
             <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
