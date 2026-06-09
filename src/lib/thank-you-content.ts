@@ -167,6 +167,17 @@ const MAP: Record<string, ThankYouContent> = {
     ],
     stats: DEFAULT_STATS,
     testimonials: DEFAULT_TESTIMONIALS,
+    faq: [
+      { q: "Em quanto tempo recebo a proposta no WhatsApp?", a: "Nosso time comercial responde em até 1 hora útil (seg–sex, 9h–18h). Fora desse horário, retornamos no próximo expediente." },
+      { q: "Já paguei alguma coisa neste pedido?", a: "Não. Esse pedido está salvo como pendente. O pagamento (Pix, cartão ou boleto) é combinado com o consultor no WhatsApp antes de iniciar o projeto." },
+      { q: "Posso ajustar o escopo antes de fechar?", a: "Sim. A conversa no WhatsApp serve exatamente para ajustar pacote, prazos e formas de pagamento ao seu cenário." },
+      { q: "Como acompanho meu pedido depois?", a: "Você pode abrir o resumo do pedido no link enviado nesta página ou acessar o painel do cliente em /app a qualquer momento." },
+    ],
+    ctaCards: [
+      { icon: "message", title: "Continuar pelo WhatsApp", desc: "Fale agora com um consultor e adiante a proposta.", to: "/contato", label: "Abrir WhatsApp", id: "thankyou_whatsapp_card", event: "thank_you_cta_whatsapp" },
+      { icon: "package", title: "Ver meu pedido", desc: "Acompanhe status, itens e valor total deste pedido.", to: "/app", label: "Abrir painel", id: "thankyou_order_card", event: "thank_you_cta_order" },
+      { icon: "help", title: "Dúvidas frequentes", desc: "Prazos, contratos, formas de pagamento e entregáveis.", to: "/faq", label: "Ir para FAQ", id: "thankyou_faq_card", event: "thank_you_cta_faq" },
+    ],
   },
   "checkout-stripe": {
     ...DEFAULT,
@@ -185,8 +196,20 @@ const MAP: Record<string, ThankYouContent> = {
     ],
     stats: DEFAULT_STATS,
     testimonials: DEFAULT_TESTIMONIALS,
+    faq: [
+      { q: "Meu pagamento já foi confirmado?", a: "Sim. O Stripe confirmou a transação com segurança. Você também receberá o recibo por e-mail nos próximos minutos." },
+      { q: "Quando começa o projeto?", a: "Em até 1h útil entramos em contato para o briefing de início. A execução começa logo após o alinhamento do escopo." },
+      { q: "Preciso enviar mais alguma coisa?", a: "Tenha em mãos logo, textos e referências do negócio. Quanto mais material no briefing, mais rápida a primeira entrega." },
+      { q: "Quero a nota fiscal — como recebo?", a: "Emitimos NF-e no início da execução e enviamos pelo e-mail do cadastro. Caso precise de dados específicos, informe no WhatsApp." },
+    ],
+    ctaCards: [
+      { icon: "package", title: "Ver meu pedido", desc: "Resumo, status do pagamento e próximos marcos.", to: "/app", label: "Abrir painel", id: "thankyou_order_card", event: "thank_you_cta_order" },
+      { icon: "sparkles", title: "Agendar briefing", desc: "Acelere o início enviando suas referências agora.", to: "/contato", label: "Enviar briefing", id: "thankyou_briefing_card", event: "thank_you_cta_briefing" },
+      { icon: "layers", title: "Conheça outros serviços", desc: "Combine pacotes para potencializar resultados.", to: "/servicos", label: "Ver catálogo", id: "thankyou_catalog_card", event: "thank_you_cta_catalog" },
+    ],
   },
 };
+
 
 export function getThankYouContent(source?: string | null): ThankYouContent {
   if (!source) return DEFAULT;
