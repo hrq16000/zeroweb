@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { z } from "zod";
-import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, Star, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, Star, Sparkles, Package } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
