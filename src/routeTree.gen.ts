@@ -26,6 +26,7 @@ import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
+import { Route as SitemapBhNeighborhoodsDotxmlRouteImport } from './routes/sitemap-bh-neighborhoods[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
@@ -61,6 +62,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
@@ -93,6 +95,7 @@ import { Route as BlogGoogleMeuNegocioRouteImport } from './routes/blog.google-m
 import { Route as BlogConversaoRouteImport } from './routes/blog.conversao'
 import { Route as BlogAutomacaoRouteImport } from './routes/blog.automacao'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
@@ -237,6 +240,12 @@ const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
   path: '/sitemap-blog.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapBhNeighborhoodsDotxmlRoute =
+  SitemapBhNeighborhoodsDotxmlRouteImport.update({
+    id: '/sitemap-bh-neighborhoods.xml',
+    path: '/sitemap-bh-neighborhoods.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -411,6 +420,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
+  id: '/bairros-bh/',
+  path: '/bairros-bh/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosTrafegoPagoLocalRoute =
   ServicosTrafegoPagoLocalRouteImport.update({
     id: '/trafego-pago-local',
@@ -572,6 +586,11 @@ const BlogAutomacaoRoute = BlogAutomacaoRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BairrosBhSlugRoute = BairrosBhSlugRouteImport.update({
+  id: '/bairros-bh/$slug',
+  path: '/bairros-bh/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
@@ -924,6 +943,7 @@ export interface FileRoutesByFullPath {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -943,6 +963,7 @@ export interface FileRoutesByFullPath {
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
+  '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -975,6 +996,7 @@ export interface FileRoutesByFullPath {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh/': typeof BairrosBhIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1064,6 +1086,7 @@ export interface FileRoutesByTo {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1082,6 +1105,7 @@ export interface FileRoutesByTo {
   '/trafego-pago': typeof TrafegoPagoRoute
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
+  '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1114,6 +1138,7 @@ export interface FileRoutesByTo {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh': typeof BairrosBhIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
@@ -1206,6 +1231,7 @@ export interface FileRoutesById {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1225,6 +1251,7 @@ export interface FileRoutesById {
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
+  '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1257,6 +1284,7 @@ export interface FileRoutesById {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh/': typeof BairrosBhIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1349,6 +1377,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1368,6 +1397,7 @@ export interface FileRouteTypes {
     | '/trafego-pago-local'
     | '/$city/$service'
     | '/app'
+    | '/bairros-bh/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1400,6 +1430,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1489,6 +1520,7 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1507,6 +1539,7 @@ export interface FileRouteTypes {
     | '/trafego-pago'
     | '/trafego-pago-local'
     | '/$city/$service'
+    | '/bairros-bh/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1539,6 +1572,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh'
     | '/blog'
     | '/cases'
     | '/servicos'
@@ -1630,6 +1664,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1649,6 +1684,7 @@ export interface FileRouteTypes {
     | '/trafego-pago-local'
     | '/$city/$service'
     | '/_authenticated/app'
+    | '/bairros-bh/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1681,6 +1717,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1773,6 +1810,7 @@ export interface RootRouteChildren {
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRouteWithChildren
+  SitemapBhNeighborhoodsDotxmlRoute: typeof SitemapBhNeighborhoodsDotxmlRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
@@ -1791,6 +1829,7 @@ export interface RootRouteChildren {
   TrafegoPagoRoute: typeof TrafegoPagoRoute
   TrafegoPagoLocalRoute: typeof TrafegoPagoLocalRoute
   CityServiceRoute: typeof CityServiceRoute
+  BairrosBhSlugRoute: typeof BairrosBhSlugRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogAutomacaoRoute: typeof BlogAutomacaoRoute
   BlogConversaoRoute: typeof BlogConversaoRoute
@@ -1811,6 +1850,7 @@ export interface RootRouteChildren {
   PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
+  BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
@@ -1947,6 +1987,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-blog.xml'
       fullPath: '/sitemap-blog.xml'
       preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-bh-neighborhoods.xml': {
+      id: '/sitemap-bh-neighborhoods.xml'
+      path: '/sitemap-bh-neighborhoods.xml'
+      fullPath: '/sitemap-bh-neighborhoods.xml'
+      preLoaderRoute: typeof SitemapBhNeighborhoodsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -2194,6 +2241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bairros-bh/': {
+      id: '/bairros-bh/'
+      path: '/bairros-bh'
+      fullPath: '/bairros-bh/'
+      preLoaderRoute: typeof BairrosBhIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos/trafego-pago-local': {
       id: '/servicos/trafego-pago-local'
       path: '/trafego-pago-local'
@@ -2416,6 +2470,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bairros-bh/$slug': {
+      id: '/bairros-bh/$slug'
+      path: '/bairros-bh/$slug'
+      fullPath: '/bairros-bh/$slug'
+      preLoaderRoute: typeof BairrosBhSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app': {
@@ -3059,6 +3120,7 @@ const rootRouteChildren: RootRouteChildren = {
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRouteWithChildren,
+  SitemapBhNeighborhoodsDotxmlRoute: SitemapBhNeighborhoodsDotxmlRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
@@ -3077,6 +3139,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrafegoPagoRoute: TrafegoPagoRoute,
   TrafegoPagoLocalRoute: TrafegoPagoLocalRoute,
   CityServiceRoute: CityServiceRoute,
+  BairrosBhSlugRoute: BairrosBhSlugRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogAutomacaoRoute: BlogAutomacaoRoute,
   BlogConversaoRoute: BlogConversaoRoute,
@@ -3097,6 +3160,7 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
+  BairrosBhIndexRoute: BairrosBhIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,

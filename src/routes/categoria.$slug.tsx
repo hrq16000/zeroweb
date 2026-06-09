@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getCategoryBySlug } from "@/lib/marketplace.functions";
-import { ORIGIN } from "@/lib/seo";
+import { ORIGIN, breadcrumbLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/categoria/$slug")({
   head: ({ params }) => {
@@ -25,13 +25,22 @@ export const Route = createFileRoute("/categoria/$slug")({
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "CollectionPage",
-            "@id": `${url}#collection`,
-            url,
-            name: title,
-            description: desc,
-            inLanguage: "pt-BR",
-            isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+            "@graph": [
+              {
+                "@type": "CollectionPage",
+                "@id": `${url}#collection`,
+                url,
+                name: title,
+                description: desc,
+                inLanguage: "pt-BR",
+                isPartOf: { "@type": "WebSite", url: ORIGIN, name: "0WEB" },
+              },
+              breadcrumbLd([
+                { name: "Marketplace", path: "/servicos/marketplace" },
+                { name: "Categorias", path: "/servicos/marketplace" },
+                { name: params.slug, path: `/categoria/${params.slug}` },
+              ]),
+            ],
           }),
         },
       ],

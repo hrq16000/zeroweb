@@ -160,6 +160,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
+      // Geo targeting (Curitiba/PR/BR + RMC)
+      { name: "geo.region", content: "BR-PR" },
+      { name: "geo.placename", content: "Curitiba" },
+      { name: "geo.position", content: "-25.4284;-49.2733" },
+      { name: "ICBM", content: "-25.4284, -49.2733" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
