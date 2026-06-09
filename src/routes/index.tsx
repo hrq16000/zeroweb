@@ -137,6 +137,7 @@ function Index() {
           {on("loss_calculator") && <LossCalculator />}
           {on("solutions") && <Solutions />}
           <HighlightTrio />
+          <HomeSpotlight />
           <FeatureShowcase />
           {on("featured_services") && <FeaturedServices />}
           {on("ai_section") && <AISection />}
