@@ -191,7 +191,7 @@ function CheckoutPage() {
       const res = await createStripeCheckoutSession({
         data: {
           orderId: order.id,
-          successUrl: `${window.location.origin}/app`,
+          successUrl: `${window.location.origin}/obrigado?source=checkout-stripe&order=${order.id}`,
           cancelUrl: `${window.location.origin}/checkout`,
         },
       });
