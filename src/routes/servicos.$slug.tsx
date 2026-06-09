@@ -375,21 +375,16 @@ function ServicePage() {
         )}
 
         <section className="py-16">
-          <div className="mx-auto max-w-5xl px-5 lg:px-8">
-            <h2 className="text-2xl lg:text-3xl font-bold mb-6">Serviços relacionados</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {otherSvcs.map((s) => (
-                <Link
-                  key={s.slug}
-                  to="/servicos/$slug"
-                  params={{ slug: s.slug }}
-                  className="block p-4 rounded-2xl border border-border bg-card hover:border-primary transition-colors"
-                >
-                  <p className="text-xs uppercase tracking-wider text-primary font-semibold">{s.category}</p>
-                  <h3 className="mt-1 font-semibold">{s.name}</h3>
-                </Link>
-              ))}
+          <div className="mx-auto max-w-6xl px-5 lg:px-8">
+            <div className="flex items-end justify-between mb-6 gap-4">
+              <div>
+                <h2 className="text-2xl lg:text-3xl font-bold">Você também pode gostar</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Recomendações que combinam com {data.name.toLowerCase()}.
+                </p>
+              </div>
             </div>
+            <RelatedServicesCarousel items={otherSvcs} />
             <div className="mt-10 flex justify-center">
               <ServiceCTA
                 serviceSlug={slug}
