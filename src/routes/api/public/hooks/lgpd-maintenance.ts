@@ -9,10 +9,9 @@ export const Route = createFileRoute("/api/public/hooks/lgpd-maintenance")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apikey = request.headers.get("apikey") || "";
-        if (!apikey || apikey !== process.env.SUPABASE_PUBLISHABLE_KEY) {
-          return new Response("Unauthorized", { status: 401 });
-        }
+        const { requireCronSecret } = await import("./_cron-auth");
+        const unauth = requireCronSecret(request);
+        if (unauth) return unauth;
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const [{ data: anon }, { data: purged }, { data: rl }] = await Promise.all([

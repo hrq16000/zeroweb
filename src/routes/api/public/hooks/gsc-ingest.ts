@@ -21,11 +21,9 @@ export const Route = createFileRoute("/api/public/hooks/gsc-ingest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = request.headers.get("apikey");
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!expected || apiKey !== expected) {
-          return new Response("unauthorized", { status: 401 });
-        }
+        const { requireCronSecret } = await import("./_cron-auth");
+        const unauth = requireCronSecret(request);
+        if (unauth) return unauth;
         let body: unknown;
         try { body = await request.json(); } catch { return new Response("invalid_json", { status: 400 }); }
         const parsed = Body.safeParse(body);

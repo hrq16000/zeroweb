@@ -7,6 +7,21 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+async function assertAdmin(userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const [{ data: roleRow }, { data: isSuper }] = await Promise.all([
+    supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle(),
+    supabaseAdmin.rpc("is_super_admin", { _uid: userId }),
+  ]);
+  if (!roleRow && !isSuper) throw new Error("Acesso negado");
+}
 
 const RangeSchema = z.object({
   days: z.number().int().min(1).max(365).default(30),
@@ -41,8 +56,10 @@ const LEAD_STATUSES = ["new", "contacted", "qualified", "won", "lost"] as const;
 // KPIs — overview
 // ─────────────────────────────────────────────────────────────
 export const getDashboardKpis = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => RangeSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
 
@@ -138,8 +155,10 @@ export const getDashboardKpis = createServerFn({ method: "POST" })
 // Pages analysis
 // ─────────────────────────────────────────────────────────────
 export const getPagesAnalysis = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => RangeSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
 
@@ -200,8 +219,10 @@ export const getPagesAnalysis = createServerFn({ method: "POST" })
 // Attribution
 // ─────────────────────────────────────────────────────────────
 export const getAttribution = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => RangeSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
 
@@ -304,8 +325,10 @@ export const getAttribution = createServerFn({ method: "POST" })
 // A/B
 // ─────────────────────────────────────────────────────────────
 export const getAbAnalysis = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => RangeSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
 
@@ -376,8 +399,10 @@ export const getAbAnalysis = createServerFn({ method: "POST" })
 // WA funnel analysis
 // ─────────────────────────────────────────────────────────────
 export const getWaFunnel = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => RangeSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
     const { data: sessions } = await supabaseAdmin
@@ -426,6 +451,7 @@ export const getWaFunnel = createServerFn({ method: "POST" })
 // Leads pipeline
 // ─────────────────────────────────────────────────────────────
 export const getLeads = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) =>
     z
       .object({
@@ -435,7 +461,8 @@ export const getLeads = createServerFn({ method: "POST" })
       })
       .parse(i)
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
     let q = supabaseAdmin
@@ -469,6 +496,7 @@ export const getLeads = createServerFn({ method: "POST" })
   });
 
 export const updateLeadStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) =>
     z
       .object({
@@ -477,7 +505,8 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
       })
       .parse(i)
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("lead_submissions")
@@ -490,7 +519,10 @@ export const updateLeadStatus = createServerFn({ method: "POST" })
 // ─────────────────────────────────────────────────────────────
 // Alerts
 // ─────────────────────────────────────────────────────────────
-export const getAlerts = createServerFn({ method: "GET" }).handler(async () => {
+export const getAlerts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin((context as { userId: string }).userId);
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const now = Date.now();
   const d7 = new Date(now - 7 * 86400 * 1000).toISOString();
@@ -561,6 +593,7 @@ export const getAlerts = createServerFn({ method: "GET" }).handler(async () => {
 // Exports (raw rows server-side; client formats CSV/XLSX)
 // ─────────────────────────────────────────────────────────────
 export const exportData = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) =>
     z
       .object({
@@ -570,7 +603,8 @@ export const exportData = createServerFn({ method: "POST" })
       })
       .parse(i)
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = rangeIso(data.days);
     if (data.dataset === "leads") {

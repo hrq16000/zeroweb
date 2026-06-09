@@ -5,8 +5,17 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const getCampaignAnalytics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ days: z.number().min(1).max(365).default(30) }).parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = (context as { userId: string }).userId;
+    const { data: isAdminRow } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .in("role", ["admin"])
+      .maybeSingle();
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isAdminRow && !isSuper) throw new Error("Acesso negado");
     const since = new Date(Date.now() - data.days * 86400000).toISOString();
 
     const [leadsRes, eventsRes, campaignsRes, offersRes] = await Promise.all([

@@ -19,8 +19,11 @@ const templateInput = z.object({
 export const listTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ portal_id: z.string().uuid().nullable().optional(), kind: z.string().optional() }).parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isSuper) throw new Error("forbidden");
     let q = supabaseAdmin.from("content_templates").select("*").order("updated_at", { ascending: false });
     if (data.kind) q = q.eq("kind", data.kind as "landing_page" | "funnel" | "page" | "email" | "material" | "config");
     if (data.portal_id) q = q.or(`portal_id.eq.${data.portal_id},is_global.eq.true`);
@@ -35,6 +38,8 @@ export const upsertTemplate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isSuper) throw new Error("forbidden");
     const payload = { ...data, created_by: userId } as never;
     const q = supabaseAdmin.from("content_templates");
     const { data: row, error } = data.id
@@ -47,8 +52,11 @@ export const upsertTemplate = createServerFn({ method: "POST" })
 export const deleteTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isSuper) throw new Error("forbidden");
     const { error } = await supabaseAdmin.from("content_templates").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -99,8 +107,11 @@ export const togglePortalService = createServerFn({ method: "POST" })
       custom_name: z.string().max(200).nullable().optional(),
     }).parse(d),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isSuper) throw new Error("forbidden");
     const { error } = await supabaseAdmin
       .from("portal_services")
       .upsert({ ...data, updated_at: new Date().toISOString() }, { onConflict: "portal_id,service_id" });

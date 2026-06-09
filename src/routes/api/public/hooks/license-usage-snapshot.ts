@@ -7,7 +7,10 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/api/public/hooks/license-usage-snapshot")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        const { requireCronSecret } = await import("./_cron-auth");
+        const unauth = requireCronSecret(request);
+        if (unauth) return unauth;
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         const { data: licenses, error } = await supabaseAdmin
