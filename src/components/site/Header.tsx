@@ -371,6 +371,9 @@ export function Header() {
           </>
         )}
       </AnimatePresence>
+      <Suspense fallback={null}>
+        <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} source={pathname === "/" ? "home" : "other"} />
+      </Suspense>
     </header>
   );
 }
