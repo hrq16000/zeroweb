@@ -187,14 +187,14 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="mx-auto mt-[8vh] w-[min(440px,92vw)] rounded-xl border border-border bg-card shadow-elegant overflow-hidden"
+            className="mx-auto mt-[6vh] w-[min(360px,88vw)] rounded-lg border border-border bg-card shadow-elegant overflow-hidden text-[12px]"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
             aria-label="Busca global"
           >
-            <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-border">
-              <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 border-b border-border">
+              <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
               <input
                 ref={inputRef}
                 value={q}
@@ -202,8 +202,8 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
                   setQ(e.target.value);
                   setActive(0);
                 }}
-                placeholder="Buscar serviços, soluções…"
-                className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+                placeholder="Buscar…"
+                className="flex-1 bg-transparent outline-none text-[12px] placeholder:text-muted-foreground"
                 aria-label="Buscar no site"
                 autoComplete="off"
               />
@@ -211,60 +211,54 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
                 type="button"
                 onClick={onClose}
                 aria-label="Fechar busca"
-                className="p-1 rounded hover:bg-muted text-muted-foreground"
+                className="p-0.5 rounded hover:bg-muted text-muted-foreground"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3 h-3" />
               </button>
             </div>
 
-            <div className="max-h-[50vh] overflow-y-auto">
+            <div className="max-h-[44vh] overflow-y-auto">
               {!term && (
-                <div className="p-2.5 space-y-3">
+                <div className="p-1.5 space-y-1.5">
                   {allServices.length > 0 && (
                     <div>
-                      <div className="px-1.5 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
-                        <Tag className="w-3 h-3" /> Resultados rápidos
+                      <div className="px-1.5 pt-0.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
+                        <Tag className="w-2.5 h-2.5" /> Rápidos
                       </div>
-                      <div className="grid gap-0.5">
-                        {allServices.slice(0, 4).map((s) => (
+                      <div className="grid">
+                        {allServices.slice(0, 3).map((s) => (
                           <button
                             key={s.slug}
                             onClick={() => go(`/servicos/${s.slug}`, s.name, "service")}
-                            className="w-full text-left px-2 py-1.5 rounded-md hover:bg-muted transition flex items-center gap-2"
+                            className="w-full text-left px-1.5 py-1 rounded hover:bg-muted transition flex items-center gap-1.5"
                           >
-                            <span className="w-5 h-5 rounded bg-gradient-primary text-primary-foreground grid place-items-center shrink-0">
-                              <Tag className="w-2.5 h-2.5" />
+                            <span className="w-4 h-4 rounded bg-gradient-primary text-primary-foreground grid place-items-center shrink-0">
+                              <Tag className="w-2 h-2" />
                             </span>
-                            <span className="flex-1 min-w-0">
-                              <span className="block text-[13px] font-medium truncate">{s.name}</span>
-                              <span className="block text-[10px] text-muted-foreground truncate">{s.category}</span>
-                            </span>
-                            <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                            <span className="flex-1 min-w-0 text-[12px] font-medium truncate">{s.name}</span>
+                            <ArrowRight className="w-2.5 h-2.5 text-muted-foreground" />
                           </button>
                         ))}
                       </div>
                     </div>
                   )}
                   <div>
-                    <div className="px-1.5 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" /> Em alta
+                    <div className="px-1.5 pb-1 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
+                      <TrendingUp className="w-2.5 h-2.5" /> Em alta
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {TRENDING.map((t) => (
+                    <div className="flex flex-wrap gap-1 px-1">
+                      {TRENDING.slice(0, 5).map((t) => (
                         <button
                           key={t}
                           onClick={() => {
                             trackEvent("global_search_suggestion_click", {
-                              source,
-                              kind: "trending",
-                              label: t,
-                              term: "",
+                              source, kind: "trending", label: t, term: "",
                             });
                             setQ(t);
                             setActive(0);
                             inputRef.current?.focus();
                           }}
-                          className="text-[11px] px-2.5 py-1 rounded-full border border-border bg-background hover:border-primary hover:text-primary transition"
+                          className="text-[10px] px-2 py-0.5 rounded-full border border-border hover:border-primary hover:text-primary transition"
                         >
                           {t}
                         </button>
@@ -272,18 +266,17 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
                     </div>
                   </div>
                   <div>
-                    <div className="px-1.5 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <div className="px-1.5 pb-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
                       Atalhos
                     </div>
-                    <div className="grid grid-cols-2 gap-0.5">
+                    <div className="grid grid-cols-3 gap-0.5">
                       {QUICK_LINKS.map((l) => (
                         <button
                           key={l.to}
                           onClick={() => go(l.to, l.label, "quick_link")}
-                          className="text-left text-[13px] px-2 py-1.5 rounded-md hover:bg-muted transition inline-flex items-center justify-between"
+                          className="text-left text-[11px] px-1.5 py-1 rounded hover:bg-muted transition truncate"
                         >
                           {l.label}
-                          <ArrowRight className="w-3 h-3 text-muted-foreground" />
                         </button>
                       ))}
                     </div>
@@ -292,16 +285,14 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
               )}
 
               {term && flatItems.length === 0 && (
-                <div className="px-4 py-6 text-center text-xs text-muted-foreground">
-                  Nada encontrado para “{q}”. Enter para ver o catálogo.
+                <div className="px-3 py-4 text-center text-[11px] text-muted-foreground">
+                  Nada para “{q}”. Enter p/ catálogo.
                 </div>
               )}
 
               {term && serviceResults.length > 0 && (
-                <div className="p-1.5">
-                  <div className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Serviços
-                  </div>
+                <div className="p-1">
+                  <div className="px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Serviços</div>
                   {serviceResults.map((s, idx) => {
                     const isActive = idx === active;
                     return (
@@ -309,20 +300,15 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
                         key={s.slug}
                         onMouseEnter={() => setActive(idx)}
                         onClick={() => go(`/servicos/${s.slug}`, s.name, "service")}
-                        className={`w-full text-left px-2 py-1.5 rounded-md flex items-center gap-2 transition ${
+                        className={`w-full text-left px-1.5 py-1 rounded flex items-center gap-1.5 transition ${
                           isActive ? "bg-muted" : "hover:bg-muted/60"
                         }`}
                       >
-                        <span className="w-6 h-6 rounded bg-gradient-primary text-primary-foreground grid place-items-center shrink-0">
-                          <Tag className="w-3 h-3" />
+                        <span className="w-4 h-4 rounded bg-gradient-primary text-primary-foreground grid place-items-center shrink-0">
+                          <Tag className="w-2 h-2" />
                         </span>
-                        <span className="flex-1 min-w-0">
-                          <span className="block text-[13px] font-medium truncate">{s.name}</span>
-                          <span className="block text-[11px] text-muted-foreground truncate">
-                            {s.category}
-                          </span>
-                        </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span className="flex-1 min-w-0 text-[12px] font-medium truncate">{s.name}</span>
+                        <ArrowRight className="w-2.5 h-2.5 text-muted-foreground" />
                       </button>
                     );
                   })}
@@ -330,10 +316,8 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
               )}
 
               {term && linkResults.length > 0 && (
-                <div className="p-1.5 border-t border-border">
-                  <div className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Páginas
-                  </div>
+                <div className="p-1 border-t border-border">
+                  <div className="px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Páginas</div>
                   {linkResults.map((l, i) => {
                     const idx = serviceResults.length + i;
                     const isActive = idx === active;
@@ -342,12 +326,12 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
                         key={l.to}
                         onMouseEnter={() => setActive(idx)}
                         onClick={() => go(l.to, l.label, "page")}
-                        className={`w-full text-left px-2 py-1.5 rounded-md text-[13px] flex items-center justify-between transition ${
+                        className={`w-full text-left px-1.5 py-1 rounded text-[12px] flex items-center justify-between transition ${
                           isActive ? "bg-muted" : "hover:bg-muted/60"
                         }`}
                       >
                         {l.label}
-                        <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                        <ArrowRight className="w-2.5 h-2.5 text-muted-foreground" />
                       </button>
                     );
                   })}
@@ -355,13 +339,13 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
               )}
             </div>
 
-            <div className="px-3 py-1.5 border-t border-border bg-muted/30 text-[10px] text-muted-foreground flex items-center justify-between">
+            <div className="px-2 py-1 border-t border-border bg-muted/30 text-[9px] text-muted-foreground flex items-center justify-between">
               <span>
                 <kbd className="px-1 rounded border border-border">↑↓</kbd>{" "}
                 <kbd className="px-1 rounded border border-border">↵</kbd>{" "}
                 <kbd className="px-1 rounded border border-border">ESC</kbd>
               </span>
-              <span className="hidden sm:inline">0WEB · busca</span>
+              <span className="hidden sm:inline">0WEB</span>
             </div>
           </motion.div>
         </motion.div>
