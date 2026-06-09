@@ -1,7 +1,8 @@
-// CRM operational server functions. Painel-only; rows include PII so the
-// painel client-side gate (PainelGate) is the only access surface.
+// CRM operational server functions. Painel-only; rows include PII so every
+// endpoint is server-side gated by Supabase auth + admin/super_admin role.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const STATUSES = [
   "novo",
@@ -30,6 +31,20 @@ function normStatus(s: string | null | undefined): CrmStatus {
   return STATUS_ALIAS[s] ?? "novo";
 }
 
+async function assertAdmin(userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const [{ data: roleRow }, { data: isSuper }] = await Promise.all([
+    supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle(),
+    supabaseAdmin.rpc("is_super_admin", { _uid: userId }),
+  ]);
+  if (!roleRow && !isSuper) throw new Error("Acesso negado");
+}
+
 const FiltersSchema = z
   .object({
     days: z.number().int().min(1).max(365).default(90),
@@ -45,8 +60,10 @@ const FiltersSchema = z
   .partial({ days: true, limit: true });
 
 export const listLeads = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => FiltersSchema.parse(i ?? {}))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const sinceIso = new Date(Date.now() - (data.days ?? 90) * 86400_000).toISOString();
     let q = supabaseAdmin
@@ -95,8 +112,10 @@ export const listLeads = createServerFn({ method: "POST" })
   });
 
 export const getLeadDetail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const [{ data: lead, error: e1 }, { data: history, error: e2 }] = await Promise.all([
       supabaseAdmin.from("lead_submissions").select("*").eq("id", data.id).maybeSingle(),
@@ -124,8 +143,10 @@ const UpdateSchema = z.object({
   company: z.string().max(200).nullable().optional(),
 });
 export const updateLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) => UpdateSchema.parse(i))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const patch: {
       status?: string;
@@ -144,6 +165,7 @@ export const updateLead = createServerFn({ method: "POST" })
   });
 
 export const addLeadHistory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) =>
     z
       .object({
@@ -154,7 +176,8 @@ export const addLeadHistory = createServerFn({ method: "POST" })
       })
       .parse(i)
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const [{ error: e1 }, { error: e2 }] = await Promise.all([
       supabaseAdmin
@@ -170,25 +193,29 @@ export const addLeadHistory = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const getCrmSettings = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("crm_settings")
-    .select("*")
-    .eq("singleton", true)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return (
-    data ?? {
-      distribution_mode: "manual",
-      assignees: [],
-      fixed_assignee: null,
-      round_robin_pointer: 0,
-    }
-  );
-});
+export const getCrmSettings = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin((context as { userId: string }).userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("crm_settings")
+      .select("*")
+      .eq("singleton", true)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return (
+      data ?? {
+        distribution_mode: "manual",
+        assignees: [],
+        fixed_assignee: null,
+        round_robin_pointer: 0,
+      }
+    );
+  });
 
 export const updateCrmSettings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((i) =>
     z
       .object({
@@ -198,7 +225,8 @@ export const updateCrmSettings = createServerFn({ method: "POST" })
       })
       .parse(i)
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin((context as { userId: string }).userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("crm_settings")
@@ -213,44 +241,47 @@ export const updateCrmSettings = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const getCrmSummary = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const since30 = new Date(Date.now() - 30 * 86400_000).toISOString();
-  const stale7 = new Date(Date.now() - 7 * 86400_000).toISOString();
-  const { data: rows, error } = await supabaseAdmin
-    .from("lead_submissions")
-    .select("id,status,assignee,last_interaction,created_at")
-    .gte("created_at", since30)
-    .limit(5000);
-  if (error) throw new Error(error.message);
-  const list = (rows ?? []).map((r) => ({ ...r, status: normStatus(r.status as string | null) }));
-  const novos = list.filter((r) => r.status === "novo").length;
-  const semResp = list.filter((r) => !r.assignee).length;
-  const parados = list.filter(
-    (r) => !["fechado", "perdido", "arquivado"].includes(r.status) && (r.last_interaction ?? r.created_at) < stale7
-  ).length;
-  const fechados = list.filter((r) => r.status === "fechado").length;
-  const perdidos = list.filter((r) => r.status === "perdido").length;
-  const closeable = fechados + perdidos;
-  const taxa = closeable > 0 ? Math.round((fechados / closeable) * 100) : 0;
-  const closedRows = list.filter((r) => r.status === "fechado");
-  const avgMs =
-    closedRows.length > 0
-      ? closedRows.reduce((acc, r) => {
-          const a = new Date(r.last_interaction ?? r.created_at).getTime();
-          const b = new Date(r.created_at as string).getTime();
-          return acc + Math.max(0, a - b);
-        }, 0) / closedRows.length
-      : 0;
-  const avgDays = Math.round((avgMs / 86400_000) * 10) / 10;
-  return {
-    novos,
-    sem_responsavel: semResp,
-    parados,
-    fechados,
-    perdidos,
-    total: list.length,
-    taxa_fechamento: taxa,
-    tempo_medio_dias: avgDays,
-  };
-});
+export const getCrmSummary = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin((context as { userId: string }).userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const since30 = new Date(Date.now() - 30 * 86400_000).toISOString();
+    const stale7 = new Date(Date.now() - 7 * 86400_000).toISOString();
+    const { data: rows, error } = await supabaseAdmin
+      .from("lead_submissions")
+      .select("id,status,assignee,last_interaction,created_at")
+      .gte("created_at", since30)
+      .limit(5000);
+    if (error) throw new Error(error.message);
+    const list = (rows ?? []).map((r) => ({ ...r, status: normStatus(r.status as string | null) }));
+    const novos = list.filter((r) => r.status === "novo").length;
+    const semResp = list.filter((r) => !r.assignee).length;
+    const parados = list.filter(
+      (r) => !["fechado", "perdido", "arquivado"].includes(r.status) && (r.last_interaction ?? r.created_at) < stale7
+    ).length;
+    const fechados = list.filter((r) => r.status === "fechado").length;
+    const perdidos = list.filter((r) => r.status === "perdido").length;
+    const closeable = fechados + perdidos;
+    const taxa = closeable > 0 ? Math.round((fechados / closeable) * 100) : 0;
+    const closedRows = list.filter((r) => r.status === "fechado");
+    const avgMs =
+      closedRows.length > 0
+        ? closedRows.reduce((acc, r) => {
+            const a = new Date(r.last_interaction ?? r.created_at).getTime();
+            const b = new Date(r.created_at as string).getTime();
+            return acc + Math.max(0, a - b);
+          }, 0) / closedRows.length
+        : 0;
+    const avgDays = Math.round((avgMs / 86400_000) * 10) / 10;
+    return {
+      novos,
+      sem_responsavel: semResp,
+      parados,
+      fechados,
+      perdidos,
+      total: list.length,
+      taxa_fechamento: taxa,
+      tempo_medio_dias: avgDays,
+    };
+  });
