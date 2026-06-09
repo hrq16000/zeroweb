@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle, MessageCircle, Phone, ShoppingCart, Rocket, Aler
 import capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 
 const URL = "https://0web.com.br/servicos/trafego-pago-local";
 const TITLE = "Tráfego Pago para Negócios Locais a partir de R$499/mês · 0WEB";
@@ -94,9 +95,10 @@ function TrafegoPagoLocalPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main>
+      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }, { name: "Tráfego Pago Local", path: "/servicos/trafego-pago-local" }]} />
+      <main className="pt-6">
         {/* HERO */}
-        <section className="relative overflow-hidden pt-28 pb-16 px-6">
+        <section className="relative overflow-hidden pb-16 px-6">
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-background to-background" />
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
             <div>
