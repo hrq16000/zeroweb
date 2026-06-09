@@ -26,6 +26,7 @@ import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
 import { Route as SitemapBlogDotxmlRouteImport } from './routes/sitemap-blog[.]xml'
+import { Route as SitemapBhNeighborhoodsDotxmlRouteImport } from './routes/sitemap-bh-neighborhoods[.]xml'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
@@ -239,6 +240,12 @@ const SitemapBlogDotxmlRoute = SitemapBlogDotxmlRouteImport.update({
   path: '/sitemap-blog.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapBhNeighborhoodsDotxmlRoute =
+  SitemapBhNeighborhoodsDotxmlRouteImport.update({
+    id: '/sitemap-bh-neighborhoods.xml',
+    path: '/sitemap-bh-neighborhoods.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -936,6 +943,7 @@ export interface FileRoutesByFullPath {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1078,6 +1086,7 @@ export interface FileRoutesByTo {
   '/redes-sociais': typeof RedesSociaisRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1222,6 +1231,7 @@ export interface FileRoutesById {
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
+  '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
   '/sitemap-blog.xml': typeof SitemapBlogDotxmlRoute
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
@@ -1367,6 +1377,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1509,6 +1520,7 @@ export interface FileRouteTypes {
     | '/redes-sociais'
     | '/rss.xml'
     | '/seo'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1652,6 +1664,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/seo'
     | '/servicos'
+    | '/sitemap-bh-neighborhoods.xml'
     | '/sitemap-blog.xml'
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
@@ -1797,6 +1810,7 @@ export interface RootRouteChildren {
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRouteWithChildren
+  SitemapBhNeighborhoodsDotxmlRoute: typeof SitemapBhNeighborhoodsDotxmlRoute
   SitemapBlogDotxmlRoute: typeof SitemapBlogDotxmlRoute
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
@@ -1973,6 +1987,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-blog.xml'
       fullPath: '/sitemap-blog.xml'
       preLoaderRoute: typeof SitemapBlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-bh-neighborhoods.xml': {
+      id: '/sitemap-bh-neighborhoods.xml'
+      path: '/sitemap-bh-neighborhoods.xml'
+      fullPath: '/sitemap-bh-neighborhoods.xml'
+      preLoaderRoute: typeof SitemapBhNeighborhoodsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -3099,6 +3120,7 @@ const rootRouteChildren: RootRouteChildren = {
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRouteWithChildren,
+  SitemapBhNeighborhoodsDotxmlRoute: SitemapBhNeighborhoodsDotxmlRoute,
   SitemapBlogDotxmlRoute: SitemapBlogDotxmlRoute,
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
