@@ -202,6 +202,20 @@ function ServicePage() {
                 />
               ) : null}
             </div>
+            {data.price != null && data.price > 0 ? (
+              <div className="mt-10">
+                <ServicePurchasePanel
+                  item={{
+                    slug,
+                    name: data.name,
+                    category: data.category,
+                    price: data.price,
+                    pricePeriod: data.pricePeriod ?? null,
+                    imageUrl: data.imageUrl ?? null,
+                  }}
+                />
+              </div>
+            ) : null}
             {data.conditions && (
               <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
                 {data.conditions}
