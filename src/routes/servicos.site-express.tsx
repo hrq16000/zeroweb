@@ -441,8 +441,8 @@ function SiteExpressPage() {
                     value={`item-${i}`}
                     className="rounded-2xl bg-gray-50 border border-gray-100 px-5 data-[state=open]:bg-white data-[state=open]:shadow-sm transition scroll-mt-28 lg:scroll-mt-32"
                   >
-                    <AccordionTrigger className="text-left hover:no-underline py-5">
-                      <h3 className="font-semibold text-gray-900 text-base">{f.q}</h3>
+                    <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline py-5">
+                      {f.q}
                     </AccordionTrigger>
                     <AccordionContent className="text-gray-600 leading-relaxed pb-5">
                       {f.a}
