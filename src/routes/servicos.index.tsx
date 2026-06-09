@@ -4,7 +4,6 @@ import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Time
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { SERVICES } from "@/lib/services-data";
@@ -250,7 +249,6 @@ function ServicosHub() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }]} />
       <main className="pt-6">
         <h1 className="sr-only">Loja de serviços 0WEB</h1>
         <ShopHero slides={slides} />

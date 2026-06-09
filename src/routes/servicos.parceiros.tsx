@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { applyAsPartner } from "@/lib/partners.functions";
 import { CheckCircle2 } from "lucide-react";
@@ -101,12 +100,6 @@ function ParceirosPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs compact
-        items={[
-          { name: "Serviços", path: "/servicos" },
-          { name: "Programa de Parceiros", path: "/servicos/parceiros" },
-        ]}
-      />
       <main className="pt-6 lg:pt-8 pb-24">
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">Programa de parceiros</p>

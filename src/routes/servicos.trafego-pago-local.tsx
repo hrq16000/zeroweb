@@ -8,8 +8,6 @@ import { CheckCircle2, XCircle, MessageCircle, Phone, ShoppingCart, Rocket, Aler
 import capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-
 const URL = "https://0web.com.br/servicos/trafego-pago-local";
 const TITLE = "Tráfego Pago para Negócios Locais a partir de R$499/mês · 0WEB";
 const DESC = "Tráfego pago estratégico para negócios locais: anúncios no Instagram, Facebook e Google que geram mensagens, ligações e vendas reais. Sem contrato, sem fidelidade, planos a partir de R$499/mês.";
@@ -95,7 +93,6 @@ function TrafegoPagoLocalPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }, { name: "Tráfego Pago Local", path: "/servicos/trafego-pago-local" }]} />
       <main className="pt-6">
         {/* HERO */}
         <section className="relative overflow-hidden pb-16 px-6">
