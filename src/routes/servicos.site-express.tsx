@@ -414,35 +414,46 @@ function SiteExpressPage() {
           </div>
         </section>
 
-        {/* FAQ (12 Q&A) */}
-        <section id="faq" className="py-16 px-5">
+        {/* FAQ (12 Q&A) — âncora #faq com offset para o header fixo (scroll suave herdado de html{scroll-behavior:smooth}). */}
+        <section id="faq" className="py-16 px-5 scroll-mt-28 lg:scroll-mt-32">
           <div className="max-w-3xl mx-auto">
             <div className="text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-orange-600">FAQ</span>
               <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-900">
-                Perguntas frequentes
+                Perguntas frequentes sobre o Site Express
               </h2>
               <p className="mt-3 text-gray-600">Tudo que você precisa saber antes de pedir.</p>
             </div>
 
             <Accordion type="single" collapsible className="mt-10 space-y-3">
-              {FAQ.map((f, i) => (
-                <AccordionItem
-                  key={f.q}
-                  value={`item-${i}`}
-                  className="rounded-2xl bg-gray-50 border border-gray-100 px-5 data-[state=open]:bg-white data-[state=open]:shadow-sm transition"
-                >
-                  <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline py-5">
-                    {f.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 leading-relaxed pb-5">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
+              {FAQ.map((f, i) => {
+                const anchor = `faq-${f.q
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/^-+|-+$/g, "")
+                  .slice(0, 60)}`;
+                return (
+                  <AccordionItem
+                    key={f.q}
+                    id={anchor}
+                    value={`item-${i}`}
+                    className="rounded-2xl bg-gray-50 border border-gray-100 px-5 data-[state=open]:bg-white data-[state=open]:shadow-sm transition scroll-mt-28 lg:scroll-mt-32"
+                  >
+                    <AccordionTrigger className="text-left hover:no-underline py-5">
+                      <h3 className="font-semibold text-gray-900 text-base">{f.q}</h3>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 leading-relaxed pb-5">
+                      {f.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
             </Accordion>
           </div>
         </section>
+
 
         {/* CTA FINAL */}
         <section className="py-20 px-5 bg-gradient-to-br from-orange-600 to-orange-500 text-white text-center">
