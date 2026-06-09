@@ -1,0 +1,1 @@
+UPDATE public.hero_slides SET badge = 'Catálogo 0WEB' WHERE badge = 'Loja 0WEB';

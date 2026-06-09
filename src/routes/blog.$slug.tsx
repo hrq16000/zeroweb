@@ -85,6 +85,20 @@ export const Route = createFileRoute("/blog/$slug")({
             ],
           }),
         },
+        ...(post.faq && post.faq.length > 0
+          ? [{
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: post.faq.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              }),
+            }]
+          : []),
       ],
     };
   },
@@ -173,6 +187,24 @@ function PostPage() {
           )}
 
           <AuthorBio className="mt-12" />
+
+          {post.faq && post.faq.length > 0 && (
+            <section className="mt-12" aria-labelledby="faq-heading">
+              <h2 id="faq-heading" className="text-2xl font-bold font-display">
+                Perguntas frequentes
+              </h2>
+              <dl className="mt-6 space-y-4">
+                {post.faq.map((f: { q: string; a: string }, i: number) => (
+                  <div key={i} className="rounded-2xl border border-border bg-card p-5">
+                    <dt className="font-semibold text-foreground">{f.q}</dt>
+                    <dd className="mt-2 text-sm text-foreground/80 leading-relaxed">{f.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+
+
 
           {/* CTA Diagnóstico */}
           <aside className="mt-12 rounded-3xl bg-gradient-to-br from-primary/10 via-card to-card border border-border p-6 lg:p-8 text-center">

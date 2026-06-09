@@ -49,7 +49,7 @@ function PagamentosAdminPage() {
       <header className="space-y-1">
         <h1 className="text-2xl font-display font-bold tracking-tight">Pagamentos</h1>
         <p className="text-sm text-muted-foreground">
-          Controle o fluxo de cobrança da Loja 0WEB. Enquanto o Stripe estiver desativado,
+          Controle o fluxo de cobrança do catálogo 0WEB. Enquanto o Stripe estiver desativado,
           todo pedido vai para o WhatsApp e fica salvo como <strong>Pendente de pagamento</strong>.
         </p>
       </header>
