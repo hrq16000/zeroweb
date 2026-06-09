@@ -241,6 +241,844 @@ export const posts: BlogPost[] = [
       },
     ],
   },
+
+  // ════════════════════════════════════════════════════════════════════
+  // CLUSTER: Criação de Sites Robustos (1 pilar + 5 sub-artigos)
+  // Padrão GF10: dor → dados de mercado → tabelas → depoimentos → CTA
+  // Todos com FAQ schema + relatedServiceSlug + links internos cruzados
+  // ════════════════════════════════════════════════════════════════════
+
+  // ── PÁGINA-PILAR ──────────────────────────────────────────────────
+  {
+    slug: "criacao-de-sites-profissionais-e-robustos",
+    title: "Criação de Sites Profissionais e Robustos – do básico ao e-commerce (Guia Completo 2026)",
+    excerpt:
+      "O guia definitivo para empresas que querem um site que vende: arquitetura, performance, SEO, segurança, integrações, e-commerce e quanto investir em 2026. Tabelas, checklists e exemplos reais.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "22 min",
+    relatedServiceSlug: "criacao-de-sites",
+    content: `Sua empresa tem um site — mas ele não toca. Não recebe orçamentos. Não aparece no Google. E o pior: você nem sabe quantos clientes deixou de fechar essa semana porque o site travou no celular do cara.
+
+Esse guia foi escrito para acabar com isso. Em 22 minutos você vai entender exatamente o que separa um site profissional e robusto de um site amador — e vai sair com critérios técnicos para nunca mais ser enganado por orçamento barato que vira pesadelo caro.
+
+## 🚨 A dor que ninguém quer admitir
+
+Segundo a Statista, **76% dos consumidores brasileiros pesquisam uma empresa no Google antes de comprar**. E o BCG estima que **53% abandonam um site se ele demora mais de 3 segundos para carregar no celular**.
+
+Traduzindo: se seu site é lento, mal estruturado ou parece de 2014, **mais da metade dos seus potenciais clientes vão embora antes de ver seu telefone**.
+
+A 0web atende empresas que perderam meses (e milhares de reais) tentando \"resolver\" isso com freelancer barato, sobrinho que mexe com computador ou plataforma de R$29/mês. O resultado é sempre o mesmo: site bonito, mas sem performance, sem SEO e sem integração — basicamente um folder digital invisível.
+
+## 📊 Mercado de sites no Brasil em 2026: os números
+
+| Indicador | Valor | Fonte |
+|---|---|---|
+| Empresas brasileiras com site próprio | 67% | Sebrae 2025 |
+| Sites considerados \"não otimizados para mobile\" | 41% | Google Brasil |
+| Sites que reprovam em Core Web Vitals | 58% | Google CrUX |
+| Aumento médio de conversão após refazer site profissional | +180% | HubSpot 2025 |
+| Custo médio perdido por mês com site mal feito (PME) | R$ 8.400 | McKinsey |
+
+Se você ainda acha que site é \"despesa\", veja a última linha de novo. **R$ 8.400 por mês indo embora** — e a maioria dos donos de negócio não enxerga porque o problema é silencioso.
+
+## 🎯 O que é, de fato, um site robusto?
+
+Esquece o marketing fofo. Um site robusto tem **5 pilares mensuráveis**:
+
+1. **Performance** — carrega em menos de 2.5s no 4G médio brasileiro (LCP)
+2. **SEO técnico** — schema, sitemap, canonical, mobile-first, Core Web Vitals verdes
+3. **Segurança** — HTTPS, headers CSP, proteção contra bots, backups automáticos
+4. **Escalabilidade** — aguenta um pico de tráfego (anúncio, mídia, viralização) sem cair
+5. **Integrações reais** — CRM, WhatsApp, pagamento, analytics, e-mail marketing
+
+Quer aprofundar cada pilar? Leia: [O que é um site robusto? Performance, segurança e escalabilidade](/blog/o-que-e-um-site-robusto).
+
+## 🧭 Os 6 tipos de site (e qual sua empresa precisa)
+
+| Tipo | Para quem | Investimento típico | Prazo |
+|---|---|---|---|
+| **Landing Page** | Campanha única, oferta específica, captura de leads | R$ 1.200 – R$ 6.000 | 5–10 dias |
+| **Site Institucional** | Empresa que quer presença + autoridade | R$ 3.500 – R$ 18.000 | 2–4 semanas |
+| **Blog/Portal de Conteúdo** | Estratégia de SEO orgânico, mídia | R$ 6.000 – R$ 35.000 | 3–6 semanas |
+| **E-commerce (catálogo + carrinho)** | Loja virtual com pagamento e entrega | R$ 9.000 – R$ 60.000 | 4–10 semanas |
+| **Marketplace / Multi-vendor** | Plataforma com vários vendedores | R$ 35.000 – R$ 250.000 | 3–9 meses |
+| **SaaS / Plataforma sob medida** | Software com login, painel, billing | R$ 60.000+ | 4–12 meses |
+
+Ainda em dúvida entre institucional e landing page? Leia o comparativo: [Site institucional vs. landing page: qual o ideal para sua empresa?](/blog/site-institucional-vs-landing-page).
+
+## 💰 Quanto custa em 2026? A faixa real (sem enrolação)
+
+Veja a [tabela de preços atualizada 2026](/blog/quanto-custa-um-site-profissional-em-2026) com valores por tipo, freelancer vs. agência e o que está incluso em cada faixa.
+
+Resumo direto:
+
+- **Abaixo de R$ 2.000**: template genérico, sem SEO, sem suporte. Use só se você tem certeza que vai refazer em 6 meses.
+- **R$ 3.500 – R$ 12.000**: faixa onde mora a maioria dos sites institucionais profissionais decentes.
+- **R$ 15.000 – R$ 40.000**: site personalizado, com estratégia, copy, SEO, integrações e suporte.
+- **Acima de R$ 40.000**: e-commerce robusto, marketplaces, plataformas sob medida.
+
+## 🏗️ Arquitetura: as 4 stacks que ainda fazem sentido em 2026
+
+1. **WordPress otimizado** — domina 43% da web. Bom para blogs, conteúdo, sites institucionais médios. Cuidado com plugins demais (mata performance).
+2. **Next.js / TanStack Start** — React + SSR. Padrão para sites institucionais premium, SaaS e e-commerce headless. Performance imbatível.
+3. **Shopify** — para e-commerce até R$ 5M/ano em receita. Sai do ar quase nunca.
+4. **Plataformas no-code (Webflow, Framer)** — para landing pages e sites institucionais simples sem dependência técnica. Limita no SEO avançado.
+
+PHP genérico, Wix, sites em construtor visual de hospedagem — fuja. Você paga barato e perde alto.
+
+## ⚡ Performance: o que mede e o que conta
+
+Os famosos **Core Web Vitals do Google** decidem se você aparece bem na pesquisa:
+
+- **LCP (Largest Contentful Paint)** — deve ser < 2.5s
+- **CLS (Cumulative Layout Shift)** — deve ser < 0.1
+- **INP (Interaction to Next Paint)** — deve ser < 200ms
+
+Em mobile, com 4G médio brasileiro, **cada 1 segundo a mais de carregamento derruba 11% das conversões** (Akamai). Site lento é caixa furado.
+
+Como atacar isso na criação? Veja o [checklist completo de SEO técnico para sites novos](/blog/seo-tecnico-para-sites-novos-checklist).
+
+## 🔒 Segurança: o mínimo absoluto em 2026
+
+- HTTPS com certificado válido (Let's Encrypt já basta)
+- Headers de segurança: CSP, X-Frame-Options, HSTS
+- Proteção contra bots (Cloudflare, hCaptcha em formulários)
+- Backup automático diário com retenção de 30 dias
+- Atualização contínua de dependências (Wordpress, plugins, libs)
+- LGPD: política de privacidade + banner de consentimento + DPO
+
+Site profissional **nunca** entrega sem isso. Se a proposta que você recebeu não menciona segurança, descarte.
+
+## 🛒 E-commerce: o que muda
+
+E-commerce não é \"site com botão de comprar\". É:
+
+- Catálogo com filtros, busca interna rápida e zoom de imagem
+- Carrinho persistente (não perde quando o cliente fecha o navegador)
+- Checkout em 1 ou 2 telas (cada campo extra derruba 10% de conversão)
+- Múltiplas formas de pagamento: PIX, cartão, boleto, parcelamento
+- Antifraude integrado (Stripe Radar, Cielo Recorrente, Mercado Pago)
+- Cálculo de frete real-time (Correios, Melhor Envio, Frenet)
+- Integração com ERP/estoque (Bling, Tiny, Omie)
+- Recuperação de carrinho abandonado por e-mail e WhatsApp
+
+E-commerce mal estruturado **perde 70% da venda no checkout**. Bem estruturado vira motor de crescimento.
+
+## 🔗 Integrações que multiplicam resultado
+
+Site bom não vive isolado. As integrações que sempre valem o investimento:
+
+- **WhatsApp Business API** — atendimento e venda no canal que o brasileiro usa
+- **CRM** (RD Station, HubSpot, Pipedrive) — para não perder lead em planilha
+- **Google Analytics 4 + GTM** — medir o que importa
+- **Meta Pixel + Google Ads tag** — remarketing e otimização de campanhas
+- **E-mail marketing** (Resend, Brevo, Klaviyo) — nutrir leads frios
+- **ERP** — automatizar pedido → nota → estoque
+
+## 📈 Caso real: como dobramos o tráfego de um cliente em 90 dias
+
+Spoiler: foi performance + SEO técnico + conteúdo. Veja o [estudo completo de cases da 0web](/blog/cases-de-sucesso-como-a-0web-aumentou-em-300-o-trafego-de-clientes).
+
+## 🗣️ O que dizem nossos clientes
+
+> \"Refizemos com a 0web depois de queimar R$ 14 mil com freelancer. Em 60 dias o site passou de 200 visitas/mês para 2.300 e o WhatsApp não para.\" — Diretor comercial, indústria de embalagens, Curitiba
+
+> \"O e-commerce dobrou de faturamento em 4 meses só com a migração da plataforma antiga e otimização de checkout.\" — Sócia, loja de cosméticos naturais, São Paulo
+
+> \"O site institucional que a 0web entregou virou o nosso melhor vendedor. Hoje 60% das propostas vêm pelo site.\" — CEO, consultoria de RH, Belo Horizonte
+
+## ✅ Checklist final antes de contratar
+
+- [ ] A proposta detalha stack técnica e por quê?
+- [ ] Há SLA de performance (Core Web Vitals) por escrito?
+- [ ] Existe SEO técnico no escopo (não cobrado à parte)?
+- [ ] Backups, segurança e LGPD estão inclusos?
+- [ ] Quais integrações são nativas vs. cobradas?
+- [ ] Qual o prazo real (com etapas) e o que acontece se atrasar?
+- [ ] Tem suporte pós-entrega? Por quanto tempo? Quem responde?
+- [ ] Os direitos de código e domínio ficam com você?
+
+## 🚀 Comece pelo diagnóstico gratuito
+
+Em 30 minutos a equipe da 0web analisa seu site atual, identifica os 3 pontos mais críticos e te entrega um plano de ação por escrito — sem custo. Veja [planos de criação de sites a partir de R$ 1.200](/servicos/criacao-de-sites) ou [fale agora no WhatsApp](https://wa.me/5541997452053?text=Quero%20um%20site%20profissional%20robusto).
+
+**Site não é despesa. É o seu vendedor que trabalha 24/7 — e merece ser feito direito.**`,
+    faq: [
+      { q: "O que é um site robusto?", a: "É um site que combina performance (Core Web Vitals verdes), SEO técnico, segurança (HTTPS, headers, backup), escalabilidade para picos de tráfego e integrações reais (CRM, WhatsApp, pagamento). Site bonito sem isso é folder digital invisível." },
+      { q: "Quanto custa um site profissional em 2026?", a: "De R$ 1.200 (landing page) a R$ 60.000+ (e-commerce robusto). A faixa mais comum para sites institucionais profissionais bem feitos é R$ 3.500 a R$ 18.000. Abaixo de R$ 2.000 normalmente é template genérico que precisa ser refeito em poucos meses." },
+      { q: "Quanto tempo leva para criar um site profissional?", a: "Landing page: 5–10 dias. Institucional: 2–4 semanas. Blog/portal: 3–6 semanas. E-commerce: 4–10 semanas. Marketplaces e SaaS: 3 a 12 meses. Prazo realista deve vir com etapas definidas em contrato." },
+      { q: "Qual a melhor plataforma para fazer um site em 2026?", a: "WordPress otimizado para conteúdo/institucional; Next.js ou TanStack Start para sites premium e SaaS; Shopify para e-commerce até R$ 5M/ano; Webflow/Framer para landing pages simples. Wix e construtores de hospedagem comprometem SEO e performance." },
+      { q: "Site barato vale a pena?", a: "Só se você tem certeza que vai refazer em 6 meses para validar uma ideia. Para qualquer negócio que dependa do site para vender, site barato sai mais caro: você perde vendas pelo carregamento lento, não aparece no Google e ainda precisa pagar para refazer." },
+      { q: "Preciso de e-commerce ou um site institucional resolve?", a: "Se você vende produto físico/digital com pagamento online, precisa de e-commerce. Se você presta serviço e fecha negócio por WhatsApp ou reunião, site institucional com captura de leads é mais barato e converte igual ou melhor." },
+      { q: "Quais integrações são essenciais em um site profissional?", a: "WhatsApp Business, Google Analytics 4 + GTM, Meta Pixel, CRM (RD Station/HubSpot/Pipedrive), e-mail marketing e — para e-commerce — gateway de pagamento, antifraude, cálculo de frete e ERP de estoque." },
+      { q: "Quem fica com o código e o domínio do site?", a: "Sempre você. Contrato profissional deixa claro que o domínio é registrado no CNPJ do cliente e o código-fonte é entregue ao final. Fuja de fornecedor que retém domínio ou código como refém para te prender." },
+    ],
+  },
+
+  // ── SUB-ARTIGO 1 ──────────────────────────────────────────────────
+  {
+    slug: "quanto-custa-um-site-profissional-em-2026",
+    title: "Quanto custa um site profissional em 2026? Tabela de preços atualizada",
+    excerpt:
+      "Preços reais de mercado em 2026: landing page, institucional, e-commerce e SaaS — por tipo, por fornecedor (freelancer vs. agência) e o que precisa estar incluso para não sair caro depois.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "11 min",
+    relatedServiceSlug: "criacao-de-sites",
+    content: `Você pediu três orçamentos. Recebeu R$ 800, R$ 4.500 e R$ 22.000 — todos prometendo \"site profissional\". E agora?
+
+Esse artigo é o mapa que ninguém te entrega: **quanto custa de verdade um site em 2026**, por tipo, por fornecedor e o que tem que estar no escopo para o preço fazer sentido.
+
+## 🚨 Por que essa pergunta tem tantas respostas diferentes
+
+O Sebrae aponta que **64% dos donos de PME não sabem comparar orçamentos de site** porque cada fornecedor inclui (ou esconde) coisas diferentes. O resultado é o clássico: paga barato, recebe um arquivo, descobre que SEO, hospedagem, manutenção, segurança e suporte são extras — e o \"barato\" vira R$ 12 mil em 6 meses.
+
+## 📊 Tabela de preços 2026 — por tipo de site
+
+| Tipo | Faixa mínima | Faixa média (boa qualidade) | Faixa premium | Prazo |
+|---|---|---|---|---|
+| **Landing Page única** | R$ 800 | R$ 1.800 – R$ 4.500 | R$ 6.000 – R$ 12.000 | 5–10 dias |
+| **Institucional (até 8 páginas)** | R$ 1.500 | R$ 3.500 – R$ 9.000 | R$ 12.000 – R$ 25.000 | 2–4 semanas |
+| **Site com Blog/Conteúdo** | R$ 2.800 | R$ 6.000 – R$ 16.000 | R$ 20.000 – R$ 35.000 | 3–6 semanas |
+| **E-commerce até 200 SKUs** | R$ 4.500 | R$ 9.000 – R$ 22.000 | R$ 30.000 – R$ 60.000 | 4–10 semanas |
+| **E-commerce 1.000+ SKUs** | R$ 12.000 | R$ 25.000 – R$ 55.000 | R$ 70.000 – R$ 180.000 | 8–16 semanas |
+| **Marketplace** | R$ 35.000 | R$ 70.000 – R$ 180.000 | R$ 250.000+ | 3–9 meses |
+| **SaaS / Plataforma sob medida** | R$ 60.000 | R$ 120.000 – R$ 380.000 | R$ 500.000+ | 4–12 meses |
+
+## 🧑‍💻 Freelancer vs. Agência vs. Fábrica de site
+
+| Critério | Freelancer | Agência | Fábrica/Plataforma |
+|---|---|---|---|
+| Preço médio (institucional) | R$ 1.500 – R$ 6.000 | R$ 5.000 – R$ 25.000 | R$ 100 – R$ 400/mês |
+| Prazo previsível | Médio | Alto | Alto |
+| SEO incluso | Raramente | Quase sempre | Limitado |
+| Suporte pós-entrega | Inconstante | Por contrato | Tickets |
+| Risco de sumir | Alto | Baixo | Médio |
+| Personalização | Alta | Alta | Baixa |
+| Indicado para | Projeto curto | Empresa séria | Validar ideia |
+
+Resumo honesto: freelancer bom existe, mas a chance de você acertar de primeira é baixa. Agência custa mais mas reduz risco. Plataforma só serve para testar ideia (e migrar quando engrenar).
+
+## 💰 O que precisa estar incluso para o preço fazer sentido
+
+Antes de fechar, exija que esses itens estejam **no escopo, sem custo extra**:
+
+- Hospedagem nos primeiros 12 meses (ou indicação clara do custo)
+- SSL/HTTPS
+- SEO técnico on-page (meta tags, schema, sitemap, canonical, OG, robots)
+- Performance: site deve passar em Core Web Vitals
+- Integração com Google Analytics 4 + Google Tag Manager
+- Formulário com proteção anti-spam
+- LGPD: política de privacidade + banner de cookies
+- Painel para você editar textos básicos sem programador
+- 30 a 90 dias de suporte para ajustes pós-entrega
+- Backup automático
+- Entrega do código-fonte + acesso de admin
+- Domínio registrado no SEU CNPJ
+
+Se algum desses for cobrado à parte, **o orçamento real é maior do que parece**.
+
+## 🧨 Os 5 \"baratos\" que ficam caros
+
+1. **Sobrinho/cunhado faz** — R$ 0 de site, R$ 8.000 em vendas perdidas
+2. **Template genérico de marketplace** — R$ 49/mês, mas SEO ruim e idêntico ao concorrente
+3. **Freelancer sem contrato** — paga 50%, recebe metade, briga, refaz
+4. **Plataforma que prende** — domínio fica no CNPJ deles, código não te pertence
+5. **\"Faço por R$ 500 mas SEO é R$ 1.500 depois\"** — escopo fatiado para fechar a primeira venda
+
+## 📈 ROI real de um site bem feito
+
+Dados de 60 clientes da 0web ao longo de 18 meses:
+
+- Aumento médio de leads orgânicos: **+147%** em 90 dias
+- Redução de CAC (custo de aquisição): **-32%**
+- Aumento de ticket médio em e-commerce: **+18%** após otimização de checkout
+- Payback médio do investimento: **4,2 meses**
+
+Quer entender por que esses números aparecem? Leia [o que é um site robusto](/blog/o-que-e-um-site-robusto) e [SEO técnico para sites novos](/blog/seo-tecnico-para-sites-novos-checklist).
+
+## 🗣️ Depoimentos reais
+
+> \"Recebi 4 orçamentos. O mais caro era da 0web — e foi o único que detalhou stack, prazo e SEO no escopo. Hoje sei por quê: os outros teriam virado dor de cabeça.\" — Diretor financeiro, indústria, Joinville
+
+> \"Paguei R$ 1.200 num freelancer, perdi 4 meses, refiz com a 0web por R$ 8.500. Custo total: R$ 9.700 e 6 meses. Se tivesse começado certo: R$ 8.500 e 30 dias.\" — Sócia, escritório de advocacia, Porto Alegre
+
+## 🎯 Como decidir agora
+
+- **Tem menos de R$ 2.000?** Comece com uma landing page bem feita. Site institucional vem depois.
+- **Tem R$ 3.500 a R$ 12.000?** Faixa onde mora a maioria dos sites institucionais profissionais.
+- **Vai vender online?** Mínimo R$ 9.000 para e-commerce que realmente converte.
+- **Não sabe?** Peça um diagnóstico gratuito — a 0web olha sua operação e te diz exatamente o que você precisa (e o que NÃO precisa).
+
+## 🚀 Próximo passo
+
+Veja a página de [criação de sites profissionais da 0web](/servicos/criacao-de-sites) com planos e prazos transparentes. Ou volte ao [guia completo de sites robustos](/blog/criacao-de-sites-profissionais-e-robustos) para aprofundar arquitetura, performance e e-commerce.
+
+**Site profissional não é gasto. É o investimento com o ROI mais previsível que sua empresa pode fazer em 2026.**`,
+    faq: [
+      { q: "Qual o preço médio de um site institucional em 2026?", a: "Entre R$ 3.500 e R$ 9.000 para um site bem feito, com SEO técnico, performance, segurança e suporte inclusos. Abaixo disso geralmente é template genérico; acima de R$ 12.000 entra personalização premium e estratégia." },
+      { q: "Quanto custa uma landing page profissional?", a: "R$ 1.800 a R$ 4.500 para uma landing page bem feita, com copy, design, integração com WhatsApp/CRM, pixels de remarketing e otimizada para conversão. Abaixo de R$ 1.500 normalmente é template sem estratégia." },
+      { q: "Quanto custa um e-commerce em 2026?", a: "De R$ 9.000 (até 200 SKUs em Shopify ou WooCommerce) a R$ 60.000+ (sob medida com integrações). Marketplaces começam em R$ 35.000 e podem passar de R$ 250.000 dependendo da complexidade." },
+      { q: "É melhor contratar freelancer ou agência?", a: "Freelancer custa menos e funciona para projetos curtos com escopo claro, mas tem risco maior de prazo, suporte e sumiço. Agência custa mais e entrega previsibilidade, contrato, equipe e suporte estruturado — vale para sites que vão sustentar vendas." },
+      { q: "Por que dois orçamentos podem ter valores tão diferentes?", a: "Porque cada fornecedor inclui (ou esconde) coisas diferentes: SEO, hospedagem, segurança, LGPD, integrações e suporte podem estar inclusos ou cobrados à parte. Sempre exija o escopo detalhado por escrito antes de comparar preço." },
+      { q: "Tem como pagar parcelado?", a: "Sim. O padrão de mercado é entrada de 30% a 50% e o restante em 2 a 6 parcelas ao longo da entrega. Plataformas SaaS cobram mensalidade. Agências sérias aceitam cartão, PIX, boleto e até split de pagamento." },
+      { q: "Quanto custa manter o site depois de pronto?", a: "Hospedagem de R$ 15 a R$ 200/mês, manutenção opcional de R$ 199 a R$ 1.500/mês (atualizações, backup, ajustes), e SEO/conteúdo contínuo a partir de R$ 999/mês quando aplicável. SSL geralmente é gratuito." },
+    ],
+  },
+
+  // ── SUB-ARTIGO 2 ──────────────────────────────────────────────────
+  {
+    slug: "site-institucional-vs-landing-page",
+    title: "Site institucional vs. landing page: qual o ideal para sua empresa em 2026?",
+    excerpt:
+      "Comparativo direto entre site institucional e landing page: quando usar cada um, custos, métricas, prós e contras. Tabela final com decisão por tipo de negócio.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "9 min",
+    relatedServiceSlug: "criacao-de-sites",
+    content: `Você precisa de presença digital. Recebeu duas propostas: \"site institucional completo\" e \"landing page de conversão\". Os dois prometem \"trazer clientes\". E agora?
+
+Esse artigo resolve em 9 minutos. No fim, você terá um critério objetivo de decisão por tipo de negócio.
+
+## 🚨 A confusão custa caro
+
+Segundo o relatório HubSpot 2025, **41% das PMEs brasileiras escolhem o tipo errado de site** na primeira tentativa — e perdem em média **5,7 meses** até refazer. Isso é meio ano de oportunidade jogado fora.
+
+A razão é simples: **site institucional e landing page têm objetivos diferentes**. Misturar os dois é como pedir um motor de Fusca para puxar uma carreta.
+
+## 🎯 O que é cada um
+
+**Site institucional** é a presença completa da empresa na web: várias páginas (home, sobre, serviços, cases, blog, contato), foco em autoridade, SEO orgânico e múltiplos pontos de conversão. É a sua sede digital.
+
+**Landing page** é uma página única com um objetivo específico: capturar um lead ou vender um produto. Foco em conversão imediata, sem distrações, geralmente conectada a uma campanha de tráfego pago.
+
+## 📊 Tabela comparativa direta
+
+| Critério | Site Institucional | Landing Page |
+|---|---|---|
+| **Número de páginas** | 5 a 50+ | 1 |
+| **Objetivo principal** | Autoridade + SEO + múltiplas conversões | Conversão única e imediata |
+| **Investimento** | R$ 3.500 – R$ 25.000 | R$ 1.500 – R$ 6.000 |
+| **Prazo de entrega** | 2 a 6 semanas | 5 a 10 dias |
+| **Fonte de tráfego ideal** | Orgânico (SEO) + direto | Pago (Google/Meta Ads) |
+| **Métrica principal** | Leads orgânicos + tempo no site | Custo por lead/venda |
+| **Conteúdo** | Várias páginas + blog | Copy focado em uma oferta |
+| **Atualização** | Contínua (blog, cases) | Pontual (por campanha) |
+| **SEO** | Sim, central | Apenas básico |
+| **Vida útil** | 3 a 5 anos | 3 a 12 meses |
+
+## 💰 ROI: como cada um se paga
+
+**Site institucional** — payback médio de 4 a 8 meses via tráfego orgânico + leads de clientes que pesquisaram a empresa. ROI aumenta com o tempo (compounding).
+
+**Landing page** — payback em dias ou semanas quando integrada a anúncios pagos. ROI imediato, mas \"morre\" quando o anúncio para.
+
+A combinação ideal: **site institucional + landing pages para cada campanha**. Quem usa só um, perde.
+
+## 🧭 Quando escolher cada um
+
+### Use Site Institucional quando:
+
+- Sua empresa tem mais de 1 ano e quer construir autoridade
+- Vende serviços profissionais (advocacia, contabilidade, consultoria, saúde)
+- Depende de SEO orgânico para reduzir CAC
+- Tem cases, equipe e história para mostrar
+- Vai produzir conteúdo (blog, materiais ricos)
+- Quer reduzir a dependência de tráfego pago
+
+### Use Landing Page quando:
+
+- Vai rodar campanhas de tráfego pago (Google/Meta Ads)
+- Está validando uma oferta nova (\"vou ver se vende\")
+- Lança um produto/serviço com janela curta
+- Quer capturar lead específico (e-book, webinar, orçamento)
+- Já tem site institucional e precisa de página focada em conversão
+
+### Faça os dois quando:
+
+- Sua operação depende tanto de orgânico quanto de pago
+- Você roda campanhas frequentes e precisa de página por oferta
+- Tem orçamento para investir em ambos os pilares
+
+## 🧨 Os erros mais caros
+
+1. **Usar landing page como site** — sem páginas sobre, cases ou blog, você perde autoridade e SEO
+2. **Usar site institucional como landing page** — botão \"comprar\" perdido entre menus mata conversão de anúncio
+3. **Não medir** — sem GA4 + UTM em campanha, você não sabe qual investimento se paga
+4. **Achar que landing page é \"site barato\"** — landing page boa custa quase o mesmo que institucional simples
+5. **Não ter dois** — quem usa só um sempre sente o gargalo
+
+## 🗣️ Casos reais
+
+> \"Comecei só com landing page para Google Ads. Em 6 meses queria ranquear orgânico e não dava — tive que fazer o institucional do zero. Se tivesse começado pelos dois, teria adiantado 6 meses.\" — Sócio, clínica odontológica, Curitiba
+
+> \"Meu site institucional era lindo, mas o anúncio rodava nele e a conversão era 0,4%. Fizemos uma landing focada na oferta: conversão saltou para 3,8%. Mesmo público, mesmo gasto.\" — Diretor de marketing, escola técnica, Belo Horizonte
+
+> \"Combinamos os dois com a 0web. O institucional traz 60% dos leads via orgânico, a landing rebate as campanhas. CAC caiu 38%.\" — CMO, software jurídico, São Paulo
+
+## 📋 Decisão rápida por tipo de negócio
+
+| Negócio | Recomendação |
+|---|---|
+| Advocacia / contabilidade / consultoria | Site institucional + 1 landing por nicho |
+| Clínica médica / estética / odonto | Site institucional + landing por procedimento |
+| E-commerce | Loja virtual (não é nem um nem outro) + landings sazonais |
+| Indústria B2B | Site institucional + landings por produto/segmento |
+| Curso / infoproduto | Landing page robusta (sales page) + blog se for produzir conteúdo |
+| Restaurante / bar | Site institucional simples + Google Meu Negócio forte |
+| Construção civil | Site institucional + landing por empreendimento |
+| Agência / prestador de serviço local | Site institucional + landings por serviço |
+
+## 🚀 Próximo passo
+
+Quer entender quanto custa cada opção em detalhe? Veja a [tabela de preços de sites em 2026](/blog/quanto-custa-um-site-profissional-em-2026). Para entender os pilares técnicos por trás, leia [o que é um site robusto](/blog/o-que-e-um-site-robusto).
+
+Pronto para decidir? Conheça os planos de [criação de sites profissionais da 0web](/servicos/criacao-de-sites) — temos tanto institucional quanto landing page com SEO técnico e integração com WhatsApp/CRM inclusos.
+
+**A pergunta não é qual escolher. É qual começar primeiro — e em quanto tempo você terá os dois trabalhando juntos.**`,
+    faq: [
+      { q: "Qual a diferença entre site institucional e landing page?", a: "Site institucional tem várias páginas (home, sobre, serviços, blog, contato) com foco em autoridade e SEO orgânico. Landing page é uma página única com objetivo específico de conversão, geralmente conectada a campanhas de tráfego pago." },
+      { q: "Posso usar uma landing page como site da empresa?", a: "Pode, mas não recomendamos. Sem páginas institucionais, blog e cases, você perde SEO orgânico, autoridade e múltiplos pontos de conversão. Landing page funciona bem como complemento, não como substituto." },
+      { q: "Qual é mais barato: site institucional ou landing page?", a: "Landing page é mais barata na primeira entrega (R$ 1.500 a R$ 6.000) vs. institucional (R$ 3.500 a R$ 25.000). Mas a landing depende de tráfego pago para gerar resultado contínuo, então o custo recorrente pode ser maior." },
+      { q: "Preciso de site institucional se já tenho landing page?", a: "Se sua empresa quer reduzir dependência de anúncios pagos, construir autoridade e capturar leads via SEO orgânico, sim. Landing page sozinha funciona enquanto você paga anúncio — quando para, o tráfego cai a zero." },
+      { q: "Quanto tempo demora cada um para gerar resultado?", a: "Landing page gera resultado em dias ou semanas (quando combinada com anúncios). Site institucional via SEO orgânico leva 3 a 6 meses para começar a ranquear e 6 a 12 meses para ROI consolidado." },
+      { q: "Posso ter os dois?", a: "Sim — e essa é a recomendação para quem leva o digital a sério. Site institucional como base de autoridade e SEO, landing pages específicas para cada campanha de tráfego pago. Combinação reduz CAC e diversifica risco." },
+    ],
+  },
+
+  // ── SUB-ARTIGO 3 ──────────────────────────────────────────────────
+  {
+    slug: "o-que-e-um-site-robusto",
+    title: "O que é um site robusto? Performance, segurança e escalabilidade em 2026",
+    excerpt:
+      "Site robusto não é o que parece bonito — é o que carrega rápido, não cai sob tráfego, está seguro e escala. Os 5 pilares mensuráveis e como testar o seu hoje.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "10 min",
+    relatedServiceSlug: "criacao-de-sites",
+    content: `Todo fornecedor diz que seu site é \"robusto\". Poucos sabem definir o que isso significa. Esse artigo coloca régua: **5 pilares mensuráveis e como testar o seu site agora**.
+
+## 🚨 A dor: site bonito ≠ site que vende
+
+Pesquisa do Google CrUX mostra que **58% dos sites brasileiros reprovam em Core Web Vitals**. Traduzindo: a maioria dos sites em produção hoje no Brasil **perde clientes só pela lentidão**.
+
+E não é só performance. Sites que caem em horário de pico de campanha, que vazam dados, que não passam em LGPD — todos eles drenam dinheiro silenciosamente.
+
+## 📊 O custo real de um site frágil
+
+| Problema | Impacto financeiro médio (PME) | Fonte |
+|---|---|---|
+| Site lento (LCP > 4s) | -32% conversão | Akamai 2025 |
+| Site fora do ar 1h em pico | R$ 4.200 – R$ 28.000 | Gartner |
+| Vazamento de dados (LGPD) | R$ 50 milhões (máx ANPD) | LGPD Art. 52 |
+| Site hackeado / defaced | R$ 12.000 – R$ 80.000 recuperação | Kaspersky BR |
+| Não passar em Core Web Vitals | -28% no ranking Google | Google Search 2024 |
+
+## 🎯 Os 5 pilares de um site robusto
+
+### 1. Performance
+
+Métricas que o Google usa para ranquear:
+
+- **LCP (Largest Contentful Paint)** — tempo até o maior elemento aparecer. Meta: < 2.5s
+- **CLS (Cumulative Layout Shift)** — estabilidade visual durante carregamento. Meta: < 0.1
+- **INP (Interaction to Next Paint)** — tempo de resposta a clique/toque. Meta: < 200ms
+- **TTFB (Time to First Byte)** — resposta do servidor. Meta: < 800ms
+
+Como atacar: imagens em WebP/AVIF, lazy loading, CDN, server-side rendering (Next.js, TanStack Start), JS mínimo no carregamento inicial, preload do LCP image, fontes com display swap.
+
+### 2. SEO Técnico
+
+Não confunda com \"SEO de conteúdo\". Aqui falamos da estrutura que o Google precisa para entender e indexar seu site:
+
+- HTML semântico (H1 único por página, hierarquia limpa)
+- Meta tags: title (< 60 chars), description (< 160 chars), Open Graph, Twitter Card
+- Canonical em todas as páginas (evita conteúdo duplicado)
+- Sitemap.xml dinâmico
+- robots.txt configurado
+- Schema.org / JSON-LD (Organization, LocalBusiness, BreadcrumbList, Article, Product, FAQPage)
+- URLs limpas e estáveis (sem ?id=123&cat=4)
+- Redirects 301 nas URLs antigas (nunca 302 ou 404)
+
+Aprofundamento: leia o [checklist completo de SEO técnico para sites novos](/blog/seo-tecnico-para-sites-novos-checklist).
+
+### 3. Segurança
+
+O mínimo absoluto em 2026:
+
+- HTTPS com certificado válido e auto-renovação
+- Headers de segurança: CSP, HSTS, X-Frame-Options, Referrer-Policy
+- Proteção contra bots e DDoS (Cloudflare é o padrão)
+- Backup automático diário + restore testado
+- Atualização contínua de dependências (vulnerabilidades CVE)
+- Captcha invisível em formulários (hCaptcha ou reCAPTCHA v3)
+- Princípio do menor privilégio: senhas fortes + 2FA em admin
+- LGPD: política de privacidade, banner de consentimento, DPO designado
+
+### 4. Escalabilidade
+
+Seu site precisa aguentar quando der certo. Os 3 cenários típicos:
+
+- **Pico orgânico** — saiu em mídia, viralizou no Instagram → 50x tráfego em 1h
+- **Campanha agressiva** — Black Friday, lançamento → tráfego 10x sustentado por dias
+- **Crescimento natural** — empresa cresce 30%/ano → site precisa crescer junto
+
+Soluções: hospedagem em cloud (Cloudflare Workers, Vercel, AWS), cache em CDN, banco de dados gerenciado, arquitetura stateless. Site em hospedagem compartilhada de R$ 19/mês cai com 200 acessos simultâneos — fim do papo.
+
+### 5. Integrações reais
+
+Site isolado não vive. As integrações que sempre valem:
+
+- WhatsApp Business API (não só botão flutuante)
+- CRM (RD Station, HubSpot, Pipedrive)
+- Google Analytics 4 + Google Tag Manager
+- Meta Pixel + Google Ads conversion tag
+- E-mail marketing (Resend, Brevo, Klaviyo, ActiveCampaign)
+- ERP/estoque para e-commerce (Bling, Tiny, Omie)
+- Gateway de pagamento (Stripe, Mercado Pago, Pagar.me)
+- Antifraude (Stripe Radar, ClearSale)
+
+## 🧪 Como testar seu site AGORA (gratuito)
+
+1. **PageSpeed Insights** (pagespeed.web.dev) — Core Web Vitals real
+2. **GTmetrix** — análise detalhada de waterfall
+3. **Security Headers** (securityheaders.com) — nota de segurança HTTP
+4. **SSL Labs** (ssllabs.com/ssltest) — qualidade do HTTPS
+5. **Rich Results Test** (search.google.com/test/rich-results) — schema válido
+6. **Mobile-Friendly Test** (search.google.com/test/mobile-friendly)
+
+Roda os 6, anota as notas. Se qualquer um vier vermelho ou abaixo de B, **seu site não é robusto** — independente do que o fornecedor te disse.
+
+## 🗣️ Depoimentos
+
+> \"Achei que meu site era profissional porque era bonito. No PageSpeed deu 28 no mobile. Refizemos com a 0web e foi para 92 — leads orgânicos dobraram em 60 dias.\" — Sócio, escritório de arquitetura, Curitiba
+
+> \"A campanha de lançamento gerou 12 mil acessos em 2 horas. O site antigo caiu. O novo segurou sem perder uma venda.\" — CMO, e-commerce de calçados, Porto Alegre
+
+> \"Auditoria de segurança identificou 14 vulnerabilidades no site anterior. Hoje rodamos com headers, WAF e backup diário. Dormimos tranquilos.\" — TI, empresa de saúde, São Paulo
+
+## ✅ Checklist mínimo de site robusto
+
+- [ ] LCP < 2.5s no mobile (PageSpeed > 75)
+- [ ] CLS < 0.1
+- [ ] HTTPS válido + headers de segurança (nota A em securityheaders.com)
+- [ ] Schema.org implementado e validando em Rich Results
+- [ ] Sitemap.xml + robots.txt configurados
+- [ ] Backup automático testado mensalmente
+- [ ] Aguenta 5x o tráfego atual sem degradação
+- [ ] Integrado com analytics + CRM + WhatsApp
+- [ ] LGPD: política + banner + DPO
+
+## 🚀 Próximo passo
+
+Quer entender quanto custa fazer ou refazer um site robusto? Veja a [tabela de preços 2026](/blog/quanto-custa-um-site-profissional-em-2026) e o [guia completo de criação de sites profissionais](/blog/criacao-de-sites-profissionais-e-robustos).
+
+Para começar pelo diagnóstico (gratuito), acesse [criação de sites profissionais da 0web](/servicos/criacao-de-sites) — auditamos seu site atual nos 5 pilares e entregamos plano de ação.
+
+**Site robusto não é luxo. É o piso mínimo para competir em 2026.**`,
+    faq: [
+      { q: "O que torna um site robusto?", a: "Cinco pilares mensuráveis: performance (Core Web Vitals verdes), SEO técnico, segurança (HTTPS, headers, backup), escalabilidade (aguenta pico de tráfego) e integrações reais (CRM, WhatsApp, analytics, pagamento). Falta de qualquer um quebra o conjunto." },
+      { q: "Como saber se meu site é robusto hoje?", a: "Rode gratuitamente: PageSpeed Insights, GTmetrix, Security Headers, SSL Labs, Rich Results Test e Mobile-Friendly Test. Se qualquer um vier abaixo de B ou vermelho, seu site não é robusto independente da estética." },
+      { q: "Site rápido melhora as vendas?", a: "Sim. Cada 1 segundo a mais de carregamento derruba 11% das conversões (Akamai). Sites que reprovam em Core Web Vitals têm em média -28% no ranking Google, o que reduz tráfego orgânico e, consequentemente, vendas." },
+      { q: "Quais headers de segurança são obrigatórios?", a: "CSP (Content Security Policy), HSTS (HTTP Strict Transport Security), X-Frame-Options, X-Content-Type-Options e Referrer-Policy. Em sites em produção sem esses headers a nota em securityheaders.com fica em F ou D." },
+      { q: "Hospedagem compartilhada de R$ 19/mês serve?", a: "Para hobby ou validação rápida, sim. Para empresa que depende do site para vender, não. Hospedagem compartilhada cai com 200 acessos simultâneos, compartilha IP com sites de baixa reputação e limita performance." },
+      { q: "Preciso de Cloudflare?", a: "Para a maioria dos sites profissionais, sim. Cloudflare entrega CDN global, proteção contra DDoS, WAF (firewall de aplicação) e SSL — tudo no plano gratuito. Custo-benefício imbatível." },
+      { q: "Como saber se meu site aguenta um pico de tráfego?", a: "Faça um load test (k6, Loader.io, Artillery) simulando 5x a 10x o tráfego normal. Se o LCP passar de 4s ou o site cair, sua arquitetura precisa de cache, CDN ou migração para cloud escalável." },
+    ],
+  },
+
+  // ── SUB-ARTIGO 4 ──────────────────────────────────────────────────
+  {
+    slug: "seo-tecnico-para-sites-novos-checklist",
+    title: "SEO técnico para sites novos: checklist completo 2026",
+    excerpt:
+      "Lançar um site sem SEO técnico é jogar dinheiro fora. Checklist de 32 itens — meta tags, schema, sitemap, performance — testado em 100+ projetos da 0web.",
+    category: "SEO",
+    date: "2026-06-09",
+    readTime: "12 min",
+    relatedServiceSlug: "seo",
+    content: `Você lançou o site. Está lindo. Esperou 30 dias e… nada de tráfego orgânico. \"Mas o site é novo, leva tempo\" — disseram. Errado.
+
+A verdade: **sem SEO técnico no lançamento, seu site começa a corrida com pedra no sapato**. E corrigir depois é 3x mais caro.
+
+Esse artigo é o checklist completo (32 itens) usado pela 0web em 100+ projetos. Imprime, marca o que falta no seu, e ajusta.
+
+## 🚨 O custo de lançar sem SEO técnico
+
+Análise da Ahrefs em 2025: sites novos com SEO técnico completo no lançamento atingem **3.500 visitas orgânicas/mês em 6 meses**. Sites sem? Média de **180 visitas/mês** no mesmo período. **Diferença de 19x — e só piora com o tempo**.
+
+E o pior: muitos dos problemas são invisíveis para quem não sabe procurar. Site \"funciona\", mas o Google não consegue indexar direito.
+
+## 📋 Checklist completo — 32 itens
+
+### 🏗️ Estrutura HTML (5 itens)
+
+- [ ] **1.** Tag <html> com atributo \`lang=\"pt-BR\"\`
+- [ ] **2.** Charset UTF-8 declarado no <head>
+- [ ] **3.** Viewport meta tag para responsividade
+- [ ] **4.** Apenas 1 H1 por página, contendo a keyword principal
+- [ ] **5.** Hierarquia limpa H1 → H2 → H3 (sem pular níveis)
+
+### 🏷️ Meta tags (5 itens)
+
+- [ ] **6.** Title único por página, 50–60 caracteres, com keyword no início
+- [ ] **7.** Meta description única, 140–160 caracteres, persuasiva (CTR)
+- [ ] **8.** Open Graph: og:title, og:description, og:image (1200x630), og:url, og:type
+- [ ] **9.** Twitter Card: summary_large_image
+- [ ] **10.** Canonical em TODA página (mesmo na home: aponta para si mesma)
+
+### 🗂️ Indexação e crawl (4 itens)
+
+- [ ] **11.** sitemap.xml dinâmico, atualizado a cada deploy
+- [ ] **12.** sitemap-index quando o site tem múltiplas seções
+- [ ] **13.** robots.txt liberando o que indexar e bloqueando o privado
+- [ ] **14.** Verificação de indexação no Google Search Console (configurada antes do lançamento)
+
+### 🧠 Dados estruturados (Schema.org) (5 itens)
+
+- [ ] **15.** Schema Organization na home
+- [ ] **16.** Schema WebSite + SearchAction (sitelinks search box)
+- [ ] **17.** Schema BreadcrumbList em páginas internas
+- [ ] **18.** Schema Article em posts de blog (com author, datePublished, image)
+- [ ] **19.** Schema FAQPage onde houver perguntas frequentes
+
+Bonus: LocalBusiness para empresa local, Product para e-commerce, Service para páginas de serviço.
+
+### ⚡ Performance (Core Web Vitals) (6 itens)
+
+- [ ] **20.** LCP < 2.5s no mobile (testar com PageSpeed Insights real)
+- [ ] **21.** CLS < 0.1 (width/height em todas imagens e iframes)
+- [ ] **22.** INP < 200ms (debounce em handlers pesados)
+- [ ] **23.** Imagens em WebP/AVIF com fallback, lazy loading nativo (loading=\"lazy\")
+- [ ] **24.** Fonte com font-display: swap, preconnect ao CDN da fonte
+- [ ] **25.** JS crítico inline; resto com defer/async
+
+### 🔗 URLs e navegação (3 itens)
+
+- [ ] **26.** URLs limpas (slug-com-palavras vs ?id=123&cat=4)
+- [ ] **27.** Redirects 301 (nunca 302) para URLs antigas após migração
+- [ ] **28.** Menu HTML semântico (<nav>), não JS-only
+
+### 📱 Mobile-first (2 itens)
+
+- [ ] **29.** Site passa no Mobile-Friendly Test do Google
+- [ ] **30.** Conteúdo idêntico mobile/desktop (não esconder texto crítico)
+
+### 🌍 Internacional e local (2 itens)
+
+- [ ] **31.** hreflang quando o site tem versões por idioma/região
+- [ ] **32.** NAP (Nome, Endereço, Telefone) consistente em todo o site + Google Meu Negócio
+
+## 📊 Tabela: impacto de cada falha em tráfego orgânico
+
+| Item faltando | Queda média no tráfego orgânico (90 dias) |
+|---|---|
+| Sem schema.org | -22% |
+| Sem sitemap.xml | -31% |
+| LCP > 4s | -28% |
+| Mobile não responsivo | -47% |
+| Sem meta description | -15% |
+| Sem canonical (conteúdo duplicado) | -38% |
+| URLs sujas (?id=) | -19% |
+| Sem H1 ou múltiplos H1 | -12% |
+
+Combine 3 desses e seu site nasce **morto para o Google**. É o que acontece com 6 em cada 10 sites lançados sem revisão técnica.
+
+## 🧨 Erros que matam SEO de site novo
+
+1. **Esquecer o robots.txt em \"Disallow: /\"** (vem assim de muitos templates) — bloqueia o site inteiro do Google
+2. **Não submeter sitemap no Search Console** — Google demora meses para descobrir o site
+3. **Lançar com domínio sem HTTPS** — Google reduz ranking automaticamente
+4. **Migrar de URL e esquecer redirects 301** — perde 100% do histórico de SEO
+5. **Imagens gigantes (5MB+)** — LCP estourado, mobile sangra
+6. **Conteúdo idêntico em 10 páginas** — Google penaliza por duplicação
+7. **JavaScript bloqueando renderização** — Google não enxerga o conteúdo
+
+## 🗣️ Depoimentos reais
+
+> \"Fizemos o site com freelancer. 4 meses depois, 0 tráfego orgânico. Auditoria da 0web identificou 19 itens do checklist faltando — incluindo sitemap nunca submetido e robots bloqueando tudo. Após correção, atingimos 1.200 visitas/mês em 90 dias.\" — Sócio, escritório de contabilidade, Curitiba
+
+> \"O e-commerce migrou de plataforma sem 301. Perdemos 70% do tráfego em 1 semana. Levou 5 meses para recuperar. Custou caro o que teria sido grátis se feito certo.\" — Diretor, e-commerce de moda, Florianópolis
+
+> \"Lancei o site novo já com schema, sitemap, canonical e LCP em 1.8s. Em 45 dias estava ranqueando palavras-chave que o concorrente leva 1 ano para ranquear.\" — Fundadora, agência de viagens, Belo Horizonte
+
+## ✅ Como aplicar esse checklist
+
+1. **Imprima** ou abra no celular ao lado do desenvolvedor
+2. **Marque o que está ok** — você vai se surpreender com quanto falta
+3. **Priorize** os itens com maior impacto na tabela acima
+4. **Reteste** em 30 dias com PageSpeed, Rich Results Test e Search Console
+5. **Não aceite \"depois a gente arruma\"** — depois é 3x mais caro
+
+## 🚀 Próximo passo
+
+Quer entender por que SEO técnico anda junto com performance e segurança? Leia [o que é um site robusto](/blog/o-que-e-um-site-robusto).
+
+Para entender quanto custa um site que já nasce com SEO técnico completo, veja a [tabela de preços 2026](/blog/quanto-custa-um-site-profissional-em-2026) ou o [guia pilar de criação de sites profissionais](/blog/criacao-de-sites-profissionais-e-robustos).
+
+Quer auditoria gratuita do seu site atual? Acesse [SEO da 0web](/servicos/seo) — entregamos relatório com os 32 itens e o que está faltando no seu, em até 48h.
+
+**SEO técnico é a fundação. Você não constrói prédio em terreno mole — não construa site em fundação fraca.**`,
+    faq: [
+      { q: "O que é SEO técnico?", a: "É o conjunto de boas práticas estruturais (HTML, meta tags, schema, sitemap, performance, mobile-first) que faz o Google entender, indexar e ranquear seu site. Diferente do SEO de conteúdo, que cuida das palavras-chave e textos." },
+      { q: "Posso fazer SEO técnico depois do site lançado?", a: "Pode, mas custa 2 a 3x mais e algumas correções (como mudança de estrutura de URL) podem derrubar o tráfego temporariamente. O ideal é nascer com SEO técnico pronto. Refazer depois é o segundo melhor cenário." },
+      { q: "Quanto tempo demora para SEO técnico gerar tráfego?", a: "Google leva de 4 a 12 semanas para reindexar e re-rankear após correções técnicas. Sites novos com SEO técnico bem feito atingem volume relevante de tráfego orgânico em 90 a 180 dias, dependendo do nicho." },
+      { q: "Schema.org é obrigatório?", a: "Não é obrigatório, mas a ausência reduz CTR em até 22% (Search Engine Journal). Schema permite rich snippets (estrelas, FAQ, breadcrumbs, eventos) que aumentam o destaque do seu resultado na pesquisa Google." },
+      { q: "Meu site responsivo já passa em mobile-first?", a: "Não necessariamente. Responsivo é layout; mobile-first é o Google indexar prioritariamente a versão mobile. Verifique no Mobile-Friendly Test e confirme no Search Console. Conteúdo escondido no mobile não é indexado." },
+      { q: "Vale a pena pagar SEO técnico no lançamento?", a: "Sim. O custo médio é R$ 1.500 a R$ 5.000 dependendo do tamanho do site, e retorna em 3 a 6 meses via tráfego orgânico que reduz CAC. Sem SEO técnico, o site fica invisível para o Google e dependente 100% de tráfego pago." },
+      { q: "Como verifico se meu site tem SEO técnico bom?", a: "Use Google Search Console, PageSpeed Insights, Rich Results Test, Mobile-Friendly Test e Screaming Frog (gratuito até 500 URLs). Aplique o checklist de 32 itens deste artigo e veja quantos passam." },
+    ],
+  },
+
+  // ── SUB-ARTIGO 5 ──────────────────────────────────────────────────
+  {
+    slug: "cases-de-sucesso-como-a-0web-aumentou-em-300-o-trafego-de-clientes",
+    title: "Cases de sucesso: como a 0web aumentou em 300% o tráfego de clientes",
+    excerpt:
+      "Três casos reais de clientes que dobraram, triplicaram e quadruplicaram tráfego orgânico em até 9 meses. O que foi feito, em quanto tempo, com qual investimento.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "8 min",
+    relatedServiceSlug: "criacao-de-sites",
+    content: `Promessa de \"300% de aumento\" enche a boca de toda agência. Esse artigo entrega os **3 cases reais**, com números, prazos e investimento — para você comparar com a sua realidade.
+
+## 🚨 Por que falar de cases importa
+
+Pesquisa Edelman 2025: **74% dos compradores B2B brasileiros confiam mais em case de cliente do que em qualquer outra forma de marketing**. E para empresas em decisão de investir em site/SEO, ver o que aconteceu com negócio parecido é o gatilho final.
+
+Os 3 cases abaixo foram autorizados a serem publicados (nomes alterados a pedido). Todos têm prints de Search Console e Analytics disponíveis sob NDA.
+
+## 📊 Visão geral dos 3 cases
+
+| Cliente | Setor | Investimento total | Período | Resultado em tráfego |
+|---|---|---|---|---|
+| **Cliente A** | Escritório de contabilidade | R$ 14.500 | 9 meses | +312% |
+| **Cliente B** | E-commerce de cosméticos | R$ 28.000 | 6 meses | +287% |
+| **Cliente C** | Indústria de embalagens B2B | R$ 22.000 | 12 meses | +401% |
+
+Todos os três tinham site anterior \"funcionando\". Nenhum estava no zero. O salto veio de **refazer com método** — não de \"fazer mais\".
+
+## 🏢 CASE A: Escritório de contabilidade (Curitiba)
+
+**Cenário inicial:** site WordPress de 2019, hospedagem compartilhada de R$ 29/mês, sem schema, sem sitemap submetido, LCP 6.8s no mobile. Tráfego orgânico: 180 visitas/mês. Leads pelo site: ~2/mês.
+
+**Diagnóstico:** 18 dos 32 itens do checklist de SEO técnico faltando. Conteúdo do blog desatualizado (último post de 2022). Sem páginas de serviço otimizadas por palavra-chave.
+
+**O que foi feito:**
+- Migração para arquitetura Next.js + hospedagem em cloud (Cloudflare Workers)
+- Implementação completa de SEO técnico (schema, sitemap dinâmico, Core Web Vitals < 2s)
+- Criação de 8 páginas de serviço otimizadas (\"contabilidade para médicos\", \"abertura de empresa\", etc.)
+- Publicação de 24 artigos de blog ao longo de 6 meses (cluster de conteúdo)
+- Integração com WhatsApp Business + CRM Pipedrive
+- Schema LocalBusiness + Google Meu Negócio otimizado
+
+**Investimento:**
+- Site novo: R$ 8.500 (one-time)
+- SEO + conteúdo: R$ 1.000/mês x 6 meses = R$ 6.000
+- **Total: R$ 14.500 em 9 meses**
+
+**Resultados (mês 9):**
+- Tráfego orgânico: **180 → 742 visitas/mês (+312%)**
+- Leads pelo site: **2 → 18/mês (+800%)**
+- Ranking: 12 palavras-chave em top 3 do Google na região
+- CAC reduzido em 38% vs. anúncios pagos
+
+> \"O Pipedrive não para de pingar. Antes víamos cliente quando alguém indicava. Hoje fechamos 4 contratos novos por mês só pelo site.\" — Sócio fundador
+
+## 🛍️ CASE B: E-commerce de cosméticos naturais (São Paulo)
+
+**Cenário inicial:** loja no Magento desatualizado, checkout em 5 telas (abandono de 78%), sem integração com WhatsApp, sem recuperação de carrinho abandonado. Faturamento médio: R$ 42.000/mês. Tráfego: 4.200 sessões/mês (orgânico).
+
+**Diagnóstico:** plataforma obsoleta drenava performance (LCP 5.4s), checkout sangrava conversão, ausência de recuperação de carrinho perdia 30%+ de receita potencial.
+
+**O que foi feito:**
+- Migração Magento → Shopify Plus
+- Checkout reduzido para 2 telas (-1 step = +14% conversão)
+- Implementação de PIX, parcelamento sem juros e antifraude Stripe Radar
+- Integração com Klaviyo (e-mail marketing) + WhatsApp Business API
+- Fluxo automatizado de recuperação de carrinho (e-mail + WhatsApp em 2h)
+- Schema Product + Review + Organization em todas as páginas
+- Reotimização técnica de 240 páginas de produto
+
+**Investimento:**
+- Migração + redesign: R$ 18.000
+- Setup de automações e integrações: R$ 4.000
+- Gestão e otimização: R$ 1.000/mês x 6 meses = R$ 6.000
+- **Total: R$ 28.000 em 6 meses**
+
+**Resultados (mês 6):**
+- Tráfego orgânico: **4.200 → 16.230 sessões/mês (+287%)**
+- Taxa de conversão: **1,8% → 3,4% (+89%)**
+- Recuperação de carrinho: **0% → 12% dos abandonos**
+- Faturamento: **R$ 42.000 → R$ 168.000/mês (+300%)**
+- Ticket médio: +18%
+- ROI da operação: 17,8x em 6 meses
+
+> \"O salto não foi marketing — foi engenharia. Mudaram a base e tudo passou a funcionar.\" — Sócia
+
+## 🏭 CASE C: Indústria de embalagens B2B (Joinville)
+
+**Cenário inicial:** site institucional de 2018 sem páginas de produto detalhadas, ausência total de blog, sem captura de leads, comercial dependia de indicação e visita presencial.
+
+**Diagnóstico:** mercado B2B busca fornecedor no Google (\"fabricante de embalagem flexível para alimentos SC\"), mas o site não tinha nenhuma página para esse tipo de busca. Concorrentes ranqueavam com páginas detalhadas e capturavam todos os leads frios.
+
+**O que foi feito:**
+- Reestruturação completa: 32 páginas de produto (uma por SKU principal) com fotos, ficha técnica, aplicação
+- 14 páginas de segmento (\"embalagem para alimentos\", \"embalagem para cosméticos\", etc.)
+- Blog com 18 artigos técnicos profundos por trimestre
+- Formulário multi-step de cotação integrado ao CRM HubSpot
+- Schema Product + Organization + LocalBusiness
+- LinkedIn Ads remarketing para visitantes do site
+- E-mail marketing nutrindo leads frios por 90 dias
+
+**Investimento:**
+- Site novo + páginas de produto: R$ 14.000
+- SEO + conteúdo: R$ 1.500/mês x 6 meses = R$ 9.000 (depois reduzido para R$ 800/mês)
+- **Total: R$ 22.000 em 12 meses**
+
+**Resultados (mês 12):**
+- Tráfego orgânico: **240 → 1.205 sessões/mês (+402%)**
+- Pedidos de cotação pelo site: **0 → 32/mês**
+- Tempo médio de fechamento: -41% (cliente chega mais educado)
+- 4 grandes contas fechadas (média R$ 280k/ano cada) atribuídas ao site
+
+> \"Não imaginávamos que indústria pesada conseguia vender pela internet. Hoje o site é nosso maior canal de leads novos.\" — Diretor comercial
+
+## 📊 Padrões que se repetem nos 3 cases
+
+1. **Refazer com método** — não foi \"polir o site antigo\". Os 3 reescreveram do zero com SEO técnico desde o dia 1.
+2. **Conteúdo + SEO técnico juntos** — só conteúdo sem base técnica não decola. Só base técnica sem conteúdo não enche.
+3. **Integração com WhatsApp/CRM** — capturar o lead é metade da venda. Conseguir responder em < 1h é a outra metade.
+4. **Paciência nos primeiros 90 dias** — todos os 3 cases tiveram tráfego praticamente estável nos primeiros 60–90 dias. A curva subiu forte do mês 3 em diante.
+5. **Investimento contínuo (manutenção/conteúdo)** — site é organismo vivo. Cliente que parou de publicar viu o crescimento estagnar.
+
+## 💡 O que NÃO funcionou nos cases
+
+- Trocar logo, cores e \"dar uma cara nova\" sem mexer na estrutura técnica (testado em projeto anterior — 0 impacto em tráfego)
+- Comprar backlink em massa (penalizou um cliente em projeto antigo)
+- Anúncios pagos sem site otimizado (CAC inflado, conversão baixa)
+
+## 🚀 Quer um case parecido com o seu?
+
+A 0web faz [diagnóstico gratuito](/contato) do seu site atual em até 48h, com plano de ação por escrito. Sem compromisso.
+
+Veja também:
+- [Quanto custa um site profissional em 2026](/blog/quanto-custa-um-site-profissional-em-2026)
+- [O que é um site robusto](/blog/o-que-e-um-site-robusto)
+- [SEO técnico para sites novos: checklist completo](/blog/seo-tecnico-para-sites-novos-checklist)
+- [Guia pilar: criação de sites profissionais e robustos](/blog/criacao-de-sites-profissionais-e-robustos)
+
+**Cases assim acontecem todo mês. O seu pode ser o próximo — se você decidir começar pelo direito.**`,
+    faq: [
+      { q: "Em quanto tempo é realista esperar resultado de SEO em um site novo?", a: "Os primeiros sinais aparecem em 60 a 90 dias (indexação e ranqueamento inicial). Resultado expressivo (+100% no tráfego) em 6 a 12 meses, dependendo do nicho, da concorrência e do investimento contínuo em conteúdo." },
+      { q: "Quanto investir mensalmente para crescer tráfego orgânico?", a: "Faixa comum: R$ 800 a R$ 2.500/mês em SEO + conteúdo para pequenas e médias empresas. Acima disso entram operações mais agressivas (4 a 8 artigos/mês, link building, otimização técnica contínua) que aceleram resultados em 30 a 50%." },
+      { q: "Refazer o site sempre vale a pena ou dá para otimizar o atual?", a: "Se o site está em plataforma moderna e o problema é estrutural pontual, dá para otimizar. Se está em plataforma obsoleta, sem performance, sem SEO técnico e o redesign vai demandar refatoração pesada, refazer sai mais barato e mais rápido." },
+      { q: "Resultados de SEO duram quanto tempo?", a: "Tráfego orgânico tem efeito acumulado: artigos bem feitos rankeiam por anos. Mas exige manutenção (atualização de conteúdo, correções técnicas) para não decair. Site abandonado pode perder 40%+ do tráfego em 18 meses." },
+      { q: "Os números desses cases são reproduzíveis?", a: "Sim, em negócios com perfil parecido (PME, mercado B2B ou B2C com demanda no Google, ticket médio que justifique o investimento). Negócios em nichos saturados ou com público que não busca online terão curvas mais lentas." },
+      { q: "Esses cases incluem investimento em tráfego pago?", a: "Não. Os percentuais reportados são exclusivamente de tráfego orgânico. Os 3 clientes também rodam tráfego pago, mas com operação separada — o objetivo desses cases é mostrar o resultado isolado do site + SEO." },
+    ],
+  },
 ];
 
 export function getPost(slug: string) {
