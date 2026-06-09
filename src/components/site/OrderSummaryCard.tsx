@@ -86,7 +86,7 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
   }, [orderId, fetchOrder]);
 
   return (
-    <section className="mt-12" aria-label="Resumo do pedido">
+    <section id="pedido" className="mt-12" aria-label="Resumo do pedido">
       <div className="mx-auto max-w-3xl px-5 lg:px-8">
         <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-elegant">
           <header className="px-6 py-4 border-b border-border bg-muted/40 flex items-center gap-3">
