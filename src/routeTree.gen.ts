@@ -105,6 +105,7 @@ import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppSupportRouteImport } from './routes/_authenticated/app.support'
 import { Route as AuthenticatedAppServicosImagensRouteImport } from './routes/_authenticated/app.servicos-imagens'
 import { Route as AuthenticatedAppServicosRouteImport } from './routes/_authenticated/app.servicos'
+import { Route as AuthenticatedAppSeoAuditoriaRouteImport } from './routes/_authenticated/app.seo-auditoria'
 import { Route as AuthenticatedAppSeo404sRouteImport } from './routes/_authenticated/app.seo-404s'
 import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
 import { Route as AuthenticatedAppProjectsRouteImport } from './routes/_authenticated/app.projects'
@@ -638,6 +639,12 @@ const AuthenticatedAppServicosRoute =
     path: '/servicos',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppSeoAuditoriaRoute =
+  AuthenticatedAppSeoAuditoriaRouteImport.update({
+    id: '/seo-auditoria',
+    path: '/seo-auditoria',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppSeo404sRoute = AuthenticatedAppSeo404sRouteImport.update({
   id: '/seo-404s',
   path: '/seo-404s',
@@ -992,6 +999,7 @@ export interface FileRoutesByFullPath {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
+  '/app/seo-auditoria': typeof AuthenticatedAppSeoAuditoriaRoute
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -1130,6 +1138,7 @@ export interface FileRoutesByTo {
   '/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
+  '/app/seo-auditoria': typeof AuthenticatedAppSeoAuditoriaRoute
   '/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -1272,6 +1281,7 @@ export interface FileRoutesById {
   '/_authenticated/app/projects': typeof AuthenticatedAppProjectsRouteWithChildren
   '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/seo-404s': typeof AuthenticatedAppSeo404sRoute
+  '/_authenticated/app/seo-auditoria': typeof AuthenticatedAppSeoAuditoriaRoute
   '/_authenticated/app/servicos': typeof AuthenticatedAppServicosRouteWithChildren
   '/_authenticated/app/servicos-imagens': typeof AuthenticatedAppServicosImagensRoute
   '/_authenticated/app/support': typeof AuthenticatedAppSupportRouteWithChildren
@@ -1414,6 +1424,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reports'
     | '/app/seo-404s'
+    | '/app/seo-auditoria'
     | '/app/servicos'
     | '/app/servicos-imagens'
     | '/app/support'
@@ -1552,6 +1563,7 @@ export interface FileRouteTypes {
     | '/app/projects'
     | '/app/reports'
     | '/app/seo-404s'
+    | '/app/seo-auditoria'
     | '/app/servicos'
     | '/app/servicos-imagens'
     | '/app/support'
@@ -1693,6 +1705,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/projects'
     | '/_authenticated/app/reports'
     | '/_authenticated/app/seo-404s'
+    | '/_authenticated/app/seo-auditoria'
     | '/_authenticated/app/servicos'
     | '/_authenticated/app/servicos-imagens'
     | '/_authenticated/app/support'
@@ -2489,6 +2502,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppServicosRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/seo-auditoria': {
+      id: '/_authenticated/app/seo-auditoria'
+      path: '/seo-auditoria'
+      fullPath: '/app/seo-auditoria'
+      preLoaderRoute: typeof AuthenticatedAppSeoAuditoriaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/seo-404s': {
       id: '/_authenticated/app/seo-404s'
       path: '/seo-404s'
@@ -2892,6 +2912,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppProjectsRoute: typeof AuthenticatedAppProjectsRouteWithChildren
   AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSeo404sRoute: typeof AuthenticatedAppSeo404sRoute
+  AuthenticatedAppSeoAuditoriaRoute: typeof AuthenticatedAppSeoAuditoriaRoute
   AuthenticatedAppServicosRoute: typeof AuthenticatedAppServicosRouteWithChildren
   AuthenticatedAppServicosImagensRoute: typeof AuthenticatedAppServicosImagensRoute
   AuthenticatedAppSupportRoute: typeof AuthenticatedAppSupportRouteWithChildren
@@ -2929,6 +2950,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppProjectsRoute: AuthenticatedAppProjectsRouteWithChildren,
   AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSeo404sRoute: AuthenticatedAppSeo404sRoute,
+  AuthenticatedAppSeoAuditoriaRoute: AuthenticatedAppSeoAuditoriaRoute,
   AuthenticatedAppServicosRoute: AuthenticatedAppServicosRouteWithChildren,
   AuthenticatedAppServicosImagensRoute: AuthenticatedAppServicosImagensRoute,
   AuthenticatedAppSupportRoute: AuthenticatedAppSupportRouteWithChildren,
