@@ -1,3 +1,5 @@
+export type BlogFAQ = { q: string; a: string };
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -9,6 +11,8 @@ export type BlogPost = {
   cover?: string;
   /** Slug do serviço comercial associado (ex.: "seo", "criacao-de-sites"). */
   relatedServiceSlug?: string;
+  /** Lista de FAQs renderizadas no fim do post + JSON-LD FAQPage. */
+  faq?: BlogFAQ[];
 };
 
 export const categories = [
