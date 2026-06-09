@@ -220,6 +220,31 @@ export function GlobalSearch({ open, onClose, source = "header" }: Props) {
             <div className="max-h-[50vh] overflow-y-auto">
               {!term && (
                 <div className="p-2.5 space-y-3">
+                  {allServices.length > 0 && (
+                    <div>
+                      <div className="px-1.5 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
+                        <Tag className="w-3 h-3" /> Resultados rápidos
+                      </div>
+                      <div className="grid gap-0.5">
+                        {allServices.slice(0, 4).map((s) => (
+                          <button
+                            key={s.slug}
+                            onClick={() => go(`/servicos/${s.slug}`, s.name, "service")}
+                            className="w-full text-left px-2 py-1.5 rounded-md hover:bg-muted transition flex items-center gap-2"
+                          >
+                            <span className="w-5 h-5 rounded bg-gradient-primary text-primary-foreground grid place-items-center shrink-0">
+                              <Tag className="w-2.5 h-2.5" />
+                            </span>
+                            <span className="flex-1 min-w-0">
+                              <span className="block text-[13px] font-medium truncate">{s.name}</span>
+                              <span className="block text-[10px] text-muted-foreground truncate">{s.category}</span>
+                            </span>
+                            <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <div className="px-1.5 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" /> Em alta
