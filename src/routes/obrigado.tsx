@@ -7,7 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type ReactElement } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
