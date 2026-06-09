@@ -38,7 +38,17 @@ Origem: pedido do usuário (todas as melhorias, sem regressão). Itens marcados 
 
 ---
 
+## Loja Virtual completa (escopo grande — próxima onda)
+- [ ] Página `/loja` com listagem paginada de produtos (mesma fonte `services-public`), filtros por categoria/preço, ordenação e empty state.
+- [ ] Reuso do `CartDrawer` + checkout (`/checkout`) e badge global do carrinho em todas as rotas (já parcial via Header).
+- [ ] Cards de produto com schema `Product`/`Offer` JSON-LD individual.
+- [ ] A/B em CTAs do HomeSpotlight (✅ instalado) e dos Depoimentos (próxima rodada).
+
+---
+
 ## Aplicado nesta rodada
 1. Âncoras por pergunta no /faq com `scroll-mt-24`.
 2. Header de Breadcrumbs com spacing token unificado.
-3. Esta lista de plano.
+3. GlobalSearch: bloco "Resultados rápidos" no estado vazio com top serviços.
+4. Testimonials: `role=status` com nº de slide para leitores de tela (além do aria-live).
+5. HomeSpotlight: experimento A/B (`home_spotlight_copy`) em headline + CTA, com `variant` em `cta_click`.

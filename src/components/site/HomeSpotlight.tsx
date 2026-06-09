@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Activity, ArrowRight, Check, Globe, MousePointerClick } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { useExperiment } from "@/lib/ab-testing";
 
 const BULLETS = [
   { strong: "Site projetado para converter", rest: "visitantes das suas campanhas em clientes reais." },
@@ -11,6 +12,11 @@ const BULLETS = [
 ];
 
 export function HomeSpotlight() {
+  const variant = useExperiment("home_spotlight_copy", ["A", "B"] as const);
+  const headline = variant === "A"
+    ? { pre: "Anúncios sem site otimizado?", em: "você perde até 70% dos leads." }
+    : { pre: "Cada clique pago sem destino certo?", em: "é dinheiro virando fumaça." };
+  const ctaLabel = variant === "A" ? "Obter orçamento gratuito" : "Falar com especialista agora";
   return (
     <section id="spotlight" className="py-24">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -41,8 +47,8 @@ export function HomeSpotlight() {
             </div>
 
             <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] uppercase">
-              Anúncios sem site otimizado?{" "}
-              <span className="text-gradient">você perde até 70% dos leads.</span>
+              {headline.pre}{" "}
+              <span className="text-gradient">{headline.em}</span>
             </h2>
 
             <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
@@ -81,11 +87,11 @@ export function HomeSpotlight() {
               <Link
                 to="/contato"
                 onClick={() =>
-                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight" })
+                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight", variant })
                 }
                 className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary hover:opacity-95 transition uppercase text-sm tracking-wide"
               >
-                Obter orçamento gratuito
+                {ctaLabel}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
