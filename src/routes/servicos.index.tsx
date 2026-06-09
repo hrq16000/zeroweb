@@ -250,7 +250,7 @@ function ServicosHub() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs items={[{ name: "Serviços", path: "/servicos" }]} />
+      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }]} />
       <main className="pt-6">
         <h1 className="sr-only">Loja de serviços 0WEB</h1>
         <ShopHero slides={slides} />

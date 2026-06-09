@@ -49,7 +49,7 @@ function MarketplacePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Marketplace", path: "/servicos/marketplace" },

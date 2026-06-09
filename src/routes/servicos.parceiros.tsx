@@ -101,7 +101,7 @@ function ParceirosPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Programa de Parceiros", path: "/servicos/parceiros" },

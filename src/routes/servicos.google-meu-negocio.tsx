@@ -100,7 +100,7 @@ function GMBPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Google Meu Negócio", path: "/servicos/google-meu-negocio" },
