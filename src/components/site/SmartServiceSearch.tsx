@@ -172,6 +172,21 @@ export function SmartServiceSearch({
     setFontPx(size);
   }, [value, livePlaceholder]);
 
+  // Atalho global "/" foca o campo de busca (ignora quando o usuário já está
+  // digitando em outro input/textarea/contenteditable).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || (t && t.isContentEditable)) return;
+      e.preventDefault();
+      inputRef.current?.focus();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const suggestions = useMemo(() => {
     const term = value.trim();
     if (!term) return [];
