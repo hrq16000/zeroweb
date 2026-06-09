@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-06-09T07:48:23.222Z",
+  "needle": "Loja 0WEB",
+  "totalOccurrences": 2,
+  "byBucket": {
+    "rotas": {
+      "count": 0,
+      "hits": []
+    },
+    "componentes": {
+      "count": 0,
+      "hits": []
+    },
+    "libs": {
+      "count": 0,
+      "hits": []
+    },
+    "assets_publicos": {
+      "count": 0,
+      "hits": []
+    },
+    "migrations_sql": {
+      "count": 2,
+      "hits": [
+        {
+          "file": "./supabase/migrations/20260609074808_a0e8e57c-c11d-4e34-88e9-6750154675a9.sql",
+          "line": 1,
+          "preview": "UPDATE public.hero_slides SET badge = 'Catálogo 0WEB' WHERE badge = 'Loja 0WEB';"
+        },
+        {
+          "file": "./supabase/migrations/20260607201351_ffb17577-b506-4563-8910-95fa9b252418.sql",
+          "line": 47,
+          "preview": "('servicos', 'Catálogo completo', 'Tudo para crescer no digital, em um só lugar', 'Sites, SEO, tráfego pago, automações com IA e sistemas sob medida — escolha como em uma loja.', 'Loja 0WEB', 'linear-gradient(135deg,#1e3a8a,#4f46e5)', 'Ver todos os serviços', '#catalogo', 'Falar no WhatsApp', 'https://wa.me/5511999999999', 10),"
+        }
+      ]
+    },
+    "outros": {
+      "count": 0,
+      "hits": []
+    }
+  },
+  "notes": [
+    "Esta auditoria cobre apenas o código sob controle do projeto.",
+    "Conteúdo injetado por extensões do navegador, scripts de terceiros, ou widgets externos não aparece aqui — compare preview vs. aba anônima sem extensões para isolar."
+  ]
+}
