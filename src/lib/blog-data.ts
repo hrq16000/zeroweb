@@ -29,6 +29,16 @@ import chatgpt3PalavrasCover from "@/assets/blog-chatgpt-3-palavras.jpg";
 import chatgpt3PalavrasInline from "@/assets/blog-chatgpt-3-palavras-2.jpg";
 import trafegoPago499Capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 import presencaDigitalCapa from "@/assets/presenca-digital-google-capa.png.asset.json";
+import metaAdsCover from "@/assets/blog-meta-ads.jpg";
+import googleAdsCover from "@/assets/blog-google-ads.jpg";
+import roiTrafegoCover from "@/assets/blog-roi-trafego.jpg";
+import gmnCover from "@/assets/blog-google-meu-negocio.jpg";
+import rankearGoogleCover from "@/assets/blog-rankear-google.jpg";
+import iaWhatsappCover from "@/assets/blog-ia-whatsapp.jpg";
+import pagoVsOrganicoCover from "@/assets/blog-pago-vs-organico.jpg";
+import coreWebVitalsCover from "@/assets/blog-core-web-vitals.jpg";
+import automacaoLeadsCover from "@/assets/blog-automacao-leads.jpg";
+import transformacaoDigitalCover from "@/assets/blog-transformacao-digital.jpg";
 
 export const inlineImages = {
   "3-palavras-chatgpt-respostas-inteligentes": chatgpt3PalavrasInline,
@@ -55,7 +65,7 @@ export const posts: BlogPost[] = [
     category: "Marketing Digital",
     date: "2026-06-05",
     readTime: "9 min",
-    cover: trafegoPago499Capa.url,
+    cover: metaAdsCover,
     content:
       "Meta Ads (Instagram e Facebook) virou o canal mais barato para um negócio local aparecer todos os dias para quem mora ao redor — desde que a campanha seja montada da forma certa.\n\nA boa notícia: você não precisa de uma agência de R$10 mil/mês para começar. Com R$499 de gestão + verba de mídia, dá para colocar sua empresa na frente de centenas de pessoas locais que já demonstraram intenção de compra. A má notícia: 8 em cada 10 negócios que tentam sozinhos queimam dinheiro com público errado, criativo fraco e botão errado.\n\n## 1. Comece pelo objetivo correto\n\nNo Gerenciador de Anúncios, escolha SEMPRE o objetivo de Mensagens ou Conversões. \"Engajamento\" e \"Alcance\" servem para vaidade — não pagam boleto.\n\n## 2. Segmente por raio, não por interesses genéricos\n\nO segredo de Meta Ads local é o público geográfico. Defina um raio de 3 a 15 km do seu ponto comercial, filtre idade e gênero do seu cliente ideal e deixe o algoritmo encontrar quem está pronto para comprar.\n\nFugir de \"interesses\" amplos como \"comida\", \"saúde\" ou \"moda\" é o que separa quem vende de quem só gasta.\n\n## 3. Criativos que param o dedo\n\n- Vídeo curto (9 a 15 segundos) com legenda grande\n- Foto do produto/serviço real — nada de banco de imagens\n- Antes e depois (quando o nicho permite)\n- Prova social: cliente falando em vídeo, mesmo no celular\n\nO criativo é responsável por até 70% da performance. Troque a cada 7 a 14 dias para evitar fadiga.\n\n## 4. WhatsApp é o destino mais quente\n\nLinkar o anúncio direto para o WhatsApp Business gera leads muito mais quentes do que site genérico. A pessoa já vem disposta a conversar. Combine com mensagem automática de boas-vindas e tempo de resposta abaixo de 5 minutos.\n\n## 5. Métricas que importam\n\n- CTR acima de 1,5% (criativo está prendendo atenção)\n- CPM abaixo de R$25 para públicos locais\n- Custo por conversa no WhatsApp entre R$8 e R$25 (varia por nicho)\n- Taxa de fechamento da equipe comercial — Ads só leva até a porta, vender é com você\n\n## 6. Erros que matam a campanha\n\n- Trocar criativo todo dia (algoritmo não aprende)\n- Verba muito baixa (abaixo de R$20/dia o Meta não otimiza)\n- Público amplo demais (\"Brasil inteiro\" sendo um pet shop de bairro)\n- Não responder o WhatsApp em até 1 hora\n\n## Quando faz sentido contratar gestão profissional\n\nSe você está com R$1.000+ por mês em verba, vale ter alguém olhando todo dia. Cada 10% de otimização economiza meses de tentativa e erro — e na 0WEB a gestão começa em R$499/mês, sem contrato.\n\nQuer ver na prática como Meta Ads se conecta com Google Ads e SEO local para travar a concorrência da sua região? Veja a página de Tráfego Pago Local da 0WEB, com planos a partir de R$499/mês, sem contrato e sem fidelidade.",
   },
@@ -67,7 +77,7 @@ export const posts: BlogPost[] = [
     category: "Marketing Digital",
     date: "2026-06-05",
     readTime: "10 min",
-    cover: trafegoPago499Capa.url,
+    cover: googleAdsCover,
     content:
       "Quem busca \"dentista perto de mim\" no Google está a um clique de marcar consulta. Quem rola o Instagram, não. Essa é a grande diferença do Google Ads para negócios locais — você só aparece para quem JÁ levantou a mão e pediu o seu serviço.\n\nE é por isso que, mesmo em 2026, Google Ads continua sendo o canal com o menor custo por cliente para 90% dos negócios locais.\n\n## Os 3 formatos que importam para negócio local\n\n1. Pesquisa (Search) — anúncios em texto no topo do Google quando alguém pesquisa seu serviço\n2. Maps — sua empresa em destaque no Google Maps quando alguém procura por proximidade\n3. Performance Max — IA do Google distribuindo seu anúncio entre Pesquisa, Maps, YouTube, Display e Gmail\n\nIgnore Shopping (a não ser que tenha e-commerce) e Display puro (vira impressão sem conversão).\n\n## Pesquisa: a base de tudo\n\nMonte um grupo de anúncios para cada serviço principal. Exemplo de uma clínica odontológica:\n- Grupo 1: implante dentário [bairro]\n- Grupo 2: clareamento dental [cidade]\n- Grupo 3: dentista urgência 24h [cidade]\n\nUse palavras-chave em correspondência de frase ou ampla modificada. Negative \"grátis\", \"curso\", \"emprego\", \"como fazer\" — para não pagar clique de quem não vai contratar.\n\n## Maps: a vitrine de quem está perto\n\nGoogle Maps mostra 3 empresas em destaque (Local Pack). Para entrar lá pago, vincule seu Google Meu Negócio à conta do Ads e ative extensões de localização. Otimize o perfil (fotos, horários, avaliações) — sem isso, nem pagando você converte.\n\n## Performance Max: força bruta com inteligência\n\nPMax usa machine learning para distribuir sua verba onde houver maior chance de conversão. É excelente para escalar quem já validou no Search, mas perigoso para quem começa — você não vê exatamente onde o dinheiro foi parar. Comece com Pesquisa, valide custo por lead, depois ative PMax como expansão.\n\n## Quanto custa começar\n\n- Verba mínima recomendada: R$30/dia (R$900/mês) para a maioria dos nichos locais\n- Gestão profissional: a partir de R$499/mês na 0WEB\n- Custo por lead típico: R$15 a R$80 dependendo do segmento e região\n\nServiços de alto ticket (advocacia, medicina, construção) toleram CPLs maiores porque uma venda paga 10 leads.\n\n## Métricas para acompanhar toda semana\n\n- Cliques e CTR (acima de 5% em Pesquisa local é bom)\n- Conversões — ligação, formulário e clique em WhatsApp\n- Custo por conversão (CPL)\n- Índice de qualidade — quanto maior, mais barato o clique\n\n## Erros clássicos\n\n- Mandar todo mundo para a home do site (faça landing pages específicas)\n- Não configurar conversão de ligação telefônica\n- Esquecer de pausar palavras-chave que gastam sem converter\n- Achar que rodar 7 dias é suficiente para concluir algo\n\n## Combine com Meta Ads e SEO\n\nGoogle Ads pega a intenção. Meta Ads pega a descoberta. SEO pega o longo prazo. Quem rodar os 3 com a mesma promessa de marca paga menos por cliente e domina a região em 90 dias.\n\nNa página de Tráfego Pago Local da 0WEB você encontra planos a partir de R$499/mês com Google, Meta e Maps rodando juntos — sem contrato e com relatório semanal claro.",
   },
@@ -79,7 +89,7 @@ export const posts: BlogPost[] = [
     category: "Marketing Digital",
     date: "2026-06-05",
     readTime: "8 min",
-    cover: trafegoPago499Capa.url,
+    cover: roiTrafegoCover,
     content:
       "Tráfego pago só é bom investimento quando você sabe medir. Sem números, qualquer campanha parece boa nas primeiras semanas — e ruim no fim do mês. Este guia é o mínimo absoluto que todo dono de negócio local precisa saber sobre ROI antes de investir o próximo real em Google Ads ou Meta Ads.\n\n## As 5 siglas que decidem o jogo\n\n- CPL (Custo por Lead): quanto custou cada contato gerado\n- CAC (Custo de Aquisição de Cliente): quanto custou cada cliente que efetivamente comprou\n- LTV (Lifetime Value): quanto cada cliente gera de receita ao longo do relacionamento\n- ROAS (Return on Ad Spend): receita gerada dividida pelo gasto em anúncio\n- ROI (Return on Investment): lucro líquido dividido pelo investimento total\n\n## Fórmulas simples\n\n- CPL = verba gasta ÷ número de leads\n- CAC = verba gasta ÷ número de clientes\n- ROAS = receita gerada ÷ verba gasta\n- ROI (%) = ((receita − custo total) ÷ custo total) × 100\n\n## Exemplo real: clínica de estética\n\n- Verba mensal: R$ 2.000 (mídia) + R$ 499 (gestão) = R$ 2.499\n- Leads gerados: 80 → CPL = R$ 31\n- Clientes fechados: 12 → CAC = R$ 208\n- Ticket médio: R$ 850\n- Receita: 12 × 850 = R$ 10.200\n- ROAS = 10.200 ÷ 2.499 = 4,08x\n- ROI = ((10.200 − 2.499) ÷ 2.499) × 100 = 308%\n\nPara cada R$1 investido, voltaram R$4,08 — e o lucro líquido foi de R$7.701 no mês.\n\n## O ROI verdadeiro considera LTV\n\nSe esse cliente volta 3x ao ano, o LTV é R$2.550 — e o CAC de R$208 vira ridículo. Pense ROI no horizonte de 6 a 12 meses, não em uma única compra.\n\n## Quanto de ROAS é \"bom\"?\n\n- Abaixo de 1x: você está perdendo dinheiro\n- Entre 1x e 2x: empata ou paga só o gestor\n- Entre 2x e 4x: saudável para a maioria dos negócios locais\n- Acima de 4x: ótimo — hora de escalar a verba\n\nNichos de baixa margem (alimentação, varejo popular) precisam de ROAS maior. Nichos de alta margem (serviços, infoprodutos, B2B) sobrevivem com ROAS menor.\n\n## Os 4 erros que mascaram o ROI\n\n1. Não rastrear conversão (não saber qual canal trouxe a venda)\n2. Misturar receita orgânica com paga\n3. Esquecer custo de gestão e impostos no cálculo\n4. Olhar só a primeira semana — Ads pede 21 a 30 dias para estabilizar\n\n## Checklist mensal de ROI\n\n- [ ] CPL caiu ou subiu vs. mês anterior?\n- [ ] Taxa de fechamento do comercial está estável?\n- [ ] ROAS está acima do mínimo do meu nicho?\n- [ ] Quais criativos estão puxando os melhores leads?\n- [ ] Posso reinvestir 30% do lucro em mais mídia?\n\n## A conta que muda tudo\n\nSe seu ROI passa de 200%, cada real \"travado\" no caixa está custando crescimento. Reinvestir parte do lucro mensalmente é o que separa quem dobra de tamanho em 12 meses de quem fica estagnado.\n\nQuer ajuda para montar essa medição do zero e rodar campanhas que entregam ROI mensurável? Conheça a página de Tráfego Pago Local da 0WEB, com planos a partir de R$499/mês, sem contrato — e com relatórios claros mostrando CPL, ROAS e ROI semana a semana.",
   },
@@ -116,6 +126,7 @@ export const posts: BlogPost[] = [
     category: "Marketing Digital",
     date: "2026-06-04",
     readTime: "10 min",
+    cover: gmnCover,
     content:
       "🚨 Sua empresa NÃO aparece no Google? Então provavelmente seus concorrentes estão recebendo clientes que poderiam ser seus TODOS OS DIAS.\n\nHoje, quando alguém procura por empresas do seu segmento, o Google mostra primeiro quem está bem posicionado no Maps. Se a sua empresa não estiver otimizada, você simplesmente fica invisível — e cada clique que vai para o concorrente é uma venda perdida.\n\n## Por que o Google Meu Negócio é decisivo\n\nO Google Maps virou a nova vitrine local. Mais de 75% das pessoas que pesquisam por um serviço próximo entram em contato com a empresa nas primeiras 24 horas. Sem perfil otimizado, sua empresa não entra nessa disputa.\n\n## O que a 0WEB Marketing Digital faz pela sua empresa\n\nA 0WEB configura e otimiza seu Google Meu Negócio de ponta a ponta:\n\n- ✅ Aparecer no Google\n- ✅ Ganhar mais visibilidade\n- ✅ Receber mensagens no WhatsApp\n- ✅ Transmitir mais confiança\n- ✅ Atrair novos clientes diariamente\n\n## Passo a passo do que entregamos\n\n1. Reivindicação ou criação do perfil oficial.\n2. Categorização correta e áreas de atuação otimizadas.\n3. Fotos profissionais, horários, atributos e descrição persuasiva.\n4. Integração com WhatsApp para receber leads quentes.\n5. Postagens estratégicas e resposta a avaliações (Plano PRO).\n6. Relatórios mensais com cliques, ligações e direções (Plano PRO).\n\n## 🔥 Oferta de lançamento para os 10 primeiros clientes\n\n- ✔ Plano Único: R$397 (configuração completa)\n- ✔ Plano PRO: R$247/mês por 3 meses (tempo mínimo) — otimização contínua, postagens e relatórios\n\n## Mais visibilidade. Mais confiança. Mais clientes.\n\nConectamos sua empresa a mais clientes todos os dias.\n\n📲 Clique em “Saiba Mais” e fale conosco no WhatsApp.",
   },
@@ -127,6 +138,7 @@ export const posts: BlogPost[] = [
     category: "SEO",
     date: "2026-05-12",
     readTime: "8 min",
+    cover: rankearGoogleCover,
     content:
       "Rankear no Google em 2026 é menos sobre palavras-chave e mais sobre resolver a intenção do usuário com autoridade real. Comece estruturando seu site por temas (topic clusters), entregando respostas profundas e mantendo Core Web Vitals em verde. Conteúdo superficial perdeu espaço — o algoritmo identifica respostas completas, citações e experiência prática.",
   },
@@ -138,6 +150,7 @@ export const posts: BlogPost[] = [
     category: "Inteligência Artificial",
     date: "2026-05-02",
     readTime: "6 min",
+    cover: iaWhatsappCover,
     content:
       "Um agente de IA no WhatsApp só gera ROI quando é treinado no contexto do seu negócio, integrado a um CRM e tem regras claras de escalonamento para humanos. Comece mapeando os 10 motivos de contato mais frequentes, automatize os 5 mais simples e meça tempo de resposta, taxa de resolução e leads qualificados.",
   },
@@ -148,6 +161,7 @@ export const posts: BlogPost[] = [
     category: "Marketing Digital",
     date: "2026-04-20",
     readTime: "5 min",
+    cover: pagoVsOrganicoCover,
     content:
       "Tráfego pago entrega velocidade, tráfego orgânico entrega composição. Empresas em fase de validação devem começar por Ads para aprender rápido, e ativar SEO em paralelo para colher os ganhos compostos a partir do 4º mês. Quem ignora um dos dois deixa CAC subir ou crescimento estagnar.",
   },
@@ -158,6 +172,7 @@ export const posts: BlogPost[] = [
     category: "Sites",
     date: "2026-04-08",
     readTime: "7 min",
+    cover: coreWebVitalsCover,
     content:
       "A substituição do FID pelo INP elevou a régua de interatividade. Para passar: reduza JavaScript no carregamento inicial, use SSR/SSG quando possível, comprima imagens com AVIF/WebP, reserve espaço para mídia (sem layout shift) e priorize fontes locais com display swap.",
   },
@@ -168,6 +183,7 @@ export const posts: BlogPost[] = [
     category: "Automação",
     date: "2026-03-28",
     readTime: "9 min",
+    cover: automacaoLeadsCover,
     content:
       "Um fluxo simples: formulário → webhook n8n → enriquecimento via Clearbit/Apollo → roteamento por score → resposta automática por IA → criação de oportunidade no CRM. O segredo é manter cada etapa observável: logs, retries e fallbacks por canal.",
   },
@@ -178,6 +194,7 @@ export const posts: BlogPost[] = [
     category: "Negócios",
     date: "2026-03-15",
     readTime: "6 min",
+    cover: transformacaoDigitalCover,
     content:
       "Comece pela jornada do cliente, não pela tecnologia. Mapeie pontos de atrito, escolha 1 processo de alto impacto, automatize, meça e só então expanda. Tentar digitalizar tudo de uma vez é a forma mais cara de não digitalizar nada.",
   },

@@ -137,7 +137,7 @@ function BlogIndex() {
               >
                 <div className="aspect-[16/10] relative overflow-hidden bg-muted">
                   <img
-                    src={coverForCategory(p.category)}
+                    src={p.cover || coverForCategory(p.category)}
                     alt={`Imagem ilustrativa: ${p.title}`}
                     width={1280}
                     height={800}
