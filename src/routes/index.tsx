@@ -13,6 +13,7 @@ import { getPageSections } from "@/lib/site-sections.functions";
 const Problems = lazy(() => import("@/components/site/Problems").then((m) => ({ default: m.Problems })));
 const LossCalculator = lazy(() => import("@/components/site/LossCalculator").then((m) => ({ default: m.LossCalculator })));
 const Solutions = lazy(() => import("@/components/site/Solutions").then((m) => ({ default: m.Solutions })));
+const HighlightTrio = lazy(() => import("@/components/site/HighlightTrio").then((m) => ({ default: m.HighlightTrio })));
 const FeaturedServices = lazy(() => import("@/components/site/FeaturedServices").then((m) => ({ default: m.FeaturedServices })));
 const AISection = lazy(() => import("@/components/site/AISection").then((m) => ({ default: m.AISection })));
 const DiagnosticForm = lazy(() => import("@/components/site/DiagnosticForm").then((m) => ({ default: m.DiagnosticForm })));
