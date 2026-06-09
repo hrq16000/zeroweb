@@ -63,7 +63,7 @@ export const Route = createFileRoute("/obrigado")({
 
 
 function ObrigadoPage() {
-  const { source } = Route.useSearch();
+  const { source, order } = Route.useSearch();
   // Snapshot persisted at submit-time wins over the URL ?source= param.
   // Fallbacks: query string, then "direct".
   const attr = useMemo(() => {
