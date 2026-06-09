@@ -22,6 +22,7 @@ import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-serv
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
 import { Route as SitemapEditorialDotxmlRouteImport } from './routes/sitemap-editorial[.]xml'
+import { Route as SitemapCwbNeighborhoodsDotxmlRouteImport } from './routes/sitemap-cwb-neighborhoods[.]xml'
 import { Route as SitemapCityServicesDotxmlRouteImport } from './routes/sitemap-city-services[.]xml'
 import { Route as SitemapCitiesDotxmlRouteImport } from './routes/sitemap-cities[.]xml'
 import { Route as SitemapCasesDotxmlRouteImport } from './routes/sitemap-cases[.]xml'
@@ -221,6 +222,12 @@ const SitemapEditorialDotxmlRoute = SitemapEditorialDotxmlRouteImport.update({
   path: '/sitemap-editorial.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapCwbNeighborhoodsDotxmlRoute =
+  SitemapCwbNeighborhoodsDotxmlRouteImport.update({
+    id: '/sitemap-cwb-neighborhoods.xml',
+    path: '/sitemap-cwb-neighborhoods.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SitemapCityServicesDotxmlRoute =
   SitemapCityServicesDotxmlRouteImport.update({
     id: '/sitemap-city-services.xml',
@@ -960,6 +967,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-cwb-neighborhoods.xml': typeof SitemapCwbNeighborhoodsDotxmlRoute
   '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -1105,6 +1113,7 @@ export interface FileRoutesByTo {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-cwb-neighborhoods.xml': typeof SitemapCwbNeighborhoodsDotxmlRoute
   '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -1252,6 +1261,7 @@ export interface FileRoutesById {
   '/sitemap-cases.xml': typeof SitemapCasesDotxmlRoute
   '/sitemap-cities.xml': typeof SitemapCitiesDotxmlRoute
   '/sitemap-city-services.xml': typeof SitemapCityServicesDotxmlRoute
+  '/sitemap-cwb-neighborhoods.xml': typeof SitemapCwbNeighborhoodsDotxmlRoute
   '/sitemap-editorial.xml': typeof SitemapEditorialDotxmlRoute
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -1400,6 +1410,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-cwb-neighborhoods.xml'
     | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
@@ -1545,6 +1556,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-cwb-neighborhoods.xml'
     | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
@@ -1691,6 +1703,7 @@ export interface FileRouteTypes {
     | '/sitemap-cases.xml'
     | '/sitemap-cities.xml'
     | '/sitemap-city-services.xml'
+    | '/sitemap-cwb-neighborhoods.xml'
     | '/sitemap-editorial.xml'
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
@@ -1839,6 +1852,7 @@ export interface RootRouteChildren {
   SitemapCasesDotxmlRoute: typeof SitemapCasesDotxmlRoute
   SitemapCitiesDotxmlRoute: typeof SitemapCitiesDotxmlRoute
   SitemapCityServicesDotxmlRoute: typeof SitemapCityServicesDotxmlRoute
+  SitemapCwbNeighborhoodsDotxmlRoute: typeof SitemapCwbNeighborhoodsDotxmlRoute
   SitemapEditorialDotxmlRoute: typeof SitemapEditorialDotxmlRoute
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
@@ -1985,6 +1999,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-editorial.xml'
       fullPath: '/sitemap-editorial.xml'
       preLoaderRoute: typeof SitemapEditorialDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-cwb-neighborhoods.xml': {
+      id: '/sitemap-cwb-neighborhoods.xml'
+      path: '/sitemap-cwb-neighborhoods.xml'
+      fullPath: '/sitemap-cwb-neighborhoods.xml'
+      preLoaderRoute: typeof SitemapCwbNeighborhoodsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-city-services.xml': {
@@ -3165,6 +3186,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapCasesDotxmlRoute: SitemapCasesDotxmlRoute,
   SitemapCitiesDotxmlRoute: SitemapCitiesDotxmlRoute,
   SitemapCityServicesDotxmlRoute: SitemapCityServicesDotxmlRoute,
+  SitemapCwbNeighborhoodsDotxmlRoute: SitemapCwbNeighborhoodsDotxmlRoute,
   SitemapEditorialDotxmlRoute: SitemapEditorialDotxmlRoute,
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,

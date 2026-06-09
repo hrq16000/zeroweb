@@ -30,6 +30,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           "sitemap-marketplace.xml",
           "sitemap-editorial.xml",
           "sitemap-bh-neighborhoods.xml",
+          "sitemap-cwb-neighborhoods.xml",
         ];
 
         const xml = [
