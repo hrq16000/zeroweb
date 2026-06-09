@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ShoppingBag } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform, useSpring } from "motion/react";
 import { SmartServiceSearch, type SearchableService } from "@/components/site/SmartServiceSearch";
 
 
@@ -30,6 +30,13 @@ function ServicosLayout() {
   const [q, setQ] = useState("");
   const [cartCount, setCartCount] = useState(0);
   const prefersReducedMotion = useReducedMotion();
+
+  // Scroll-shrink suave: a barra reduz levemente nos primeiros 120px de rolagem.
+  const { scrollY } = useScroll();
+  const rawScale = useTransform(scrollY, [0, 120], [1, 0.96]);
+  const rawOpacity = useTransform(scrollY, [0, 120], [1, 0.92]);
+  const scale = useSpring(rawScale, { stiffness: 220, damping: 28, mass: 0.4 });
+  const opacity = useSpring(rawOpacity, { stiffness: 220, damping: 28, mass: 0.4 });
 
   useEffect(() => {
     function read() {
@@ -63,7 +70,10 @@ function ServicosLayout() {
         className="pt-[72px] lg:pt-[88px]"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.18)] hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.28)] focus-within:border-primary/60 focus-within:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.35)] transition-shadow">
+          <motion.div
+            style={prefersReducedMotion ? undefined : { scale, opacity, transformOrigin: "top center", willChange: "transform" }}
+            className="group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.18)] hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.28)] focus-within:border-primary/60 focus-within:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.35)] transition-shadow"
+          >
             <div className="flex items-center gap-2 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5">
               <div className="flex-1 min-w-0">
                 <SmartServiceSearch
@@ -93,7 +103,7 @@ function ServicosLayout() {
                 )}
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.nav>
 
