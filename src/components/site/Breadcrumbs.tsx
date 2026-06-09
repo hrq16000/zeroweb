@@ -8,12 +8,12 @@ export type Crumb = { name: string; path: string };
  * complements the BreadcrumbList JSON-LD on the route. Uses existing design
  * tokens — no new styling system.
  */
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+export function Breadcrumbs({ items, compact = false }: { items: Crumb[]; compact?: boolean }) {
   if (!items?.length) return null;
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mx-auto max-w-7xl px-5 lg:px-8 pt-24 lg:pt-28 text-xs text-muted-foreground"
+      className={`mx-auto max-w-7xl px-5 lg:px-8 ${compact ? "pt-4" : "pt-24 lg:pt-28"} text-xs text-muted-foreground`}
     >
       <ol className="flex flex-wrap items-center gap-1.5">
         <li className="flex items-center gap-1.5">
