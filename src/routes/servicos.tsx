@@ -60,7 +60,7 @@ function ServicosLayout() {
         initial={prefersReducedMotion ? false : { opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="pt-20 sm:pt-24"
+        className="pt-[72px] lg:pt-[88px]"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.18)] hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.28)] focus-within:border-primary/60 focus-within:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.35)] transition-shadow">
