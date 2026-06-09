@@ -81,14 +81,22 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
           setState({ kind: "ok", order });
           // Conversion tracking: register method, order id, packages and total.
           void import("@/lib/analytics").then(({ trackConversion }) => {
-            const packages = (order.items ?? []).map((i) => i.slug).join(",");
-            const itemNames = (order.items ?? []).map((i) => i.name).join(" | ");
+            const items = order.items ?? [];
+            const packages = items.map((i) => i.slug).join(",");
+            const itemNames = items.map((i) => i.name).join(" | ");
+            const selectedPackage = items
+              .map((i) => (i.slug.includes("--") ? i.slug.split("--").pop() : "default"))
+              .filter(Boolean)
+              .join(",") || "default";
+            const checkoutMethod = order.payment_method ?? "unknown";
             trackConversion("thank_you_order_view", {
               order_id: order.id,
-              payment_method: order.payment_method ?? "unknown",
+              payment_method: checkoutMethod,
+              checkout_method: checkoutMethod,
+              selected_package: selectedPackage,
               status: order.status,
               total: Number(order.total) || 0,
-              items_count: (order.items ?? []).length,
+              items_count: items.length,
               packages,
               item_names: itemNames,
               source: source ?? "direct",
