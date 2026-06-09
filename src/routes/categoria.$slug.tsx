@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getCategoryBySlug } from "@/lib/marketplace.functions";
-import { ORIGIN } from "@/lib/seo";
+import { ORIGIN, breadcrumbLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/categoria/$slug")({
   head: ({ params }) => {
