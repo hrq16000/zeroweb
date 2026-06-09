@@ -10,7 +10,7 @@ import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { SERVICES } from "@/lib/services-data";
 import { SocialProofBlock } from "@/components/site/SocialProofBlock";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
-import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { ShopHero } from "@/components/site/ShopHero";
 import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 
@@ -606,13 +606,17 @@ function ServicosHub() {
 
         <section className="py-16">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
-            <ContactFormWhatsApp
-              source="servicos_form_whatsapp"
-              ctx="servicos_page"
-              title="Receba uma proposta personalizada"
-              defaultMessage="Olá! Vi os serviços da 0WEB e quero uma proposta personalizada."
-              useModal
-            />
+            <div className="text-center rounded-3xl border border-border bg-card/60 backdrop-blur p-8 lg:p-12">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold">Receba uma proposta personalizada</h2>
+              <p className="mt-3 text-muted-foreground">Responda no WhatsApp em poucos minutos e te enviamos um plano sob medida.</p>
+              <div className="mt-6 flex justify-center">
+                <ServiceCTA
+                  serviceSlug="servicos"
+                  location="footer"
+                  label="Falar com um especialista"
+                />
+              </div>
+            </div>
           </div>
         </section>
 

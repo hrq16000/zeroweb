@@ -172,3 +172,44 @@ html { scroll-behavior: smooth; }
 .prose .process-list h3 { margin: 0.25rem 0 0.25rem; font-size: 1.05rem; }
 .prose .rich-guarantee { padding: 1rem 1.25rem; border-left: 4px solid hsl(var(--primary)); background: color-mix(in oklab, hsl(var(--primary)) 6%, transparent); border-radius: 0.5rem; }
 .prose .rich-conditions { font-size: 0.85rem; color: hsl(var(--muted-foreground)); }
+
+/* ============================================================
+   Spacing tokens — padronização do respiro topo das páginas.
+   - pt-page: respiro padrão abaixo do header fixo (use no 1º bloco da página).
+   - pt-page-tight: variação reduzida (catálogo /servicos com barra acoplada).
+   - pt-section: respiro vertical interno entre seções (sem header offset).
+   ============================================================ */
+@utility pt-page {
+  padding-top: 6rem; /* 96px - mobile */
+}
+@utility pt-page-tight {
+  padding-top: 4.5rem; /* 72px */
+}
+@utility pt-section {
+  padding-top: 3rem; /* 48px */
+}
+@media (min-width: 1024px) {
+  .pt-page { padding-top: 7rem; }       /* 112px - desktop */
+  .pt-page-tight { padding-top: 5.5rem; } /* 88px */
+  .pt-section { padding-top: 4rem; }      /* 64px */
+}
+
+/* ============================================================
+   Spacing debug overlay (?debug=spacing)
+   Destaca bordas e exibe padding/margin/dimensões em tempo real.
+   ============================================================ */
+html[data-debug-spacing="1"] * {
+  outline: 1px dashed rgba(236, 72, 153, 0.35);
+  outline-offset: -1px;
+}
+html[data-debug-spacing="1"] section,
+html[data-debug-spacing="1"] header,
+html[data-debug-spacing="1"] nav,
+html[data-debug-spacing="1"] main,
+html[data-debug-spacing="1"] article,
+html[data-debug-spacing="1"] aside,
+html[data-debug-spacing="1"] footer {
+  outline: 2px solid rgba(59, 130, 246, 0.55);
+  outline-offset: -2px;
+  position: relative;
+}
