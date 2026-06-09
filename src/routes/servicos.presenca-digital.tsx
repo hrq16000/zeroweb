@@ -12,7 +12,7 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
-import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
 import cover from "@/assets/presenca-digital-google-capa.png.asset.json";
@@ -342,25 +342,25 @@ function PresencaDigitalPage() {
         </div>
       </section>
 
-      {/* FORM DE CAPTURA */}
+      {/* CTA → FUNIL */}
       <section className="py-20 bg-muted/30">
         <div className="mx-auto max-w-3xl px-5 lg:px-8">
-          <div className="text-center mb-8">
+          <div className="text-center rounded-3xl border border-border bg-card/60 backdrop-blur p-8 lg:p-12">
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">Fale com a 0WEB</p>
             <h2 className="mt-2 text-3xl sm:text-4xl font-bold font-display">
               Receba uma proposta personalizada
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Preencha o formulário e respondemos no seu WhatsApp em até 1 hora útil.
+              Responda perguntas rápidas no WhatsApp e enviamos sua proposta em até 1 hora útil.
             </p>
+            <div className="mt-6 flex justify-center">
+              <ServiceCTA
+                serviceSlug="presenca-digital"
+                location="footer"
+                label="Solicitar proposta agora"
+              />
+            </div>
           </div>
-          <ContactFormWhatsApp
-            source="presdig_form"
-            ctx="presdig_form"
-            title="Solicite sua proposta de Presença Digital"
-            defaultMessage="Quero uma proposta de Presença Digital (R$399/mês)."
-            requireConsent
-          />
         </div>
       </section>
 

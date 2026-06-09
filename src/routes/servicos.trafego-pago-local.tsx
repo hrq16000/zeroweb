@@ -6,7 +6,7 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { whatsappUrl } from "@/lib/site-config";
 import { CheckCircle2, XCircle, MessageCircle, Phone, ShoppingCart, Rocket, AlertTriangle, ArrowRight, Sparkles, Target } from "lucide-react";
 import capa from "@/assets/trafego-pago-499-capa.png.asset.json";
-import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
+import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 
 const URL = "https://0web.com.br/servicos/trafego-pago-local";
