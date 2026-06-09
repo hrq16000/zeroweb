@@ -87,11 +87,11 @@ export function HomeSpotlight() {
               <Link
                 to="/contato"
                 onClick={() =>
-                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight" })
+                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight", variant })
                 }
                 className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary hover:opacity-95 transition uppercase text-sm tracking-wide"
               >
-                Obter orçamento gratuito
+                {ctaLabel}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
