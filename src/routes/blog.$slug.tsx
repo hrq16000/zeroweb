@@ -194,7 +194,7 @@ function PostPage() {
                 Perguntas frequentes
               </h2>
               <dl className="mt-6 space-y-4">
-                {post.faq.map((f, i) => (
+                {post.faq.map((f: { q: string; a: string }, i: number) => (
                   <div key={i} className="rounded-2xl border border-border bg-card p-5">
                     <dt className="font-semibold text-foreground">{f.q}</dt>
                     <dd className="mt-2 text-sm text-foreground/80 leading-relaxed">{f.a}</dd>
