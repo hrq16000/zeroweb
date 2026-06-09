@@ -76,14 +76,33 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
     fetchOrder({ data: { orderId } })
       .then((r) => {
         if (!alive) return;
-        if (r.order) setState({ kind: "ok", order: r.order as unknown as OrderRow });
-        else setState({ kind: "missing" });
+        if (r.order) {
+          const order = r.order as unknown as OrderRow;
+          setState({ kind: "ok", order });
+          // Conversion tracking: register method, order id, packages and total.
+          void import("@/lib/analytics").then(({ trackConversion }) => {
+            const packages = (order.items ?? []).map((i) => i.slug).join(",");
+            const itemNames = (order.items ?? []).map((i) => i.name).join(" | ");
+            trackConversion("thank_you_order_view", {
+              order_id: order.id,
+              payment_method: order.payment_method ?? "unknown",
+              status: order.status,
+              total: Number(order.total) || 0,
+              items_count: (order.items ?? []).length,
+              packages,
+              item_names: itemNames,
+              source: source ?? "direct",
+            });
+          });
+        } else {
+          setState({ kind: "missing" });
+        }
       })
       .catch((e: Error) => alive && setState({ kind: "error", message: e.message }));
     return () => {
       alive = false;
     };
-  }, [orderId, fetchOrder]);
+  }, [orderId, fetchOrder, source]);
 
   return (
     <section id="pedido" className="mt-12" aria-label="Resumo do pedido">
@@ -98,12 +117,14 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
               </p>
             </div>
             <Link
-              to="/app"
+              to="/pedido/$id"
+              params={{ id: orderId }}
               className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
             >
-              Ver no painel <ExternalLink className="w-3 h-3" />
+              Abrir página do pedido <ExternalLink className="w-3 h-3" />
             </Link>
           </header>
+
 
           <div className="p-6">
             {state.kind === "loading" && (

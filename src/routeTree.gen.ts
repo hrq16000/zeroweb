@@ -74,6 +74,7 @@ import { Route as ServicosConsultoriaRouteImport } from './routes/servicos.consu
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
+import { Route as PedidoIdRouteImport } from './routes/pedido.$id'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
@@ -475,6 +476,11 @@ const RCodeRoute = RCodeRouteImport.update({
 const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
   id: '/profissional/$slug',
   path: '/profissional/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidoIdRoute = PedidoIdRouteImport.update({
+  id: '/pedido/$id',
+  path: '/pedido/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FSlugRoute = FSlugRouteImport.update({
@@ -948,6 +954,7 @@ export interface FileRoutesByFullPath {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1085,6 +1092,7 @@ export interface FileRoutesByTo {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1226,6 +1234,7 @@ export interface FileRoutesById {
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
+  '/pedido/$id': typeof PedidoIdRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1367,6 +1376,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/f/$slug'
+    | '/pedido/$id'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -1504,6 +1514,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/f/$slug'
+    | '/pedido/$id'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -1644,6 +1655,7 @@ export interface FileRouteTypes {
     | '/empresa/$slug'
     | '/estados/$state'
     | '/f/$slug'
+    | '/pedido/$id'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -1783,6 +1795,7 @@ export interface RootRouteChildren {
   CidadeSlugRoute: typeof CidadeSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
   FSlugRoute: typeof FSlugRoute
+  PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -2257,6 +2270,13 @@ declare module '@tanstack/react-router' {
       path: '/profissional/$slug'
       fullPath: '/profissional/$slug'
       preLoaderRoute: typeof ProfissionalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedido/$id': {
+      id: '/pedido/$id'
+      path: '/pedido/$id'
+      fullPath: '/pedido/$id'
+      preLoaderRoute: typeof PedidoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/f/$slug': {
@@ -3052,6 +3072,7 @@ const rootRouteChildren: RootRouteChildren = {
   CidadeSlugRoute: CidadeSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,
   FSlugRoute: FSlugRoute,
+  PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
   BlogIndexRoute: BlogIndexRoute,
@@ -3076,13 +3097,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

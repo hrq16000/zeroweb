@@ -7,7 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type ReactElement } from "react";
 import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
@@ -84,10 +84,15 @@ function ObrigadoPage() {
       surface: "page",
       page: "/obrigado",
       event_category: "conversion",
+      order_id: order ?? null,
+      checkout_method:
+        resolvedSource === "checkout-stripe" ? "stripe" :
+        resolvedSource === "checkout-whatsapp" ? "whatsapp" :
+        "other",
     });
     // Legacy event preserved for one sprint while dashboards transition.
     trackEvent("obrigado_page_view", { ...evtAttr, surface: "page", legacy: true });
-  }, [evtAttr]);
+  }, [evtAttr, order, resolvedSource]);
 
   const handleCta = (eventName: string, ctaId: string, label: string, position: number, target: string) => {
     const params = buildThankYouCtaParams({
@@ -95,7 +100,7 @@ function ObrigadoPage() {
       surface: "page",
       ctaId, target, label, position,
     });
-    trackConversion(eventName, params);
+    trackConversion(eventName, { ...params, order_id: order ?? null });
     // Legacy event kept for back-compat dashboards.
     trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
@@ -103,35 +108,47 @@ function ObrigadoPage() {
   const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
   const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
 
-  const ctaCards = [
-    {
-      icon: <Layers className="w-6 h-6 text-primary" />,
-      title: "Conheça nossos planos",
-      desc: content.planosLabel,
-      to: THANK_YOU_CTA.PLANS.target,
-      label: "Ver planos",
-      id: THANK_YOU_CTA.PLANS.id,
-      event: THANK_YOU_CTA.PLANS.event,
-    },
-    {
-      icon: <HelpCircle className="w-6 h-6 text-primary" />,
-      title: "Dúvidas frequentes",
-      desc: "Veja respostas sobre prazos, contratos e entregáveis.",
-      to: THANK_YOU_CTA.FAQ.target,
-      label: "Ir para FAQ",
-      id: THANK_YOU_CTA.FAQ.id,
-      event: THANK_YOU_CTA.FAQ.event,
-    },
-    {
-      icon: <FileText className="w-6 h-6 text-primary" />,
-      title: "Solicitar diagnóstico",
-      desc: "Receba uma análise gratuita do seu site e estratégia digital.",
-      to: "/solicitar-orcamento" as const,
-      label: "Pedir diagnóstico",
-      id: THANK_YOU_CTA.DIAGNOSTICO.id,
-      event: THANK_YOU_CTA.DIAGNOSTICO.event,
-    },
-  ];
+  const ICONS: Record<string, ReactElement> = {
+    layers: <Layers className="w-6 h-6 text-primary" />,
+    help: <HelpCircle className="w-6 h-6 text-primary" />,
+    file: <FileText className="w-6 h-6 text-primary" />,
+    sparkles: <Sparkles className="w-6 h-6 text-primary" />,
+    message: <MessageCircle className="w-6 h-6 text-primary" />,
+    package: <Package className="w-6 h-6 text-primary" />,
+  };
+
+  const ctaCards = content.ctaCards?.length
+    ? content.ctaCards.map((c) => ({ ...c, icon: ICONS[c.icon] ?? ICONS.sparkles }))
+    : [
+        {
+          icon: ICONS.layers,
+          title: "Conheça nossos planos",
+          desc: content.planosLabel,
+          to: THANK_YOU_CTA.PLANS.target,
+          label: "Ver planos",
+          id: THANK_YOU_CTA.PLANS.id,
+          event: THANK_YOU_CTA.PLANS.event,
+        },
+        {
+          icon: ICONS.help,
+          title: "Dúvidas frequentes",
+          desc: "Veja respostas sobre prazos, contratos e entregáveis.",
+          to: THANK_YOU_CTA.FAQ.target,
+          label: "Ir para FAQ",
+          id: THANK_YOU_CTA.FAQ.id,
+          event: THANK_YOU_CTA.FAQ.event,
+        },
+        {
+          icon: ICONS.file,
+          title: "Solicitar diagnóstico",
+          desc: "Receba uma análise gratuita do seu site e estratégia digital.",
+          to: "/solicitar-orcamento" as const,
+          label: "Pedir diagnóstico",
+          id: THANK_YOU_CTA.DIAGNOSTICO.id,
+          event: THANK_YOU_CTA.DIAGNOSTICO.event,
+        },
+      ];
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -203,17 +220,30 @@ function ObrigadoPage() {
           ) : null}
 
           {order && (
-            <motion.a
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              href="#pedido"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+              className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm"
             >
-              <Package className="w-4 h-4" />
-              Ver resumo do pedido
-            </motion.a>
+              <a
+                href="#pedido"
+                className="inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+              >
+                <Package className="w-4 h-4" />
+                Ver resumo do pedido
+              </a>
+              <Link
+                to="/pedido/$id"
+                params={{ id: order }}
+                onClick={() => handleCta("thank_you_cta_order_page", "order_page_link", "Abrir página do pedido", 0, `/pedido/${order}`)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-semibold hover:border-primary transition-colors"
+              >
+                Abrir página do pedido
+              </Link>
+            </motion.div>
           )}
+
         </section>
 
         {order ? <OrderSummaryCard orderId={order} source={source} /> : null}
@@ -315,6 +345,47 @@ function ObrigadoPage() {
             </div>
           </div>
         </section>
+
+        {/* FAQ adaptado ao método de checkout */}
+        {content.faq && content.faq.length > 0 ? (
+          <section className="mt-20">
+            <div className="mx-auto max-w-3xl px-5 lg:px-8">
+              <h2 className="text-center text-2xl font-bold font-display mb-2 flex items-center justify-center gap-2">
+                <HelpCircle className="w-6 h-6 text-primary" /> Dúvidas sobre o seu pedido
+              </h2>
+              <p className="text-center text-muted-foreground mb-8 max-w-xl mx-auto">
+                Respostas rápidas para o que costuma surgir após {resolvedSource === "checkout-stripe" ? "o pagamento" : "fechar o pedido"}.
+              </p>
+              <div className="space-y-3">
+                {content.faq.map((f) => (
+                  <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
+                    <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
+                      {f.q}
+                      <span className="text-primary group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+              <script
+                type="application/ld+json"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: content.faq.map((f) => ({
+                      "@type": "Question",
+                      name: f.q,
+                      acceptedAnswer: { "@type": "Answer", text: f.a },
+                    })),
+                  }),
+                }}
+              />
+            </div>
+          </section>
+        ) : null}
+
 
         {/* CTA final */}
         <section className="mt-20">
