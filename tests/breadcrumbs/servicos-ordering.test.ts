@@ -19,10 +19,10 @@ const layout = readFileSync(resolve(ROUTES, "servicos.tsx"), "utf8");
 
 const idxTopBar = layout.indexOf('data-top-bar="1"');
 const idxCrumbs = layout.indexOf("<ServicosBreadcrumbs");
-// Skip the import statement; find the JSX usage of <Outlet />
-const outletJsxMatch = layout.match(/<Outlet\s*\/>/);
-const idxOutlet = outletJsxMatch ? layout.indexOf(outletJsxMatch[0]) : -1;
+// Use the LAST <Outlet /> occurrence to skip any reference inside JSDoc comments.
+const idxOutlet = layout.lastIndexOf("<Outlet />");
 const crumbsOccurrences = (layout.match(/<ServicosBreadcrumbs/g) ?? []).length;
+
 
 
 describe("Loja virtual — ordem Header → Breadcrumbs → Outlet", () => {
