@@ -23,6 +23,8 @@ const empresaCol: { label: string; to: string }[] = [
   { label: "Parceiros", to: "/servicos/parceiros" },
   { label: "Blog", to: "/blog" },
   { label: "Planos", to: "/planos" },
+  { label: "Bairros — Curitiba/RMC", to: "/bairros-cwb" },
+  { label: "Bairros — Belo Horizonte", to: "/bairros-bh" },
 ];
 
 const suporteCol: { label: string; to?: string; href?: string }[] = [
