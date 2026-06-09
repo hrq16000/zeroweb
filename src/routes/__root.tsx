@@ -23,6 +23,7 @@ import { AuthErrorGuard } from "../components/site/AuthErrorGuard";
 import { Header } from "../components/site/Header";
 import { Footer } from "../components/site/Footer";
 import { Toaster } from "../components/ui/sonner";
+import { SpacingDebugOverlay } from "../components/site/SpacingDebugOverlay";
 import { logNotFound } from "../lib/route-404.functions";
 
 const NOT_FOUND_SERVICES: Array<{ slug: string; name: string; desc: string; Icon: typeof Globe }> = [
@@ -279,6 +280,7 @@ function RootComponent() {
         <Outlet />
         <CartDrawer />
         <Toaster position="top-center" richColors />
+        <SpacingDebugOverlay />
       </WaFunnelProvider>
     </QueryClientProvider>
   );
