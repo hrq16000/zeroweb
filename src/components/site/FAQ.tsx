@@ -63,6 +63,18 @@ export function FAQ() {
             );
           })}
         </div>
+
+        <div className="mt-10 rounded-2xl border border-border bg-card p-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Não encontrou sua resposta? Aprofunde-se em sites, SEO, tráfego pago e IA no nosso blog.
+          </p>
+          <Link
+            to="/blog"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            <BookOpen className="w-4 h-4" /> Ler artigos do blog
+          </Link>
+        </div>
       </div>
     </section>
   );
