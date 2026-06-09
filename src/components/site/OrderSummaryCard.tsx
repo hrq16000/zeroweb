@@ -52,7 +52,7 @@ export function OrderSummaryCard({ orderId }: { orderId: string }) {
     fetchOrder({ data: { orderId } })
       .then((r) => {
         if (!alive) return;
-        if (r.order) setState({ kind: "ok", order: r.order as OrderRow });
+        if (r.order) setState({ kind: "ok", order: r.order as unknown as OrderRow });
         else setState({ kind: "missing" });
       })
       .catch((e: Error) => alive && setState({ kind: "error", message: e.message }));
