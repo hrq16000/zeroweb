@@ -6,7 +6,6 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
 import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/lib/services-public.functions";
@@ -137,7 +136,6 @@ function ServicePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }, { name: data.name, path: `/servicos/${slug}` }]} />
       <main className="pt-6">
         <section className="py-16 bg-hero">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">

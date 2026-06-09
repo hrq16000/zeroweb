@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ShoppingBag } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform, useSpring } from "motion/react";
 import { SmartServiceSearch, type SearchableService } from "@/components/site/SmartServiceSearch";
+import { ServicosBreadcrumbs } from "@/components/site/ServicosBreadcrumbs";
 
 
 /**
@@ -106,6 +107,8 @@ function ServicosLayout() {
           </motion.div>
         </div>
       </motion.nav>
+
+      <ServicosBreadcrumbs />
 
       <Outlet />
     </>

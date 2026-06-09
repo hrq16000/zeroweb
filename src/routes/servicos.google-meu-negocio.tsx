@@ -7,7 +7,6 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { whatsappUrl } from "@/lib/site-config";
@@ -100,13 +99,6 @@ function GMBPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumbs compact
-        items={[
-          { name: "Serviços", path: "/servicos" },
-          { name: "Google Meu Negócio", path: "/servicos/google-meu-negocio" },
-        ]}
-      />
-
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#020617] via-[#0a1330] to-[#0b1a3d] text-white">
         <div className="absolute inset-0 bg-mesh opacity-20" />

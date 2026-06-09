@@ -3,7 +3,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { listCatalog, listCategories } from "@/lib/marketplace.functions";
 import { ORIGIN } from "@/lib/seo";
@@ -49,12 +48,6 @@ function MarketplacePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs compact
-        items={[
-          { name: "Serviços", path: "/servicos" },
-          { name: "Marketplace", path: "/servicos/marketplace" },
-        ]}
-      />
       <header className="border-b border-border mt-6">
         <div className="max-w-6xl mx-auto px-5 py-12">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">Marketplace 0WEB</h1>

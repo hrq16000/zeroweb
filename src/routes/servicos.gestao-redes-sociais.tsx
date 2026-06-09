@@ -13,8 +13,6 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-
 const TITLE = "Gestão de Redes Sociais · 0WEB · Planos a partir de R$149,99/mês";
 const DESC =
   "Sua marca ativa todos os dias no Instagram, Facebook, TikTok e LinkedIn. Calendário editorial, design profissional, reels, copywriting e relatórios reais. Planos a partir de R$149,99/mês.";
@@ -219,8 +217,6 @@ function GestaoRedesSociaisPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumbs compact items={[{ name: "Serviços", path: "/servicos" }, { name: "Gestão de Redes Sociais", path: "/servicos/gestao-redes-sociais" }]} />
-
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#1a0b2e] via-[#0f0c29] to-[#1f1147] text-white">
         <div className="absolute inset-0 bg-mesh opacity-20" />
