@@ -118,7 +118,19 @@ export const Route = createFileRoute("/servicos/$slug")({
       ]),
     ];
     // Blocos JSON-LD adicionais editáveis pelo painel (aba SEO).
-    const extraGraph = Array.isArray(loaderData.schemaJsonLd) ? loaderData.schemaJsonLd : [];
+    // Normaliza qualquer Offer presente para garantir priceValidUntil + seller.
+    const rawExtra = Array.isArray(loaderData.schemaJsonLd) ? loaderData.schemaJsonLd : [];
+    const extraGraph = rawExtra.map((node: Record<string, unknown>) => {
+      if (!node || typeof node !== "object") return node;
+      const offers = (node as { offers?: unknown }).offers;
+      if (Array.isArray(offers)) {
+        return { ...node, offers: offers.map((o) => withOfferDefaults(o as OfferLike, url)) };
+      }
+      if (offers && typeof offers === "object") {
+        return { ...node, offers: withOfferDefaults(offers as OfferLike, url) };
+      }
+      return node;
+    });
     return {
       meta: [
         { title: loaderData.title },
