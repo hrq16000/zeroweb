@@ -164,11 +164,7 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
         </div>
 
         <ol className="mt-6 grid sm:grid-cols-3 gap-3 text-sm">
-          {[
-            { t: "Confirmação", d: "Recebemos seu pedido e nosso time já foi notificado." },
-            { t: "Atendimento", d: "Em até 1h útil entramos em contato para alinhar o escopo." },
-            { t: "Execução", d: "Após o briefing, o entregável começa conforme o prazo combinado." },
-          ].map((s, i) => (
+          {stepsForSource(source).map((s, i) => (
             <li key={s.t} className="rounded-2xl border border-border bg-card p-4">
               <span className="text-xs font-mono text-primary">0{i + 1}</span>
               <h3 className="mt-1 font-semibold">{s.t}</h3>
