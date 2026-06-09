@@ -61,6 +61,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
@@ -410,6 +411,11 @@ const CasesIndexRoute = CasesIndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
+  id: '/bairros-bh/',
+  path: '/bairros-bh/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosTrafegoPagoLocalRoute =
@@ -982,6 +988,7 @@ export interface FileRoutesByFullPath {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh/': typeof BairrosBhIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1122,6 +1129,7 @@ export interface FileRoutesByTo {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh': typeof BairrosBhIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
@@ -1266,6 +1274,7 @@ export interface FileRoutesById {
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/bairros-bh/': typeof BairrosBhIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1410,6 +1419,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1550,6 +1560,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh'
     | '/blog'
     | '/cases'
     | '/servicos'
@@ -1693,6 +1704,7 @@ export interface FileRouteTypes {
     | '/servicos/site-express'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/bairros-bh/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1824,6 +1836,7 @@ export interface RootRouteChildren {
   PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
+  BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
@@ -2205,6 +2218,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bairros-bh/': {
+      id: '/bairros-bh/'
+      path: '/bairros-bh'
+      fullPath: '/bairros-bh/'
+      preLoaderRoute: typeof BairrosBhIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/trafego-pago-local': {
@@ -3118,6 +3138,7 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
+  BairrosBhIndexRoute: BairrosBhIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
