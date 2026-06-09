@@ -1,12 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Json = any;
+
 export type SeoAuditRow = {
   id: string;
   kind: string;
   ran_at: string;
-  summary: unknown;
-  details: unknown;
+  summary: Json;
+  details: Json;
   delta_pct: number | null;
   status: string;
   notes: string | null;
