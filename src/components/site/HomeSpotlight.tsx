@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Activity, ArrowRight, Check, Globe, MousePointerClick } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { useExperiment } from "@/lib/ab-testing";
 
 const BULLETS = [
   { strong: "Site projetado para converter", rest: "visitantes das suas campanhas em clientes reais." },
