@@ -31,6 +31,13 @@ function ServicosLayout() {
   const [cartCount, setCartCount] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
+  // Scroll-shrink suave: a barra reduz levemente nos primeiros 120px de rolagem.
+  const { scrollY } = useScroll();
+  const rawScale = useTransform(scrollY, [0, 120], [1, 0.96]);
+  const rawOpacity = useTransform(scrollY, [0, 120], [1, 0.92]);
+  const scale = useSpring(rawScale, { stiffness: 220, damping: 28, mass: 0.4 });
+  const opacity = useSpring(rawOpacity, { stiffness: 220, damping: 28, mass: 0.4 });
+
   useEffect(() => {
     function read() {
       try {
