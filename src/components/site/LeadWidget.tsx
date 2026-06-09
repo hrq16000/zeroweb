@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, X, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Sparkles, X, ArrowRight, ArrowLeft, Check, Loader2, MessageCircle, ExternalLink } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { persistLead } from "@/lib/persistence";
 import { trackConversion } from "@/lib/analytics";
+import { whatsappUrl } from "@/lib/site-config";
 
 const STORAGE_KEY = "0web_lead_widget_v1";
 const TOTAL_STEPS = 4;
