@@ -203,6 +203,10 @@ function ObrigadoPage() {
           ) : null}
         </section>
 
+        {order ? <OrderSummaryCard orderId={order} /> : null}
+
+
+
         {/* Status do atendimento (quando o canal define passos) */}
         {content.status && content.status.length > 0 ? (
           <section className="mt-16">
