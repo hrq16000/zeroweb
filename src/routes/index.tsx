@@ -142,8 +142,11 @@ function Index() {
           {on("diagnostic_form") && <DiagnosticForm />}
           {on("differentials") && <Differentials />}
           {on("cases") && <Cases />}
+          <StatsStrip />
           {on("plans") && <Plans />}
           {on("process") && <Process />}
+          <Testimonials />
+          
           
           {on("blog") && <Blog />}
           {on("social_proof") && <SocialProofSection />}
