@@ -62,9 +62,6 @@ function ServicosLayout() {
             className="shrink-0 inline-flex items-center gap-2 hover:opacity-80 active:scale-95 transition"
           >
             <BrandLogo size={32} alt="0WEB" priority />
-            <span className="hidden sm:inline font-display font-bold text-sm tracking-tight">
-              Loja 0WEB
-            </span>
           </Link>
 
           <div className="flex-1 min-w-0">
