@@ -18,20 +18,17 @@ export const listPortalsPublic = createServerFn({ method: "GET" }).handler(async
 export const listAllPortals = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { supabase } = context;
-    const { data: roles } = await supabase
-      .from("portal_members")
-      .select("role")
-      .eq("user_id", (context as { userId: string }).userId);
-    const isSuper = (roles ?? []).some((r: { role: string }) => r.role === "super_admin");
+    const userId = (context as { userId: string }).userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: isSuper } = await supabaseAdmin.rpc("is_super_admin", { _uid: userId });
+    if (!isSuper) throw new Error("forbidden");
     const { data, error } = await supabaseAdmin
       .from("portals")
       .select("*")
       .order("is_default", { ascending: false })
       .order("name");
     if (error) throw new Error(error.message);
-    return { rows: data ?? [], isSuper };
+    return { rows: data ?? [], isSuper: true };
   });
 
 const portalInput = z.object({
