@@ -91,8 +91,10 @@ export function useExperiment<T extends string>(experiment: string, variants: re
     const apply = () => {
       const picked = assignVariant(experiment, variants);
       setV(picked);
-      trackEvent("experiment_view", { experiment, variant: picked });
-      bumpExperiment(experiment, picked, { impressions: 1 });
+      const sessionId = getSessionId();
+      const first = !alreadyImpressed(sessionId, experiment, picked);
+      trackEvent("experiment_view", { experiment, variant: picked, session_id: sessionId, first_in_session: first });
+      if (first) bumpExperiment(experiment, picked, { impressions: 1 });
     };
     apply();
     const onOv = () => setV(assignVariant(experiment, variants));
