@@ -108,7 +108,7 @@ function ObrigadoPage() {
   const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
   const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
 
-  const ICONS: Record<string, JSX.Element> = {
+  const ICONS: Record<string, ReactElement> = {
     layers: <Layers className="w-6 h-6 text-primary" />,
     help: <HelpCircle className="w-6 h-6 text-primary" />,
     file: <FileText className="w-6 h-6 text-primary" />,
