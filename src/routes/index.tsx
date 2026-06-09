@@ -190,6 +190,7 @@ function Index() {
         <ExitIntent />
         <ConsentBanner />
         <HomeChatbot />
+        <LeadWidget />
       </Suspense>
     </div>
   );
