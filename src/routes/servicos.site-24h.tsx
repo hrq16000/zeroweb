@@ -169,7 +169,7 @@ function Site24hPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Site em 24h", path: "/servicos/site-24h" },

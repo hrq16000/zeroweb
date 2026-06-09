@@ -163,7 +163,7 @@ function SiteExpressPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Site Express em 24h", path: "/servicos/site-express" },

@@ -117,7 +117,7 @@ function PresencaDigitalPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumbs
+      <Breadcrumbs compact
         items={[
           { name: "Serviços", path: "/servicos" },
           { name: "Presença Digital", path: "/servicos/presenca-digital" },
