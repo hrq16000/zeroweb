@@ -150,19 +150,31 @@ function FaqPage() {
         </section>
 
         <section className="pb-24 px-6">
-          <div className="max-w-3xl mx-auto space-y-4">
-            {faqs.map((f) => (
-              <details
-                key={f.q}
-                className="group rounded-2xl border border-border bg-card p-6 open:shadow-md"
-              >
-                <summary className="cursor-pointer font-semibold text-lg flex justify-between items-start gap-4">
-                  <span>{f.q}</span>
-                  <span className="text-primary group-open:rotate-45 transition">+</span>
-                </summary>
-                <p className="mt-4 text-muted-foreground leading-relaxed">{f.a}</p>
-              </details>
-            ))}
+          <div className="max-w-3xl mx-auto space-y-4 scroll-smooth">
+            {faqs.map((f) => {
+              const id =
+                "q-" +
+                f.q
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/^-+|-+$/g, "")
+                  .slice(0, 60);
+              return (
+                <details
+                  key={f.q}
+                  id={id}
+                  className="group rounded-2xl border border-border bg-card p-6 open:shadow-md scroll-mt-24"
+                >
+                  <summary className="cursor-pointer font-semibold text-lg flex justify-between items-start gap-4">
+                    <span>{f.q}</span>
+                    <span className="text-primary group-open:rotate-45 transition">+</span>
+                  </summary>
+                  <p className="mt-4 text-muted-foreground leading-relaxed">{f.a}</p>
+                </details>
+              );
+            })}
           </div>
           <p className="text-center mt-12 text-muted-foreground">
             Não encontrou sua dúvida? <Link to="/contato" className="text-primary font-medium underline">Fale com a gente</Link>.
