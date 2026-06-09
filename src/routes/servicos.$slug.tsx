@@ -67,7 +67,9 @@ export const Route = createFileRoute("/servicos/$slug")({
                   price: Math.round(loaderData.price * 0.7).toString(),
                   priceCurrency: "BRL",
                   availability: "https://schema.org/InStock",
+                  priceValidUntil: "2026-12-31",
                   url,
+                  seller: { "@id": `${ORIGIN}/#org` },
                 },
                 {
                   "@type": "Offer",
@@ -75,7 +77,9 @@ export const Route = createFileRoute("/servicos/$slug")({
                   price: Math.round(loaderData.price).toString(),
                   priceCurrency: "BRL",
                   availability: "https://schema.org/InStock",
+                  priceValidUntil: "2026-12-31",
                   url,
+                  seller: { "@id": `${ORIGIN}/#org` },
                 },
                 {
                   "@type": "Offer",
@@ -83,7 +87,9 @@ export const Route = createFileRoute("/servicos/$slug")({
                   price: Math.round(loaderData.price * 1.6).toString(),
                   priceCurrency: "BRL",
                   availability: "https://schema.org/InStock",
+                  priceValidUntil: "2026-12-31",
                   url,
+                  seller: { "@id": `${ORIGIN}/#org` },
                 },
               ],
             }
