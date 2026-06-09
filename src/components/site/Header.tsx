@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search, ShoppingCart, LogIn, ChevronDown } from "lucide-react";
 import { cartCount, openCart } from "@/lib/cart";
@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 
 import { listServicesNav } from "@/lib/services-nav.functions";
+const GlobalSearch = lazy(() =>
+  import("@/components/site/GlobalSearch").then((m) => ({ default: m.GlobalSearch })),
+);
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
 // Desktop nav (Cases, Planos, FAQ ficam só no footer — Header enxuto)
