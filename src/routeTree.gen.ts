@@ -95,6 +95,7 @@ import { Route as BlogGoogleMeuNegocioRouteImport } from './routes/blog.google-m
 import { Route as BlogConversaoRouteImport } from './routes/blog.conversao'
 import { Route as BlogAutomacaoRouteImport } from './routes/blog.automacao'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as BairrosCwbSlugRouteImport } from './routes/bairros-cwb.$slug'
 import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
@@ -588,6 +589,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BairrosCwbSlugRoute = BairrosCwbSlugRouteImport.update({
+  id: '/bairros-cwb/$slug',
+  path: '/bairros-cwb/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BairrosBhSlugRoute = BairrosBhSlugRouteImport.update({
   id: '/bairros-bh/$slug',
   path: '/bairros-bh/$slug',
@@ -964,6 +970,7 @@ export interface FileRoutesByFullPath {
   '/$city/$service': typeof CityServiceRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
+  '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1106,6 +1113,7 @@ export interface FileRoutesByTo {
   '/trafego-pago-local': typeof TrafegoPagoLocalRoute
   '/$city/$service': typeof CityServiceRoute
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
+  '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1252,6 +1260,7 @@ export interface FileRoutesById {
   '/$city/$service': typeof CityServiceRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
+  '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1398,6 +1407,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/app'
     | '/bairros-bh/$slug'
+    | '/bairros-cwb/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1540,6 +1550,7 @@ export interface FileRouteTypes {
     | '/trafego-pago-local'
     | '/$city/$service'
     | '/bairros-bh/$slug'
+    | '/bairros-cwb/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1685,6 +1696,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/_authenticated/app'
     | '/bairros-bh/$slug'
+    | '/bairros-cwb/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1830,6 +1842,7 @@ export interface RootRouteChildren {
   TrafegoPagoLocalRoute: typeof TrafegoPagoLocalRoute
   CityServiceRoute: typeof CityServiceRoute
   BairrosBhSlugRoute: typeof BairrosBhSlugRoute
+  BairrosCwbSlugRoute: typeof BairrosCwbSlugRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogAutomacaoRoute: typeof BlogAutomacaoRoute
   BlogConversaoRoute: typeof BlogConversaoRoute
@@ -2470,6 +2483,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bairros-cwb/$slug': {
+      id: '/bairros-cwb/$slug'
+      path: '/bairros-cwb/$slug'
+      fullPath: '/bairros-cwb/$slug'
+      preLoaderRoute: typeof BairrosCwbSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bairros-bh/$slug': {
@@ -3140,6 +3160,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrafegoPagoLocalRoute: TrafegoPagoLocalRoute,
   CityServiceRoute: CityServiceRoute,
   BairrosBhSlugRoute: BairrosBhSlugRoute,
+  BairrosCwbSlugRoute: BairrosCwbSlugRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogAutomacaoRoute: BlogAutomacaoRoute,
   BlogConversaoRoute: BlogConversaoRoute,
