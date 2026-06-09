@@ -97,6 +97,29 @@ export const Route = createFileRoute("/")({
               url: "https://0web.com.br",
               inLanguage: "pt-BR",
               publisher: { "@id": "https://0web.com.br/#org" },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "https://0web.com.br/servicos?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            },
+            {
+              "@type": "ItemList",
+              "@id": "https://0web.com.br/#home-spotlight",
+              name: "Destaques da Home — Criação de Sites para Anúncios",
+              description:
+                "Site otimizado para campanhas pagas: jornada de até 3s, integração com Meta Pixel/GA4 e SEO técnico nativo.",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Criação de Sites para Anúncios",
+                  url: "https://0web.com.br/servicos",
+                },
+              ],
             },
             {
               "@type": "WebPage",
