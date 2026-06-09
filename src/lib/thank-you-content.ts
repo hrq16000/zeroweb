@@ -135,6 +135,42 @@ const MAP: Record<string, ThankYouContent> = {
       { name: "Felipe N.", role: "Eletricista · BH", text: "Em 2 dias depois do site no ar já fechei 3 orçamentos novos pelo WhatsApp." },
     ],
   },
+  "checkout-whatsapp": {
+    ...DEFAULT,
+    channel: "contato",
+    title: "Pedido registrado! Fechamos pelo WhatsApp",
+    subtitle: "Seu pedido foi salvo. Nosso time vai te chamar no WhatsApp em até 1h útil para confirmar o escopo e enviar a proposta.",
+    whatsappMessage: "Olá! Finalizei meu pedido no site da 0WEB. Quero confirmar o escopo e receber a proposta.",
+    planosLabel: "Conheça nossos planos",
+    finalCtaTo: "/planos",
+    finalCtaLabel: "Ver planos",
+    slaBadge: "Resposta em até 1h útil",
+    status: [
+      { label: "1. Pedido registrado", eta: "Agora", desc: "Seu pedido foi salvo em nosso sistema e nosso time já foi notificado." },
+      { label: "2. Proposta no WhatsApp", eta: "Em até 1h útil", desc: "Te chamamos no WhatsApp para confirmar o escopo e enviar a proposta final." },
+      { label: "3. Aprovação e início", eta: "Após aprovação", desc: "Assim que você aprovar, iniciamos o projeto conforme o prazo combinado." },
+    ],
+    stats: DEFAULT_STATS,
+    testimonials: DEFAULT_TESTIMONIALS,
+  },
+  "checkout-stripe": {
+    ...DEFAULT,
+    channel: "servicos",
+    title: "Pagamento confirmado! 🎉",
+    subtitle: "Recebemos seu pagamento com segurança. Nosso time vai entrar em contato em até 1h útil para iniciar o briefing.",
+    whatsappMessage: "Olá! Meu pagamento foi confirmado na 0WEB. Quero agendar o briefing de início do projeto.",
+    planosLabel: "Conheça nossos planos",
+    finalCtaTo: "/planos",
+    finalCtaLabel: "Ver planos",
+    slaBadge: "Briefing em até 1h útil",
+    status: [
+      { label: "1. Pagamento confirmado", eta: "Agora", desc: "Seu pagamento foi processado com segurança pelo Stripe." },
+      { label: "2. Briefing de início", eta: "Em até 1h útil", desc: "Entramos em contato para alinhar o escopo final e iniciar a produção." },
+      { label: "3. Execução do projeto", eta: "Conforme prazo", desc: "Após o briefing, começamos a entrega conforme o pacote escolhido." },
+    ],
+    stats: DEFAULT_STATS,
+    testimonials: DEFAULT_TESTIMONIALS,
+  },
 };
 
 export function getThankYouContent(source?: string | null): ThankYouContent {
