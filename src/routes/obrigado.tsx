@@ -201,9 +201,22 @@ function ObrigadoPage() {
               ⏱️ {content.slaBadge}
             </motion.p>
           ) : null}
+
+          {order && (
+            <motion.a
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              href="#pedido"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            >
+              <Package className="w-4 h-4" />
+              Ver resumo do pedido
+            </motion.a>
+          )}
         </section>
 
-        {order ? <OrderSummaryCard orderId={order} /> : null}
+        {order ? <OrderSummaryCard orderId={order} source={source} /> : null}
 
 
 
