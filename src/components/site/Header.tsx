@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search, ShoppingCart, LogIn, ChevronDown } from "lucide-react";
 import { cartCount, openCart } from "@/lib/cart";
@@ -7,6 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 
 import { listServicesNav } from "@/lib/services-nav.functions";
+const GlobalSearch = lazy(() =>
+  import("@/components/site/GlobalSearch").then((m) => ({ default: m.GlobalSearch })),
+);
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
 // Desktop nav (Cases, Planos, FAQ ficam só no footer — Header enxuto)
@@ -35,6 +38,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [cartQty, setCartQty] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
   // WhatsApp removido do header; o botão flutuante mantém o canal.
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -75,6 +79,23 @@ export function Header() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Global ⌘K / Ctrl+K opens search
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        trackEvent("search_icon_click", {
+          location: "keyboard",
+          source: pathname === "/" ? "home" : "other",
+          route: pathname,
+        });
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -196,18 +217,34 @@ export function Header() {
 
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/servicos"
-            aria-label="Buscar serviços"
-            title="Buscar serviços"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("search_icon_click", {
+                location: "header",
+                source: pathname === "/" ? "home" : "other",
+                route: pathname,
+              });
+              setSearchOpen(true);
+            }}
+            aria-label="Buscar no site"
+            title="Buscar (⌘K)"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           {isLojaArea && (
             <button
               type="button"
-              onClick={() => openCart()}
+              onClick={() => {
+                trackEvent("cart_icon_click", {
+                  location: "header",
+                  source: pathname === "/" ? "home" : "loja",
+                  route: pathname,
+                  qty: cartQty,
+                });
+                openCart();
+              }}
               aria-label={`Abrir carrinho (${cartQty} itens)`}
               className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
             >
@@ -234,16 +271,56 @@ export function Header() {
           </Link>
         </div>
 
-        <button
-          type="button"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          className="lg:hidden p-2 rounded-lg hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("search_icon_click", {
+                location: "header_mobile",
+                source: pathname === "/" ? "home" : "other",
+                route: pathname,
+              });
+              setSearchOpen(true);
+            }}
+            aria-label="Buscar no site"
+            className="p-2 rounded-lg hover:bg-muted text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+          {isLojaArea && (
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("cart_icon_click", {
+                  location: "header_mobile",
+                  source: "loja",
+                  route: pathname,
+                  qty: cartQty,
+                });
+                openCart();
+              }}
+              aria-label={`Abrir carrinho (${cartQty} itens)`}
+              className="relative p-2 rounded-lg hover:bg-muted text-foreground/80"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {cartQty > 0 && (
+                <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold grid place-items-center">
+                  {cartQty}
+                </span>
+              )}
+            </button>
+          )}
+          <button
+            type="button"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            className="p-2 rounded-lg hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -334,6 +411,9 @@ export function Header() {
           </>
         )}
       </AnimatePresence>
+      <Suspense fallback={null}>
+        <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} source={pathname === "/" ? "home" : "other"} />
+      </Suspense>
     </header>
   );
 }
