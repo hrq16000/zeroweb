@@ -34,6 +34,7 @@ const ExitIntent = lazy(() => import("@/components/site/ExitIntent").then((m) =>
 const ConsentBanner = lazy(() => import("@/components/site/ConsentBanner").then((m) => ({ default: m.ConsentBanner })));
 const ScrollTracker = lazy(() => import("@/components/site/ScrollTracker").then((m) => ({ default: m.ScrollTracker })));
 const HomeChatbot = lazy(() => import("@/components/chatbot/HomeChatbot").then((m) => ({ default: m.HomeChatbot })));
+const LeadWidget = lazy(() => import("@/components/site/LeadWidget").then((m) => ({ default: m.LeadWidget })));
 
 const Skel = ({ h = "h-64" }: { h?: string }) => (
   <div className={`${h} w-full animate-pulse bg-muted/30`} aria-hidden="true" />
@@ -189,6 +190,7 @@ function Index() {
         <ExitIntent />
         <ConsentBanner />
         <HomeChatbot />
+        <LeadWidget />
       </Suspense>
     </div>
   );
