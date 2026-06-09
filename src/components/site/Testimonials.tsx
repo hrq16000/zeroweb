@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Quote, ChevronLeft, ChevronRight, Star, Pause, Play } from "lucide-react";
+import { useExperiment, trackExperimentEvent } from "@/lib/ab-testing";
 
 type Testimonial = {
   name: string;
@@ -39,16 +40,19 @@ const ITEMS: Testimonial[] = [
   },
 ];
 
-const AGGREGATE = {
-  ratingValue: 4.9,
-  reviewCount: 137,
-};
+const AGGREGATE = { ratingValue: 4.9, reviewCount: 137 };
 
 export function Testimonials() {
+  const variant = useExperiment("testimonials_headline", ["A", "B"] as const);
+  const heading = variant === "A"
+    ? { pre: "Quem confia,", em: "cresce com a gente." }
+    : { pre: "Resultados reais,", em: "contados por quem viveu." };
+
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const total = ITEMS.length;
   const rootRef = useRef<HTMLElement | null>(null);
+  const carouselId = useId();
 
   useEffect(() => {
     if (paused) return;
@@ -56,26 +60,25 @@ export function Testimonials() {
     return () => clearInterval(id);
   }, [total, paused]);
 
-  const go = (d: number) => setI((p) => (p + d + total) % total);
+  const go = (d: number, source: "kbd" | "btn" | "dot" = "btn") => {
+    setI((p) => (p + d + total) % total);
+    trackExperimentEvent("click", "testimonials_headline", variant, { action: "nav", source });
+  };
   const cur = ITEMS[i];
 
-  // Keyboard navigation when section is focused/visible
+  // Keyboard ←/→ when section contains focus
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
     const onKey = (e: KeyboardEvent) => {
       if (!el.contains(document.activeElement)) return;
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        go(-1);
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        go(1);
-      }
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(-1, "kbd"); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); go(1, "kbd"); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variant]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -118,14 +121,16 @@ export function Testimonials() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Depoimentos</p>
             <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold">
-              Quem confia, <span className="text-gradient">cresce com a gente.</span>
+              {heading.pre} <span className="text-gradient">{heading.em}</span>
             </h2>
           </div>
           <button
             type="button"
             onClick={() => setPaused((p) => !p)}
-            aria-label={paused ? "Retomar carrossel" : "Pausar carrossel"}
-            className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-primary transition"
+            aria-label={paused ? "Retomar rotação automática do carrossel" : "Pausar rotação automática do carrossel"}
+            aria-pressed={paused}
+            aria-controls={carouselId}
+            className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-primary transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {paused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
             {paused ? "Retomar" : "Pausar"}
@@ -134,12 +139,13 @@ export function Testimonials() {
 
         <div className="mt-12 grid lg:grid-cols-[1fr_auto] gap-8 items-center">
           <div
+            id={carouselId}
             className="relative min-h-[260px]"
             aria-live="polite"
             aria-atomic="true"
           >
-            <span className="sr-only" role="status">
-              Depoimento {i + 1} de {total}: {cur.name}, {cur.role}.
+            <span className="sr-only" role="status" aria-live="polite">
+              Depoimento {i + 1} de {total}: {cur.name}, {cur.role}. {cur.text}
             </span>
             <AnimatePresence mode="wait">
               <motion.blockquote
@@ -154,10 +160,10 @@ export function Testimonials() {
                 aria-roledescription="slide"
                 aria-label={`Depoimento ${i + 1} de ${total}`}
               >
-                <Quote className="w-8 h-8 text-primary/40 absolute top-6 right-6" />
-                <div className="flex gap-0.5 text-primary" aria-label="5 de 5 estrelas">
+                <Quote className="w-8 h-8 text-primary/40 absolute top-6 right-6" aria-hidden="true" />
+                <div className="flex gap-0.5 text-primary" aria-label="Avaliação 5 de 5 estrelas">
                   {Array.from({ length: 5 }).map((_, k) => (
-                    <Star key={k} className="w-4 h-4 fill-current" />
+                    <Star key={k} className="w-4 h-4 fill-current" aria-hidden="true" />
                   ))}
                 </div>
                 <p className="mt-4 text-lg sm:text-xl leading-relaxed text-foreground">
@@ -174,22 +180,28 @@ export function Testimonials() {
           <div className="flex lg:flex-col items-center gap-3">
             <button
               type="button"
-              onClick={() => go(-1)}
-              aria-label="Depoimento anterior"
+              onClick={() => go(-1, "btn")}
+              aria-label={`Depoimento anterior (${((i - 1 + total) % total) + 1} de ${total})`}
+              aria-controls={carouselId}
               className="w-10 h-10 grid place-items-center rounded-full border border-border bg-background hover:border-primary hover:text-primary transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4" aria-hidden="true" />
             </button>
-            <div className="flex lg:flex-col gap-1.5" role="tablist">
+            <div
+              className="flex lg:flex-col gap-1.5"
+              role="tablist"
+              aria-label="Selecionar depoimento"
+            >
               {ITEMS.map((_, k) => (
                 <button
                   key={k}
                   type="button"
                   role="tab"
                   aria-selected={k === i}
-                  onClick={() => setI(k)}
-                  aria-label={`Ir para depoimento ${k + 1}`}
-                  className={`w-2 h-2 rounded-full transition ${
+                  aria-controls={carouselId}
+                  onClick={() => { setI(k); trackExperimentEvent("click", "testimonials_headline", variant, { action: "dot", index: k }); }}
+                  aria-label={`Ir para depoimento ${k + 1} de ${total}`}
+                  className={`w-2 h-2 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     k === i ? "bg-primary scale-125" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
                   }`}
                 />
@@ -197,11 +209,12 @@ export function Testimonials() {
             </div>
             <button
               type="button"
-              onClick={() => go(1)}
-              aria-label="Próximo depoimento"
+              onClick={() => go(1, "btn")}
+              aria-label={`Próximo depoimento (${((i + 1) % total) + 1} de ${total})`}
+              aria-controls={carouselId}
               className="w-10 h-10 grid place-items-center rounded-full border border-border bg-background hover:border-primary hover:text-primary transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </div>

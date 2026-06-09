@@ -1,6 +1,36 @@
 import { useEffect, useState } from "react";
 import { trackEvent } from "./analytics";
 import { bumpExperiment } from "./persistence";
+import { getSessionId } from "./visitor";
+
+const IMPRESSION_KEY = "0web_ab_impr_v1";
+
+function alreadyImpressed(sessionId: string, experiment: string, variant: string): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const raw = localStorage.getItem(IMPRESSION_KEY) || "{}";
+    const map = JSON.parse(raw) as Record<string, string>;
+    const k = `${sessionId}:${experiment}`;
+    if (map[k] === variant) return true;
+    map[k] = variant;
+    localStorage.setItem(IMPRESSION_KEY, JSON.stringify(map));
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/** Conversion event for an A/B variant (click/submit). Includes session id. */
+export function trackExperimentEvent(
+  kind: "click" | "conversion",
+  experiment: string,
+  variant: string,
+  extra: Record<string, string | number | boolean | undefined> = {},
+) {
+  const sessionId = typeof window !== "undefined" ? getSessionId() : "ssr";
+  trackEvent(`experiment_${kind}`, { experiment, variant, session_id: sessionId, ...extra });
+  bumpExperiment(experiment, variant, kind === "click" ? { clicks: 1 } : { conversions: 1 });
+}
 
 const KEY = "0web_ab_v1";
 const OVERRIDE_KEY = "0web_ab_winner_v1";
@@ -61,8 +91,10 @@ export function useExperiment<T extends string>(experiment: string, variants: re
     const apply = () => {
       const picked = assignVariant(experiment, variants);
       setV(picked);
-      trackEvent("experiment_view", { experiment, variant: picked });
-      bumpExperiment(experiment, picked, { impressions: 1 });
+      const sessionId = getSessionId();
+      const first = !alreadyImpressed(sessionId, experiment, picked);
+      trackEvent("experiment_view", { experiment, variant: picked, session_id: sessionId, first_in_session: first });
+      if (first) bumpExperiment(experiment, picked, { impressions: 1 });
     };
     apply();
     const onOv = () => setV(assignVariant(experiment, variants));
