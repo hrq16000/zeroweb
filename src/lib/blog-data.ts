@@ -29,6 +29,16 @@ import chatgpt3PalavrasCover from "@/assets/blog-chatgpt-3-palavras.jpg";
 import chatgpt3PalavrasInline from "@/assets/blog-chatgpt-3-palavras-2.jpg";
 import trafegoPago499Capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 import presencaDigitalCapa from "@/assets/presenca-digital-google-capa.png.asset.json";
+import metaAdsCover from "@/assets/blog-meta-ads.jpg";
+import googleAdsCover from "@/assets/blog-google-ads.jpg";
+import roiTrafegoCover from "@/assets/blog-roi-trafego.jpg";
+import gmnCover from "@/assets/blog-google-meu-negocio.jpg";
+import rankearGoogleCover from "@/assets/blog-rankear-google.jpg";
+import iaWhatsappCover from "@/assets/blog-ia-whatsapp.jpg";
+import pagoVsOrganicoCover from "@/assets/blog-pago-vs-organico.jpg";
+import coreWebVitalsCover from "@/assets/blog-core-web-vitals.jpg";
+import automacaoLeadsCover from "@/assets/blog-automacao-leads.jpg";
+import transformacaoDigitalCover from "@/assets/blog-transformacao-digital.jpg";
 
 export const inlineImages = {
   "3-palavras-chatgpt-respostas-inteligentes": chatgpt3PalavrasInline,
