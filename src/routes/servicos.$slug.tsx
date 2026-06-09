@@ -95,40 +95,7 @@ export const Route = createFileRoute("/servicos/$slug")({
         areaServed: { "@type": "Country", name: "BR" },
         provider: { "@id": `${ORIGIN}/#org` },
         ...(typeof loaderData.price === "number" && loaderData.price > 0
-          ? {
-              offers: [
-                {
-                  "@type": "Offer",
-                  name: "Essencial",
-                  price: Math.round(loaderData.price * 0.7).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-                {
-                  "@type": "Offer",
-                  name: "Pro",
-                  price: Math.round(loaderData.price).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-                {
-                  "@type": "Offer",
-                  name: "Avançado",
-                  price: Math.round(loaderData.price * 1.6).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-              ],
-            }
+          ? { offers: buildPackageOffers(loaderData.price, url) }
           : {}),
       },
       ...(loaderData.faq?.length
