@@ -38,7 +38,31 @@ const STATUS_LABEL: Record<string, string> = {
  * Se o usuário não estiver autenticado ou o pedido não existir, mostramos
  * uma mensagem amigável com link para a área do cliente.
  */
-export function OrderSummaryCard({ orderId }: { orderId: string }) {
+const DEFAULT_STEPS = [
+  { t: "Confirmação", d: "Recebemos seu pedido e nosso time já foi notificado." },
+  { t: "Atendimento", d: "Em até 1h útil entramos em contato para alinhar o escopo." },
+  { t: "Execução", d: "Após o briefing, o entregável começa conforme o prazo combinado." },
+];
+
+const WHATSAPP_STEPS = [
+  { t: "Pedido registrado", d: "Seu pedido foi salvo e nosso time comercial já foi notificado." },
+  { t: "Proposta no WhatsApp", d: "Em até 1h útil te enviamos a proposta final pelo WhatsApp." },
+  { t: "Aprovação e início", d: "Assim que aprovar, iniciamos o projeto conforme o prazo combinado." },
+];
+
+const STRIPE_STEPS = [
+  { t: "Pagamento confirmado", d: "Seu pagamento foi processado com segurança pelo Stripe." },
+  { t: "Briefing de início", d: "Em até 1h útil entramos em contato para alinhar o escopo final." },
+  { t: "Execução do projeto", d: "Após o briefing, começamos a entrega conforme o pacote escolhido." },
+];
+
+function stepsForSource(source?: string | null) {
+  if (source === "checkout-whatsapp") return WHATSAPP_STEPS;
+  if (source === "checkout-stripe") return STRIPE_STEPS;
+  return DEFAULT_STEPS;
+}
+
+export function OrderSummaryCard({ orderId, source }: { orderId: string; source?: string | null }) {
   const fetchOrder = useServerFn(getMyOrder);
   const [state, setState] = useState<
     | { kind: "loading" }
@@ -62,7 +86,7 @@ export function OrderSummaryCard({ orderId }: { orderId: string }) {
   }, [orderId, fetchOrder]);
 
   return (
-    <section className="mt-12" aria-label="Resumo do pedido">
+    <section id="pedido" className="mt-12" aria-label="Resumo do pedido">
       <div className="mx-auto max-w-3xl px-5 lg:px-8">
         <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-elegant">
           <header className="px-6 py-4 border-b border-border bg-muted/40 flex items-center gap-3">
@@ -140,11 +164,7 @@ export function OrderSummaryCard({ orderId }: { orderId: string }) {
         </div>
 
         <ol className="mt-6 grid sm:grid-cols-3 gap-3 text-sm">
-          {[
-            { t: "Confirmação", d: "Recebemos seu pedido e nosso time já foi notificado." },
-            { t: "Atendimento", d: "Em até 1h útil entramos em contato para alinhar o escopo." },
-            { t: "Execução", d: "Após o briefing, o entregável começa conforme o prazo combinado." },
-          ].map((s, i) => (
+          {stepsForSource(source).map((s, i) => (
             <li key={s.t} className="rounded-2xl border border-border bg-card p-4">
               <span className="text-xs font-mono text-primary">0{i + 1}</span>
               <h3 className="mt-1 font-semibold">{s.t}</h3>

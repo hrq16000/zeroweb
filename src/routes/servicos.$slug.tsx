@@ -58,6 +58,36 @@ export const Route = createFileRoute("/servicos/$slug")({
         ...(loaderData.imageUrl ? { image: loaderData.imageUrl } : {}),
         areaServed: { "@type": "Country", name: "BR" },
         provider: { "@id": `${ORIGIN}/#org` },
+        ...(typeof loaderData.price === "number" && loaderData.price > 0
+          ? {
+              offers: [
+                {
+                  "@type": "Offer",
+                  name: "Essencial",
+                  price: Math.round(loaderData.price * 0.7).toString(),
+                  priceCurrency: "BRL",
+                  availability: "https://schema.org/InStock",
+                  url,
+                },
+                {
+                  "@type": "Offer",
+                  name: "Pro",
+                  price: Math.round(loaderData.price).toString(),
+                  priceCurrency: "BRL",
+                  availability: "https://schema.org/InStock",
+                  url,
+                },
+                {
+                  "@type": "Offer",
+                  name: "Avançado",
+                  price: Math.round(loaderData.price * 1.6).toString(),
+                  priceCurrency: "BRL",
+                  availability: "https://schema.org/InStock",
+                  url,
+                },
+              ],
+            }
+          : {}),
       },
       ...(loaderData.faq?.length
         ? [{
