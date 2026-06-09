@@ -94,20 +94,9 @@ export const Route = createFileRoute("/servicos/")({
       }),
     };
 
-    // FAQPage dedicado do Site Express, vinculado ao Service via `about`
-    const siteExpressFaqPage = {
-      "@type": "FAQPage",
-      "@id": `${url}#faq-site-express`,
-      name: "Perguntas sobre o Site Express",
-      inLanguage: "pt-BR",
-      about: { "@id": SITE_EXPRESS_SERVICE_ID },
-      isPartOf: { "@id": url },
-      mainEntity: SITE_EXPRESS_FAQ.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    };
+    // FAQPage do Site Express vive na página dedicada do produto
+    // (/servicos/site-express) para evitar duplicar schema FAQ entre URLs.
+
 
     // FAQPage agregado dos demais serviços (sem duplicar Site Express)
     const aggregatedFaqPage = faqItems.length
