@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Activity, ArrowRight, Check, Globe, MousePointerClick } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { useExperiment } from "@/lib/ab-testing";
+import { useExperiment, trackExperimentEvent } from "@/lib/ab-testing";
 
 const BULLETS = [
   { strong: "Site projetado para converter", rest: "visitantes das suas campanhas em clientes reais." },
@@ -86,9 +86,10 @@ export function HomeSpotlight() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/contato"
-                onClick={() =>
-                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight", variant })
-                }
+                onClick={() => {
+                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight", variant });
+                  trackExperimentEvent("conversion", "home_spotlight_copy", variant, { label: "spotlight_orcamento" });
+                }}
                 className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary hover:opacity-95 transition uppercase text-sm tracking-wide"
               >
                 {ctaLabel}
@@ -96,9 +97,10 @@ export function HomeSpotlight() {
               </Link>
               <Link
                 to="/servicos"
-                onClick={() =>
-                  trackEvent("cta_click", { label: "spotlight_ver_servicos", location: "home_spotlight" })
-                }
+                onClick={() => {
+                  trackEvent("cta_click", { label: "spotlight_ver_servicos", location: "home_spotlight", variant });
+                  trackExperimentEvent("click", "home_spotlight_copy", variant, { label: "spotlight_ver_servicos" });
+                }}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background hover:border-primary hover:text-primary font-semibold px-6 py-3 text-sm transition uppercase tracking-wide"
               >
                 Ver serviços
