@@ -84,10 +84,15 @@ function ObrigadoPage() {
       surface: "page",
       page: "/obrigado",
       event_category: "conversion",
+      order_id: order ?? null,
+      checkout_method:
+        resolvedSource === "checkout-stripe" ? "stripe" :
+        resolvedSource === "checkout-whatsapp" ? "whatsapp" :
+        "other",
     });
     // Legacy event preserved for one sprint while dashboards transition.
     trackEvent("obrigado_page_view", { ...evtAttr, surface: "page", legacy: true });
-  }, [evtAttr]);
+  }, [evtAttr, order, resolvedSource]);
 
   const handleCta = (eventName: string, ctaId: string, label: string, position: number, target: string) => {
     const params = buildThankYouCtaParams({
@@ -95,7 +100,7 @@ function ObrigadoPage() {
       surface: "page",
       ctaId, target, label, position,
     });
-    trackConversion(eventName, params);
+    trackConversion(eventName, { ...params, order_id: order ?? null });
     // Legacy event kept for back-compat dashboards.
     trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
@@ -103,35 +108,47 @@ function ObrigadoPage() {
   const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
   const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
 
-  const ctaCards = [
-    {
-      icon: <Layers className="w-6 h-6 text-primary" />,
-      title: "Conheça nossos planos",
-      desc: content.planosLabel,
-      to: THANK_YOU_CTA.PLANS.target,
-      label: "Ver planos",
-      id: THANK_YOU_CTA.PLANS.id,
-      event: THANK_YOU_CTA.PLANS.event,
-    },
-    {
-      icon: <HelpCircle className="w-6 h-6 text-primary" />,
-      title: "Dúvidas frequentes",
-      desc: "Veja respostas sobre prazos, contratos e entregáveis.",
-      to: THANK_YOU_CTA.FAQ.target,
-      label: "Ir para FAQ",
-      id: THANK_YOU_CTA.FAQ.id,
-      event: THANK_YOU_CTA.FAQ.event,
-    },
-    {
-      icon: <FileText className="w-6 h-6 text-primary" />,
-      title: "Solicitar diagnóstico",
-      desc: "Receba uma análise gratuita do seu site e estratégia digital.",
-      to: "/solicitar-orcamento" as const,
-      label: "Pedir diagnóstico",
-      id: THANK_YOU_CTA.DIAGNOSTICO.id,
-      event: THANK_YOU_CTA.DIAGNOSTICO.event,
-    },
-  ];
+  const ICONS: Record<string, JSX.Element> = {
+    layers: <Layers className="w-6 h-6 text-primary" />,
+    help: <HelpCircle className="w-6 h-6 text-primary" />,
+    file: <FileText className="w-6 h-6 text-primary" />,
+    sparkles: <Sparkles className="w-6 h-6 text-primary" />,
+    message: <MessageCircle className="w-6 h-6 text-primary" />,
+    package: <Package className="w-6 h-6 text-primary" />,
+  };
+
+  const ctaCards = content.ctaCards?.length
+    ? content.ctaCards.map((c) => ({ ...c, icon: ICONS[c.icon] ?? ICONS.sparkles }))
+    : [
+        {
+          icon: ICONS.layers,
+          title: "Conheça nossos planos",
+          desc: content.planosLabel,
+          to: THANK_YOU_CTA.PLANS.target,
+          label: "Ver planos",
+          id: THANK_YOU_CTA.PLANS.id,
+          event: THANK_YOU_CTA.PLANS.event,
+        },
+        {
+          icon: ICONS.help,
+          title: "Dúvidas frequentes",
+          desc: "Veja respostas sobre prazos, contratos e entregáveis.",
+          to: THANK_YOU_CTA.FAQ.target,
+          label: "Ir para FAQ",
+          id: THANK_YOU_CTA.FAQ.id,
+          event: THANK_YOU_CTA.FAQ.event,
+        },
+        {
+          icon: ICONS.file,
+          title: "Solicitar diagnóstico",
+          desc: "Receba uma análise gratuita do seu site e estratégia digital.",
+          to: "/solicitar-orcamento" as const,
+          label: "Pedir diagnóstico",
+          id: THANK_YOU_CTA.DIAGNOSTICO.id,
+          event: THANK_YOU_CTA.DIAGNOSTICO.event,
+        },
+      ];
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
