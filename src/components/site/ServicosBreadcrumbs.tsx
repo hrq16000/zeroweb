@@ -42,5 +42,5 @@ export function ServicosBreadcrumbs() {
     acc += `/${seg}`;
     items.push({ name: labelFor(seg), path: acc });
   }
-  return <Breadcrumbs compact items={items} />;
+  return <Breadcrumbs compact="auto" items={items} />;
 }

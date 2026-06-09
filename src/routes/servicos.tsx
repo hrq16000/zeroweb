@@ -65,11 +65,13 @@ function ServicosLayout() {
     <>
       <motion.nav
         aria-label="Busca de serviços e carrinho"
+        data-top-bar="1"
         initial={prefersReducedMotion ? false : { opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="pt-page-tight"
       >
+
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <motion.div
             style={prefersReducedMotion ? undefined : { scale, opacity, transformOrigin: "top center", willChange: "transform" }}

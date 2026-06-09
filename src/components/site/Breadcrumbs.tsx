@@ -10,9 +10,16 @@ export type Crumb = { name: string; path: string };
  * `compact` controls the top spacing:
  *  - `false` (default): full `pt-page` (96/112px) — for pages without a sticky bar above.
  *  - `true`: `pt-4` — when there is already a bar/header providing the top respiro.
- *  - `"auto"`: infer from current pathname. Routes under `/servicos` use compact
- *    (the loja virtual layout already renders the search/cart bar with `pt-page-tight`).
+ *  - `"auto"`: infer from the current pathname. Routes whose prefix has a sticky
+ *    top bar (see {@link TOP_BAR_PREFIXES}) render compact to avoid double
+ *    spacing. Single source of truth for "this route already has a top bar".
  */
+export const TOP_BAR_PREFIXES = ["/servicos"] as const;
+
+export function hasTopBar(pathname: string): boolean {
+  return TOP_BAR_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p));
+}
+
 export function Breadcrumbs({
   items,
   compact = false,
@@ -24,8 +31,8 @@ export function Breadcrumbs({
     select: (s) => s.location.pathname,
   });
 
-  const resolvedCompact =
-    compact === "auto" ? pathname.startsWith("/servicos") : compact;
+  const resolvedCompact = compact === "auto" ? hasTopBar(pathname) : compact;
+
 
   if (!items?.length) return null;
   return (
