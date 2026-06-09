@@ -6,7 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { TrustBar } from "@/components/site/SocialProof";
 import { Footer } from "@/components/site/Footer";
-import { FAQ, faqData } from "@/components/site/FAQ";
+
 import { getPageSections } from "@/lib/site-sections.functions";
 
 // Below-the-fold: code-split + lazy-load to slash initial JS and TTI on mobile.
@@ -103,14 +103,6 @@ export const Route = createFileRoute("/")({
               inLanguage: "pt-BR",
             },
             {
-              "@type": "FAQPage",
-              mainEntity: faqData.map((f) => ({
-                "@type": "Question",
-                name: f.q,
-                acceptedAnswer: { "@type": "Answer", text: f.a },
-              })),
-            },
-            {
               "@type": "BreadcrumbList",
               itemListElement: [
                 { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
@@ -146,7 +138,7 @@ function Index() {
           {on("cases") && <Cases />}
           {on("plans") && <Plans />}
           {on("process") && <Process />}
-          {on("faq") && <FAQ />}
+          
           {on("blog") && <Blog />}
           {on("social_proof") && <SocialProofSection />}
           {on("cta") && <CTA />}
