@@ -14,12 +14,14 @@ import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribu
 import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
 import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
+import { OrderSummaryCard } from "@/components/site/OrderSummaryCard";
 
 const TITLE = "Obrigado pelo contato · 0WEB";
 const DESC = "Recebemos sua mensagem. Nossa equipe vai responder em até 1 hora útil. Enquanto isso, explore nossos planos e cases.";
 
 const searchSchema = z.object({
   source: z.string().max(80).optional(),
+  order: z.string().uuid().optional(),
 });
 
 export const Route = createFileRoute("/obrigado")({
