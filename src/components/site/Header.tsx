@@ -5,7 +5,7 @@ import { cartCount, openCart } from "@/lib/cart";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
-import { useWaFunnel } from "@/components/site/WaFunnelModal";
+
 import { listServicesNav } from "@/lib/services-nav.functions";
 import logoAsset from "@/assets/logo-0web.png.asset.json";
 
