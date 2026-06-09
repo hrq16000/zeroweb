@@ -16,6 +16,42 @@ import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarous
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
+// Garante que toda Offer emitida no JSON-LD tenha priceValidUntil + seller,
+// evitando erros intermitentes no Schema Validator caso algum bloco extra
+// (vindo do painel SEO) ou variação futura omita esses campos.
+const DEFAULT_PRICE_VALID_UNTIL = "2026-12-31";
+const SELLER_REF = { "@id": `${ORIGIN}/#org` };
+
+type OfferLike = Record<string, unknown> & {
+  "@type"?: string;
+  price?: string | number;
+  priceCurrency?: string;
+  availability?: string;
+  priceValidUntil?: string;
+  seller?: unknown;
+  url?: string;
+};
+
+function withOfferDefaults(offer: OfferLike, fallbackUrl: string): OfferLike {
+  return {
+    "@type": "Offer",
+    priceCurrency: "BRL",
+    availability: "https://schema.org/InStock",
+    url: fallbackUrl,
+    ...offer,
+    priceValidUntil: offer.priceValidUntil || DEFAULT_PRICE_VALID_UNTIL,
+    seller: offer.seller ?? SELLER_REF,
+  };
+}
+
+function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
+  return [
+    { name: "Essencial", price: Math.round(basePrice * 0.7).toString() },
+    { name: "Pro", price: Math.round(basePrice).toString() },
+    { name: "Avançado", price: Math.round(basePrice * 1.6).toString() },
+  ].map((o) => withOfferDefaults(o, url));
+}
+
 export const Route = createFileRoute("/servicos/$slug")({
   beforeLoad: ({ params }) => {
     if (params.slug === "site-express") {
