@@ -17,8 +17,12 @@ const faqs = [
     a: "Sites institucionais começam em R$ 2.500 (projeto) ou R$ 290/mês (assinatura com hospedagem, SSL e manutenção inclusos). Sites com áreas logadas, e-commerce ou sistemas sob medida têm escopo personalizado.",
   },
   {
-    q: "Em quanto tempo o site fica pronto?",
-    a: "Sites institucionais em 10 a 20 dias úteis. Landing pages em 5 a 10 dias. E-commerces e sistemas web entre 30 e 90 dias dependendo da complexidade.",
+    q: "Quanto tempo leva para criar meu site?",
+    a: "Sites institucionais ficam prontos entre 10 e 25 dias, dependendo do escopo. Landing pages podem sair em até 7 dias. E-commerces e sistemas web entre 30 e 90 dias dependendo da complexidade.",
+  },
+  {
+    q: "O site é responsivo para celular?",
+    a: "Sim. Todos os nossos projetos seguem abordagem Mobile First e são testados em múltiplos dispositivos.",
   },
   {
     q: "Vocês fazem SEO técnico e de conteúdo?",
@@ -33,8 +37,40 @@ const faqs = [
     a: "Estruturamos campanhas em Google Ads, Meta Ads, TikTok Ads e LinkedIn Ads. Gestão completa: criativos, copy, segmentação, lances, acompanhamento diário e relatórios semanais com CPL e ROAS.",
   },
   {
+    q: "Como funciona a IA para WhatsApp?",
+    a: "Implantamos um agente treinado no seu negócio, integrado ao WhatsApp Business API, com qualificação automática de leads e agendamento. Também integramos com OpenAI, Gemini e Claude conforme o fluxo comercial.",
+  },
+  {
+    q: "Vocês criam e-commerce?",
+    a: "Sim. Desenvolvemos lojas com Shopify, WooCommerce ou stack headless sob medida.",
+  },
+  {
+    q: "Vocês desenvolvem sistemas e SaaS?",
+    a: "Sim. Construímos sistemas web e SaaS sob medida com Next.js, React e TypeScript.",
+  },
+  {
     q: "Vocês integram com meu CRM ou ERP?",
     a: "Sim. Integramos com RD Station, HubSpot, Pipedrive, ActiveCampaign, Bling, Tiny, Omie, Conta Azul, e qualquer sistema com API ou webhook.",
+  },
+  {
+    q: "Posso editar o site depois?",
+    a: "Sim. Entregamos painéis amigáveis e treinamento — ou mantemos a gestão para você.",
+  },
+  {
+    q: "A hospedagem está inclusa?",
+    a: "Nos planos Start e Pro a hospedagem premium está inclusa. No Enterprise, dimensionamos sob demanda.",
+  },
+  {
+    q: "Vocês fazem manutenção depois que o site fica pronto?",
+    a: "Sim. Oferecemos planos de manutenção mensal com backups, atualizações, monitoramento de uptime, segurança e pequenas alterações inclusas.",
+  },
+  {
+    q: "É possível migrar meu site atual?",
+    a: "Sim. Fazemos migração com plano de redirects 301 para preservar seu SEO.",
+  },
+  {
+    q: "Como funciona o suporte?",
+    a: "Suporte humanizado por WhatsApp, e-mail e chamados, com SLAs por plano.",
   },
   {
     q: "Atendem empresas fora de Curitiba?",
@@ -42,15 +78,15 @@ const faqs = [
   },
   {
     q: "Existe fidelidade obrigatória?",
-    a: "Para projetos pontuais, não. Para planos mensais, trabalhamos com contrato de 6 meses para garantir maturação de SEO e campanhas, mas com possibilidade de pausa em casos especiais.",
+    a: "Para projetos pontuais, não. Para planos mensais, trabalhamos com contrato de 6 meses para garantir maturação de SEO e campanhas, com possibilidade de pausa em casos especiais.",
   },
   {
-    q: "Como funciona a automação com IA?",
-    a: "Construímos chatbots, atendimento por WhatsApp, qualificação automática de leads, integração com OpenAI, Gemini e Claude. Cada solução é desenhada para o seu fluxo comercial.",
+    q: "Vocês emitem nota fiscal?",
+    a: "Sim. Emitimos NF-e para todos os contratos.",
   },
   {
-    q: "Vocês fazem manutenção depois que o site fica pronto?",
-    a: "Sim. Oferecemos planos de manutenção mensal com backups, atualizações, monitoramento de uptime, segurança e pequenas alterações inclusas.",
+    q: "Como começo um projeto?",
+    a: "Solicite um diagnóstico gratuito. Em até 24h apresentamos um plano sob medida.",
   },
 ];
 
