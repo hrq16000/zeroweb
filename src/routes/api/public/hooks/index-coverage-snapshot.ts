@@ -8,11 +8,9 @@ export const Route = createFileRoute("/api/public/hooks/index-coverage-snapshot"
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = request.headers.get("apikey");
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!expected || apiKey !== expected) {
-          return new Response("unauthorized", { status: 401 });
-        }
+        const { requireCronSecret } = await import("./_cron-auth");
+        const unauth = requireCronSecret(request);
+        if (unauth) return unauth;
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const today = new Date().toISOString().slice(0, 10);
         const from = `${today}T00:00:00Z`;

@@ -19,10 +19,9 @@ export const Route = createFileRoute("/api/public/hooks/seo-monitor")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apikey = request.headers.get("apikey");
-        if (apikey !== process.env.SUPABASE_PUBLISHABLE_KEY && apikey !== process.env.SUPABASE_ANON_KEY) {
-          return new Response("Unauthorized", { status: 401 });
-        }
+        const { requireCronSecret } = await import("./_cron-auth");
+        const unauth = requireCronSecret(request);
+        if (unauth) return unauth;
 
         const sitemap = await checkUrl(`${BASE}/sitemap.xml`);
         const robots = await checkUrl(`${BASE}/robots.txt`);
