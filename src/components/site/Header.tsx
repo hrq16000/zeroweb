@@ -45,11 +45,28 @@ export function Header() {
   });
   const menuServices = navData?.menu ?? [];
 
+  const isLojaArea =
+    pathname.startsWith("/servicos") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/categoria") ||
+    pathname.startsWith("/marketplace");
 
   useEffect(() => {
     setOpen(false);
     setServicesOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isLojaArea) return;
+    const update = () => setCartQty(cartCount());
+    update();
+    window.addEventListener("0web:cart-changed", update);
+    window.addEventListener("storage", update);
+    return () => {
+      window.removeEventListener("0web:cart-changed", update);
+      window.removeEventListener("storage", update);
+    };
+  }, [isLojaArea]);
 
 
   useEffect(() => {
