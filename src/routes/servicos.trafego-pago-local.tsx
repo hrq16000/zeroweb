@@ -243,16 +243,18 @@ function TrafegoPagoLocalPage() {
           </div>
         </section>
 
-        {/* FORMULÁRIO */}
+        {/* CTA → FUNIL */}
         <section className="py-16 px-6">
-          <div className="mx-auto max-w-3xl">
-            <ContactFormWhatsApp
-              source="trafego_pago_local_form"
-              ctx="lp_trafego_local"
-              title="Quero começar com tráfego pago"
-              defaultMessage="Olá! Quero começar com o tráfego pago da 0WEB a partir de R$499/mês."
-              useModal
-            />
+          <div className="mx-auto max-w-2xl text-center rounded-3xl border border-border bg-card/60 backdrop-blur p-8 lg:p-10">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold">Quero começar com tráfego pago</h2>
+            <p className="mt-3 text-muted-foreground">Responda 3 perguntas rápidas e enviamos uma proposta no seu WhatsApp em até 1 hora útil.</p>
+            <div className="mt-6 flex justify-center">
+              <ServiceCTA
+                serviceSlug="trafego-pago-local"
+                location="footer"
+                label="Falar com um especialista"
+              />
+            </div>
           </div>
         </section>
 
