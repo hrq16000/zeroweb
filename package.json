@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "prebuild": "node scripts/validate-route-files.mjs",
+    "prebuild": "node scripts/validate-route-files.mjs && node scripts/validate-breadcrumbs.mjs",
+    "breadcrumbs:validate": "node scripts/validate-breadcrumbs.mjs",
     "build": "vite build && bun run postbuild",
     "build:dev": "vite build --mode development && bun run postbuild",
     "routes:validate": "node scripts/validate-route-files.mjs",
