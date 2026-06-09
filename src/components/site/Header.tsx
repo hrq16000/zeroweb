@@ -200,18 +200,34 @@ export function Header() {
 
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link
-            to="/servicos"
-            aria-label="Buscar serviços"
-            title="Buscar serviços"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("search_icon_click", {
+                location: "header",
+                source: pathname === "/" ? "home" : "other",
+                route: pathname,
+              });
+              setSearchOpen(true);
+            }}
+            aria-label="Buscar no site"
+            title="Buscar (⌘K)"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Search className="w-4 h-4" />
-          </Link>
+          </button>
           {isLojaArea && (
             <button
               type="button"
-              onClick={() => openCart()}
+              onClick={() => {
+                trackEvent("cart_icon_click", {
+                  location: "header",
+                  source: pathname === "/" ? "home" : "loja",
+                  route: pathname,
+                  qty: cartQty,
+                });
+                openCart();
+              }}
               aria-label={`Abrir carrinho (${cartQty} itens)`}
               className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
             >
