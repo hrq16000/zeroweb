@@ -25,7 +25,7 @@ const Plans = lazy(() => import("@/components/site/Plans").then((m) => ({ defaul
 const Process = lazy(() => import("@/components/site/ProcessTimeline").then((m) => ({ default: m.ProcessTimeline })));
 const StatsStrip = lazy(() => import("@/components/site/StatsStrip").then((m) => ({ default: m.StatsStrip })));
 const Testimonials = lazy(() => import("@/components/site/Testimonials").then((m) => ({ default: m.Testimonials })));
-const Blog = lazy(() => import("@/components/site/Blog").then((m) => ({ default: m.Blog })));
+
 const SocialProofSection = lazy(() => import("@/components/site/SocialProofSection").then((m) => ({ default: m.SocialProofSection })));
 const CTA = lazy(() => import("@/components/site/CTA").then((m) => ({ default: m.CTA })));
 const WhatsAppFloat = lazy(() => import("@/components/site/WhatsAppFloat").then((m) => ({ default: m.WhatsAppFloat })));
