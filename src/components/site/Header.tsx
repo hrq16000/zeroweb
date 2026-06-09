@@ -85,7 +85,7 @@ export function Header() {
     >
       <div
         className={`mx-auto max-w-7xl px-5 lg:px-8 flex items-center justify-between transition-all duration-300 ${
-          scrolled ? "h-14 lg:h-16" : "h-20 lg:h-28"
+          scrolled ? "h-14 lg:h-16" : "h-16 lg:h-20"
         }`}
       >
         <Link to="/" aria-label="0WEB — Início" className="flex items-center">
