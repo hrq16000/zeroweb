@@ -271,16 +271,56 @@ export function Header() {
           </Link>
         </div>
 
-        <button
-          type="button"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          className="lg:hidden p-2 rounded-lg hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("search_icon_click", {
+                location: "header_mobile",
+                source: pathname === "/" ? "home" : "other",
+                route: pathname,
+              });
+              setSearchOpen(true);
+            }}
+            aria-label="Buscar no site"
+            className="p-2 rounded-lg hover:bg-muted text-foreground/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+          {isLojaArea && (
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("cart_icon_click", {
+                  location: "header_mobile",
+                  source: "loja",
+                  route: pathname,
+                  qty: cartQty,
+                });
+                openCart();
+              }}
+              aria-label={`Abrir carrinho (${cartQty} itens)`}
+              className="relative p-2 rounded-lg hover:bg-muted text-foreground/80"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {cartQty > 0 && (
+                <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold grid place-items-center">
+                  {cartQty}
+                </span>
+              )}
+            </button>
+          )}
+          <button
+            type="button"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            className="p-2 rounded-lg hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
