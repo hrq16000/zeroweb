@@ -107,7 +107,7 @@ export function Testimonials() {
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      tabIndex={-1}
+      tabIndex={0}
     >
       <script
         type="application/ld+json"

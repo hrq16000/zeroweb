@@ -62,10 +62,15 @@ export const Route = createFileRoute("/")({
       { property: "og:site_name", content: "0WEB" },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:image", content: "https://0web.com.br/og-default.jpg" },
+      { property: "og:image:alt", content: "0WEB — Sites otimizados para anúncios, IA e marketing digital" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "article:section", content: "Home · Spotlight · Busca Global · Depoimentos" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
       { name: "twitter:image", content: "https://0web.com.br/og-default.jpg" },
+      { name: "twitter:image:alt", content: "0WEB — Sites otimizados para anúncios, IA e marketing digital" },
     ],
     links: [
       { rel: "canonical", href: "https://0web.com.br/" },
@@ -97,6 +102,29 @@ export const Route = createFileRoute("/")({
               url: "https://0web.com.br",
               inLanguage: "pt-BR",
               publisher: { "@id": "https://0web.com.br/#org" },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "https://0web.com.br/servicos?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            },
+            {
+              "@type": "ItemList",
+              "@id": "https://0web.com.br/#home-spotlight",
+              name: "Destaques da Home — Criação de Sites para Anúncios",
+              description:
+                "Site otimizado para campanhas pagas: jornada de até 3s, integração com Meta Pixel/GA4 e SEO técnico nativo.",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Criação de Sites para Anúncios",
+                  url: "https://0web.com.br/servicos",
+                },
+              ],
             },
             {
               "@type": "WebPage",
