@@ -181,6 +181,49 @@ export const posts: BlogPost[] = [
     content:
       "Comece pela jornada do cliente, não pela tecnologia. Mapeie pontos de atrito, escolha 1 processo de alto impacto, automatize, meça e só então expanda. Tentar digitalizar tudo de uma vez é a forma mais cara de não digitalizar nada.",
   },
+  {
+    slug: "quanto-custa-criar-um-site-profissional",
+    title: "Quanto custa criar um site profissional em 2026? (preços reais, faixas e o que muda o orçamento)",
+    excerpt:
+      "Quanto custa um site profissional em 2026? Veja faixas de preço reais (de R$ 499 a R$ 50 mil+), o que entra em cada faixa, custos ocultos e como escolher sem cair em pegadinha.",
+    category: "Sites",
+    date: "2026-06-09",
+    readTime: "11 min",
+    cover: presencaDigitalCapa.url,
+    relatedServiceSlug: "criacao-de-sites",
+    content:
+      "\"Quanto custa criar um site profissional?\" é a pergunta mais pesquisada por quem está fechando vendas hoje e percebeu que não dá mais para depender só de Instagram. A resposta honesta: depende — mas a faixa de preço real em 2026 vai de R$ 499 (site express pronto em até 24h) a R$ 50 mil+ (plataformas sob medida com integrações complexas).\n\nNeste guia você encontra as faixas reais praticadas no Brasil, o que está incluso em cada uma, os custos ocultos que quase ninguém menciona e como escolher sem cair em pegadinha de \"freelancer barato que some\".\n\n## As 5 faixas de preço reais (2026)\n\n### 1) Faixa Express — R$ 499 a R$ 1.500\nSite pronto em 24h a 7 dias. Template profissional, conteúdo do cliente, 1 página principal + WhatsApp + Google Maps. Ideal para autônomos e pequenos comércios que precisam aparecer no Google rápido sem investir alto.\n\n### 2) Faixa Profissional — R$ 1.500 a R$ 5.000\nSite institucional de 5 a 8 páginas, design personalizado, copy estratégica, SEO on-page básico, integração com WhatsApp/CRM, formulário avançado. Prazo: 2 a 4 semanas. Atende a maioria das PMEs.\n\n### 3) Faixa Avançada — R$ 5.000 a R$15.000\nSite + estratégia de conteúdo, blog otimizado, landing pages para campanhas, SEO técnico completo (Core Web Vitals, schema, sitemap dinâmico), painel de leads. Prazo: 4 a 8 semanas.\n\n### 4) Faixa E-commerce — R$ 8.000 a R$ 30.000\nLoja virtual com pagamento, frete, estoque, ERP. Shopify e WooCommerce dominam essa faixa. Custos crescem com integrações (NFe, marketplaces, ERP) e número de SKUs.\n\n### 5) Faixa Sob Medida — R$ 20.000 a R$ 50.000+\nPlataformas com regras de negócio próprias: portais, SaaS, áreas logadas, integrações com sistemas internos. Equipe multidisciplinar, sprints quinzenais, prazo de 2 a 6 meses.\n\n## O que realmente muda o orçamento\n\n- Quantidade de páginas e telas\n- Design exclusivo vs. template profissional\n- Copywriting (texto persuasivo escrito por humano vs. cliente envia tudo pronto)\n- SEO on-page (palavras-chave, schema, performance)\n- Integrações (WhatsApp, CRM, pagamento, ERP, marketplaces)\n- Animações e interações personalizadas\n- Prazo de entrega (entrega expressa custa mais)\n- Suporte e manutenção contínuos\n\n## Custos ocultos que ninguém menciona\n\n- **Hospedagem e domínio:** R$ 15 a R$ 200/mês\n- **Certificado SSL:** geralmente grátis (Let's Encrypt), mas planos pagos cobram\n- **Manutenção mensal:** R$ 199 a R$ 1.500/mês (backups, atualizações, suporte)\n- **Atualizações de conteúdo:** quem vai mexer no texto/foto depois?\n- **LGPD:** banner de cookies, política de privacidade — obrigatório\n- **Tráfego pago:** site sem visitas não vende. Reserve R$ 499+/mês para Google/Meta Ads\n\n## Sinais de pegadinha (fuja!)\n\n- Preço muito abaixo da média sem explicar o que entrega\n- Não mostra portfólio com sites já entregues\n- Não oferece contrato ou escopo por escrito\n- Não fala sobre SEO, performance ou Core Web Vitals\n- \"Site grátis\" com domínio do tipo seu-negocio.fornecedor.com.br\n- Cobra para entregar o código-fonte (você fica refém)\n\n## Como escolher a faixa certa para o seu negócio\n\n1. **Acabou de abrir / valida ideia:** faixa Express (R$499 a R$1.500). Coloca no ar em dias e já testa demanda.\n2. **Faturamento até R$ 50 mil/mês:** faixa Profissional (R$1.500 a R$5.000). Site institucional bem feito + SEO básico já gera tráfego orgânico.\n3. **Faturamento R$ 50 mil a R$ 500 mil/mês:** faixa Avançada (R$5 mil a R$15 mil). Vale investir em blog, landing pages e estratégia contínua.\n4. **Loja virtual / vende online:** faixa E-commerce (R$8 mil a R$30 mil). Comece simples, escale conforme cresce.\n5. **Plataforma própria / SaaS:** faixa Sob Medida (R$20 mil+). Fundamental ter discovery e MVP antes do orçamento final.\n\n## Por que site barato sai caro no longo prazo\n\nUm site mal feito não aparece no Google, demora a carregar, perde leads e precisa ser refeito em 12 meses. O custo total acaba sendo 3x maior do que ter feito certo da primeira vez. Não é gasto — é investimento em ativo digital.\n\n## A proposta da 0WEB\n\nA 0WEB trabalha do **Site Express (R$499, pronto em 24h)** ao **Site Sob Medida** com integrações complexas. Todos os planos incluem: hospedagem otimizada, SSL, SEO on-page, integração com WhatsApp, design responsivo e suporte humano. Sem contrato de fidelidade.\n\nQuer um orçamento real para o seu caso? Conheça a página de Criação de Sites da 0WEB e fale com a gente no WhatsApp — diagnóstico gratuito e proposta em até 24h.",
+    faq: [
+      {
+        q: "Quanto custa criar um site profissional em 2026?",
+        a: "Os valores em 2026 vão de R$ 499 (site express pronto em até 24h) a R$ 50.000+ (plataformas sob medida). A faixa mais procurada por PMEs é R$ 1.500 a R$ 5.000 — site institucional profissional com SEO on-page e integração ao WhatsApp.",
+      },
+      {
+        q: "Qual a diferença entre site barato e site profissional?",
+        a: "Site profissional tem código limpo, performance (Core Web Vitals), SEO on-page, design responsivo, integrações reais e suporte. Site barato costuma rodar em template genérico, não aparece no Google e precisa ser refeito em poucos meses — sai mais caro no total.",
+      },
+      {
+        q: "Quanto tempo leva para criar um site?",
+        a: "De 24 horas (Site Express com template profissional) a 2 a 6 meses (plataformas sob medida com integrações complexas). A maioria dos sites institucionais bem feitos entrega em 2 a 4 semanas.",
+      },
+      {
+        q: "Vale a pena fazer site em construtores como Wix ou Squarespace?",
+        a: "Para validar uma ideia ou ter presença básica, sim. Mas para SEO competitivo, performance, integrações avançadas e escalabilidade, plataformas profissionais (Next.js, WordPress otimizado, Shopify) entregam muito mais resultado a longo prazo.",
+      },
+      {
+        q: "Quais custos mensais existem depois do site pronto?",
+        a: "Hospedagem e domínio (R$ 15 a R$ 200/mês), manutenção opcional (R$ 199 a R$ 1.500/mês) e tráfego pago se quiser acelerar vendas (a partir de R$ 499/mês). SSL geralmente é grátis com Let's Encrypt.",
+      },
+      {
+        q: "Preciso pagar por SEO separado?",
+        a: "SEO on-page (estrutura, meta tags, schema, performance) deve estar incluso em qualquer site profissional. SEO contínuo (link building, produção de conteúdo, otimizações mensais) é serviço separado, geralmente a partir de R$ 999/mês.",
+      },
+      {
+        q: "Posso fazer meu próprio site para economizar?",
+        a: "Pode, mas leve em conta o custo do seu tempo, a curva de aprendizado e o risco de erros de SEO/performance que custam vendas. Para a maioria dos negócios, contratar profissional sai mais barato considerando o resultado.",
+      },
+    ],
+  },
 ];
 
 export function getPost(slug: string) {
