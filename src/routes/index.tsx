@@ -178,7 +178,6 @@ function Index() {
           <Testimonials />
           
           
-          {on("blog") && <Blog />}
           {on("social_proof") && <SocialProofSection />}
           {on("cta") && <CTA />}
         </Suspense>
