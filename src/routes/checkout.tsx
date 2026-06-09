@@ -150,7 +150,7 @@ function CheckoutPage() {
       const wa = settings.whatsappNumber || DEFAULT_WHATSAPP;
       window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
       toast.success("Pedido registrado", { description: "Continue a conversa pelo WhatsApp." });
-      navigate({ to: "/app" });
+      navigate({ to: "/obrigado", search: { source: "checkout-whatsapp", order: order.id } });
     } catch (e) {
       toast.error("Não foi possível registrar o pedido", { description: (e as Error).message });
     } finally {
@@ -191,7 +191,7 @@ function CheckoutPage() {
       const res = await createStripeCheckoutSession({
         data: {
           orderId: order.id,
-          successUrl: `${window.location.origin}/app`,
+          successUrl: `${window.location.origin}/obrigado?source=checkout-stripe&order=${order.id}`,
           cancelUrl: `${window.location.origin}/checkout`,
         },
       });
