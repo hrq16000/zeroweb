@@ -129,7 +129,7 @@ export const Route = createFileRoute("/servicos/")({
       },
       breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
       itemList,
-      siteExpressFaqPage,
+
     ];
     if (aggregatedFaqPage) graph.push(aggregatedFaqPage);
 
