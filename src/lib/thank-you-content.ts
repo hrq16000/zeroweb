@@ -7,6 +7,16 @@ export type LeadSource =
 
 export type Testimonial = { name: string; role: string; text: string };
 export type Stat = { n: string; l: string };
+export type FAQ = { q: string; a: string };
+export type CTACard = {
+  icon: "layers" | "help" | "file" | "sparkles" | "message" | "package";
+  title: string;
+  desc: string;
+  to: "/solicitar-orcamento" | "/servicos" | "/planos" | "/faq" | "/cases" | "/app" | "/contato";
+  label: string;
+  id: string;
+  event: string;
+};
 
 export type ThankYouContent = {
   title: string;
@@ -23,7 +33,12 @@ export type ThankYouContent = {
   status?: { label: string; eta: string; desc: string }[];
   /** Optional SLA badge (e.g. "Em até 24h"). */
   slaBadge?: string;
+  /** Optional FAQ adapted to the checkout method. */
+  faq?: FAQ[];
+  /** Optional source-specific CTA cards (overrides defaults). */
+  ctaCards?: CTACard[];
 };
+
 
 const DEFAULT_STATS: Stat[] = [
   { n: "+200", l: "clientes ativos" },
