@@ -346,6 +346,47 @@ function ObrigadoPage() {
           </div>
         </section>
 
+        {/* FAQ adaptado ao método de checkout */}
+        {content.faq && content.faq.length > 0 ? (
+          <section className="mt-20">
+            <div className="mx-auto max-w-3xl px-5 lg:px-8">
+              <h2 className="text-center text-2xl font-bold font-display mb-2 flex items-center justify-center gap-2">
+                <HelpCircle className="w-6 h-6 text-primary" /> Dúvidas sobre o seu pedido
+              </h2>
+              <p className="text-center text-muted-foreground mb-8 max-w-xl mx-auto">
+                Respostas rápidas para o que costuma surgir após {resolvedSource === "checkout-stripe" ? "o pagamento" : "fechar o pedido"}.
+              </p>
+              <div className="space-y-3">
+                {content.faq.map((f) => (
+                  <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
+                    <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
+                      {f.q}
+                      <span className="text-primary group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+              <script
+                type="application/ld+json"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: content.faq.map((f) => ({
+                      "@type": "Question",
+                      name: f.q,
+                      acceptedAnswer: { "@type": "Answer", text: f.a },
+                    })),
+                  }),
+                }}
+              />
+            </div>
+          </section>
+        ) : null}
+
+
         {/* CTA final */}
         <section className="mt-20">
           <div className="mx-auto max-w-3xl px-5 lg:px-8 text-center rounded-3xl border border-border bg-card p-8 lg:p-12">
