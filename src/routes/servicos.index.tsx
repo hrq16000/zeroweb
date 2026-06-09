@@ -15,20 +15,12 @@ import { ShopHero } from "@/components/site/ShopHero";
 import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  SITE_EXPRESS_FAQ,
   SITE_EXPRESS_FAQ_KEYS,
   normalizeFaqKey,
 } from "@/lib/site-express-faq";
 
 const SERVICE_LIST = Object.values(SERVICES);
-const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
-const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
+
 
 type ServicosSearch = { q?: string; cat?: string; sort?: SortKey; page?: number };
 
