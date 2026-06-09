@@ -12,6 +12,11 @@ const BULLETS = [
 ];
 
 export function HomeSpotlight() {
+  const variant = useExperiment("home_spotlight_copy", ["A", "B"] as const);
+  const headline = variant === "A"
+    ? { pre: "Anúncios sem site otimizado?", em: "você perde até 70% dos leads." }
+    : { pre: "Cada clique pago sem destino certo?", em: "é dinheiro virando fumaça." };
+  const ctaLabel = variant === "A" ? "Obter orçamento gratuito" : "Falar com especialista agora";
   return (
     <section id="spotlight" className="py-24">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
