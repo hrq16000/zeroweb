@@ -20,9 +20,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Finalizar pedido · Loja 0WEB" },
+      { title: "Finalizar pedido · 0WEB" },
       { name: "robots", content: "noindex,nofollow" },
-      { name: "description", content: "Conclua seu pedido na Loja 0WEB: pague agora ou finalize pelo WhatsApp." },
+      { name: "description", content: "Conclua seu pedido na 0WEB: pague agora ou finalize pelo WhatsApp." },
     ],
   }),
   component: CheckoutPage,
@@ -34,7 +34,7 @@ const DEFAULT_WHATSAPP = "5541997452053";
 function buildWhatsAppMessage(items: CartItem[], total: number, orderId: string) {
   const lines = items.map((i) => `• ${i.name}${i.qty > 1 ? ` (x${i.qty})` : ""}${typeof i.price === "number" && i.price > 0 ? ` — ${formatBRL(i.price * i.qty)}` : ""}`);
   return [
-    `Olá! Quero fechar meu pedido na Loja 0WEB.`,
+    `Olá! Quero fechar meu pedido na 0WEB.`,
     ``,
     `Pedido: ${orderId.slice(0, 8).toUpperCase()}`,
     ``,

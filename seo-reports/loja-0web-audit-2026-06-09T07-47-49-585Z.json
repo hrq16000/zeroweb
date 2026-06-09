@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-06-09T07:47:49.586Z",
+  "needle": "Loja 0WEB",
+  "totalOccurrences": 5,
+  "byBucket": {
+    "rotas": {
+      "count": 4,
+      "hits": [
+        {
+          "file": "./src/routes/checkout.tsx",
+          "line": 23,
+          "preview": "{ title: \"Finalizar pedido · Loja 0WEB\" },"
+        },
+        {
+          "file": "./src/routes/checkout.tsx",
+          "line": 25,
+          "preview": "{ name: \"description\", content: \"Conclua seu pedido na Loja 0WEB: pague agora ou finalize pelo WhatsApp.\" },"
+        },
+        {
+          "file": "./src/routes/checkout.tsx",
+          "line": 37,
+          "preview": "`Olá! Quero fechar meu pedido na Loja 0WEB.`,"
+        },
+        {
+          "file": "./src/routes/_authenticated/app.pagamentos.tsx",
+          "line": 52,
+          "preview": "Controle o fluxo de cobrança da Loja 0WEB. Enquanto o Stripe estiver desativado,"
+        }
+      ]
+    },
+    "componentes": {
+      "count": 0,
+      "hits": []
+    },
+    "libs": {
+      "count": 0,
+      "hits": []
+    },
+    "assets_publicos": {
+      "count": 0,
+      "hits": []
+    },
+    "migrations_sql": {
+      "count": 1,
+      "hits": [
+        {
+          "file": "./supabase/migrations/20260607201351_ffb17577-b506-4563-8910-95fa9b252418.sql",
+          "line": 47,
+          "preview": "('servicos', 'Catálogo completo', 'Tudo para crescer no digital, em um só lugar', 'Sites, SEO, tráfego pago, automações com IA e sistemas sob medida — escolha como em uma loja.', 'Loja 0WEB', 'linear-gradient(135deg,#1e3a8a,#4f46e5)', 'Ver todos os serviços', '#catalogo', 'Falar no WhatsApp', 'https://wa.me/5511999999999', 10),"
+        }
+      ]
+    },
+    "outros": {
+      "count": 0,
+      "hits": []
+    }
+  },
+  "notes": [
+    "Esta auditoria cobre apenas o código sob controle do projeto.",
+    "Conteúdo injetado por extensões do navegador, scripts de terceiros, ou widgets externos não aparece aqui — compare preview vs. aba anônima sem extensões para isolar."
+  ]
+}
