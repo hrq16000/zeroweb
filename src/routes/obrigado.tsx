@@ -220,17 +220,30 @@ function ObrigadoPage() {
           ) : null}
 
           {order && (
-            <motion.a
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              href="#pedido"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+              className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm"
             >
-              <Package className="w-4 h-4" />
-              Ver resumo do pedido
-            </motion.a>
+              <a
+                href="#pedido"
+                className="inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+              >
+                <Package className="w-4 h-4" />
+                Ver resumo do pedido
+              </a>
+              <Link
+                to="/pedido/$id"
+                params={{ id: order }}
+                onClick={() => handleCta("thank_you_cta_order_page", "order_page_link", "Abrir página do pedido", 0, `/pedido/${order}`)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-semibold hover:border-primary transition-colors"
+              >
+                Abrir página do pedido
+              </Link>
+            </motion.div>
           )}
+
         </section>
 
         {order ? <OrderSummaryCard orderId={order} source={source} /> : null}
