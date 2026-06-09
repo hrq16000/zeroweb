@@ -15,20 +15,12 @@ import { ShopHero } from "@/components/site/ShopHero";
 import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  SITE_EXPRESS_FAQ,
   SITE_EXPRESS_FAQ_KEYS,
   normalizeFaqKey,
 } from "@/lib/site-express-faq";
 
 const SERVICE_LIST = Object.values(SERVICES);
-const SITE_EXPRESS_URL = absUrl("/servicos/site-express");
-const SITE_EXPRESS_SERVICE_ID = `${SITE_EXPRESS_URL}#service`;
+
 
 type ServicosSearch = { q?: string; cat?: string; sort?: SortKey; page?: number };
 
@@ -94,20 +86,9 @@ export const Route = createFileRoute("/servicos/")({
       }),
     };
 
-    // FAQPage dedicado do Site Express, vinculado ao Service via `about`
-    const siteExpressFaqPage = {
-      "@type": "FAQPage",
-      "@id": `${url}#faq-site-express`,
-      name: "Perguntas sobre o Site Express",
-      inLanguage: "pt-BR",
-      about: { "@id": SITE_EXPRESS_SERVICE_ID },
-      isPartOf: { "@id": url },
-      mainEntity: SITE_EXPRESS_FAQ.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    };
+    // FAQPage do Site Express vive na página dedicada do produto
+    // (/servicos/site-express) para evitar duplicar schema FAQ entre URLs.
+
 
     // FAQPage agregado dos demais serviços (sem duplicar Site Express)
     const aggregatedFaqPage = faqItems.length
@@ -140,7 +121,7 @@ export const Route = createFileRoute("/servicos/")({
       },
       breadcrumbLd([{ name: "Serviços", path: "/servicos" }]),
       itemList,
-      siteExpressFaqPage,
+
     ];
     if (aggregatedFaqPage) graph.push(aggregatedFaqPage);
 
@@ -326,46 +307,23 @@ function ServicosHub() {
           </div>
         </section>
 
-        {/* FAQ dedicado do Site Express (mesmo conteúdo do JSON-LD #faq-site-express) */}
-        <section id="faq-site-express" className="py-12 px-5 bg-muted/20">
-          <div className="mx-auto max-w-3xl">
-            <div className="text-center mb-8">
-              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-orange-600">
-                <HelpCircle className="w-3.5 h-3.5" /> FAQ · Site Express
-              </span>
-              <h2 className="mt-3 text-2xl sm:text-3xl font-bold tracking-tight">
-                Perguntas frequentes sobre o Site Express
-              </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Tudo o que você precisa saber antes de pedir seu site de 24h.
-              </p>
-            </div>
-            <Accordion type="single" collapsible className="w-full space-y-2">
-              {SITE_EXPRESS_FAQ.map((f, i) => (
-                <AccordionItem
-                  key={i}
-                  value={`se-${i}`}
-                  className="rounded-xl border border-border bg-card px-4"
-                >
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                    {f.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <div className="mt-6 text-center">
-              <Link
-                to="/servicos/site-express"
-                className="inline-flex items-center gap-2 text-orange-600 font-semibold story-link"
-              >
-                Ver página completa do Site Express <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+        {/* FAQ do Site Express movida para a página dedicada do produto:
+            /servicos/site-express. Mantemos apenas um link de acesso rápido. */}
+        <section className="py-10 px-5">
+          <div className="mx-auto max-w-3xl text-center">
+            <Link
+              to="/servicos/site-express"
+              hash="faq"
+              className="inline-flex items-center gap-2 text-orange-600 font-semibold story-link"
+            >
+              <HelpCircle className="w-4 h-4" />
+              Perguntas frequentes sobre o Site Express
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </section>
+
+
 
 
 
