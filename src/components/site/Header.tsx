@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, MessageCircle, LogIn, ChevronDown } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, LogIn, ChevronDown } from "lucide-react";
+import { cartCount, openCart } from "@/lib/cart";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
