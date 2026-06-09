@@ -178,14 +178,29 @@ export function Header() {
 
 
         <div className="hidden lg:flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => openFunnel("header")}
-            className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-foreground"
+          <Link
+            to="/servicos"
+            aria-label="Buscar serviços"
+            title="Buscar serviços"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
           >
-            <MessageCircle className="w-4 h-4 text-accent" />
-            WhatsApp
-          </button>
+            <Search className="w-4 h-4" />
+          </Link>
+          {isLojaArea && (
+            <button
+              type="button"
+              onClick={() => openCart()}
+              aria-label={`Abrir carrinho (${cartQty} itens)`}
+              className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted transition"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {cartQty > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold grid place-items-center">
+                  {cartQty}
+                </span>
+              )}
+            </button>
+          )}
           <Link
             to="/auth"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground border border-border rounded-full px-4 py-2"
