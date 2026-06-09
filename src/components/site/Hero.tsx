@@ -40,7 +40,7 @@ export function Hero() {
   const { open: openFunnel } = useWaFunnel();
 
   return (
-    <section id="inicio" className="relative pt-32 lg:pt-40 pb-24 bg-hero overflow-hidden">
+    <section id="inicio" className="relative pt-28 lg:pt-32 pb-24 bg-hero overflow-hidden">
       <div className="absolute inset-0 bg-mesh opacity-60 pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
