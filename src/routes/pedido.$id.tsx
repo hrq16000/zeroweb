@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { OrderSummaryCard } from "@/components/site/OrderSummaryCard";
-import { absUrl } from "@/lib/seo";
+import { absUrl, DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 const TITLE = "Resumo do pedido · 0WEB";
 const DESC = "Acompanhe os itens, status e próximos passos do seu pedido na 0WEB.";
