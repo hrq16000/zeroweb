@@ -108,6 +108,8 @@ function ServicosLayout() {
         </div>
       </motion.nav>
 
+      <ServicosBreadcrumbs />
+
       <Outlet />
     </>
   );
