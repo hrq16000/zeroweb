@@ -38,6 +38,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [cartQty, setCartQty] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
   // WhatsApp removido do header; o botão flutuante mantém o canal.
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
