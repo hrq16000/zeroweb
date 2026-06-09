@@ -70,7 +70,10 @@ function ServicosLayout() {
         className="pt-[72px] lg:pt-[88px]"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
-          <div className="group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.18)] hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.28)] focus-within:border-primary/60 focus-within:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.35)] transition-shadow">
+          <motion.div
+            style={prefersReducedMotion ? undefined : { scale, opacity, transformOrigin: "top center", willChange: "transform" }}
+            className="group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.18)] hover:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.28)] focus-within:border-primary/60 focus-within:shadow-[0_12px_40px_-12px_hsl(var(--primary)/0.35)] transition-shadow"
+          >
             <div className="flex items-center gap-2 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5">
               <div className="flex-1 min-w-0">
                 <SmartServiceSearch
