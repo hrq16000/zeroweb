@@ -14,6 +14,7 @@ const Problems = lazy(() => import("@/components/site/Problems").then((m) => ({ 
 const LossCalculator = lazy(() => import("@/components/site/LossCalculator").then((m) => ({ default: m.LossCalculator })));
 const Solutions = lazy(() => import("@/components/site/Solutions").then((m) => ({ default: m.Solutions })));
 const HighlightTrio = lazy(() => import("@/components/site/HighlightTrio").then((m) => ({ default: m.HighlightTrio })));
+const FeatureShowcase = lazy(() => import("@/components/site/FeatureShowcase").then((m) => ({ default: m.FeatureShowcase })));
 const FeaturedServices = lazy(() => import("@/components/site/FeaturedServices").then((m) => ({ default: m.FeaturedServices })));
 const AISection = lazy(() => import("@/components/site/AISection").then((m) => ({ default: m.AISection })));
 const DiagnosticForm = lazy(() => import("@/components/site/DiagnosticForm").then((m) => ({ default: m.DiagnosticForm })));
@@ -133,6 +134,7 @@ function Index() {
           {on("loss_calculator") && <LossCalculator />}
           {on("solutions") && <Solutions />}
           <HighlightTrio />
+          <FeatureShowcase />
           {on("featured_services") && <FeaturedServices />}
           {on("ai_section") && <AISection />}
           {on("diagnostic_form") && <DiagnosticForm />}
