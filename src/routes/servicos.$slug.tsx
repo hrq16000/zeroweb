@@ -16,6 +16,42 @@ import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarous
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
 
+// Garante que toda Offer emitida no JSON-LD tenha priceValidUntil + seller,
+// evitando erros intermitentes no Schema Validator caso algum bloco extra
+// (vindo do painel SEO) ou variação futura omita esses campos.
+const DEFAULT_PRICE_VALID_UNTIL = "2026-12-31";
+const SELLER_REF = { "@id": `${ORIGIN}/#org` };
+
+type OfferLike = Record<string, unknown> & {
+  "@type"?: string;
+  price?: string | number;
+  priceCurrency?: string;
+  availability?: string;
+  priceValidUntil?: string;
+  seller?: unknown;
+  url?: string;
+};
+
+function withOfferDefaults(offer: OfferLike, fallbackUrl: string): OfferLike {
+  return {
+    "@type": "Offer",
+    priceCurrency: "BRL",
+    availability: "https://schema.org/InStock",
+    url: fallbackUrl,
+    ...offer,
+    priceValidUntil: offer.priceValidUntil || DEFAULT_PRICE_VALID_UNTIL,
+    seller: offer.seller ?? SELLER_REF,
+  };
+}
+
+function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
+  return [
+    { name: "Essencial", price: Math.round(basePrice * 0.7).toString() },
+    { name: "Pro", price: Math.round(basePrice).toString() },
+    { name: "Avançado", price: Math.round(basePrice * 1.6).toString() },
+  ].map((o) => withOfferDefaults(o, url));
+}
+
 export const Route = createFileRoute("/servicos/$slug")({
   beforeLoad: ({ params }) => {
     if (params.slug === "site-express") {
@@ -59,40 +95,7 @@ export const Route = createFileRoute("/servicos/$slug")({
         areaServed: { "@type": "Country", name: "BR" },
         provider: { "@id": `${ORIGIN}/#org` },
         ...(typeof loaderData.price === "number" && loaderData.price > 0
-          ? {
-              offers: [
-                {
-                  "@type": "Offer",
-                  name: "Essencial",
-                  price: Math.round(loaderData.price * 0.7).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-                {
-                  "@type": "Offer",
-                  name: "Pro",
-                  price: Math.round(loaderData.price).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-                {
-                  "@type": "Offer",
-                  name: "Avançado",
-                  price: Math.round(loaderData.price * 1.6).toString(),
-                  priceCurrency: "BRL",
-                  availability: "https://schema.org/InStock",
-                  priceValidUntil: "2026-12-31",
-                  url,
-                  seller: { "@id": `${ORIGIN}/#org` },
-                },
-              ],
-            }
+          ? { offers: buildPackageOffers(loaderData.price, url) }
           : {}),
       },
       ...(loaderData.faq?.length
@@ -115,7 +118,19 @@ export const Route = createFileRoute("/servicos/$slug")({
       ]),
     ];
     // Blocos JSON-LD adicionais editáveis pelo painel (aba SEO).
-    const extraGraph = Array.isArray(loaderData.schemaJsonLd) ? loaderData.schemaJsonLd : [];
+    // Normaliza qualquer Offer presente para garantir priceValidUntil + seller.
+    const rawExtra = Array.isArray(loaderData.schemaJsonLd) ? loaderData.schemaJsonLd : [];
+    const extraGraph = rawExtra.map((node: Record<string, unknown>) => {
+      if (!node || typeof node !== "object") return node;
+      const offers = (node as { offers?: unknown }).offers;
+      if (Array.isArray(offers)) {
+        return { ...node, offers: offers.map((o) => withOfferDefaults(o as OfferLike, url)) };
+      }
+      if (offers && typeof offers === "object") {
+        return { ...node, offers: withOfferDefaults(offers as OfferLike, url) };
+      }
+      return node;
+    });
     return {
       meta: [
         { title: loaderData.title },

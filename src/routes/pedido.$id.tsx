@@ -15,7 +15,11 @@ export const Route = createFileRoute("/pedido/$id")({
     stringify: (parsed) => ({ id: String(parsed.id) }),
   },
   head: ({ params }) => {
+    // OG/canonical fixos por pedido — independem do método de checkout
+    // (WhatsApp ou Stripe). A página em si é privada (noindex) mas mantém
+    // metadados válidos para preview em apps de mensagem.
     const url = absUrl(`/pedido/${params.id}`);
+    const ogImage = DEFAULT_OG_IMAGE;
     return {
       meta: [
         { title: TITLE },
@@ -25,14 +29,17 @@ export const Route = createFileRoute("/pedido/$id")({
         { property: "og:description", content: DESC },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: DEFAULT_OG_IMAGE },
+        { property: "og:image", content: ogImage },
         { property: "og:image:alt", content: "Resumo do pedido 0WEB" },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
         { property: "og:site_name", content: "0WEB" },
         { property: "og:locale", content: "pt_BR" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: TITLE },
         { name: "twitter:description", content: DESC },
-        { name: "twitter:image", content: DEFAULT_OG_IMAGE },
+        { name: "twitter:image", content: ogImage },
+        { name: "twitter:image:alt", content: "Resumo do pedido 0WEB" },
       ],
       links: [{ rel: "canonical", href: url }],
     };
