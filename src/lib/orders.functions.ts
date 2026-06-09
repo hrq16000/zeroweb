@@ -97,3 +97,23 @@ export const listMyOrders = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { orders: data ?? [] };
   });
+
+/**
+ * Busca um pedido do próprio usuário pelo id (área do cliente / página de confirmação).
+ */
+export const getMyOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ orderId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: order, error } = await supabase
+      .from("orders")
+      .select("id, items, total, status, payment_method, created_at, whatsapp_handoff_at, paid_at, customer_name, customer_email")
+      .eq("id", data.orderId)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return { order: order ?? null };
+  });
