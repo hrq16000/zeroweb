@@ -285,3 +285,189 @@ export function downloadText(filename: string, content: string, mime: string) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// ---- snapshots (revisões para diff) ----------------------------------------
+
+export type Snapshot = {
+  id: string;
+  at: string;
+  by: Role;
+  label?: string;
+  title: string;
+  meta: string;
+  headingsH2: string[];
+  headingsH3: string[];
+  internalLinks: string[];
+  faq: Array<{ q: string; a: string }>;
+  jsonld: any[];
+};
+
+const SNAP_KEY = "skyscraper-snapshots-v1";
+
+export function loadSnapshots(): Record<string, Snapshot[]> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(SNAP_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function saveSnapshots(s: Record<string, Snapshot[]>) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(SNAP_KEY, JSON.stringify(s));
+}
+
+export function extractHeadings(html: string, tag: "h2" | "h3"): string[] {
+  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "gi");
+  const out: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) out.push(m[1].replace(/<[^>]+>/g, "").trim());
+  return out;
+}
+
+export function buildSnapshot(
+  article: SkyscraperArticle,
+  rendered: RenderedArticle,
+  by: Role,
+  label?: string,
+): Snapshot {
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    at: new Date().toISOString(),
+    by,
+    label,
+    title: rendered.title,
+    meta: rendered.meta,
+    headingsH2: extractHeadings(rendered.bodyHtml, "h2"),
+    headingsH3: extractHeadings(rendered.bodyHtml, "h3"),
+    internalLinks: rendered.internalLinks.map((l) => l.href),
+    faq: rendered.faq,
+    jsonld: buildJsonLd(article, rendered),
+  };
+}
+
+export type DiffItem = { field: string; from: string; to: string };
+
+export function diffSnapshots(a: Snapshot, b: Snapshot): DiffItem[] {
+  const out: DiffItem[] = [];
+  if (a.title !== b.title) out.push({ field: "title", from: a.title, to: b.title });
+  if (a.meta !== b.meta) out.push({ field: "meta", from: a.meta, to: b.meta });
+  const arrDiff = (field: string, x: string[], y: string[]) => {
+    const ax = JSON.stringify(x);
+    const ay = JSON.stringify(y);
+    if (ax !== ay) out.push({ field, from: x.join(" | "), to: y.join(" | ") });
+  };
+  arrDiff("H2", a.headingsH2, b.headingsH2);
+  arrDiff("H3", a.headingsH3, b.headingsH3);
+  arrDiff("internalLinks", a.internalLinks, b.internalLinks);
+  arrDiff("faq", a.faq.map((f) => f.q), b.faq.map((f) => f.q));
+  const j1 = JSON.stringify(a.jsonld);
+  const j2 = JSON.stringify(b.jsonld);
+  if (j1 !== j2) out.push({ field: "jsonld", from: j1.slice(0, 200) + "…", to: j2.slice(0, 200) + "…" });
+  return out;
+}
+
+// ---- A/B tracking events ---------------------------------------------------
+
+export type AbEvent = {
+  at: string;
+  slug: string;
+  variantId: string;
+  kind: "impression" | "click";
+  href?: string;
+};
+
+const EVENTS_KEY = "skyscraper-ab-events-v1";
+
+export function loadEvents(): AbEvent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(EVENTS_KEY) ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+export function pushEvent(ev: AbEvent) {
+  if (typeof window === "undefined") return;
+  const list = loadEvents();
+  list.push(ev);
+  // cap at 5000
+  const capped = list.slice(-5000);
+  localStorage.setItem(EVENTS_KEY, JSON.stringify(capped));
+}
+
+export function clearEvents(slug?: string) {
+  if (typeof window === "undefined") return;
+  if (!slug) {
+    localStorage.removeItem(EVENTS_KEY);
+    return;
+  }
+  const filtered = loadEvents().filter((e) => e.slug !== slug);
+  localStorage.setItem(EVENTS_KEY, JSON.stringify(filtered));
+}
+
+export type AbStats = {
+  variantId: string;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+};
+
+export function aggregateEvents(
+  events: AbEvent[],
+  slug: string,
+  range?: { from?: string; to?: string },
+): AbStats[] {
+  const filtered = events.filter((e) => {
+    if (e.slug !== slug) return false;
+    if (range?.from && e.at < range.from) return false;
+    if (range?.to && e.at > range.to) return false;
+    return true;
+  });
+  const map = new Map<string, AbStats>();
+  for (const e of filtered) {
+    const cur = map.get(e.variantId) ?? { variantId: e.variantId, impressions: 0, clicks: 0, ctr: 0 };
+    if (e.kind === "impression") cur.impressions += 1;
+    else cur.clicks += 1;
+    map.set(e.variantId, cur);
+  }
+  for (const s of map.values()) s.ctr = s.impressions ? (s.clicks / s.impressions) * 100 : 0;
+  return [...map.values()].sort((a, b) => a.variantId.localeCompare(b.variantId));
+}
+
+// ---- publish gate ----------------------------------------------------------
+
+export type PublishGate = {
+  canPublish: boolean;
+  blockers: string[];
+  warnings: string[];
+};
+
+export function evaluatePublishGate(opts: {
+  state: WorkflowState;
+  role: Role;
+  seoScore: number;
+  seoFailedCount: number;
+  jsonldErrors: number;
+}): PublishGate {
+  const blockers: string[] = [];
+  const warnings: string[] = [];
+
+  if (opts.role !== "admin") blockers.push("Apenas o papel admin pode publicar.");
+  if (opts.state.status !== "aprovado" && opts.state.status !== "agendado") {
+    blockers.push(`Status atual é "${opts.state.status}" — precisa estar "aprovado" (revisão do editor) ou "agendado".`);
+  }
+  const hasEditorApproval = opts.state.history.some(
+    (h) => (h.by === "editor" || h.by === "admin") && h.to === "aprovado",
+  );
+  if (!hasEditorApproval) blockers.push("Falta aprovação explícita do editor no histórico.");
+  if (opts.seoScore < 80) blockers.push(`SEO score ${opts.seoScore} < 80 (mínimo exigido).`);
+  if (opts.seoFailedCount > 0) blockers.push(`${opts.seoFailedCount} check(s) SEO em fail.`);
+  if (opts.jsonldErrors > 0) blockers.push(`${opts.jsonldErrors} erro(s) de JSON-LD.`);
+
+  if (opts.seoScore < 90 && opts.seoScore >= 80) warnings.push("SEO score < 90 — revisar quick wins.");
+
+  return { canPublish: blockers.length === 0, blockers, warnings };
+}
