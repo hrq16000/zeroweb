@@ -54,6 +54,7 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ConsultoriaRouteImport } from './routes/consultoria'
 import { Route as CidadesRouteImport } from './routes/cidades'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CalculadoraOrcamentoRouteImport } from './routes/calculadora-orcamento'
 import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as R403RouteImport } from './routes/403'
@@ -383,6 +384,11 @@ const CidadesRoute = CidadesRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculadoraOrcamentoRoute = CalculadoraOrcamentoRouteImport.update({
+  id: '/calculadora-orcamento',
+  path: '/calculadora-orcamento',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AutomacaoRoute = AutomacaoRouteImport.update({
@@ -936,6 +942,7 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
   '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
@@ -1083,6 +1090,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
   '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
@@ -1230,6 +1238,7 @@ export interface FileRoutesById {
   '/403': typeof R403Route
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
+  '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
   '/checkout': typeof CheckoutRoute
   '/cidades': typeof CidadesRoute
   '/consultoria': typeof ConsultoriaRoute
@@ -1379,6 +1388,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/calculadora-orcamento'
     | '/checkout'
     | '/cidades'
     | '/consultoria'
@@ -1526,6 +1536,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/calculadora-orcamento'
     | '/checkout'
     | '/cidades'
     | '/consultoria'
@@ -1672,6 +1683,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/auth'
     | '/automacao'
+    | '/calculadora-orcamento'
     | '/checkout'
     | '/cidades'
     | '/consultoria'
@@ -1821,6 +1833,7 @@ export interface RootRouteChildren {
   R403Route: typeof R403Route
   AuthRoute: typeof AuthRoute
   AutomacaoRoute: typeof AutomacaoRoute
+  CalculadoraOrcamentoRoute: typeof CalculadoraOrcamentoRoute
   CheckoutRoute: typeof CheckoutRoute
   CidadesRoute: typeof CidadesRoute
   ConsultoriaRoute: typeof ConsultoriaRoute
@@ -2223,6 +2236,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculadora-orcamento': {
+      id: '/calculadora-orcamento'
+      path: '/calculadora-orcamento'
+      fullPath: '/calculadora-orcamento'
+      preLoaderRoute: typeof CalculadoraOrcamentoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/automacao': {
@@ -3155,6 +3175,7 @@ const rootRouteChildren: RootRouteChildren = {
   R403Route: R403Route,
   AuthRoute: AuthRoute,
   AutomacaoRoute: AutomacaoRoute,
+  CalculadoraOrcamentoRoute: CalculadoraOrcamentoRoute,
   CheckoutRoute: CheckoutRoute,
   CidadesRoute: CidadesRoute,
   ConsultoriaRoute: ConsultoriaRoute,
@@ -3247,13 +3268,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
