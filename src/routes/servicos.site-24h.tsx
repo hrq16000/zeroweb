@@ -53,7 +53,12 @@ export const Route = createFileRoute("/servicos/site-24h")({
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
     ],
-    links: [{ rel: "canonical", href: URL }],
+    links: [
+      { rel: "canonical", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
+    ],
+
     scripts: [
       {
         type: "application/ld+json",
