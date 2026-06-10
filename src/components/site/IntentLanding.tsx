@@ -255,7 +255,12 @@ export function buildHead(opts: { title: string; description: string; url: strin
       { property: "og:type", content: "website" },
       { property: "og:url", content: opts.url },
     ],
-    links: [{ rel: "canonical", href: opts.url }],
+    links: [
+      { rel: "canonical", href: opts.url },
+      { rel: "alternate", hrefLang: "pt-BR", href: opts.url },
+      { rel: "alternate", hrefLang: "x-default", href: opts.url },
+    ],
+
     scripts: [
       {
         type: "application/ld+json",
