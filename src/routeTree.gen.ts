@@ -154,6 +154,7 @@ import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_
 import { Route as AuthenticatedAppIndexacaoUrlIdRouteImport } from './routes/_authenticated/app.indexacao.$urlId'
 import { Route as AuthenticatedAppFunisLeadsRouteImport } from './routes/_authenticated/app.funis.leads'
 import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authenticated/app.funis.$id'
+import { Route as AuthenticatedAppEditorialSkyscraperRouteImport } from './routes/_authenticated/app.editorial.skyscraper'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
 import { Route as AuthenticatedAppFunisPipelineRegrasRouteImport } from './routes/_authenticated/app.funis.pipeline.regras'
 
@@ -923,6 +924,12 @@ const AuthenticatedAppFunisIdRoute = AuthenticatedAppFunisIdRouteImport.update({
   path: '/funis/$id',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppEditorialSkyscraperRoute =
+  AuthenticatedAppEditorialSkyscraperRouteImport.update({
+    id: '/skyscraper',
+    path: '/skyscraper',
+    getParentRoute: () => AuthenticatedAppEditorialRoute,
+  } as any)
 const AuthenticatedAppAuditoriaIdentidadeRoute =
   AuthenticatedAppAuditoriaIdentidadeRouteImport.update({
     id: '/auditoria/identidade',
@@ -1034,7 +1041,7 @@ export interface FileRoutesByFullPath {
   '/app/cro': typeof AuthenticatedAppCroRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
-  '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/leads': typeof AuthenticatedAppLeadsRoute
@@ -1062,6 +1069,7 @@ export interface FileRoutesByFullPath {
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
+  '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1180,7 +1188,7 @@ export interface FileRoutesByTo {
   '/app/cro': typeof AuthenticatedAppCroRoute
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
-  '/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/leads': typeof AuthenticatedAppLeadsRoute
@@ -1208,6 +1216,7 @@ export interface FileRoutesByTo {
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
+  '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1330,7 +1339,7 @@ export interface FileRoutesById {
   '/_authenticated/app/cro': typeof AuthenticatedAppCroRoute
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
-  '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRoute
+  '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRoute
@@ -1358,6 +1367,7 @@ export interface FileRoutesById {
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
+  '/_authenticated/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
   '/_authenticated/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/_authenticated/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/_authenticated/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1508,6 +1518,7 @@ export interface FileRouteTypes {
     | '/blog/cluster/$cluster'
     | '/app/'
     | '/app/auditoria/identidade'
+    | '/app/editorial/skyscraper'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1654,6 +1665,7 @@ export interface FileRouteTypes {
     | '/blog/cluster/$cluster'
     | '/app'
     | '/app/auditoria/identidade'
+    | '/app/editorial/skyscraper'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1803,6 +1815,7 @@ export interface FileRouteTypes {
     | '/blog/cluster/$cluster'
     | '/_authenticated/app/'
     | '/_authenticated/app/auditoria/identidade'
+    | '/_authenticated/app/editorial/skyscraper'
     | '/_authenticated/app/funis/$id'
     | '/_authenticated/app/funis/leads'
     | '/_authenticated/app/indexacao/$urlId'
@@ -2938,6 +2951,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFunisIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/editorial/skyscraper': {
+      id: '/_authenticated/app/editorial/skyscraper'
+      path: '/skyscraper'
+      fullPath: '/app/editorial/skyscraper'
+      preLoaderRoute: typeof AuthenticatedAppEditorialSkyscraperRouteImport
+      parentRoute: typeof AuthenticatedAppEditorialRoute
+    }
     '/_authenticated/app/auditoria/identidade': {
       id: '/_authenticated/app/auditoria/identidade'
       path: '/auditoria/identidade'
@@ -2954,6 +2974,21 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAppEditorialRouteChildren {
+  AuthenticatedAppEditorialSkyscraperRoute: typeof AuthenticatedAppEditorialSkyscraperRoute
+}
+
+const AuthenticatedAppEditorialRouteChildren: AuthenticatedAppEditorialRouteChildren =
+  {
+    AuthenticatedAppEditorialSkyscraperRoute:
+      AuthenticatedAppEditorialSkyscraperRoute,
+  }
+
+const AuthenticatedAppEditorialRouteWithChildren =
+  AuthenticatedAppEditorialRoute._addFileChildren(
+    AuthenticatedAppEditorialRouteChildren,
+  )
 
 interface AuthenticatedAppIndexacaoRouteChildren {
   AuthenticatedAppIndexacaoUrlIdRoute: typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -3038,7 +3073,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppCroRoute: typeof AuthenticatedAppCroRoute
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
-  AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRoute
+  AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRouteWithChildren
   AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRoute
@@ -3075,7 +3110,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppCroRoute: AuthenticatedAppCroRoute,
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
-  AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRoute,
+  AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRouteWithChildren,
   AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRoute,
