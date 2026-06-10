@@ -17,7 +17,12 @@ export const Route = createFileRoute("/servicos/marketplace")({
       { property: "og:description", content: "Catálogo nacional de prestadores e empresas verificadas." },
       { property: "og:url", content: `${ORIGIN}/marketplace` },
     ],
-    links: [{ rel: "canonical", href: `${ORIGIN}/marketplace` }],
+    links: [
+      { rel: "canonical", href: `${ORIGIN}/marketplace` },
+      { rel: "alternate", hrefLang: "pt-BR", href: `${ORIGIN}/marketplace` },
+      { rel: "alternate", hrefLang: "x-default", href: `${ORIGIN}/marketplace` },
+    ],
+
   }),
   component: MarketplacePage,
 });
