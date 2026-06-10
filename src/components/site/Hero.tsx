@@ -93,7 +93,7 @@ export function Hero() {
               className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
             >
               <Store className="w-4 h-4" />
-              Ver Catálogo de Serviços
+              Ver Serviços
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <button
