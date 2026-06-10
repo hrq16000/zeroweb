@@ -1,54 +1,51 @@
-# Plano de Melhorias — Backlog consolidado
+# Plano de execução — 1 etapa por vez
 
-Origem: pedido do usuário (todas as melhorias, sem regressão). Itens marcados ✅ já estavam prontos ou foram entregues nesta rodada.
+Vou executar os passos abaixo em ordem. Ao final de cada etapa, te aviso e sigo para a próxima (ou paro se você pedir).
 
-## SEO / Schema / FAQ
-- ✅ /faq já tem canonical absoluto, meta robots index,follow, OG, FAQPage JSON-LD e BreadcrumbList JSON-LD.
-- ✅ /faq agora tem âncoras por pergunta (`#q-<slug>`) + scroll-mt para deep link.
-- [ ] Rerodar scan SEO + Lighthouse após mudanças (tool: seo_chat--trigger_scan, ação do usuário).
-- [ ] CI: endpoint/script que renderiza rotas críticas e valida presença de JSON-LD, OG e BreadcrumbList (vitest + ssr fetch).
-- [ ] Teste automatizado garantindo 301 em todas as 8 URLs legadas → /servicos/*.
+## Etapa 1 — Rastreamento e indexação (código)
+- Auditar `src/lib/canonical-redirect.helpers.ts` + tabela `redirects` no banco e eliminar cadeias (A→B→C) achatando para A→C; remover self-loops.
+- Varrer todas as rotas `redirect(...)` em `src/routes/*` e garantir 301 direto para a URL final viva (sem hops).
+- Atualizar `public/robots.txt`:
+  - manter `Disallow` só em `/app`, `/auth`, `/painel*`, `/qa-events`, `/r/`, `/api/` (admin).
+  - **liberar explicitamente** assets: `Allow: /assets/`, `Allow: /*.css$`, `Allow: /*.js$`, `Allow: /*.webp$`, `Allow: /*.png$`, `Allow: /*.jpg$`, `Allow: /*.svg$`, `Allow: /*.woff2$`.
+- Revalidar `src/routes/sitemap[.]xml.ts` + sub-sitemaps: incluir todas as rotas vivas (incl. `/blog-skyscraper`, `/calculadora-orcamento`), remover URLs 404/redirecionadas.
+- Rodar `scripts/validate-legacy-301.mjs` e `scripts/validate-sitemaps.mjs` para confirmar 0 erros.
 
-## Chatbot home
-- [ ] Eventos analytics (start, step_completed, lead_created, redirect_servico) — adicionar via `analytics.track()`.
-- [ ] Pré-preenchimento WaFunnel: estender `FloatingFunnelCTA`/funil para aceitar `prefill: { nome, telefone, contexto, plano }`.
-- [ ] Validação de campos obrigatórios antes do insert em `dynamic_form_leads`.
+## Etapa 2 — Schemas estruturados (JSON-LD)
+- `__root.tsx` já tem **Organization + LocalBusiness + WebSite** ✅ (manter).
+- Garantir **Service** schema em todas as `/servicos/*` (criar helper `buildServiceSchema()` e injetar via `head().scripts`).
+- Garantir **FAQPage** em rotas com FAQ (`/faq`, serviços com bloco FAQ, blog cluster).
+- Garantir **Article + BreadcrumbList** em `/blog/$slug`, `/blog-skyscraper/$slug`, `/cases/$slug`.
+- Garantir **LocalBusiness** repetido com `areaServed` específico em páginas de cidade/bairro (`/cidade/$slug`, `/bairros-cwb/$slug`, `/bairros-bh/$slug`).
+- Validar tudo com `scripts/validate-jsonld.mjs` e `scripts/validate-schemas.mjs`.
 
-## Espaçamento / Design System
-- [ ] Criar tokens globais em `src/styles.css` (`--space-section-y`, `--space-section-y-tight`, `--space-hero-top`) e utility `.section-y`.
-- [ ] Padronizar Breadcrumbs: remover prop `className`/variações por rota; usar somente token global.
-- [ ] Auditoria automática (script Node) que percorre `src/routes/**` e flagga `pt-*`/`py-*` acima de 24 e `mt-*` topo > 16; gera relatório em `/mnt/documents/spacing-audit.md`.
-- [ ] Corrigir páginas fora do padrão após auditoria.
-- [ ] Visual regression em /servicos/* (playwright snapshot do topo) — bloquear quando espaço acima do H1 > N px.
+## Etapa 3 — Performance (LCP < 2.5s / CLS < 0.1 mobile)
+- Habilitar `vite-imagetools` no `vite.config.ts` e migrar imagens hero/capa para `?format=webp&w=...`.
+- Adicionar `<link rel="preload" as="image">` para o LCP em `head()` de `index.tsx`, `/servicos/$slug`, `/blog/$slug`.
+- Definir `width`/`height` explícitos em toda `<img>` de Hero/Featured (corrige CLS).
+- `loading="lazy"` + `decoding="async"` em imagens below-the-fold.
+- Cache headers nas rotas estáticas/sitemaps (já parcial — padronizar `Cache-Control: public, max-age=3600, s-maxage=86400`).
+- Rodar `browser--performance_profile` antes/depois para confirmar metas.
 
-## Debug mode
-- [ ] Overlay dev (Alt+D): outline em todos os elementos, badges com padding/margin top, listagem em tempo real dos componentes fora do padrão por rota. Só ativo em `import.meta.env.DEV`.
+## Etapa 4 — Checklist operacional (entrego como markdown, você executa)
+**Cloudflare:**
+- Ativar proxy laranja no DNS de `0web.com.br`.
+- SSL/TLS → Full (strict).
+- Speed → Brotli ON, Early Hints ON, Rocket Loader OFF (quebra TanStack).
+- Caching → Cache Rules: `*.css *.js *.woff2 *.webp *.png *.jpg` → Edge TTL 1 mês.
+- Speed → Optimization → Polish: Lossy + WebP.
+- Rules → Page Rules: `0web.com.br/sitemap*.xml` → Edge Cache TTL 1h.
 
-## Header / Navegação
-- [ ] Mobile: refinar tipografia, hierarquia e contraste.
-- [ ] Keyboard nav: ordem de foco, `/` foca busca, `Esc` fecha drawer, testes a11y (vitest + @testing-library).
-- [ ] Framer Motion: shrink/transform do header no scroll, respeitando `prefers-reduced-motion`.
+**Google Business Profile (Perfil da Empresa):**
+- Calendário editorial semanal (3 posts/sem): Segunda = oferta, Quarta = case, Sexta = dica/educacional. Templates prontos.
+- Q&A: pré-publicar 10 perguntas frequentes (com respostas) no próprio perfil.
+- Fotos: 8 categorias obrigatórias (fachada, equipe, bastidores, antes/depois de site, reunião, escritório, logo, capa). Mínimo 20 fotos iniciais.
+- Resposta a avaliações em até 24h (template positivo/negativo).
 
-## Loja virtual / Produtos
-- [ ] Breadcrumbs em todas as páginas de produto (já existe em `/servicos/$slug`; estender a `categoria.$slug`, `f.$slug`, etc).
-- [ ] CTA fixo visível em página de produto que direciona ao funil (WaFunnel pré-preenchido com o item).
-
-## URLs legadas
-- ✅ Mantidos 301 conforme decisão do usuário.
+## Diagnóstico técnico (referência)
+- Helpers existentes: `src/lib/canonical-redirect.helpers.ts` (chains/loops já detectados), `scripts/validate-*.mjs` (8 validadores prontos), `src/routes/sitemap[.]xml.ts` (índice com 12 sub-sitemaps).
+- Sem necessidade de novas dependências exceto `vite-imagetools` (Etapa 3).
+- Sem mudanças de banco; sem mudanças em auth.
 
 ---
-
-## Loja Virtual completa (escopo grande — próxima onda)
-- [ ] Página `/loja` com listagem paginada de produtos (mesma fonte `services-public`), filtros por categoria/preço, ordenação e empty state.
-- [ ] Reuso do `CartDrawer` + checkout (`/checkout`) e badge global do carrinho em todas as rotas (já parcial via Header).
-- [ ] Cards de produto com schema `Product`/`Offer` JSON-LD individual.
-- [ ] A/B em CTAs do HomeSpotlight (✅ instalado) e dos Depoimentos (próxima rodada).
-
----
-
-## Aplicado nesta rodada
-1. Âncoras por pergunta no /faq com `scroll-mt-24`.
-2. Header de Breadcrumbs com spacing token unificado.
-3. GlobalSearch: bloco "Resultados rápidos" no estado vazio com top serviços.
-4. Testimonials: `role=status` com nº de slide para leitores de tela (além do aria-live).
-5. HomeSpotlight: experimento A/B (`home_spotlight_copy`) em headline + CTA, com `variant` em `cta_click`.
+**Vou começar pela Etapa 1.** Me responde "ok" para eu seguir, ou diga para pular/reordenar.
