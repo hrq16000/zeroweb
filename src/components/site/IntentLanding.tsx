@@ -224,6 +224,8 @@ export function IntentLanding(p: IntentLandingProps) {
             "@type": "Service",
             name: p.schemaService.name,
             description: p.schemaService.description,
+            serviceType: p.schemaService.name,
+            url: typeof window !== "undefined" ? window.location.href : undefined,
             provider: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
             areaServed: "BR",
             mainEntity: {
@@ -237,6 +239,7 @@ export function IntentLanding(p: IntentLandingProps) {
           }),
         }}
       />
+
     </div>
   );
 }
