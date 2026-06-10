@@ -23,7 +23,7 @@ export type IntentLandingProps = {
   benefits: { title: string; description: string }[];
   faq: { q: string; a: string }[];
   socialProof?: { name: string; role: string; quote: string }[];
-  schemaService: { name: string; description: string };
+  schemaService: { name: string; description: string; url?: string };
   /** Se passado, troca o CTA principal pelo FunnelCTAButton dinâmico. */
   funnelSlug?: string;
   /** Slug do serviço atual, usado pelo funil dinâmico. */
@@ -224,6 +224,8 @@ export function IntentLanding(p: IntentLandingProps) {
             "@type": "Service",
             name: p.schemaService.name,
             description: p.schemaService.description,
+            serviceType: p.schemaService.name,
+            url: p.schemaService.url ?? (typeof window !== "undefined" ? window.location.href : undefined),
             provider: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
             areaServed: "BR",
             mainEntity: {
@@ -237,6 +239,7 @@ export function IntentLanding(p: IntentLandingProps) {
           }),
         }}
       />
+
     </div>
   );
 }
@@ -252,7 +255,12 @@ export function buildHead(opts: { title: string; description: string; url: strin
       { property: "og:type", content: "website" },
       { property: "og:url", content: opts.url },
     ],
-    links: [{ rel: "canonical", href: opts.url }],
+    links: [
+      { rel: "canonical", href: opts.url },
+      { rel: "alternate", hrefLang: "pt-BR", href: opts.url },
+      { rel: "alternate", hrefLang: "x-default", href: opts.url },
+    ],
+
     scripts: [
       {
         type: "application/ld+json",

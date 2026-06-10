@@ -254,3 +254,22 @@ Implementação: `createFileRoute(...).beforeLoad → throw redirect({statusCode
   - ❌ (2) `/servicos/trafego-pago`
   - ❌ (2) `/servicos/trafego-pago-local`
 
+## 2026-06-10T09-44-18-645Z — https://0web.com.br
+- Rotas: **16** | Falhas: **8** | Relatório: `seo-reports/2026-06-10T09-44-18-645Z.json`
+  - ✅ `/servicos`
+  - ✅ `/servicos/automacao-com-ia`
+  - ✅ `/servicos/chatbot-whatsapp`
+  - ✅ `/servicos/criacao-de-sites`
+  - ❌ (2) `/servicos/gestao-redes-sociais`
+  - ❌ (2) `/servicos/google-meu-negocio`
+  - ✅ `/servicos/landing-pages`
+  - ✅ `/servicos/loja-virtual`
+  - ✅ `/servicos/marketing-digital`
+  - ❌ (1) `/servicos/marketplace`
+  - ❌ (2) `/servicos/presenca-digital`
+  - ✅ `/servicos/seo`
+  - ❌ (1) `/servicos/site-24h`
+  - ❌ (2) `/servicos/site-express`
+  - ❌ (2) `/servicos/trafego-pago`
+  - ❌ (2) `/servicos/trafego-pago-local`
+

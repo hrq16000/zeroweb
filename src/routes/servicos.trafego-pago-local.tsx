@@ -31,7 +31,11 @@ export const Route = createFileRoute("/servicos/trafego-pago-local")({
       { name: "twitter:description", content: DESC },
       { name: "twitter:image", content: `https://0web.com.br${capa.url}` },
     ],
-    links: [{ rel: "canonical", href: URL }],
+    links: [
+      { rel: "canonical", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -40,9 +44,11 @@ export const Route = createFileRoute("/servicos/trafego-pago-local")({
           "@type": "Service",
           name: "Tráfego Pago para Negócios Locais",
           description: DESC,
+          url: URL,
           provider: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br", logo: "https://0web.com.br/logo.png" },
           areaServed: { "@type": "Country", name: "Brasil" },
           serviceType: "Gestão de Tráfego Pago",
+
           offers: {
             "@type": "Offer",
             price: "499",

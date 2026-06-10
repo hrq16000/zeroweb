@@ -57,7 +57,12 @@ export const Route = createFileRoute("/servicos/site-express")({
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
     ],
-    links: [{ rel: "canonical", href: URL }],
+    links: [
+      { rel: "canonical", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
+    ],
+
     scripts: [
       {
         type: "application/ld+json",
@@ -111,17 +116,7 @@ export const Route = createFileRoute("/servicos/site-express")({
               },
             },
             {
-              "@type": "LocalBusiness",
-              "@id": `${ORIGIN}/#localbusiness`,
-              name: "0WEB",
-              url: ORIGIN,
-              telephone: "+55-41-99745-2053",
-              email: "contato@0web.com.br",
-              priceRange: "R$ 499 - R$ 8.000",
-              areaServed: { "@type": "Country", name: "BR" },
-              address: { "@type": "PostalAddress", addressCountry: "BR" },
-            },
-            {
+
               "@type": "FAQPage",
               "@id": `${URL}#faq`,
               mainEntity: FAQ.map((f) => ({
