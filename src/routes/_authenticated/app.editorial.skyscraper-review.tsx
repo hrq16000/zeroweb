@@ -35,8 +35,9 @@ function ReviewPage() {
 
   useEffect(() => setState(loadState()), []);
 
-  function update(slug: string, patch: Partial<Record>) {
-    const next = { ...state, [slug]: { status: "rascunho" as Status, ...state[slug], ...patch } };
+  function update(slug: string, patch: Partial<PostState>) {
+    const prev = state[slug] ?? { status: "rascunho" as Status };
+    const next = { ...state, [slug]: { ...prev, ...patch } };
     setState(next);
     saveState(next);
   }
