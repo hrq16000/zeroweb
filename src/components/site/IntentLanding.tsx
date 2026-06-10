@@ -23,7 +23,7 @@ export type IntentLandingProps = {
   benefits: { title: string; description: string }[];
   faq: { q: string; a: string }[];
   socialProof?: { name: string; role: string; quote: string }[];
-  schemaService: { name: string; description: string };
+  schemaService: { name: string; description: string; url?: string };
   /** Se passado, troca o CTA principal pelo FunnelCTAButton dinâmico. */
   funnelSlug?: string;
   /** Slug do serviço atual, usado pelo funil dinâmico. */
