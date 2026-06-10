@@ -18,6 +18,7 @@ import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-dia
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapSolutionsDotxmlRouteImport } from './routes/sitemap-solutions[.]xml'
+import { Route as SitemapSkyscraperDotxmlRouteImport } from './routes/sitemap-skyscraper[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
@@ -64,6 +65,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
@@ -98,6 +100,7 @@ import { Route as BlogGoogleMeuNegocioRouteImport } from './routes/blog.google-m
 import { Route as BlogConversaoRouteImport } from './routes/blog.conversao'
 import { Route as BlogAutomacaoRouteImport } from './routes/blog.automacao'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as BlogSkyscraperSlugRouteImport } from './routes/blog-skyscraper.$slug'
 import { Route as BairrosCwbSlugRouteImport } from './routes/bairros-cwb.$slug'
 import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
@@ -154,6 +157,7 @@ import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_
 import { Route as AuthenticatedAppIndexacaoUrlIdRouteImport } from './routes/_authenticated/app.indexacao.$urlId'
 import { Route as AuthenticatedAppFunisLeadsRouteImport } from './routes/_authenticated/app.funis.leads'
 import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authenticated/app.funis.$id'
+import { Route as AuthenticatedAppEditorialSkyscraperReviewRouteImport } from './routes/_authenticated/app.editorial.skyscraper-review'
 import { Route as AuthenticatedAppEditorialSkyscraperRouteImport } from './routes/_authenticated/app.editorial.skyscraper'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
 import { Route as AuthenticatedAppFunisPipelineRegrasRouteImport } from './routes/_authenticated/app.funis.pipeline.regras'
@@ -201,6 +205,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SitemapSolutionsDotxmlRoute = SitemapSolutionsDotxmlRouteImport.update({
   id: '/sitemap-solutions.xml',
   path: '/sitemap-solutions.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapSkyscraperDotxmlRoute = SitemapSkyscraperDotxmlRouteImport.update({
+  id: '/sitemap-skyscraper.xml',
+  path: '/sitemap-skyscraper.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
@@ -436,6 +445,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSkyscraperIndexRoute = BlogSkyscraperIndexRouteImport.update({
+  id: '/blog-skyscraper/',
+  path: '/blog-skyscraper/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BairrosCwbIndexRoute = BairrosCwbIndexRouteImport.update({
   id: '/bairros-cwb/',
   path: '/bairros-cwb/',
@@ -607,6 +621,11 @@ const BlogAutomacaoRoute = BlogAutomacaoRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSkyscraperSlugRoute = BlogSkyscraperSlugRouteImport.update({
+  id: '/blog-skyscraper/$slug',
+  path: '/blog-skyscraper/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BairrosCwbSlugRoute = BairrosCwbSlugRouteImport.update({
@@ -924,6 +943,12 @@ const AuthenticatedAppFunisIdRoute = AuthenticatedAppFunisIdRouteImport.update({
   path: '/funis/$id',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppEditorialSkyscraperReviewRoute =
+  AuthenticatedAppEditorialSkyscraperReviewRouteImport.update({
+    id: '/skyscraper-review',
+    path: '/skyscraper-review',
+    getParentRoute: () => AuthenticatedAppEditorialRoute,
+  } as any)
 const AuthenticatedAppEditorialSkyscraperRoute =
   AuthenticatedAppEditorialSkyscraperRouteImport.update({
     id: '/skyscraper',
@@ -986,6 +1011,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -999,6 +1025,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1033,6 +1060,7 @@ export interface FileRoutesByFullPath {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1070,6 +1098,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1134,6 +1163,7 @@ export interface FileRoutesByTo {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -1146,6 +1176,7 @@ export interface FileRoutesByTo {
   '/$city/$service': typeof CityServiceRoute
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1180,6 +1211,7 @@ export interface FileRoutesByTo {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
@@ -1217,6 +1249,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1284,6 +1317,7 @@ export interface FileRoutesById {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -1297,6 +1331,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1331,6 +1366,7 @@ export interface FileRoutesById {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1368,6 +1404,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/_authenticated/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/_authenticated/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/_authenticated/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/_authenticated/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1435,6 +1472,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1448,6 +1486,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1482,6 +1521,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
     | '/bairros-cwb/'
+    | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1519,6 +1559,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
+    | '/app/editorial/skyscraper-review'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1583,6 +1624,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1595,6 +1637,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1629,6 +1672,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh'
     | '/bairros-cwb'
+    | '/blog-skyscraper'
     | '/blog'
     | '/cases'
     | '/servicos'
@@ -1666,6 +1710,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
+    | '/app/editorial/skyscraper-review'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1732,6 +1777,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1745,6 +1791,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1779,6 +1826,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
     | '/bairros-cwb/'
+    | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1816,6 +1864,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/editorial/skyscraper'
+    | '/_authenticated/app/editorial/skyscraper-review'
     | '/_authenticated/app/funis/$id'
     | '/_authenticated/app/funis/leads'
     | '/_authenticated/app/indexacao/$urlId'
@@ -1883,6 +1932,7 @@ export interface RootRouteChildren {
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
+  SitemapSkyscraperDotxmlRoute: typeof SitemapSkyscraperDotxmlRoute
   SitemapSolutionsDotxmlRoute: typeof SitemapSolutionsDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
@@ -1895,6 +1945,7 @@ export interface RootRouteChildren {
   CityServiceRoute: typeof CityServiceRoute
   BairrosBhSlugRoute: typeof BairrosBhSlugRoute
   BairrosCwbSlugRoute: typeof BairrosCwbSlugRoute
+  BlogSkyscraperSlugRoute: typeof BlogSkyscraperSlugRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogAutomacaoRoute: typeof BlogAutomacaoRoute
   BlogConversaoRoute: typeof BlogConversaoRoute
@@ -1917,6 +1968,7 @@ export interface RootRouteChildren {
   RCodeRoute: typeof RCodeRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
+  BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
@@ -1997,6 +2049,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-solutions.xml'
       fullPath: '/sitemap-solutions.xml'
       preLoaderRoute: typeof SitemapSolutionsDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-skyscraper.xml': {
+      id: '/sitemap-skyscraper.xml'
+      path: '/sitemap-skyscraper.xml'
+      fullPath: '/sitemap-skyscraper.xml'
+      preLoaderRoute: typeof SitemapSkyscraperDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-services.xml': {
@@ -2321,6 +2380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog-skyscraper/': {
+      id: '/blog-skyscraper/'
+      path: '/blog-skyscraper'
+      fullPath: '/blog-skyscraper/'
+      preLoaderRoute: typeof BlogSkyscraperIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bairros-cwb/': {
       id: '/bairros-cwb/'
       path: '/bairros-cwb'
@@ -2557,6 +2623,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog-skyscraper/$slug': {
+      id: '/blog-skyscraper/$slug'
+      path: '/blog-skyscraper/$slug'
+      fullPath: '/blog-skyscraper/$slug'
+      preLoaderRoute: typeof BlogSkyscraperSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bairros-cwb/$slug': {
@@ -2951,6 +3024,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFunisIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/editorial/skyscraper-review': {
+      id: '/_authenticated/app/editorial/skyscraper-review'
+      path: '/skyscraper-review'
+      fullPath: '/app/editorial/skyscraper-review'
+      preLoaderRoute: typeof AuthenticatedAppEditorialSkyscraperReviewRouteImport
+      parentRoute: typeof AuthenticatedAppEditorialRoute
+    }
     '/_authenticated/app/editorial/skyscraper': {
       id: '/_authenticated/app/editorial/skyscraper'
       path: '/skyscraper'
@@ -2977,12 +3057,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAppEditorialRouteChildren {
   AuthenticatedAppEditorialSkyscraperRoute: typeof AuthenticatedAppEditorialSkyscraperRoute
+  AuthenticatedAppEditorialSkyscraperReviewRoute: typeof AuthenticatedAppEditorialSkyscraperReviewRoute
 }
 
 const AuthenticatedAppEditorialRouteChildren: AuthenticatedAppEditorialRouteChildren =
   {
     AuthenticatedAppEditorialSkyscraperRoute:
       AuthenticatedAppEditorialSkyscraperRoute,
+    AuthenticatedAppEditorialSkyscraperReviewRoute:
+      AuthenticatedAppEditorialSkyscraperReviewRoute,
   }
 
 const AuthenticatedAppEditorialRouteWithChildren =
@@ -3247,6 +3330,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
+  SitemapSkyscraperDotxmlRoute: SitemapSkyscraperDotxmlRoute,
   SitemapSolutionsDotxmlRoute: SitemapSolutionsDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
@@ -3259,6 +3343,7 @@ const rootRouteChildren: RootRouteChildren = {
   CityServiceRoute: CityServiceRoute,
   BairrosBhSlugRoute: BairrosBhSlugRoute,
   BairrosCwbSlugRoute: BairrosCwbSlugRoute,
+  BlogSkyscraperSlugRoute: BlogSkyscraperSlugRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogAutomacaoRoute: BlogAutomacaoRoute,
   BlogConversaoRoute: BlogConversaoRoute,
@@ -3281,6 +3366,7 @@ const rootRouteChildren: RootRouteChildren = {
   RCodeRoute: RCodeRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
+  BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
