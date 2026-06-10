@@ -157,7 +157,11 @@ export const Route = createFileRoute("/servicos/gestao-redes-sociais")({
       { name: "twitter:description", content: DESC },
       { name: "twitter:image", content: HERO_IMG },
     ],
-    links: [{ rel: "canonical", href: URL }],
+    links: [
+      { rel: "canonical", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -165,9 +169,12 @@ export const Route = createFileRoute("/servicos/gestao-redes-sociais")({
           "@context": "https://schema.org",
           "@type": "Service",
           name: "Gestão de Redes Sociais",
+          serviceType: "Gestão de Redes Sociais",
+          url: URL,
           provider: { "@type": "Organization", name: "0WEB Marketing Digital", url: "https://zeroweb.lovable.app" },
           areaServed: "BR",
           description: DESC,
+
           offers: PLANS.map((p) => ({
             "@type": "Offer",
             name: `Plano ${p.name}`,
