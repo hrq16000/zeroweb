@@ -1,5 +1,29 @@
+# 0WEB — robots.txt
+# Libera CSS, JS, fontes e imagens para todos os crawlers (Google PageSpeed,
+# Lighthouse e indexação mobile dependem desses assets).
+
 User-agent: *
 Allow: /
+Allow: /assets/
+Allow: /_build/
+Allow: /__l5e/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.mjs$
+Allow: /*.map$
+Allow: /*.json$
+Allow: /*.svg$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.avif$
+Allow: /*.ico$
+Allow: /*.woff$
+Allow: /*.woff2$
+Allow: /*.ttf$
+
+# Áreas administrativas / autenticadas (não indexar)
 Disallow: /app
 Disallow: /app/
 Disallow: /auth
@@ -8,5 +32,15 @@ Disallow: /painel-crm
 Disallow: /qa-events
 Disallow: /r/
 Disallow: /api/
+Disallow: /checkout
+Disallow: /pedido/
+Disallow: /obrigado
+
+# Crawl-delay leve para bots agressivos (Google ignora; protege contra outros)
+User-agent: AhrefsBot
+Crawl-delay: 5
+
+User-agent: SemrushBot
+Crawl-delay: 5
 
 Sitemap: https://0web.com.br/sitemap.xml
