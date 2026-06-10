@@ -225,7 +225,7 @@ export function IntentLanding(p: IntentLandingProps) {
             name: p.schemaService.name,
             description: p.schemaService.description,
             serviceType: p.schemaService.name,
-            url: typeof window !== "undefined" ? window.location.href : undefined,
+            url: p.schemaService.url ?? (typeof window !== "undefined" ? window.location.href : undefined),
             provider: { "@type": "Organization", name: "0WEB", url: "https://0web.com.br" },
             areaServed: "BR",
             mainEntity: {
