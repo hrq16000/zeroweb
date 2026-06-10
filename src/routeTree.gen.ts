@@ -64,6 +64,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
@@ -98,6 +99,7 @@ import { Route as BlogGoogleMeuNegocioRouteImport } from './routes/blog.google-m
 import { Route as BlogConversaoRouteImport } from './routes/blog.conversao'
 import { Route as BlogAutomacaoRouteImport } from './routes/blog.automacao'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as BlogSkyscraperSlugRouteImport } from './routes/blog-skyscraper.$slug'
 import { Route as BairrosCwbSlugRouteImport } from './routes/bairros-cwb.$slug'
 import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
@@ -436,6 +438,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSkyscraperIndexRoute = BlogSkyscraperIndexRouteImport.update({
+  id: '/blog-skyscraper/',
+  path: '/blog-skyscraper/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BairrosCwbIndexRoute = BairrosCwbIndexRouteImport.update({
   id: '/bairros-cwb/',
   path: '/bairros-cwb/',
@@ -607,6 +614,11 @@ const BlogAutomacaoRoute = BlogAutomacaoRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSkyscraperSlugRoute = BlogSkyscraperSlugRouteImport.update({
+  id: '/blog-skyscraper/$slug',
+  path: '/blog-skyscraper/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BairrosCwbSlugRoute = BairrosCwbSlugRouteImport.update({
@@ -999,6 +1011,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1033,6 +1046,7 @@ export interface FileRoutesByFullPath {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1146,6 +1160,7 @@ export interface FileRoutesByTo {
   '/$city/$service': typeof CityServiceRoute
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1180,6 +1195,7 @@ export interface FileRoutesByTo {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
@@ -1297,6 +1313,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/bairros-bh/$slug': typeof BairrosBhSlugRoute
   '/bairros-cwb/$slug': typeof BairrosCwbSlugRoute
+  '/blog-skyscraper/$slug': typeof BlogSkyscraperSlugRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/automacao': typeof BlogAutomacaoRoute
   '/blog/conversao': typeof BlogConversaoRoute
@@ -1331,6 +1348,7 @@ export interface FileRoutesById {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
+  '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
@@ -1448,6 +1466,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1482,6 +1501,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
     | '/bairros-cwb/'
+    | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1595,6 +1615,7 @@ export interface FileRouteTypes {
     | '/$city/$service'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1629,6 +1650,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh'
     | '/bairros-cwb'
+    | '/blog-skyscraper'
     | '/blog'
     | '/cases'
     | '/servicos'
@@ -1745,6 +1767,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/bairros-bh/$slug'
     | '/bairros-cwb/$slug'
+    | '/blog-skyscraper/$slug'
     | '/blog/$slug'
     | '/blog/automacao'
     | '/blog/conversao'
@@ -1779,6 +1802,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
     | '/bairros-cwb/'
+    | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
@@ -1895,6 +1919,7 @@ export interface RootRouteChildren {
   CityServiceRoute: typeof CityServiceRoute
   BairrosBhSlugRoute: typeof BairrosBhSlugRoute
   BairrosCwbSlugRoute: typeof BairrosCwbSlugRoute
+  BlogSkyscraperSlugRoute: typeof BlogSkyscraperSlugRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogAutomacaoRoute: typeof BlogAutomacaoRoute
   BlogConversaoRoute: typeof BlogConversaoRoute
@@ -1917,6 +1942,7 @@ export interface RootRouteChildren {
   RCodeRoute: typeof RCodeRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
+  BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
@@ -2321,6 +2347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog-skyscraper/': {
+      id: '/blog-skyscraper/'
+      path: '/blog-skyscraper'
+      fullPath: '/blog-skyscraper/'
+      preLoaderRoute: typeof BlogSkyscraperIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bairros-cwb/': {
       id: '/bairros-cwb/'
       path: '/bairros-cwb'
@@ -2557,6 +2590,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog-skyscraper/$slug': {
+      id: '/blog-skyscraper/$slug'
+      path: '/blog-skyscraper/$slug'
+      fullPath: '/blog-skyscraper/$slug'
+      preLoaderRoute: typeof BlogSkyscraperSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bairros-cwb/$slug': {
@@ -3259,6 +3299,7 @@ const rootRouteChildren: RootRouteChildren = {
   CityServiceRoute: CityServiceRoute,
   BairrosBhSlugRoute: BairrosBhSlugRoute,
   BairrosCwbSlugRoute: BairrosCwbSlugRoute,
+  BlogSkyscraperSlugRoute: BlogSkyscraperSlugRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogAutomacaoRoute: BlogAutomacaoRoute,
   BlogConversaoRoute: BlogConversaoRoute,
@@ -3281,6 +3322,7 @@ const rootRouteChildren: RootRouteChildren = {
   RCodeRoute: RCodeRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
+  BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
