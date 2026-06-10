@@ -6,11 +6,11 @@ import { SKYSCRAPER_CALENDAR } from "@/lib/skyscraper-calendar";
 import { renderSkyscraperArticle } from "@/lib/skyscraper-render";
 
 type Status = "rascunho" | "agendado" | "publicado";
-type Record = { status: Status; scheduledAt?: string; notes?: string };
+type PostState = { status: Status; scheduledAt?: string; notes?: string };
 
 const STORAGE_KEY = "skyscraper-publish-state-v1";
 
-function loadState(): Record<string, Record> {
+function loadState(): Record<string, PostState> {
   if (typeof window === "undefined") return {};
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");
@@ -19,7 +19,7 @@ function loadState(): Record<string, Record> {
   }
 }
 
-function saveState(s: Record<string, Record>) {
+function saveState(s: Record<string, PostState>) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
 }
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/app/editorial/skyscraper-r
 });
 
 function ReviewPage() {
-  const [state, setState] = useState<Record<string, Record>>({});
+  const [state, setState] = useState<Record<string, PostState>>({});
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => setState(loadState()), []);

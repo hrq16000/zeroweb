@@ -18,6 +18,7 @@ import { Route as SolicitarDiagnosticoRouteImport } from './routes/solicitar-dia
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SitemapSolutionsDotxmlRouteImport } from './routes/sitemap-solutions[.]xml'
+import { Route as SitemapSkyscraperDotxmlRouteImport } from './routes/sitemap-skyscraper[.]xml'
 import { Route as SitemapServicesDotxmlRouteImport } from './routes/sitemap-services[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapMarketplaceDotxmlRouteImport } from './routes/sitemap-marketplace[.]xml'
@@ -156,6 +157,7 @@ import { Route as AuthenticatedAppMarketplaceAdminRouteImport } from './routes/_
 import { Route as AuthenticatedAppIndexacaoUrlIdRouteImport } from './routes/_authenticated/app.indexacao.$urlId'
 import { Route as AuthenticatedAppFunisLeadsRouteImport } from './routes/_authenticated/app.funis.leads'
 import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authenticated/app.funis.$id'
+import { Route as AuthenticatedAppEditorialSkyscraperReviewRouteImport } from './routes/_authenticated/app.editorial.skyscraper-review'
 import { Route as AuthenticatedAppEditorialSkyscraperRouteImport } from './routes/_authenticated/app.editorial.skyscraper'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
 import { Route as AuthenticatedAppFunisPipelineRegrasRouteImport } from './routes/_authenticated/app.funis.pipeline.regras'
@@ -203,6 +205,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SitemapSolutionsDotxmlRoute = SitemapSolutionsDotxmlRouteImport.update({
   id: '/sitemap-solutions.xml',
   path: '/sitemap-solutions.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapSkyscraperDotxmlRoute = SitemapSkyscraperDotxmlRouteImport.update({
+  id: '/sitemap-skyscraper.xml',
+  path: '/sitemap-skyscraper.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapServicesDotxmlRoute = SitemapServicesDotxmlRouteImport.update({
@@ -936,6 +943,12 @@ const AuthenticatedAppFunisIdRoute = AuthenticatedAppFunisIdRouteImport.update({
   path: '/funis/$id',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppEditorialSkyscraperReviewRoute =
+  AuthenticatedAppEditorialSkyscraperReviewRouteImport.update({
+    id: '/skyscraper-review',
+    path: '/skyscraper-review',
+    getParentRoute: () => AuthenticatedAppEditorialRoute,
+  } as any)
 const AuthenticatedAppEditorialSkyscraperRoute =
   AuthenticatedAppEditorialSkyscraperRouteImport.update({
     id: '/skyscraper',
@@ -998,6 +1011,7 @@ export interface FileRoutesByFullPath {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -1084,6 +1098,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1148,6 +1163,7 @@ export interface FileRoutesByTo {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -1233,6 +1249,7 @@ export interface FileRoutesByTo {
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1300,6 +1317,7 @@ export interface FileRoutesById {
   '/sitemap-marketplace.xml': typeof SitemapMarketplaceDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-services.xml': typeof SitemapServicesDotxmlRoute
+  '/sitemap-skyscraper.xml': typeof SitemapSkyscraperDotxmlRoute
   '/sitemap-solutions.xml': typeof SitemapSolutionsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
@@ -1386,6 +1404,7 @@ export interface FileRoutesById {
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
+  '/_authenticated/app/editorial/skyscraper-review': typeof AuthenticatedAppEditorialSkyscraperReviewRoute
   '/_authenticated/app/funis/$id': typeof AuthenticatedAppFunisIdRoute
   '/_authenticated/app/funis/leads': typeof AuthenticatedAppFunisLeadsRoute
   '/_authenticated/app/indexacao/$urlId': typeof AuthenticatedAppIndexacaoUrlIdRoute
@@ -1453,6 +1472,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1539,6 +1559,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
+    | '/app/editorial/skyscraper-review'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1603,6 +1624,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1688,6 +1710,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
+    | '/app/editorial/skyscraper-review'
     | '/app/funis/$id'
     | '/app/funis/leads'
     | '/app/indexacao/$urlId'
@@ -1754,6 +1777,7 @@ export interface FileRouteTypes {
     | '/sitemap-marketplace.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-services.xml'
+    | '/sitemap-skyscraper.xml'
     | '/sitemap-solutions.xml'
     | '/sitemap.xml'
     | '/sobre'
@@ -1840,6 +1864,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/'
     | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/editorial/skyscraper'
+    | '/_authenticated/app/editorial/skyscraper-review'
     | '/_authenticated/app/funis/$id'
     | '/_authenticated/app/funis/leads'
     | '/_authenticated/app/indexacao/$urlId'
@@ -1907,6 +1932,7 @@ export interface RootRouteChildren {
   SitemapMarketplaceDotxmlRoute: typeof SitemapMarketplaceDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapServicesDotxmlRoute: typeof SitemapServicesDotxmlRoute
+  SitemapSkyscraperDotxmlRoute: typeof SitemapSkyscraperDotxmlRoute
   SitemapSolutionsDotxmlRoute: typeof SitemapSolutionsDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
@@ -2023,6 +2049,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap-solutions.xml'
       fullPath: '/sitemap-solutions.xml'
       preLoaderRoute: typeof SitemapSolutionsDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-skyscraper.xml': {
+      id: '/sitemap-skyscraper.xml'
+      path: '/sitemap-skyscraper.xml'
+      fullPath: '/sitemap-skyscraper.xml'
+      preLoaderRoute: typeof SitemapSkyscraperDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-services.xml': {
@@ -2991,6 +3024,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFunisIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/editorial/skyscraper-review': {
+      id: '/_authenticated/app/editorial/skyscraper-review'
+      path: '/skyscraper-review'
+      fullPath: '/app/editorial/skyscraper-review'
+      preLoaderRoute: typeof AuthenticatedAppEditorialSkyscraperReviewRouteImport
+      parentRoute: typeof AuthenticatedAppEditorialRoute
+    }
     '/_authenticated/app/editorial/skyscraper': {
       id: '/_authenticated/app/editorial/skyscraper'
       path: '/skyscraper'
@@ -3017,12 +3057,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAppEditorialRouteChildren {
   AuthenticatedAppEditorialSkyscraperRoute: typeof AuthenticatedAppEditorialSkyscraperRoute
+  AuthenticatedAppEditorialSkyscraperReviewRoute: typeof AuthenticatedAppEditorialSkyscraperReviewRoute
 }
 
 const AuthenticatedAppEditorialRouteChildren: AuthenticatedAppEditorialRouteChildren =
   {
     AuthenticatedAppEditorialSkyscraperRoute:
       AuthenticatedAppEditorialSkyscraperRoute,
+    AuthenticatedAppEditorialSkyscraperReviewRoute:
+      AuthenticatedAppEditorialSkyscraperReviewRoute,
   }
 
 const AuthenticatedAppEditorialRouteWithChildren =
@@ -3287,6 +3330,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapMarketplaceDotxmlRoute: SitemapMarketplaceDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapServicesDotxmlRoute: SitemapServicesDotxmlRoute,
+  SitemapSkyscraperDotxmlRoute: SitemapSkyscraperDotxmlRoute,
   SitemapSolutionsDotxmlRoute: SitemapSolutionsDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
