@@ -49,3 +49,10 @@ Vou executar os passos abaixo em ordem. Ao final de cada etapa, te aviso e sigo 
 
 ---
 **Vou começar pela Etapa 1.** Me responde "ok" para eu seguir, ou diga para pular/reordenar.
+---
+## Status atualizado
+
+- **Etapa 1 (Indexação/Redirects)** — concluída.
+- **Etapa 2 (Schemas)** — concluída: hreflang pt-BR + x-default e Service.url/serviceType nas rotas que falhavam; LocalBusiness duplicado em /servicos/site-express removido; helper `buildHead` agora emite alternates.
+- **Etapa 3 (Performance/Imagens)** — Picture (avif/webp/jpg) + postbuild `scripts/optimize-blog-images.mjs` + preload do LCP em `/` já ativos. `public/_headers` agora versiona o cache (1 ano para assets imutáveis, 30 dias para imagens, 1h para sitemap/robots).
+- **Etapa 4 (Cloudflare + GBP + Lighthouse)** — runbook em `docs/runbook-cdn-gbp.md`; Lighthouse CI já roda em `.github/workflows/lighthouse.yml` com metas LCP<2.5s, CLS<0.1, SEO≥95.
