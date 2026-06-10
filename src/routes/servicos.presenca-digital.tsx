@@ -51,7 +51,11 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
       { name: "twitter:description", content: DESC },
       { name: "twitter:image", content: cover.url },
     ],
-    links: [{ rel: "canonical", href: URL }],
+    links: [
+      { rel: "canonical", href: URL },
+      { rel: "alternate", hrefLang: "pt-BR", href: URL },
+      { rel: "alternate", hrefLang: "x-default", href: URL },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -59,6 +63,8 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
           "@context": "https://schema.org",
           "@type": "Service",
           name: "Presença Digital para Empresas",
+          serviceType: "Presença Digital",
+          url: URL,
           provider: {
             "@type": "Organization",
             name: "0WEB Marketing Digital",
@@ -66,6 +72,7 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
           },
           areaServed: "BR",
           description: DESC,
+
           offers: {
             "@type": "Offer",
             name: "Plano Presença Digital",
