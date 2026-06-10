@@ -32,7 +32,7 @@ export const Route = createFileRoute("/servicos/trafego-pago")({
         { q: "Vocês entregam relatório?", a: "Sim, semanal com leads, CPA, ROAS e ações." },
         { q: "Conseguem CPA garantido?", a: "Trabalhamos com meta de CPA, ajustada após validação." },
       ]}
-      schemaService={{ name: "Tráfego Pago", description: DESC }}
+      schemaService={{ name: "Tráfego Pago", description: DESC, url: URL }}
     />
   ),
 });
