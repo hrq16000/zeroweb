@@ -181,7 +181,7 @@ export function FeatureShowcase() {
             to="/servicos"
             className="inline-flex items-center gap-2 rounded-full border border-background/20 px-6 py-3 text-sm font-semibold text-background/80 hover:text-background hover:border-background/50 transition"
           >
-            Ver todos os serviços
+            Ver Serviços
           </Link>
         </div>
       </div>

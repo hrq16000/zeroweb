@@ -145,7 +145,7 @@ export function CartDrawer() {
                 onClick={() => setOpen(false)}
                 className="mt-4 inline-block text-primary story-link text-sm"
               >
-                Explorar serviços
+                Ver Serviços
               </Link>
             </div>
           ) : (

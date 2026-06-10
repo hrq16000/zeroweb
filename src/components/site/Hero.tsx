@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Sparkles, Zap, Store } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { useExperiment } from "@/lib/ab-testing";
+import { useExperiment, trackExperimentEvent } from "@/lib/ab-testing";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 import heroDashboard from "@/assets/hero-dashboard.webp";
 
@@ -17,7 +18,7 @@ const HERO_VARIANTS = {
   A: {
     headline: "Sua empresa merece mais que",
     accent: "apenas um site.",
-    sub: "Criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam negócios em máquinas de crescimento.",
+    sub: "Sites, automações e estratégia digital que viram crescimento real — mais clientes, mais vendas, todo mês.",
   },
   B: {
     headline: "Mais clientes. Menos esforço.",
@@ -31,13 +32,70 @@ const CTA_VARIANTS = {
   B: { label: "Quero Mais Clientes Agora", icon: Zap },
 } as const;
 
+// Teste A/B do CTA primário do hero (label do botão que leva a /servicos).
+const PRIMARY_CTA_VARIANTS = {
+  A: "Ver Serviços",
+  B: "Ver Catálogo Completo",
+} as const;
+
 export function Hero() {
   const heroVariant = useExperiment("hero_copy", ["A", "B"] as const);
   const ctaVariant = useExperiment("hero_cta", ["A", "B"] as const);
+  const primaryCtaVariant = useExperiment("hero_primary_cta", ["A", "B"] as const);
   const copy = HERO_VARIANTS[heroVariant];
   const cta = CTA_VARIANTS[ctaVariant];
+  const primaryCtaLabel = PRIMARY_CTA_VARIANTS[primaryCtaVariant];
   const CtaIcon = cta.icon;
   const { open: openFunnel } = useWaFunnel();
+  const sectionViewedRef = useRef(false);
+
+  // Fire um evento único quando a próxima seção alvo (logo abaixo do hero) entra na viewport,
+  // permitindo cruzar com cliques no CTA "Ver Serviços" por rota/período.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const target =
+      document.getElementById("servicos-destaque") ||
+      document.getElementById("problemas") ||
+      document.querySelector("main section:nth-of-type(2)");
+    if (!target) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && !sectionViewedRef.current) {
+            sectionViewedRef.current = true;
+            trackEvent("section_view", {
+              section: target.id || "next_after_hero",
+              location: "post_hero",
+              route: window.location.pathname,
+              experiment_primary_cta: primaryCtaVariant,
+            });
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [primaryCtaVariant]);
+
+  const handlePrimaryCtaClick = () => {
+    const route = typeof window !== "undefined" ? window.location.pathname : "ssr";
+    trackEvent("cta_click", {
+      label: "ver_servicos",
+      cta_text: primaryCtaLabel,
+      location: "hero",
+      route,
+      experiment_hero: heroVariant,
+      experiment_cta: ctaVariant,
+      experiment_primary_cta: primaryCtaVariant,
+    });
+    trackExperimentEvent("click", "hero_primary_cta", primaryCtaVariant, {
+      label: "ver_servicos",
+      route,
+    });
+  };
 
   return (
     <section id="inicio" className="relative pt-28 lg:pt-32 pb-24 bg-hero overflow-hidden">
@@ -51,7 +109,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-foreground mb-6"
           >
-            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <Sparkles className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
             Tecnologia que gera crescimento
           </motion.div>
 
@@ -82,19 +140,16 @@ export function Hero() {
           >
             <Link
               to="/servicos"
-              onClick={() =>
-                trackEvent("cta_click", {
-                  label: "ver_servicos",
-                  location: "hero",
-                  experiment_hero: heroVariant,
-                  experiment_cta: ctaVariant,
-                })
-              }
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
+              onClick={handlePrimaryCtaClick}
+              aria-label={`${primaryCtaLabel} — abrir catálogo de serviços`}
+              className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-11"
             >
-              <Store className="w-4 h-4" />
-              Ver Serviços
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              <Store className="w-4 h-4" aria-hidden="true" />
+              <span>{primaryCtaLabel}</span>
+              <ArrowRight
+                className="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
+                aria-hidden="true"
+              />
             </Link>
             <button
               type="button"
@@ -102,9 +157,9 @@ export function Hero() {
                 trackConversion("whatsapp_click", { location: "hero", experiment_hero: heroVariant });
                 openFunnel("hero");
               }}
-              className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
+              className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-11"
             >
-              <MessageCircle className="w-4 h-4 text-accent" />
+              <MessageCircle className="w-4 h-4 text-accent" aria-hidden="true" />
               Falar no WhatsApp
             </button>
             <a
@@ -115,10 +170,10 @@ export function Hero() {
                   location: "hero_secondary",
                 })
               }
-              className="inline-flex items-center gap-2 rounded-full border border-border text-foreground/80 hover:text-foreground font-medium px-5 py-3 transition"
+              className="inline-flex items-center gap-2 rounded-full border border-border text-foreground/80 hover:text-foreground font-medium px-5 py-3 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-11"
             >
               {cta.label}
-              <CtaIcon className="w-4 h-4" />
+              <CtaIcon className="w-4 h-4" aria-hidden="true" />
             </a>
           </motion.div>
 
@@ -160,7 +215,7 @@ export function Hero() {
               />
             </picture>
             <div className="absolute -bottom-4 -left-4 sm:-left-6 glass rounded-2xl px-4 py-3 shadow-elegant hidden sm:flex items-center gap-3">
-              <span className="grid place-items-center w-9 h-9 rounded-full bg-emerald-500/15 text-emerald-600 font-bold">↑</span>
+              <span className="grid place-items-center w-9 h-9 rounded-full bg-emerald-500/15 text-emerald-600 font-bold" aria-hidden="true">↑</span>
               <div>
                 <p className="text-xs text-muted-foreground">Tráfego orgânico</p>
                 <p className="text-lg font-bold font-display">+312%</p>

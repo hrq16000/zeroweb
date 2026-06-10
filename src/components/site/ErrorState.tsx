@@ -79,7 +79,7 @@ export function ErrorState({ kind, title, description, onRetry, diagnostics }: E
             to="/servicos"
             className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Ver serviços
+            Ver Serviços
           </Link>
           <a
             href={whatsappUrl}
