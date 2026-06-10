@@ -97,7 +97,7 @@ function NotFoundComponent() {
               to="/servicos"
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 font-semibold hover:bg-muted transition"
             >
-              Ver todos os serviços
+              Ver Serviços
             </Link>
           </div>
         </div>

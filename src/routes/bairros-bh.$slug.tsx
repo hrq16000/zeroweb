@@ -146,7 +146,7 @@ function BairroPage() {
                 to="/servicos"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 font-semibold hover:bg-muted transition"
               >
-                Ver Todos os Serviços
+                Ver Serviços
               </Link>
             </div>
           </div>

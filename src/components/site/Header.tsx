@@ -195,7 +195,7 @@ export function Header() {
                       onClick={() => setServicesOpen(false)}
                       className="col-span-2 mt-1 text-center text-sm font-semibold text-primary hover:underline py-2"
                     >
-                      Ver catálogo completo →
+                      Ver Serviços →
                     </Link>
                   </div>
                 </motion.div>

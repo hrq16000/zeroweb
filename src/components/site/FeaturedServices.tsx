@@ -44,7 +44,7 @@ export function FeaturedServices({
             to="/servicos"
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
           >
-            Ver todos os serviços <ArrowRight className="w-4 h-4" />
+            Ver Serviços <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
