@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/accordion";
 import { absUrl, ORIGIN, ORG_REF, breadcrumbLd } from "@/lib/seo";
 import { SITE_EXPRESS_FAQ as FAQ } from "@/lib/site-express-faq";
+import { TrustStrip } from "@/components/site/TrustStrip";
 
 const SLUG = "site-express";
 const PATH = `/servicos/${SLUG}`;
@@ -408,6 +409,9 @@ function SiteExpressPage() {
             </div>
           </div>
         </section>
+
+        {/* Infra inclusa */}
+        <TrustStrip variant="full" />
 
         {/* FAQ (12 Q&A) — âncora #faq com offset para o header fixo (scroll suave herdado de html{scroll-behavior:smooth}). */}
         <section id="faq" className="py-16 px-5 scroll-mt-28 lg:scroll-mt-32">
