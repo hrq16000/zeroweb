@@ -70,6 +70,7 @@ import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
+import { Route as ServicosSiteProRouteImport } from './routes/servicos.site-pro'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
 import { Route as ServicosSite24hRouteImport } from './routes/servicos.site-24h'
 import { Route as ServicosPresencaDigitalRouteImport } from './routes/servicos.presenca-digital'
@@ -469,6 +470,11 @@ const ServicosTrafegoPagoLocalRoute =
 const ServicosTrafegoPagoRoute = ServicosTrafegoPagoRouteImport.update({
   id: '/trafego-pago',
   path: '/trafego-pago',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosSiteProRoute = ServicosSiteProRouteImport.update({
+  id: '/site-pro',
+  path: '/site-pro',
   getParentRoute: () => ServicosRoute,
 } as any)
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
@@ -1056,6 +1062,7 @@ export interface FileRoutesByFullPath {
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
@@ -1207,6 +1214,7 @@ export interface FileRoutesByTo {
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
@@ -1362,6 +1370,7 @@ export interface FileRoutesById {
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
   '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
+  '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
@@ -1517,6 +1526,7 @@ export interface FileRouteTypes {
     | '/servicos/presenca-digital'
     | '/servicos/site-24h'
     | '/servicos/site-express'
+    | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
@@ -1668,6 +1678,7 @@ export interface FileRouteTypes {
     | '/servicos/presenca-digital'
     | '/servicos/site-24h'
     | '/servicos/site-express'
+    | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
     | '/bairros-bh'
@@ -1822,6 +1833,7 @@ export interface FileRouteTypes {
     | '/servicos/presenca-digital'
     | '/servicos/site-24h'
     | '/servicos/site-express'
+    | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
     | '/bairros-bh/'
@@ -2413,6 +2425,13 @@ declare module '@tanstack/react-router' {
       path: '/trafego-pago'
       fullPath: '/servicos/trafego-pago'
       preLoaderRoute: typeof ServicosTrafegoPagoRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/site-pro': {
+      id: '/servicos/site-pro'
+      path: '/site-pro'
+      fullPath: '/servicos/site-pro'
+      preLoaderRoute: typeof ServicosSiteProRouteImport
       parentRoute: typeof ServicosRoute
     }
     '/servicos/site-express': {
@@ -3262,6 +3281,7 @@ interface ServicosRouteChildren {
   ServicosPresencaDigitalRoute: typeof ServicosPresencaDigitalRoute
   ServicosSite24hRoute: typeof ServicosSite24hRoute
   ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
+  ServicosSiteProRoute: typeof ServicosSiteProRoute
   ServicosTrafegoPagoRoute: typeof ServicosTrafegoPagoRoute
   ServicosTrafegoPagoLocalRoute: typeof ServicosTrafegoPagoLocalRoute
   ServicosIndexRoute: typeof ServicosIndexRoute
@@ -3277,6 +3297,7 @@ const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosPresencaDigitalRoute: ServicosPresencaDigitalRoute,
   ServicosSite24hRoute: ServicosSite24hRoute,
   ServicosSiteExpressRoute: ServicosSiteExpressRoute,
+  ServicosSiteProRoute: ServicosSiteProRoute,
   ServicosTrafegoPagoRoute: ServicosTrafegoPagoRoute,
   ServicosTrafegoPagoLocalRoute: ServicosTrafegoPagoLocalRoute,
   ServicosIndexRoute: ServicosIndexRoute,
