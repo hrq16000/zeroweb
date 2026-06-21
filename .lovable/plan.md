@@ -1,58 +1,152 @@
-# Plano de execução — 1 etapa por vez
+# Plano de melhorias — port de 0web.site → 0web.com.br
 
-Vou executar os passos abaixo em ordem. Ao final de cada etapa, te aviso e sigo para a próxima (ou paro se você pedir).
+Baseado em análise lado-a-lado entre o site internacional (`0web.site`, EN, USD, foco em hand-code + edge hosting) e o site BR (`0web.com.br`, PT-BR, foco em SEO local + tráfego + IA + GBP).
 
-## Etapa 1 — Rastreamento e indexação (código)
-- Auditar `src/lib/canonical-redirect.helpers.ts` + tabela `redirects` no banco e eliminar cadeias (A→B→C) achatando para A→C; remover self-loops.
-- Varrer todas as rotas `redirect(...)` em `src/routes/*` e garantir 301 direto para a URL final viva (sem hops).
-- Atualizar `public/robots.txt`:
-  - manter `Disallow` só em `/app`, `/auth`, `/painel*`, `/qa-events`, `/r/`, `/api/` (admin).
-  - **liberar explicitamente** assets: `Allow: /assets/`, `Allow: /*.css$`, `Allow: /*.js$`, `Allow: /*.webp$`, `Allow: /*.png$`, `Allow: /*.jpg$`, `Allow: /*.svg$`, `Allow: /*.woff2$`.
-- Revalidar `src/routes/sitemap[.]xml.ts` + sub-sitemaps: incluir todas as rotas vivas (incl. `/blog-skyscraper`, `/calculadora-orcamento`), remover URLs 404/redirecionadas.
-- Rodar `scripts/validate-legacy-301.mjs` e `scripts/validate-sitemaps.mjs` para confirmar 0 erros.
-
-## Etapa 2 — Schemas estruturados (JSON-LD)
-- `__root.tsx` já tem **Organization + LocalBusiness + WebSite** ✅ (manter).
-- Garantir **Service** schema em todas as `/servicos/*` (criar helper `buildServiceSchema()` e injetar via `head().scripts`).
-- Garantir **FAQPage** em rotas com FAQ (`/faq`, serviços com bloco FAQ, blog cluster).
-- Garantir **Article + BreadcrumbList** em `/blog/$slug`, `/blog-skyscraper/$slug`, `/cases/$slug`.
-- Garantir **LocalBusiness** repetido com `areaServed` específico em páginas de cidade/bairro (`/cidade/$slug`, `/bairros-cwb/$slug`, `/bairros-bh/$slug`).
-- Validar tudo com `scripts/validate-jsonld.mjs` e `scripts/validate-schemas.mjs`.
-
-## Etapa 3 — Performance (LCP < 2.5s / CLS < 0.1 mobile)
-- Habilitar `vite-imagetools` no `vite.config.ts` e migrar imagens hero/capa para `?format=webp&w=...`.
-- Adicionar `<link rel="preload" as="image">` para o LCP em `head()` de `index.tsx`, `/servicos/$slug`, `/blog/$slug`.
-- Definir `width`/`height` explícitos em toda `<img>` de Hero/Featured (corrige CLS).
-- `loading="lazy"` + `decoding="async"` em imagens below-the-fold.
-- Cache headers nas rotas estáticas/sitemaps (já parcial — padronizar `Cache-Control: public, max-age=3600, s-maxage=86400`).
-- Rodar `browser--performance_profile` antes/depois para confirmar metas.
-
-## Etapa 4 — Checklist operacional (entrego como markdown, você executa)
-**Cloudflare:**
-- Ativar proxy laranja no DNS de `0web.com.br`.
-- SSL/TLS → Full (strict).
-- Speed → Brotli ON, Early Hints ON, Rocket Loader OFF (quebra TanStack).
-- Caching → Cache Rules: `*.css *.js *.woff2 *.webp *.png *.jpg` → Edge TTL 1 mês.
-- Speed → Optimization → Polish: Lossy + WebP.
-- Rules → Page Rules: `0web.com.br/sitemap*.xml` → Edge Cache TTL 1h.
-
-**Google Business Profile (Perfil da Empresa):**
-- Calendário editorial semanal (3 posts/sem): Segunda = oferta, Quarta = case, Sexta = dica/educacional. Templates prontos.
-- Q&A: pré-publicar 10 perguntas frequentes (com respostas) no próprio perfil.
-- Fotos: 8 categorias obrigatórias (fachada, equipe, bastidores, antes/depois de site, reunião, escritório, logo, capa). Mínimo 20 fotos iniciais.
-- Resposta a avaliações em até 24h (template positivo/negativo).
-
-## Diagnóstico técnico (referência)
-- Helpers existentes: `src/lib/canonical-redirect.helpers.ts` (chains/loops já detectados), `scripts/validate-*.mjs` (8 validadores prontos), `src/routes/sitemap[.]xml.ts` (índice com 12 sub-sitemaps).
-- Sem necessidade de novas dependências exceto `vite-imagetools` (Etapa 3).
-- Sem mudanças de banco; sem mudanças em auth.
+Escolhas confirmadas:
+1. Bloco de infra / selos de confiança
+2. Tier Pro + padronização de pricing
+3. Cluster educacional (site vs app vs landing page)
+4. + exploração extra (abaixo, marcadas como **Bônus**)
 
 ---
-**Vou começar pela Etapa 1.** Me responde "ok" para eu seguir, ou diga para pular/reordenar.
----
-## Status atualizado
 
-- **Etapa 1 (Indexação/Redirects)** — concluída.
-- **Etapa 2 (Schemas)** — concluída: hreflang pt-BR + x-default e Service.url/serviceType nas rotas que falhavam; LocalBusiness duplicado em /servicos/site-express removido; helper `buildHead` agora emite alternates.
-- **Etapa 3 (Performance/Imagens)** — Picture (avif/webp/jpg) + postbuild `scripts/optimize-blog-images.mjs` + preload do LCP em `/` já ativos. `public/_headers` agora versiona o cache (1 ano para assets imutáveis, 30 dias para imagens, 1h para sitemap/robots).
-- **Etapa 4 (Cloudflare + GBP + Lighthouse)** — runbook em `docs/runbook-cdn-gbp.md`; Lighthouse CI já roda em `.github/workflows/lighthouse.yml` com metas LCP<2.5s, CLS<0.1, SEO≥95.
+## Etapa A — TrustStrip (Selos de infra & confiança)
+
+**Objetivo:** comunicar diferencial técnico que o `.site` usa bem e o `.br` esconde — converte hesitantes.
+
+**Arquivos novos**
+- `src/components/site/TrustStrip.tsx` — componente client, 6 selos em grid responsivo (2 col mobile / 6 desktop), ícones lucide, microcopy curta.
+
+**Selos**
+| Selo | Microcopy |
+|---|---|
+| SSL grátis | Certificado auto-renovado |
+| Anti-DDoS | Proteção empresarial Cloudflare |
+| Edge CDN | 300+ PoPs globais |
+| 100% uptime | SLA garantido |
+| Hospedagem inclusa | 1º ano grátis em todos os planos |
+| Suporte pós-entrega | 3 meses inclusos |
+
+**Onde injetar**
+- `src/components/site/Hero.tsx` — abaixo do CTA (variante compacta, 1 linha scrollável no mobile).
+- `src/routes/servicos.criacao-de-sites.tsx`, `servicos.site-express.tsx`, `servicos.site-24h.tsx` — bloco completo acima do FAQ.
+- `src/routes/solicitar-orcamento.tsx` — lateral do form (reduz objeção).
+
+**Schema:** estende `Service.hasOfferCatalog` com `additionalProperty` listando os benefícios (rich result).
+
+**Critério de aceite:** TrustStrip visível em 4 rotas-chave; Lighthouse mobile sem regressão de CLS; copy 100% PT-BR (não traduzir literalmente do EN).
+
+---
+
+## Etapa B — Tier "Site Pro" + padronização de pricing
+
+**Objetivo:** fechar a lacuna entre `site-express` (entrada) e orçamento sob medida (enterprise). O `.site` usa 3 tiers (Single $250 / Multi $850 / Pro $2.500) — modelo psicologicamente superior.
+
+**Rota nova**
+- `src/routes/servicos.site-pro.tsx`
+  - Tagline: "10+ páginas, ranqueamento Google posição 1–5, SEO incluso"
+  - Preço: **a partir de R$ 7.900** (calibrar com você)
+  - Inclui: 10+ páginas custom, estratégia de palavras-chave, SEO técnico + on-page, GMN, 6 meses suporte
+  - Diferencial vs Express: meta de ranking auditada mês a mês
+
+**Padronização de pricing nos `/servicos/*`**
+- Auditar 8 rotas de serviço e garantir formato uniforme: `<PriceTag from="R$ X" period="único|mensal" />`
+- Componente novo `src/components/site/PriceTag.tsx` (já temos `is-solution.ts` pra decidir Solução vs Produto).
+- Rotas a auditar: `criacao-de-sites`, `site-express`, `site-24h`, `seo`, `trafego-pago`, `trafego-pago-local`, `google-meu-negocio`, `gestao-redes-sociais`, `presenca-digital`, `marketplace`.
+- Solução (sem preço) mantém badge "Sob consulta" — não inventar valor.
+
+**Atualizações de catálogo**
+- `src/lib/services-data.ts` — adicionar `site-pro` com `slug`, `name`, `title`, `description`, `serviceType`, `priceFrom`.
+- `src/routes/sitemap-pages[.]xml.ts` — incluir nova URL.
+- Cross-sell em `site-express` e `criacao-de-sites`: card "Precisa de mais? Veja o **Site Pro**".
+
+**Critério de aceite:** todos `/servicos/*` mostram preço OU badge "Sob consulta"; `site-pro` indexado; `scripts/validate-jsonld.mjs` verde.
+
+---
+
+## Etapa C — Cluster educacional de topo de funil
+
+**Objetivo:** capturar buscas informacionais ("o que é um site", "site ou landing page", "site vs sistema web") e canalizar para `/servicos/*`.
+
+**4 posts novos em `src/routes/blog.$slug.tsx`** (entradas em `src/lib/blog-data.ts`):
+
+| Slug | Título | Palavra-chave alvo | Link interno |
+|---|---|---|---|
+| `o-que-e-um-site` | O que é um site, para que serve e quanto custa em 2026 | "o que é um site" | → /servicos/criacao-de-sites |
+| `site-vs-landing-page` | Site institucional vs landing page: qual escolher para vender mais | "site ou landing page" | → /servicos/site-express |
+| `site-vs-sistema-web` | Site, web app ou sistema: diferenças, custos e quando usar cada um | "diferença site e sistema" | → /servicos/criacao-de-sites + futuro `/servicos/sistemas` |
+| `quanto-custa-um-site-profissional` | Quanto custa um site profissional no Brasil (tabela 2026) | "quanto custa um site" | → /servicos/site-pro |
+
+**Schema:** `Article` + `FAQPage` + `BreadcrumbList` (já automatizado em `IntentLanding.tsx`).
+
+**Interlinking:** atualizar `src/lib/interlinking.ts` para que `/servicos/*` linkem de volta os posts (link mútuo = boost SEO).
+
+**Critério de aceite:** 4 posts publicados, cada um com 1.200+ palavras, JSON-LD válido, links bidirecionais.
+
+---
+
+## Etapa D — **Bônus** explorável (não confirmado, listo p/ você escolher depois)
+
+### D1. Página `/infraestrutura` (institucional técnica)
+Hoje o `.br` não tem nada explicando *por que* os sites são rápidos. O `.site` faz isso na seção "Why Businesses Choose Us". Página de 1 scroll explicando:
+- Cloudflare edge (300+ PoPs)
+- 100% hand-coded (sem WordPress/Wix)
+- WebP/AVIF + lazy loading
+- Schema.org em todas as páginas
+- Lighthouse 95+ garantido
+
+Boa para link em propostas comerciais.
+
+### D2. Hub `/sites/[vertical]` — landings por nicho
+O `.site` lista verticais (E-commerce, Restaurant, Admin Panel, Enterprise). Replicar em PT-BR com foco local:
+- `/sites/restaurante` — cardápio digital + reservas + delivery
+- `/sites/clinica` — agenda + prontuário básico + LGPD
+- `/sites/advocacia` — captação de leads + área restrita
+- `/sites/imobiliaria` — busca de imóveis + integração CRM
+- `/sites/e-commerce` — loja completa
+
+Cada uma = landing SEO com `Service` schema + `FAQPage`. Alvo: "site para [vertical]" (busca de alto intent).
+
+### D3. Versão EN (`/en/*`) com hreflang
+Hreflang já está pronto no `IntentLanding.tsx`. Faltam as rotas. Reaproveita conteúdo do `0web.site` para abrir canal internacional sem manter dois domínios.
+- `/en/` (home)
+- `/en/services`
+- `/en/websites`, `/en/webapps`, `/en/seo`
+- Linguagem de marca: "0WEB — Performance-grade websites & growth marketing"
+
+Decisão pendente: manter `0web.site` como showcase visual e usar `0web.com.br/en` como canônico? Ou redirecionar `0web.site` → `0web.com.br/en`?
+
+### D4. Página `/cases` com filtro por tipo
+Você tem `/cases/$slug` mas falta o **índice navegável**. O `.site` faz bem em "Website Projects" com filtros (Static / E-commerce / Web App). Adicionar:
+- Grid com screenshots reais (não AI — regra do projeto)
+- Filtro por vertical + por serviço
+- CTA "Quero um igual" → `/solicitar-orcamento?ref=case-{slug}`
+
+### D5. Componente `StatsBar` no Hero
+Números fortes convertem. O `.site` usa "50+ projects · 100% uptime · Edge · Free SSL". Versão BR:
+- **150+** sites entregues
+- **98%** dos clientes na 1ª página do Google
+- **24h** prazo mínimo (Site Express)
+- **5 anos** de operação
+
+(Calibrar números reais com você antes de publicar — não vou inventar.)
+
+---
+
+## Ordem sugerida de execução
+
+1. **Etapa A (TrustStrip)** — rápida (~1h código), impacto imediato em conversão. **Começa aqui.**
+2. **Etapa B (Site Pro + pricing)** — 2-3h, fecha gap de oferta.
+3. **Etapa C (Cluster educacional)** — maior volume de texto, melhor fazer após validar A+B.
+4. **Bônus D1–D5** — escolher 1-2 conforme prioridade comercial.
+
+---
+
+## Perguntas que preciso responder antes de codar
+
+1. **Preço do Site Pro:** R$ 7.900 está OK ou tem outro número de referência?
+2. **Números do StatsBar (D5):** quantos sites entregues, % de clientes em 1ª página, anos de operação?
+3. **Hreflang EN (D3):** mantém `0web.site` separado ou unifica em `0web.com.br/en`?
+4. **Verticais prioritárias para D2:** se for fazer, quais 3 nichos importam mais? (sugiro restaurante, clínica, advocacia pelo CPL).
+
+Responda só as perguntas que afetam o que quer começar agora — o resto fica para quando chegar a vez.
