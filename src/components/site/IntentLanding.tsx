@@ -6,6 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
+import { TrustStrip } from "@/components/site/TrustStrip";
 import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
@@ -161,6 +162,9 @@ export function IntentLanding(p: IntentLandingProps) {
             </div>
           </div>
         </section>
+
+        {/* Infra inclusa (TrustStrip) — acima do FAQ para reduzir objeção */}
+        <TrustStrip variant="full" />
 
         {/* FAQ */}
         <section className="py-20 px-6 bg-muted/30 border-y border-border">
