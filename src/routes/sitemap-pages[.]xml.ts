@@ -17,6 +17,7 @@ export const Route = createFileRoute("/sitemap-pages.xml")({
           { path: "/servicos/google-meu-negocio", changefreq: "weekly", priority: "0.9" },
           { path: "/servicos/presenca-digital", changefreq: "weekly", priority: "0.85" },
           { path: "/servicos/site-pro", changefreq: "weekly", priority: "0.9" },
+          { path: "/infraestrutura", changefreq: "monthly", priority: "0.8" },
           { path: "/servicos/trafego-pago-local", changefreq: "weekly", priority: "0.85" },
           { path: "/servicos/consultoria", changefreq: "monthly", priority: "0.75" },
           { path: "/cidades", changefreq: "weekly", priority: "0.85" },
