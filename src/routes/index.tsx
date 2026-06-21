@@ -5,6 +5,7 @@ import heroDashboard from "@/assets/hero-dashboard.webp";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { TrustBar } from "@/components/site/SocialProof";
+import { TrustStrip } from "@/components/site/TrustStrip";
 import { Footer } from "@/components/site/Footer";
 
 import { getPageSections } from "@/lib/site-sections.functions";
@@ -161,6 +162,7 @@ function Index() {
       <main>
         {on("hero") && <Hero />}
         {on("trustbar") && <TrustBar />}
+        {on("trust_strip") !== false && <TrustStrip variant="compact" />}
         <Suspense fallback={<Skel />}>
           {on("problems") && <Problems />}
           {on("loss_calculator") && <LossCalculator />}
