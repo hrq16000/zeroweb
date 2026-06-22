@@ -284,7 +284,7 @@ function VerticalHub() {
           <div className="mx-auto max-w-5xl px-5 lg:px-8">
             <h2 className="text-2xl sm:text-3xl font-bold">Serviços recomendados para {v.name}</h2>
             <div className="mt-8 grid md:grid-cols-3 gap-5">
-              {v.services.map((s) => (
+              {v.services.map((s: { title: string; desc: string; to: string }) => (
                 <Link
                   key={s.to}
                   to={s.to}
