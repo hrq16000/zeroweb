@@ -12,10 +12,10 @@ type Stat = {
 };
 
 const STATS: Stat[] = [
-  { icon: Users, value: 1240, suffix: "+", label: "Clientes atendidos" },
-  { icon: Rocket, value: 18, suffix: " anos", label: "Construindo presença digital" },
-  { icon: Star, value: 4.9, decimals: 1, suffix: "/5", label: "Avaliação média" },
-  { icon: Globe2, value: 320, suffix: "+", label: "Projetos publicados" },
+  { icon: Rocket, value: 7, label: "Sites entregues em 2026" },
+  { icon: Globe2, value: 20, suffix: " anos", label: "No ar construindo presença digital" },
+  { icon: Star, value: 3, suffix: "%", label: "Top 5 do Google (média dos projetos)" },
+  { icon: Users, value: 4.9, decimals: 1, suffix: "/5", label: "Avaliação média dos clientes" },
 ];
 
 function useCountUp(target: number, active: boolean, duration = 1600, decimals = 0) {

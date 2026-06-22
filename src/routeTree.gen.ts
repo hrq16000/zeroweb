@@ -37,6 +37,7 @@ import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PresencaDigitalRouteImport } from './routes/presenca-digital'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as PlanosComparativoRouteImport } from './routes/planos-comparativo'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
@@ -63,12 +64,14 @@ import { Route as R403RouteImport } from './routes/403'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SitesIndexRouteImport } from './routes/sites.index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
+import { Route as SitesVerticalRouteImport } from './routes/sites.$vertical'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteProRouteImport } from './routes/servicos.site-pro'
@@ -308,6 +311,11 @@ const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   path: '/politica-privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosComparativoRoute = PlanosComparativoRouteImport.update({
+  id: '/planos-comparativo',
+  path: '/planos-comparativo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlanosRoute = PlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -437,6 +445,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitesIndexRoute = SitesIndexRouteImport.update({
+  id: '/sites/',
+  path: '/sites/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -465,6 +478,11 @@ const BairrosCwbIndexRoute = BairrosCwbIndexRouteImport.update({
 const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
   id: '/bairros-bh/',
   path: '/bairros-bh/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesVerticalRoute = SitesVerticalRouteImport.update({
+  id: '/sites/$vertical',
+  path: '/sites/$vertical',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosTrafegoPagoLocalRoute =
@@ -1006,6 +1024,7 @@ export interface FileRoutesByFullPath {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1072,12 +1091,14 @@ export interface FileRoutesByFullPath {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites/': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/cro': typeof AuthenticatedAppCroRoute
@@ -1161,6 +1182,7 @@ export interface FileRoutesByTo {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1225,12 +1247,14 @@ export interface FileRoutesByTo {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
   '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
+  '/sites': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/cro': typeof AuthenticatedAppCroRoute
@@ -1316,6 +1340,7 @@ export interface FileRoutesById {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1382,12 +1407,14 @@ export interface FileRoutesById {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites/': typeof SitesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/cro': typeof AuthenticatedAppCroRoute
@@ -1473,6 +1500,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1539,12 +1567,14 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites/'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/cro'
@@ -1628,6 +1658,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1692,12 +1723,14 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites/$vertical'
     | '/bairros-bh'
     | '/bairros-cwb'
     | '/blog-skyscraper'
     | '/blog'
     | '/cases'
     | '/servicos'
+    | '/sites'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/cro'
@@ -1782,6 +1815,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1848,12 +1882,14 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/cro'
@@ -1939,6 +1975,7 @@ export interface RootRouteChildren {
   PainelCrmRoute: typeof PainelCrmRoute
   ParceirosRoute: typeof ParceirosRoute
   PlanosRoute: typeof PlanosRoute
+  PlanosComparativoRoute: typeof PlanosComparativoRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   PresencaDigitalRoute: typeof PresencaDigitalRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -1991,11 +2028,13 @@ export interface RootRouteChildren {
   PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
+  SitesVerticalRoute: typeof SitesVerticalRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
@@ -2209,6 +2248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/planos-comparativo': {
+      id: '/planos-comparativo'
+      path: '/planos-comparativo'
+      fullPath: '/planos-comparativo'
+      preLoaderRoute: typeof PlanosComparativoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/planos': {
       id: '/planos'
       path: '/planos'
@@ -2391,6 +2437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sites/': {
+      id: '/sites/'
+      path: '/sites'
+      fullPath: '/sites/'
+      preLoaderRoute: typeof SitesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos/': {
       id: '/servicos/'
       path: '/'
@@ -2431,6 +2484,13 @@ declare module '@tanstack/react-router' {
       path: '/bairros-bh'
       fullPath: '/bairros-bh/'
       preLoaderRoute: typeof BairrosBhIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites/$vertical': {
+      id: '/sites/$vertical'
+      path: '/sites/$vertical'
+      fullPath: '/sites/$vertical'
+      preLoaderRoute: typeof SitesVerticalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/trafego-pago-local': {
@@ -3354,6 +3414,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelCrmRoute: PainelCrmRoute,
   ParceirosRoute: ParceirosRoute,
   PlanosRoute: PlanosRoute,
+  PlanosComparativoRoute: PlanosComparativoRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   PresencaDigitalRoute: PresencaDigitalRoute,
   PrivacidadeRoute: PrivacidadeRoute,
@@ -3406,11 +3467,13 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
+  SitesVerticalRoute: SitesVerticalRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
