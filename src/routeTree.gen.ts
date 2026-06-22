@@ -63,6 +63,7 @@ import { Route as R403RouteImport } from './routes/403'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SitesIndexRouteImport } from './routes/sites.index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -436,6 +437,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesIndexRoute = SitesIndexRouteImport.update({
+  id: '/sites/',
+  path: '/sites/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
@@ -1085,6 +1091,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites/': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/cro': typeof AuthenticatedAppCroRoute
@@ -1239,6 +1246,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
+  '/sites': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/cro': typeof AuthenticatedAppCroRoute
@@ -1397,6 +1405,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites/': typeof SitesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/cro': typeof AuthenticatedAppCroRoute
@@ -1555,6 +1564,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites/'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/cro'
@@ -1709,6 +1719,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cases'
     | '/servicos'
+    | '/sites'
     | '/app/admin'
     | '/app/campaigns'
     | '/app/cro'
@@ -1866,6 +1877,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/cro'
@@ -2009,6 +2021,7 @@ export interface RootRouteChildren {
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
@@ -2402,6 +2415,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites/': {
+      id: '/sites/'
+      path: '/sites'
+      fullPath: '/sites/'
+      preLoaderRoute: typeof SitesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/': {
@@ -3432,6 +3452,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
