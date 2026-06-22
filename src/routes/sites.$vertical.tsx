@@ -270,7 +270,7 @@ function VerticalHub() {
           <div className="mx-auto max-w-5xl px-5 lg:px-8">
             <h2 className="text-2xl sm:text-3xl font-bold">O que costuma travar nesse segmento</h2>
             <ul className="mt-6 grid sm:grid-cols-2 gap-4">
-              {v.painPoints.map((p) => (
+              {v.painPoints.map((p: string) => (
                 <li key={p} className="flex gap-3 rounded-xl border border-border bg-card p-4">
                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <span className="text-sm leading-relaxed">{p}</span>
