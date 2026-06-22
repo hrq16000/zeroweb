@@ -187,8 +187,8 @@ export function IntentLanding(p: IntentLandingProps) {
         <section className="py-20 px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-display">Pronto para começar?</h2>
           <p className="mt-3 text-muted-foreground">Resposta em até 1 hora útil.</p>
-          {p.funnelSlug ? (
-            <div className="mt-7 inline-flex">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            {p.funnelSlug ? (
               <FunnelCTAButton
                 pageType="service"
                 serviceSlug={p.serviceSlug}
@@ -197,18 +197,25 @@ export function IntentLanding(p: IntentLandingProps) {
                 location={`lp_${p.intent}_footer`}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
               />
-            </div>
-          ) : (
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleCta("footer_wa")}
-              className="mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
+            ) : (
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleCta("footer_wa")}
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
+              >
+                {p.ctaLabel} <ArrowRight className="w-4 h-4" />
+              </a>
+            )}
+            <Link
+              to="/contato"
+              onClick={() => handleCta("footer_form")}
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-border hover:bg-muted transition text-sm font-medium"
             >
-              {p.ctaLabel} <ArrowRight className="w-4 h-4" />
-            </a>
-          )}
+              Solicitar Diagnóstico
+            </Link>
+          </div>
         </section>
       </main>
       {p.relatedServicePaths && p.relatedServicePaths.length > 0 && (
