@@ -287,7 +287,7 @@ function VerticalHub() {
               {v.services.map((s: { title: string; desc: string; to: string }) => (
                 <Link
                   key={s.to}
-                  to={s.to}
+                  to={s.to as any}
                   className="group rounded-2xl border border-border bg-card p-6 hover:border-primary hover:shadow-elegant transition"
                 >
                   <h3 className="text-lg font-bold">{s.title}</h3>
