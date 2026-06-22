@@ -37,6 +37,7 @@ import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PresencaDigitalRouteImport } from './routes/presenca-digital'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
+import { Route as PlanosComparativoRouteImport } from './routes/planos-comparativo'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as ParceirosRouteImport } from './routes/parceiros'
 import { Route as PainelCrmRouteImport } from './routes/painel-crm'
@@ -308,6 +309,11 @@ const PresencaDigitalRoute = PresencaDigitalRouteImport.update({
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
   id: '/politica-privacidade',
   path: '/politica-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanosComparativoRoute = PlanosComparativoRouteImport.update({
+  id: '/planos-comparativo',
+  path: '/planos-comparativo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -1018,6 +1024,7 @@ export interface FileRoutesByFullPath {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1175,6 +1182,7 @@ export interface FileRoutesByTo {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1332,6 +1340,7 @@ export interface FileRoutesById {
   '/painel-crm': typeof PainelCrmRoute
   '/parceiros': typeof ParceirosRoute
   '/planos': typeof PlanosRoute
+  '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -1491,6 +1500,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1648,6 +1658,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1804,6 +1815,7 @@ export interface FileRouteTypes {
     | '/painel-crm'
     | '/parceiros'
     | '/planos'
+    | '/planos-comparativo'
     | '/politica-privacidade'
     | '/presenca-digital'
     | '/privacidade'
@@ -1963,6 +1975,7 @@ export interface RootRouteChildren {
   PainelCrmRoute: typeof PainelCrmRoute
   ParceirosRoute: typeof ParceirosRoute
   PlanosRoute: typeof PlanosRoute
+  PlanosComparativoRoute: typeof PlanosComparativoRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
   PresencaDigitalRoute: typeof PresencaDigitalRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -2233,6 +2246,13 @@ declare module '@tanstack/react-router' {
       path: '/politica-privacidade'
       fullPath: '/politica-privacidade'
       preLoaderRoute: typeof PoliticaPrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planos-comparativo': {
+      id: '/planos-comparativo'
+      path: '/planos-comparativo'
+      fullPath: '/planos-comparativo'
+      preLoaderRoute: typeof PlanosComparativoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -3394,6 +3414,7 @@ const rootRouteChildren: RootRouteChildren = {
   PainelCrmRoute: PainelCrmRoute,
   ParceirosRoute: ParceirosRoute,
   PlanosRoute: PlanosRoute,
+  PlanosComparativoRoute: PlanosComparativoRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
   PresencaDigitalRoute: PresencaDigitalRoute,
   PrivacidadeRoute: PrivacidadeRoute,

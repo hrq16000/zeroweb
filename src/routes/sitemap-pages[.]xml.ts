@@ -27,6 +27,7 @@ export const Route = createFileRoute("/sitemap-pages.xml")({
           { path: "/sites/lojas", changefreq: "monthly", priority: "0.75" },
           { path: "/sites/comercios", changefreq: "monthly", priority: "0.75" },
           { path: "/sites/prestadores-de-servicos", changefreq: "monthly", priority: "0.75" },
+          { path: "/planos-comparativo", changefreq: "monthly", priority: "0.9" },
           { path: "/servicos/trafego-pago-local", changefreq: "weekly", priority: "0.85" },
           { path: "/servicos/consultoria", changefreq: "monthly", priority: "0.75" },
           { path: "/cidades", changefreq: "weekly", priority: "0.85" },
