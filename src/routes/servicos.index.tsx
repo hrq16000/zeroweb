@@ -20,6 +20,28 @@ import {
 
 const SERVICE_LIST = Object.values(SERVICES);
 
+function sanitizeServicoHeroText(value: string | null): string | null {
+  if (!value) return value;
+  return value
+    .replace(/Site\s+Express\s+em\s+24h\s*·\s*a partir de R\$\s*499/gi, "Site Express · a partir de R$ 499")
+    .replace(/Site\s+profissional\s+pronto\s+em\s+24h/gi, "Site profissional turnkey")
+    .replace(/pronto\s+em\s+24h/gi, "pronto para vender")
+    .replace(/Entrega\s+24h/gi, "Turnkey profissional")
+    .replace(/em\s+24h/gi, "turnkey")
+    .replace(/24\s+horas/gi, "fluxo turnkey");
+}
+
+function sanitizeServicoHeroSlides<T extends { eyebrow: string | null; title: string; subtitle: string | null; badge: string | null; ctaLabel: string | null }>(slides: T[]): T[] {
+  return slides.map((s) => ({
+    ...s,
+    eyebrow: sanitizeServicoHeroText(s.eyebrow),
+    title: sanitizeServicoHeroText(s.title) ?? s.title,
+    subtitle: sanitizeServicoHeroText(s.subtitle),
+    badge: sanitizeServicoHeroText(s.badge),
+    ctaLabel: sanitizeServicoHeroText(s.ctaLabel),
+  }));
+}
+
 
 type ServicosSearch = { q?: string; cat?: string; sort?: SortKey; page?: number };
 
@@ -165,7 +187,7 @@ export const Route = createFileRoute("/servicos/")({
     ]);
     // Catálogo /servicos lista apenas PRODUTOS. Soluções vão para /solucoes.
     const services = allServices.filter((s) => !s.isSolution);
-    return { services, slides };
+    return { services, slides: sanitizeServicoHeroSlides(slides) };
   },
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-8 text-center">
@@ -491,6 +513,7 @@ function ServicosHub() {
                           // Tráfego Pago: público "sob consulta" (gestão sob escopo);
                           // preço interno (R$1.490 ref) não exibido no card.
                           const isTrafegoPago = s.slug === "trafego-pago";
+                          const isGmn = s.slug === "google-meu-negocio";
                           const showPrice = isTrafegoPago || s.price != null;
                           if (!showPrice && !s.deliveryDays) return null;
                           return (
@@ -499,8 +522,10 @@ function ServicosHub() {
                                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
                                   {isTrafegoPago || s.price === 0
                                     ? "Sob consulta"
+                                    : isGmn
+                                      ? `Plano Único R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`
                                     : `R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
-                                  {!isTrafegoPago && s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
+                                  {!isTrafegoPago && !isGmn && s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
                                 </span>
                               )}
                               {s.deliveryDays && (

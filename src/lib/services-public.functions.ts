@@ -124,12 +124,69 @@ function asSchemaBlocks(v: unknown): SchemaBlock[] {
   return v.filter((x): x is SchemaBlock => typeof x === "object" && x !== null && !Array.isArray(x));
 }
 
+function normalizePublicServiceRow(row: DbServiceRow): DbServiceRow {
+  if (row.slug === "site-express") {
+    return {
+      ...row,
+      name: "Site Express",
+      title: "Site Express · Turnkey Profissional · A partir de R$ 499 · 0WEB",
+      h1: "Site profissional chave-na-mão",
+      description:
+        "Site profissional sob medida, mobile-first e focado em conversão, entregue chave-na-mão pelo nosso time. A partir de R$ 499.",
+      benefits: asStringArray(row.benefits).length
+        ? asStringArray(row.benefits).map((x) =>
+            x
+              .replace(/Entrega\s+em\s+24h/gi, "Entrega chave-na-mão")
+              .replace(/24\s*horas|24h/gi, "fluxo turnkey"),
+          )
+        : row.benefits,
+      cta_label: "Quero meu Site Express",
+      delivery_days: "Turnkey profissional",
+    };
+  }
+
+  if (row.slug === "google-meu-negocio") {
+    return {
+      ...row,
+      price: 397,
+      price_period: null,
+      conditions: "Plano Único: R$397 em pagamento único. Plano PRO: R$247/mês por 3 meses.",
+    };
+  }
+
+  if (row.slug === "trafego-pago") {
+    return {
+      ...row,
+      price: 0,
+      price_period: null,
+      conditions:
+        "Mídia paga à parte; recomendamos investimento inicial a partir de R$1.500/mês em mídia. Taxa de gestão sob consulta conforme escopo e verba.",
+    };
+  }
+
+  if (row.slug === "site-24h") {
+    return {
+      ...row,
+      name: "Site Express Legado",
+      title: "Site Express Profissional por R$499 · 0WEB",
+      h1: "Site profissional chave-na-mão",
+      description:
+        "Site profissional, responsivo e otimizado entregue em fluxo turnkey. R$499 com hospedagem, SSL e SEO inclusos.",
+      cta_label: "Quero meu Site Express",
+      delivery_days: "Turnkey profissional",
+    };
+  }
+
+  return row;
+}
+
 function mapRow(
   row: DbServiceRow,
   imageUrl: string | null = null,
   gallery: GalleryItem[] = [],
   ogImageUrl: string | null = null,
 ): PublicServiceFull {
+  row = normalizePublicServiceRow(row);
   return {
     slug: row.slug,
     name: row.name,
@@ -238,14 +295,15 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     if (error) throw error;
     const rows = (data ?? []) as unknown as DbServiceRow[];
     const mapped = await Promise.all(
-      rows.map(async (r) =>
-        mapRow(
+      rows.map(async (raw) => {
+        const r = normalizePublicServiceRow(raw);
+        return mapRow(
           r,
           await signImage(supabaseAdmin, r.image_path),
           await signGallery(supabaseAdmin, r.gallery),
           await signImage(supabaseAdmin, r.og_image_path),
-        ),
-      ),
+        );
+      }),
     );
     // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
     // se ainda não foram migrados (legado de SEO city pages).
@@ -274,7 +332,7 @@ export const getServicePublic = createServerFn({ method: "GET" })
         .maybeSingle();
       if (error) throw error;
       if (row) {
-        const r = row as unknown as DbServiceRow;
+        const r = normalizePublicServiceRow(row as unknown as DbServiceRow);
         const imageUrl = await signImage(supabaseAdmin, r.image_path);
         const gallery = await signGallery(supabaseAdmin, r.gallery);
         const ogImageUrl = await signImage(supabaseAdmin, r.og_image_path);
