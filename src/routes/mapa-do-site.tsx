@@ -6,10 +6,10 @@ export const Route = createFileRoute("/mapa-do-site")({
   loader: async () => {
     try {
       const r = await listServicesPublic();
-      const services = (r?.services ?? []).filter(
-        (s): s is Svc => !!s && typeof s.slug === "string",
-      );
-      return { services };
+      const services: Svc[] = (r?.services ?? [])
+        .filter((s) => !!s && typeof s.slug === "string")
+        .map((s) => ({ slug: s.slug, title: s.title, category: s.category ?? null }));
+
     } catch (err) {
       console.error("[mapa-do-site] loader failed", err);
       return { services: [] as Svc[] };
