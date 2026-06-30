@@ -9,6 +9,8 @@ export const Route = createFileRoute("/mapa-do-site")({
       const services: Svc[] = (r?.services ?? [])
         .filter((s) => !!s && typeof s.slug === "string")
         .map((s) => ({ slug: s.slug, title: s.title, category: s.category ?? null }));
+      return { services };
+
 
     } catch (err) {
       console.error("[mapa-do-site] loader failed", err);
