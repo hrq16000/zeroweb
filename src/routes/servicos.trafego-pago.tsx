@@ -28,7 +28,7 @@ export const Route = createFileRoute("/servicos/trafego-pago")({
         { title: "Otimização semanal", description: "Lances, criativos e palavras revisados." },
       ]}
       faq={[
-        { q: "Qual investimento mínimo?", a: "Recomendamos R$ 1.500/mês em mídia + gestão." },
+        { q: "Qual investimento mínimo?", a: "Mídia paga à parte; recomendamos investimento inicial a partir de R$ 1.500/mês em mídia. Taxa de gestão sob consulta conforme escopo e verba." },
         { q: "Vocês entregam relatório?", a: "Sim, semanal com leads, CPA, ROAS e ações." },
         { q: "Conseguem CPA garantido?", a: "Trabalhamos com meta de CPA, ajustada após validação." },
       ]}
