@@ -13,7 +13,7 @@ const ALL: Item[] = [
   { to: "/servicos/trafego-pago-local", title: "Tráfego pago para negócios locais", desc: "Anúncios no Google e Meta a partir de R$499/mês, sem contrato.", anchor: "Ver tráfego pago local", icon: Megaphone },
   { to: "/servicos/trafego-pago", title: "Tráfego pago (Google e Meta Ads)", desc: "Campanhas com CPA otimizado e atribuição completa.", anchor: "Quero rodar anúncios", icon: Megaphone },
   { to: "/servicos/criacao-de-sites", title: "Criação de sites profissionais", desc: "Sites rápidos, otimizados para SEO e prontos para converter.", anchor: "Criar meu site agora", icon: Globe },
-  { to: "/servicos/site-24h", title: "Site profissional em 24h", desc: "Pacote único de R$499 — site sob medida no ar em até 24 horas.", anchor: "Quero meu site em 24h", icon: Globe },
+  { to: "/servicos/site-express", title: "Site Express profissional", desc: "Pacote único de R$499 — site sob medida em fluxo turnkey.", anchor: "Quero meu Site Express", icon: Globe },
   { to: "/servicos/landing-pages", title: "Landing Pages que convertem", desc: "Páginas otimizadas para captação de leads e vendas diretas.", anchor: "Quero uma LP", icon: Globe },
   { to: "/servicos/seo", title: "SEO e primeiras posições no Google", desc: "Plano de SEO local e nacional com foco em ROI mensurável.", anchor: "Quero rankear no Google", icon: Search },
   { to: "/servicos/google-meu-negocio", title: "Google Meu Negócio", desc: "Otimização do perfil para aparecer no Maps e na busca local.", anchor: "Aparecer no Maps", icon: Search },
