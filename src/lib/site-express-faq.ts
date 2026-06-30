@@ -7,7 +7,7 @@ export type FaqQA = { q: string; a: string };
 export const SITE_EXPRESS_FAQ: FaqQA[] = [
   {
     q: "Em quanto tempo o site fica pronto mesmo?",
-    a: "Em até 24h após o briefing e o pagamento confirmados. A maioria dos sites Express fica pronto no mesmo dia útil.",
+    a: "Após briefing e pagamento confirmados, nosso time monta o site sob medida e entrega chave-na-mão. Você não precisa mexer em nada.",
   },
   {
     q: "Por que é tão mais barato que uma agência tradicional?",
