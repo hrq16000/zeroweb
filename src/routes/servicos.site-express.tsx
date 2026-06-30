@@ -100,7 +100,7 @@ export const Route = createFileRoute("/servicos/site-express")({
             {
               "@type": "Product",
               "@id": `${URL}#product`,
-              name: "Site Express em 24h",
+              name: "Site Express",
               description: DESC,
               brand: { "@type": "Brand", name: "0WEB" },
               offers: {
@@ -180,7 +180,7 @@ function SiteExpressPage() {
               className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.05]"
             >
               Seu site profissional no ar em{" "}
-              <span className="text-orange-600">menos de 24 horas</span>
+              <span className="text-orange-600">turnkey, sem você se preocupar com nada</span>
             </motion.h1>
 
             <motion.p
@@ -467,7 +467,7 @@ function SiteExpressPage() {
               pageType="service"
               serviceSlug="site-express"
               funnelSlug="funnel-site-express"
-              label="Quero meu site em 24h"
+              label="Quero meu Site Express"
               className={ctaFinalClass}
               location="site_express_final"
             />
@@ -480,7 +480,7 @@ function SiteExpressPage() {
       <RelatedLinksGrid
         title="Serviços relacionados"
         subtitle="Acelere o crescimento depois que o seu site estiver no ar."
-        only={["/servicos/criacao-de-sites", "/servicos/landing-pages", "/servicos/site-24h"]}
+        only={["/servicos/criacao-de-sites", "/servicos/landing-pages", "/servicos/site-pro"]}
       />
       <Footer />
       <WhatsAppFloat />
