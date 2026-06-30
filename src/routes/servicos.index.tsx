@@ -278,18 +278,18 @@ function ServicosHub() {
               <div className="relative flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
                 <div className="flex-1">
                   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-xs font-bold uppercase tracking-wider">
-                    <Zap className="w-3.5 h-3.5" /> Novo · Mais procurado
+                    <Zap className="w-3.5 h-3.5" /> Turnkey · Mais procurado
                   </span>
                   <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">
-                    Site Express em 24h <span className="opacity-90">· a partir de R$ 499</span>
+                    Site Express <span className="opacity-90">· a partir de R$ 499</span>
                   </h2>
                   <p className="mt-3 text-white/90 max-w-xl">
-                    Site profissional sob medida, mobile-first e focado em WhatsApp, no ar em até
-                    24 horas. Briefing de 5 minutos.
+                    Site profissional sob medida, mobile-first, chave-na-mão. Nosso time entrega
+                    pronto para vender, sem você tocar em código.
                   </p>
                   <div className="mt-5 flex flex-wrap gap-3 text-sm">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15">
-                      <Clock className="w-3.5 h-3.5" /> Entrega 24h
+                      <Clock className="w-3.5 h-3.5" /> Turnkey profissional
                     </span>
                     <span className="px-3 py-1 rounded-full bg-white/15">Pagamento único</span>
                     <span className="px-3 py-1 rounded-full bg-white/15">Domínio + SSL</span>
