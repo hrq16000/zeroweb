@@ -1,0 +1,146 @@
+{
+  "summary": {
+    "base": "https://0web.com.br",
+    "generatedAt": "2026-06-30T05:35:35.477Z",
+    "totalRoutes": 4,
+    "failedChecks": 3,
+    "pass": false
+  },
+  "failed": [
+    {
+      "path": "/servicos",
+      "check": "Tráfego Pago não expõe R$1.490/mês"
+    },
+    {
+      "path": "/servicos/trafego-pago",
+      "check": "FAQ contém frase aprovada"
+    },
+    {
+      "path": "/mapa-do-site",
+      "check": "Serviços > 0 no HTML"
+    }
+  ],
+  "results": [
+    {
+      "path": "/servicos",
+      "url": "https://0web.com.br/servicos",
+      "status": 200,
+      "ms": 7546,
+      "pass": false,
+      "checks": [
+        {
+          "name": "HTTP 200",
+          "pass": true,
+          "status": 200
+        },
+        {
+          "name": "não contém Entrega 24h",
+          "pass": true
+        },
+        {
+          "name": "não contém Site Express em 24h",
+          "pass": true
+        },
+        {
+          "name": "não contém pronto em 24h",
+          "pass": true
+        },
+        {
+          "name": "não contém pronto em 24 horas",
+          "pass": true
+        },
+        {
+          "name": "Tráfego Pago não expõe R$1.490/mês",
+          "pass": false
+        },
+        {
+          "name": "Tráfego Pago aparece Sob consulta",
+          "pass": true
+        },
+        {
+          "name": "GMN não expõe R$399/mês",
+          "pass": true
+        },
+        {
+          "name": "GMN expõe R$397/único ou landing correta",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "path": "/servicos/site-express",
+      "url": "https://0web.com.br/servicos/site-express",
+      "status": 200,
+      "ms": 561,
+      "pass": true,
+      "checks": [
+        {
+          "name": "HTTP 200",
+          "pass": true,
+          "status": 200
+        },
+        {
+          "name": "title sem Site Express em 24h",
+          "pass": true
+        },
+        {
+          "name": "conteúdo sem 24h/24 horas",
+          "pass": true
+        },
+        {
+          "name": "CTA aprovado presente",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "path": "/servicos/trafego-pago",
+      "url": "https://0web.com.br/servicos/trafego-pago",
+      "status": 200,
+      "ms": 529,
+      "pass": false,
+      "checks": [
+        {
+          "name": "HTTP 200",
+          "pass": true,
+          "status": 200
+        },
+        {
+          "name": "FAQ contém frase aprovada",
+          "pass": false
+        },
+        {
+          "name": "FAQ não contém frase antiga",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "path": "/mapa-do-site",
+      "url": "https://0web.com.br/mapa-do-site",
+      "status": 200,
+      "ms": 564,
+      "pass": false,
+      "checks": [
+        {
+          "name": "HTTP 200",
+          "pass": true,
+          "status": 200
+        },
+        {
+          "name": "sem Carregando serviços",
+          "pass": true
+        },
+        {
+          "name": "Serviços > 0 no HTML",
+          "pass": false,
+          "serviceCount": null
+        },
+        {
+          "name": "contém links de serviços críticos",
+          "pass": true
+        }
+      ]
+    }
+  ]
+}
