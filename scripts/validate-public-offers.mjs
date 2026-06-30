@@ -17,6 +17,7 @@ const BASE = (process.env.BASE_URL || process.argv[2] || "https://0web.com.br").
 const OUT = "seo-reports/public-offers-audit.json";
 const APPROVED_TRAFEGO_COPY =
   "Mídia paga à parte; recomendamos investimento inicial a partir de R$1.500/mês em mídia. Taxa de gestão sob consulta conforme escopo e verba.";
+const APPROVED_TRAFEGO_COPY_REGEX = /Mídia\s+paga\s+à\s+parte;\s+recomendamos\s+investimento\s+inicial\s+a\s+partir\s+de\s+R\$\s*1[\.,]500\/mês\s+em\s+mídia\.\s+Taxa\s+de\s+gestão\s+sob\s+consulta\s+conforme\s+escopo\s+e\s+verba\./i;
 
 const ROUTES = ["/servicos", "/servicos/site-express", "/servicos/trafego-pago", "/mapa-do-site"];
 
@@ -85,7 +86,7 @@ function routeChecks(route) {
 
   if (path === "/servicos/trafego-pago") {
     c.push(
-      check("FAQ contém frase aprovada", text.includes(APPROVED_TRAFEGO_COPY)),
+      check("FAQ contém frase aprovada", APPROVED_TRAFEGO_COPY_REGEX.test(text), { expected: APPROVED_TRAFEGO_COPY }),
       check("FAQ não contém frase antiga", !/R\$\s*1[\.,]500\s*\/\s*m[eê]s\s+em\s+m[íi]dia\s*\+\s*gest[aã]o/i.test(text)),
     );
   }

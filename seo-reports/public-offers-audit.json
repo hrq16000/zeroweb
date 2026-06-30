@@ -1,23 +1,18 @@
 {
   "summary": {
     "base": "https://0web.com.br",
-    "generatedAt": "2026-06-30T05:36:39.583Z",
+    "generatedAt": "2026-06-30T05:39:47.483Z",
     "totalRoutes": 4,
-    "failedChecks": 1,
-    "pass": false
+    "failedChecks": 0,
+    "pass": true
   },
-  "failed": [
-    {
-      "path": "/servicos/trafego-pago",
-      "check": "FAQ contém frase aprovada"
-    }
-  ],
+  "failed": [],
   "results": [
     {
       "path": "/servicos",
       "url": "https://0web.com.br/servicos",
       "status": 200,
-      "ms": 6990,
+      "ms": 6837,
       "pass": true,
       "checks": [
         {
@@ -89,8 +84,8 @@
       "path": "/servicos/trafego-pago",
       "url": "https://0web.com.br/servicos/trafego-pago",
       "status": 200,
-      "ms": 512,
-      "pass": false,
+      "ms": 507,
+      "pass": true,
       "checks": [
         {
           "name": "HTTP 200",
@@ -99,7 +94,8 @@
         },
         {
           "name": "FAQ contém frase aprovada",
-          "pass": false
+          "pass": true,
+          "expected": "Mídia paga à parte; recomendamos investimento inicial a partir de R$1.500/mês em mídia. Taxa de gestão sob consulta conforme escopo e verba."
         },
         {
           "name": "FAQ não contém frase antiga",
@@ -111,7 +107,7 @@
       "path": "/mapa-do-site",
       "url": "https://0web.com.br/mapa-do-site",
       "status": 200,
-      "ms": 533,
+      "ms": 496,
       "pass": true,
       "checks": [
         {
