@@ -54,8 +54,8 @@ function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
 
 export const Route = createFileRoute("/servicos/$slug")({
   beforeLoad: ({ params }) => {
-    if (params.slug === "site-express") {
-      throw redirect({ to: "/servicos/site-express" });
+    if (params.slug === "site-24h") {
+      throw redirect({ to: "/servicos/site-express", statusCode: 301, replace: true });
     }
   },
   loader: async ({ params }) => {
