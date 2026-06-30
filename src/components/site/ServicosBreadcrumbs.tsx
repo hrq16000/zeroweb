@@ -14,7 +14,6 @@ const LABELS: Record<string, string> = {
   parceiros: "Parceiros",
   consultoria: "Consultoria",
   "site-express": "Site Express",
-  "site-24h": "Site 24h",
   "presenca-digital": "Presença Digital",
   "google-meu-negocio": "Google Meu Negócio",
   "gestao-redes-sociais": "Gestão de Redes Sociais",

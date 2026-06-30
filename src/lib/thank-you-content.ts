@@ -31,7 +31,7 @@ export type ThankYouContent = {
   socialProofHeadline: string;
   /** Optional service-specific status timeline. */
   status?: { label: string; eta: string; desc: string }[];
-  /** Optional SLA badge (e.g. "Em até 24h"). */
+  /** Optional SLA badge (e.g. "Após aprovação"). */
   slaBadge?: string;
   /** Optional FAQ adapted to the checkout method. */
   faq?: FAQ[];
@@ -126,21 +126,21 @@ const MAP: Record<string, ThankYouContent> = {
   site_express: {
     ...DEFAULT,
     channel: "site_express",
-    title: "Pedido recebido! Seu site fica pronto em até 24h 🚀",
+    title: "Pedido recebido! Seu Site Express entrou na fila 🚀",
     subtitle: "Já recebemos seu briefing do Site Express. Vamos te chamar no WhatsApp em minutos para confirmar e iniciar a produção.",
-    whatsappMessage: "Olá! Acabei de pedir meu Site Express em 24h pelo site da 0WEB. Pode confirmar o recebimento?",
-    planosLabel: "Site Express · R$ 499 · entrega em 24h",
+    whatsappMessage: "Olá! Acabei de pedir meu Site Express pelo site da 0WEB. Pode confirmar o recebimento?",
+    planosLabel: "Site Express · R$ 499 · pagamento único",
     finalCtaTo: "/servicos/site-express",
     finalCtaLabel: "Ver detalhes do Site Express",
-    socialProofHeadline: "Negócios que saíram do zero ao site profissional em 24h",
-    slaBadge: "Próximo contato em até 1 hora útil · Site no ar em até 24h",
+    socialProofHeadline: "Negócios que saíram do zero ao site profissional",
+    slaBadge: "Próximo contato em até 1 hora útil · produção iniciada após briefing",
     status: [
       { label: "1. Confirmação", eta: "Em até 1h útil", desc: "Te chamamos no WhatsApp para confirmar briefing, escopo e pagamento." },
       { label: "2. Produção", eta: "Mesmo dia", desc: "Nosso time monta seu site sob medida e te envia o link de prévia." },
-      { label: "3. No ar", eta: "Em até 24h", desc: "Aprovou? Publicamos imediatamente com domínio, SSL e WhatsApp integrado." },
+      { label: "3. No ar", eta: "Após aprovação", desc: "Aprovou? Publicamos com domínio, SSL e WhatsApp integrado após sua aprovação final." },
     ],
     stats: [
-      { n: "< 24h", l: "para o site no ar" },
+      { n: "Turnkey", l: "site chave-na-mão" },
       { n: "R$ 499", l: "pagamento único" },
       { n: "4.9/5", l: "satisfação dos clientes" },
     ],
