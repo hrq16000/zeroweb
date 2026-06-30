@@ -401,21 +401,21 @@ export const SERVICES: Record<string, ServiceData> = {
   },
   "site-24h": {
     slug: "site-24h",
-    name: "Site em 24h",
+    name: "Site Express Legado",
     category: "Web",
-    title: "Site em 24h por R$499 · 0WEB",
-    h1: "Seu site pronto em 24h, do zero ao no ar",
+    title: "Site Express Profissional por R$499 · 0WEB",
+    h1: "Seu site profissional chave-na-mão",
     description:
-      "Site profissional, responsivo e otimizado entregue em até 24 horas. R$499 com hospedagem, SSL e SEO inclusos.",
+      "Site profissional, responsivo e otimizado entregue em fluxo turnkey. R$499 com hospedagem, SSL e SEO inclusos.",
     serviceType: "Web Design",
     problems: [
-      "Precisa de presença online agora, não em 30 dias",
+      "Precisa de presença online sem depender de reuniões longas",
       "Orçamentos caros e prazos longos com outras agências",
       "Está perdendo clientes por não ter site",
       "Já tentou montar sozinho e não ficou profissional",
     ],
     benefits: [
-      "Entrega em até 24h após aprovação do conteúdo",
+      "Entrega chave-na-mão após aprovação do conteúdo",
       "Design moderno, mobile-first e performático",
       "Hospedagem, SSL e domínio inclusos no 1º ano",
       "SEO técnico embutido e Google Meu Negócio",
@@ -423,18 +423,18 @@ export const SERVICES: Record<string, ServiceData> = {
     ],
     process: [
       { step: "Briefing", desc: "Coleta de conteúdo e referências em 1 conversa" },
-      { step: "Produção", desc: "Montagem do site em até 24h úteis" },
+      { step: "Produção", desc: "Montagem do site pelo time 0WEB" },
       { step: "Aprovação", desc: "Você revisa e pedimos ajustes finais" },
       { step: "No ar", desc: "Publicamos no seu domínio com SEO e analytics" },
     ],
     faq: [
-      { q: "Funciona mesmo em 24h?", a: "Sim. Após você enviar textos, fotos e logo, entregamos o site em até 24 horas úteis." },
+      { q: "Como funciona a entrega?", a: "Após você enviar textos, fotos e logo, nosso time monta o site e envia uma prévia para aprovação." },
       { q: "Qual o valor?", a: "R$499 à vista. Inclui hospedagem, SSL e domínio (.com.br) no primeiro ano." },
       { q: "Posso pedir alterações depois?", a: "Sim. Você tem 30 dias de suporte para ajustes de conteúdo e layout." },
       { q: "É responsivo?", a: "Totalmente. Construído mobile-first e otimizado para Google PageSpeed." },
     ],
-    keywords: ["site em 24h", "site rápido", "site barato", "criação de site express", "site profissional 499"],
-    ctaLabel: "Quero meu site em 24h",
+    keywords: ["site express", "site rápido", "site barato", "criação de site express", "site profissional 499"],
+    ctaLabel: "Quero meu Site Express",
   },
 };
 
