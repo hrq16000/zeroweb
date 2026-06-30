@@ -2008,6 +2008,42 @@ export type Database = {
         }
         Relationships: []
       }
+      landing_overrides: {
+        Row: {
+          created_at: string
+          draft_value: Json | null
+          id: string
+          key: string
+          published_at: string | null
+          published_value: Json | null
+          scope: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          draft_value?: Json | null
+          id?: string
+          key: string
+          published_at?: string | null
+          published_value?: Json | null
+          scope?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          draft_value?: Json | null
+          id?: string
+          key?: string
+          published_at?: string | null
+          published_value?: Json | null
+          scope?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       lead_history: {
         Row: {
           actor: string | null
@@ -5016,6 +5052,27 @@ export type Database = {
       }
     }
     Views: {
+      landing_overrides_public: {
+        Row: {
+          key: string | null
+          published_at: string | null
+          published_value: Json | null
+          scope: string | null
+        }
+        Insert: {
+          key?: string | null
+          published_at?: string | null
+          published_value?: Json | null
+          scope?: string | null
+        }
+        Update: {
+          key?: string | null
+          published_at?: string | null
+          published_value?: Json | null
+          scope?: string | null
+        }
+        Relationships: []
+      }
       license_overview: {
         Row: {
           code: string | null

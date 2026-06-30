@@ -487,23 +487,31 @@ function ServicosHub() {
                       <p className="mt-1 text-xs sm:text-sm text-muted-foreground line-clamp-2 hidden sm:block">{s.description}</p>
 
                       <div className="mt-auto pt-3">
-                        {(s.price != null || s.deliveryDays) && (
-                          <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
-                            {s.price != null && (
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
-                                {s.price === 0
-                                  ? "Sob consulta"
-                                  : `R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
-                                {s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
-                              </span>
-                            )}
-                            {s.deliveryDays && (
-                              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                                <Timer className="w-3 h-3" /> {s.deliveryDays}
-                              </span>
-                            )}
-                          </div>
-                        )}
+                        {(() => {
+                          // Tráfego Pago: público "sob consulta" (gestão sob escopo);
+                          // preço interno (R$1.490 ref) não exibido no card.
+                          const isTrafegoPago = s.slug === "trafego-pago";
+                          const showPrice = isTrafegoPago || s.price != null;
+                          if (!showPrice && !s.deliveryDays) return null;
+                          return (
+                            <div className="flex flex-wrap items-center gap-1.5 text-xs mb-2">
+                              {showPrice && (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">
+                                  {isTrafegoPago || s.price === 0
+                                    ? "Sob consulta"
+                                    : `R$ ${Number(s.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`}
+                                  {!isTrafegoPago && s.pricePeriod ? <span className="opacity-70">/{s.pricePeriod}</span> : null}
+                                </span>
+                              )}
+                              {s.deliveryDays && (
+                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                                  <Timer className="w-3 h-3" /> {s.deliveryDays}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
+
                         <span
                           className="inline-flex items-center justify-center w-full gap-1 text-sm font-semibold rounded-full bg-foreground text-background px-3 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                           title={s.name}

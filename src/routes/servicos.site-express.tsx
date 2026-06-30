@@ -31,9 +31,9 @@ import { TrustStrip } from "@/components/site/TrustStrip";
 const SLUG = "site-express";
 const PATH = `/servicos/${SLUG}`;
 const URL = absUrl(PATH);
-const TITLE = "Site Express em 24h · A partir de R$ 499 · 0WEB";
+const TITLE = "Site Express · Turnkey Profissional · A partir de R$ 499 · 0WEB";
 const DESC =
-  "Site profissional sob medida, mobile-first e focado em conversão, no ar em até 24 horas. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
+  "Site profissional sob medida, mobile-first e focado em conversão, entregue chave-na-mão pelo nosso time. A partir de R$ 499. Briefing de 5 minutos pelo WhatsApp.";
 const PRICE = "499.00";
 
 export const Route = createFileRoute("/servicos/site-express")({
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/servicos/site-express")({
       {
         name: "keywords",
         content:
-          "site express, criação de site rápida, site em 24h, site profissional barato, site para pequeno negócio, site mobile, site whatsapp",
+          "site express, criação de site turnkey, site profissional barato, site para pequeno negócio, site mobile, site whatsapp, site chave-na-mão",
       },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
@@ -73,7 +73,7 @@ export const Route = createFileRoute("/servicos/site-express")({
             {
               "@type": "Service",
               "@id": `${URL}#service`,
-              name: "Site Express em 24h",
+              name: "Site Express",
               description: DESC,
               serviceType: "Web Design Express",
               category: "Web Development",
@@ -100,7 +100,7 @@ export const Route = createFileRoute("/servicos/site-express")({
             {
               "@type": "Product",
               "@id": `${URL}#product`,
-              name: "Site Express em 24h",
+              name: "Site Express",
               description: DESC,
               brand: { "@type": "Brand", name: "0WEB" },
               offers: {
@@ -137,7 +137,7 @@ export const Route = createFileRoute("/servicos/site-express")({
             },
             breadcrumbLd([
               { name: "Serviços", path: "/servicos" },
-              { name: "Site Express em 24h", path: PATH },
+              { name: "Site Express", path: PATH },
             ]),
           ],
         }),
@@ -170,7 +170,7 @@ function SiteExpressPage() {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider"
             >
-              <Zap className="w-3.5 h-3.5" /> Site Express · Entrega em 24h
+              <Zap className="w-3.5 h-3.5" /> Site Express · Turnkey profissional
             </motion.span>
 
             <motion.h1
@@ -180,7 +180,7 @@ function SiteExpressPage() {
               className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.05]"
             >
               Seu site profissional no ar em{" "}
-              <span className="text-orange-600">menos de 24 horas</span>
+              <span className="text-orange-600">turnkey, sem você se preocupar com nada</span>
             </motion.h1>
 
             <motion.p
@@ -204,13 +204,13 @@ function SiteExpressPage() {
                 pageType="service"
                 serviceSlug="site-express"
                 funnelSlug="funnel-site-express"
-                label="Quero meu site em 24h"
+                label="Quero meu Site Express"
                 className={ctaClass}
                 location="site_express_hero"
               />
               <div className="text-sm text-gray-500 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-orange-600" />
-                Do pagamento ao site no ar em menos de 24h
+                Do briefing ao site no ar, com nosso time cuidando de tudo
               </div>
             </motion.div>
 
@@ -258,7 +258,7 @@ function SiteExpressPage() {
 
             <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { icon: Zap, title: "Entrega em 24h", desc: "Briefing pela manhã, site no ar à noite. Sem reuniões longas." },
+                { icon: Zap, title: "Entrega chave-na-mão", desc: "Nosso time faz tudo: design, copy, fotos e publicação. Sem reuniões longas." },
                 { icon: TrendingUp, title: "Feito para vender", desc: "Copy persuasiva que leva o visitante direto pro WhatsApp." },
                 { icon: Smartphone, title: "100% mobile-first", desc: "Design moderno que carrega rápido e converte no celular." },
                 { icon: MessageCircle, title: "Briefing de 5 min", desc: "Conta no WhatsApp o que faz. A gente cuida do resto." },
@@ -331,7 +331,7 @@ function SiteExpressPage() {
             <div className="mt-12 grid md:grid-cols-3 gap-4">
               {[
                 { n: "1", t: "Briefing de 5 min", d: "Você manda um áudio no WhatsApp contando o nome do negócio, o que faz e o que quer comunicar.", icon: MessageCircle },
-                { n: "2", t: "Construção em até 24h", d: "Nosso time monta seu site sob medida. Você recebe um link de prévia para revisar.", icon: Rocket },
+                { n: "2", t: "Construção pelo nosso time", d: "Nosso time monta seu site sob medida. Você recebe um link de prévia para revisar.", icon: Rocket },
                 { n: "3", t: "No ar e vendendo", d: "Aprovou? Publicamos. Site no ar pronto para receber clientes.", icon: Sparkles },
               ].map((s) => (
                 <div key={s.n} className="relative rounded-2xl bg-white border border-gray-100 p-6 shadow-sm">
@@ -354,7 +354,7 @@ function SiteExpressPage() {
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-orange-600 text-[11px] font-bold uppercase tracking-wider shadow">
                 Oferta de lançamento
               </span>
-              <p className="text-sm font-semibold uppercase tracking-wider opacity-90">Site Express 24h</p>
+              <p className="text-sm font-semibold uppercase tracking-wider opacity-90">Site Express</p>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-sm opacity-80">a partir de</span>
               </div>
@@ -366,7 +366,7 @@ function SiteExpressPage() {
 
               <ul className="mt-6 space-y-2 text-sm">
                 {[
-                  "Entrega em até 24h",
+                  "Entrega chave-na-mão",
                   "Hospedagem + domínio inclusos no 1º ano",
                   "Design exclusivo (nada de template)",
                   "Suporte pós-entrega",
@@ -461,13 +461,13 @@ function SiteExpressPage() {
               Pare de perder cliente por não parecer profissional
             </h2>
             <p className="mt-4 text-lg opacity-95">
-              Em menos de 24h o seu site pode estar no ar — vendendo enquanto você dorme.
+              Site Express turnkey: nosso time entrega chave-na-mão e seu site começa a vender por você.
             </p>
             <FunnelCTAButton
               pageType="service"
               serviceSlug="site-express"
               funnelSlug="funnel-site-express"
-              label="Quero meu site em 24h"
+              label="Quero meu Site Express"
               className={ctaFinalClass}
               location="site_express_final"
             />
@@ -480,7 +480,7 @@ function SiteExpressPage() {
       <RelatedLinksGrid
         title="Serviços relacionados"
         subtitle="Acelere o crescimento depois que o seu site estiver no ar."
-        only={["/servicos/criacao-de-sites", "/servicos/landing-pages", "/servicos/site-24h"]}
+        only={["/servicos/criacao-de-sites", "/servicos/landing-pages", "/servicos/site-pro"]}
       />
       <Footer />
       <WhatsAppFloat />

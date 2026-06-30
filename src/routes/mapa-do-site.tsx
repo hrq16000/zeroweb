@@ -1,10 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Map as MapIcon, ExternalLink } from "lucide-react";
 import { listServicesPublic } from "@/lib/services-public.functions";
 
 export const Route = createFileRoute("/mapa-do-site")({
+  loader: async () => {
+    try {
+      const r = await listServicesPublic();
+      const services: Svc[] = (r?.services ?? [])
+        .filter((s) => !!s && typeof s.slug === "string")
+        .map((s) => ({ slug: s.slug, title: s.title, category: s.category ?? null }));
+      return { services };
+
+
+    } catch (err) {
+      console.error("[mapa-do-site] loader failed", err);
+      return { services: [] as Svc[] };
+    }
+  },
   head: () => ({
     meta: [
       { title: "Mapa do site · 0WEB" },
@@ -18,10 +30,20 @@ export const Route = createFileRoute("/mapa-do-site")({
         property: "og:description",
         content: "Índice completo de páginas, serviços e seções do 0WEB.",
       },
+      { property: "og:url", content: "https://0web.com.br/mapa-do-site" },
       { name: "robots", content: "index,follow" },
     ],
     links: [{ rel: "canonical", href: "https://0web.com.br/mapa-do-site" }],
   }),
+  errorComponent: () => (
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <h1 className="text-2xl font-bold">Mapa do site temporariamente indisponível</h1>
+      <p className="mt-2 text-muted-foreground">
+        Tente novamente em instantes ou visite o <a className="text-primary underline" href="/sitemap.xml">sitemap.xml</a>.
+      </p>
+    </div>
+  ),
+  notFoundComponent: () => <div className="p-8">Página não encontrada.</div>,
   component: SiteMapPage,
 });
 
@@ -79,21 +101,7 @@ const MAIN_SECTIONS: Array<{ title: string; items: { to: string; label: string }
 ];
 
 function SiteMapPage() {
-  const fetchSvc = useServerFn(listServicesPublic);
-  const [services, setServices] = useState<Svc[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    void fetchSvc()
-      .then((r) =>
-        setServices(
-          ((r as { services?: Svc[] }).services ?? []).filter(
-            (s): s is Svc => !!s && typeof s.slug === "string",
-          ),
-        ),
-      )
-      .finally(() => setLoading(false));
-  }, [fetchSvc]);
+  const { services } = Route.useLoaderData();
 
   const byCategory = new Map<string, Svc[]>();
   for (const s of services) {
@@ -140,9 +148,7 @@ function SiteMapPage() {
         <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
           <ExternalLink className="w-4 h-4 text-primary" /> Serviços ({services.length})
         </h2>
-        {loading ? (
-          <p className="text-sm text-muted-foreground">Carregando serviços…</p>
-        ) : services.length === 0 ? (
+        {services.length === 0 ? (
           <p className="text-sm text-muted-foreground">Nenhum serviço publicado.</p>
         ) : (
           <div className="space-y-6">

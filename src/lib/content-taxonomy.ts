@@ -80,7 +80,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Desenvolvimento e estratégia de sites comerciais.",
     hubPath: "/blog/sites",
     pillarKeyword: "criação de sites",
-    relatedServices: ["/criacao-sites", "/desenvolvimento"],
+    relatedServices: ["/servicos/site-pro", "/servicos/criacao-de-sites", "/servicos/site-express"],
     relatedCities: true,
     subclusters: [
       { slug: "como-criar-site", title: "Como criar um site", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 3 },
@@ -98,7 +98,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Páginas de conversão para campanhas pagas e orgânicas.",
     hubPath: "/blog/landing-pages",
     pillarKeyword: "landing page",
-    relatedServices: ["/criacao-sites"],
+    relatedServices: ["/servicos/landing-pages", "/servicos/site-pro"],
     subclusters: [
       { slug: "o-que-e-landing-page", title: "O que é landing page", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 2 },
       { slug: "lp-alta-conversao", title: "Landing pages de alta conversão", intent: "informational", funnel: "mofu", priority: 1, commercialValue: 4 },
