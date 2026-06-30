@@ -1,23 +1,15 @@
 {
   "summary": {
     "base": "https://0web.com.br",
-    "generatedAt": "2026-06-30T05:35:35.477Z",
+    "generatedAt": "2026-06-30T05:36:39.583Z",
     "totalRoutes": 4,
-    "failedChecks": 3,
+    "failedChecks": 1,
     "pass": false
   },
   "failed": [
     {
-      "path": "/servicos",
-      "check": "Tráfego Pago não expõe R$1.490/mês"
-    },
-    {
       "path": "/servicos/trafego-pago",
       "check": "FAQ contém frase aprovada"
-    },
-    {
-      "path": "/mapa-do-site",
-      "check": "Serviços > 0 no HTML"
     }
   ],
   "results": [
@@ -25,8 +17,8 @@
       "path": "/servicos",
       "url": "https://0web.com.br/servicos",
       "status": 200,
-      "ms": 7546,
-      "pass": false,
+      "ms": 6990,
+      "pass": true,
       "checks": [
         {
           "name": "HTTP 200",
@@ -51,7 +43,7 @@
         },
         {
           "name": "Tráfego Pago não expõe R$1.490/mês",
-          "pass": false
+          "pass": true
         },
         {
           "name": "Tráfego Pago aparece Sob consulta",
@@ -71,7 +63,7 @@
       "path": "/servicos/site-express",
       "url": "https://0web.com.br/servicos/site-express",
       "status": 200,
-      "ms": 561,
+      "ms": 539,
       "pass": true,
       "checks": [
         {
@@ -97,7 +89,7 @@
       "path": "/servicos/trafego-pago",
       "url": "https://0web.com.br/servicos/trafego-pago",
       "status": 200,
-      "ms": 529,
+      "ms": 512,
       "pass": false,
       "checks": [
         {
@@ -119,8 +111,8 @@
       "path": "/mapa-do-site",
       "url": "https://0web.com.br/mapa-do-site",
       "status": 200,
-      "ms": 564,
-      "pass": false,
+      "ms": 533,
+      "pass": true,
       "checks": [
         {
           "name": "HTTP 200",
@@ -133,8 +125,8 @@
         },
         {
           "name": "Serviços > 0 no HTML",
-          "pass": false,
-          "serviceCount": null
+          "pass": true,
+          "serviceCount": 19
         },
         {
           "name": "contém links de serviços críticos",
