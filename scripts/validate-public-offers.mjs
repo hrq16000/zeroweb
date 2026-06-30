@@ -71,7 +71,7 @@ function routeChecks(route) {
       check("Tráfego Pago não expõe R$1.490/mês", !/R\$\s*1[\.,]490\s*\/\s*m[eê]s/i.test(text)),
       check("Tráfego Pago aparece Sob consulta", /Tráfego\s+Pago[\s\S]{0,900}Sob consulta/i.test(text)),
       check("GMN não expõe R$399/mês", !/R\$\s*399\s*\/\s*m[eê]s/i.test(text)),
-      check("GMN expõe R$397/único ou landing correta", /Google\s+Meu\s+Negócio[\s\S]{0,900}R\$\s*397[\s\S]{0,80}(único|pagamento único)/i.test(text) || /Plano Único\s*R\$397/i.test(text)),
+      check("GMN expõe R$397/único ou landing correta", /Google\s+Meu\s+Negócio[\s\S]{0,900}R\$\s*397[\s\S]{0,80}(único|pagamento único)/i.test(text) || /Plano Único\s*R\$\s*397/i.test(text)),
     );
   }
 
