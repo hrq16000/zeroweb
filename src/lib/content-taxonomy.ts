@@ -80,7 +80,7 @@ export const CLUSTERS: Cluster[] = [
     description: "Desenvolvimento e estratégia de sites comerciais.",
     hubPath: "/blog/sites",
     pillarKeyword: "criação de sites",
-    relatedServices: ["/criacao-sites", "/desenvolvimento"],
+    relatedServices: ["/servicos/site-pro", "/servicos/criacao-de-sites", "/servicos/site-express"],
     relatedCities: true,
     subclusters: [
       { slug: "como-criar-site", title: "Como criar um site", intent: "informational", funnel: "tofu", priority: 1, commercialValue: 3 },
