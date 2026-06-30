@@ -41,7 +41,7 @@ const SERVICE_SLUGS = [
   "automacao-com-ia","chatbot-whatsapp","consultoria","criacao-de-sites",
   "desenvolvimento-saas","gestao-redes-sociais","google-meu-negocio",
   "landing-pages","loja-virtual","marketing-digital","marketplace",
-  "parceiros","presenca-digital","seo","sistemas-web","site-24h",
+  "parceiros","presenca-digital","seo","sistemas-web",
   "site-express","trafego-pago","trafego-pago-local",
 ];
 

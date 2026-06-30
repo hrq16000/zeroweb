@@ -76,7 +76,6 @@ import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteProRouteImport } from './routes/servicos.site-pro'
 import { Route as ServicosSiteExpressRouteImport } from './routes/servicos.site-express'
-import { Route as ServicosSite24hRouteImport } from './routes/servicos.site-24h'
 import { Route as ServicosPresencaDigitalRouteImport } from './routes/servicos.presenca-digital'
 import { Route as ServicosParceirosRouteImport } from './routes/servicos.parceiros'
 import { Route as ServicosMarketplaceRouteImport } from './routes/servicos.marketplace'
@@ -504,11 +503,6 @@ const ServicosSiteProRoute = ServicosSiteProRouteImport.update({
 const ServicosSiteExpressRoute = ServicosSiteExpressRouteImport.update({
   id: '/site-express',
   path: '/site-express',
-  getParentRoute: () => ServicosRoute,
-} as any)
-const ServicosSite24hRoute = ServicosSite24hRouteImport.update({
-  id: '/site-24h',
-  path: '/site-24h',
   getParentRoute: () => ServicosRoute,
 } as any)
 const ServicosPresencaDigitalRoute = ServicosPresencaDigitalRouteImport.update({
@@ -1086,7 +1080,6 @@ export interface FileRoutesByFullPath {
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
-  '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
@@ -1242,7 +1235,6 @@ export interface FileRoutesByTo {
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
-  '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
@@ -1402,7 +1394,6 @@ export interface FileRoutesById {
   '/servicos/marketplace': typeof ServicosMarketplaceRoute
   '/servicos/parceiros': typeof ServicosParceirosRoute
   '/servicos/presenca-digital': typeof ServicosPresencaDigitalRoute
-  '/servicos/site-24h': typeof ServicosSite24hRoute
   '/servicos/site-express': typeof ServicosSiteExpressRoute
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
@@ -1562,7 +1553,6 @@ export interface FileRouteTypes {
     | '/servicos/marketplace'
     | '/servicos/parceiros'
     | '/servicos/presenca-digital'
-    | '/servicos/site-24h'
     | '/servicos/site-express'
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
@@ -1718,7 +1708,6 @@ export interface FileRouteTypes {
     | '/servicos/marketplace'
     | '/servicos/parceiros'
     | '/servicos/presenca-digital'
-    | '/servicos/site-24h'
     | '/servicos/site-express'
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
@@ -1877,7 +1866,6 @@ export interface FileRouteTypes {
     | '/servicos/marketplace'
     | '/servicos/parceiros'
     | '/servicos/presenca-digital'
-    | '/servicos/site-24h'
     | '/servicos/site-express'
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
@@ -2519,13 +2507,6 @@ declare module '@tanstack/react-router' {
       path: '/site-express'
       fullPath: '/servicos/site-express'
       preLoaderRoute: typeof ServicosSiteExpressRouteImport
-      parentRoute: typeof ServicosRoute
-    }
-    '/servicos/site-24h': {
-      id: '/servicos/site-24h'
-      path: '/site-24h'
-      fullPath: '/servicos/site-24h'
-      preLoaderRoute: typeof ServicosSite24hRouteImport
       parentRoute: typeof ServicosRoute
     }
     '/servicos/presenca-digital': {
@@ -3359,7 +3340,6 @@ interface ServicosRouteChildren {
   ServicosMarketplaceRoute: typeof ServicosMarketplaceRoute
   ServicosParceirosRoute: typeof ServicosParceirosRoute
   ServicosPresencaDigitalRoute: typeof ServicosPresencaDigitalRoute
-  ServicosSite24hRoute: typeof ServicosSite24hRoute
   ServicosSiteExpressRoute: typeof ServicosSiteExpressRoute
   ServicosSiteProRoute: typeof ServicosSiteProRoute
   ServicosTrafegoPagoRoute: typeof ServicosTrafegoPagoRoute
@@ -3375,7 +3355,6 @@ const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosMarketplaceRoute: ServicosMarketplaceRoute,
   ServicosParceirosRoute: ServicosParceirosRoute,
   ServicosPresencaDigitalRoute: ServicosPresencaDigitalRoute,
-  ServicosSite24hRoute: ServicosSite24hRoute,
   ServicosSiteExpressRoute: ServicosSiteExpressRoute,
   ServicosSiteProRoute: ServicosSiteProRoute,
   ServicosTrafegoPagoRoute: ServicosTrafegoPagoRoute,

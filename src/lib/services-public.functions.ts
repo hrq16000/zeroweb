@@ -124,12 +124,69 @@ function asSchemaBlocks(v: unknown): SchemaBlock[] {
   return v.filter((x): x is SchemaBlock => typeof x === "object" && x !== null && !Array.isArray(x));
 }
 
+function normalizePublicServiceRow(row: DbServiceRow): DbServiceRow {
+  if (row.slug === "site-express") {
+    return {
+      ...row,
+      name: "Site Express",
+      title: "Site Express · Turnkey Profissional · A partir de R$ 499 · 0WEB",
+      h1: "Site profissional chave-na-mão",
+      description:
+        "Site profissional sob medida, mobile-first e focado em conversão, entregue chave-na-mão pelo nosso time. A partir de R$ 499.",
+      benefits: asStringArray(row.benefits).length
+        ? asStringArray(row.benefits).map((x) =>
+            x
+              .replace(/Entrega\s+em\s+24h/gi, "Entrega chave-na-mão")
+              .replace(/24\s*horas|24h/gi, "fluxo turnkey"),
+          )
+        : row.benefits,
+      cta_label: "Quero meu Site Express",
+      delivery_days: "Turnkey profissional",
+    };
+  }
+
+  if (row.slug === "google-meu-negocio") {
+    return {
+      ...row,
+      price: 397,
+      price_period: null,
+      conditions: "Plano Único: R$397 em pagamento único. Plano PRO: R$247/mês por 3 meses.",
+    };
+  }
+
+  if (row.slug === "trafego-pago") {
+    return {
+      ...row,
+      price: 0,
+      price_period: null,
+      conditions:
+        "Mídia paga à parte; recomendamos investimento inicial a partir de R$1.500/mês em mídia. Taxa de gestão sob consulta conforme escopo e verba.",
+    };
+  }
+
+  if (row.slug === "site-24h") {
+    return {
+      ...row,
+      name: "Site Express Legado",
+      title: "Site Express Profissional por R$499 · 0WEB",
+      h1: "Site profissional chave-na-mão",
+      description:
+        "Site profissional, responsivo e otimizado entregue em fluxo turnkey. R$499 com hospedagem, SSL e SEO inclusos.",
+      cta_label: "Quero meu Site Express",
+      delivery_days: "Turnkey profissional",
+    };
+  }
+
+  return row;
+}
+
 function mapRow(
   row: DbServiceRow,
   imageUrl: string | null = null,
   gallery: GalleryItem[] = [],
   ogImageUrl: string | null = null,
 ): PublicServiceFull {
+  row = normalizePublicServiceRow(row);
   return {
     slug: row.slug,
     name: row.name,
@@ -198,6 +255,8 @@ async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
 const COLS =
   "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,is_solution,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
 
+const RETIRED_SERVICE_SLUGS = new Set(["site-24h"]);
+
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
 const fileFallback = (s: ServiceData): PublicServiceFull => ({
@@ -238,25 +297,27 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     if (error) throw error;
     const rows = (data ?? []) as unknown as DbServiceRow[];
     const mapped = await Promise.all(
-      rows.map(async (r) =>
-        mapRow(
+      rows.map(async (raw) => {
+        const r = normalizePublicServiceRow(raw);
+        return mapRow(
           r,
           await signImage(supabaseAdmin, r.image_path),
           await signGallery(supabaseAdmin, r.gallery),
           await signImage(supabaseAdmin, r.og_image_path),
-        ),
-      ),
+        );
+      }),
     );
     // Banco é a única fonte de verdade. Slugs antigos do arquivo só aparecem
     // se ainda não foram migrados (legado de SEO city pages).
     const seen = new Set(mapped.map((s) => s.slug));
     for (const s of Object.values(SERVICES)) {
+      if (RETIRED_SERVICE_SLUGS.has(s.slug)) continue;
       if (!seen.has(s.slug)) mapped.push(fileFallback(s));
     }
     return { services: mapped };
   } catch (err) {
     console.error("[listServicesPublic] fallback to file", err);
-    return { services: Object.values(SERVICES).map(fileFallback) };
+    return { services: Object.values(SERVICES).filter((s) => !RETIRED_SERVICE_SLUGS.has(s.slug)).map(fileFallback) };
   }
 });
 
@@ -274,7 +335,7 @@ export const getServicePublic = createServerFn({ method: "GET" })
         .maybeSingle();
       if (error) throw error;
       if (row) {
-        const r = row as unknown as DbServiceRow;
+        const r = normalizePublicServiceRow(row as unknown as DbServiceRow);
         const imageUrl = await signImage(supabaseAdmin, r.image_path);
         const gallery = await signGallery(supabaseAdmin, r.gallery);
         const ogImageUrl = await signImage(supabaseAdmin, r.og_image_path);
@@ -283,7 +344,8 @@ export const getServicePublic = createServerFn({ method: "GET" })
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);
     }
-    const fallback = SERVICES[data.slug];
+      if (RETIRED_SERVICE_SLUGS.has(data.slug)) return { service: null };
+      const fallback = SERVICES[data.slug];
     if (!fallback) return { service: null, source: "none" as const };
     return { service: fileFallback(fallback), source: "file" as const };
   });

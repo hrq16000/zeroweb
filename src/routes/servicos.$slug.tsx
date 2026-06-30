@@ -54,8 +54,8 @@ function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
 
 export const Route = createFileRoute("/servicos/$slug")({
   beforeLoad: ({ params }) => {
-    if (params.slug === "site-express") {
-      throw redirect({ to: "/servicos/site-express" });
+    if (params.slug === "site-24h") {
+      throw redirect({ to: "/servicos/site-express", statusCode: 301, replace: true });
     }
   },
   loader: async ({ params }) => {
@@ -178,9 +178,12 @@ function ServicePage() {
   const otherSvcs = relatedServices(slug, 6);
   const hasGeo = GEO_SET.has(slug);
   const funnels = data.funnels ?? {};
+  const isTrafegoPago = slug === "trafego-pago";
 
   const priceLabel =
-    data.price == null
+    isTrafegoPago
+      ? "Sob consulta"
+      : data.price == null
       ? null
       : data.price === 0
         ? "Sob consulta"
@@ -204,8 +207,8 @@ function ServicePage() {
                 {priceLabel && (
                   <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
                     <BadgeCheck className="w-4 h-4" />
-                    {data.price && data.price > 0 ? `A partir de ${priceLabel}` : priceLabel}
-                    {data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
+                    {!isTrafegoPago && data.price && data.price > 0 ? `A partir de ${priceLabel}` : priceLabel}
+                    {!isTrafegoPago && data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
                   </span>
                 )}
                 {data.deliveryDays && (
@@ -240,7 +243,7 @@ function ServicePage() {
                 location="hero"
                 label={data.ctaLabel}
               />
-              {data.price != null && data.price > 0 ? (
+              {!isTrafegoPago && data.price != null && data.price > 0 ? (
                 <AddToCartButton
                   item={{
                     slug,
@@ -253,7 +256,7 @@ function ServicePage() {
                 />
               ) : null}
             </div>
-            {data.price != null && data.price > 0 ? (
+            {!isTrafegoPago && data.price != null && data.price > 0 ? (
               <div className="mt-10">
                 <ServicePurchasePanel
                   item={{

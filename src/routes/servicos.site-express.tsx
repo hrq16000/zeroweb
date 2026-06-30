@@ -179,7 +179,7 @@ function SiteExpressPage() {
               transition={{ delay: 0.05 }}
               className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.05]"
             >
-              Seu site profissional no ar em{" "}
+              Seu site profissional em modo{" "}
               <span className="text-orange-600">turnkey, sem você se preocupar com nada</span>
             </motion.h1>
 
@@ -251,8 +251,8 @@ function SiteExpressPage() {
                 Por que Site Express
               </span>
               <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-900">
-                Agência cobra R$ 3.000 e leva 30 dias.
-                <br />A 0WEB entrega amanhã.
+                Agência cobra R$ 3.000 e complica o processo.
+                <br />A 0WEB entrega com fluxo enxuto.
               </h2>
             </div>
 
