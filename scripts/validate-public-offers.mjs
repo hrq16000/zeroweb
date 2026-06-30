@@ -40,7 +40,7 @@ function normalize(input) {
 }
 
 function countServices(text) {
-  const match = text.match(/Serviços \((\d+)\)/i);
+  const match = text.match(/Serviços\s*\(\s*(\d+)\s*\)/i);
   return match ? Number(match[1]) : null;
 }
 
@@ -68,7 +68,7 @@ function routeChecks(route) {
       check("não contém Site Express em 24h", !/Site\s+Express\s+em\s+24h/i.test(text)),
       check("não contém pronto em 24h", !/pronto\s+em\s+24h/i.test(text)),
       check("não contém pronto em 24 horas", !/pronto\s+em\s+24\s+horas/i.test(text)),
-      check("Tráfego Pago não expõe R$1.490/mês", !/R\$\s*1[\.,]490\s*\/\s*m[eê]s/i.test(text)),
+      check("Tráfego Pago não expõe R$1.490/mês", !/Tráfego\s+Pago[\s\S]{0,900}R\$\s*1[\.,]490\s*\/\s*m[eê]s/i.test(text)),
       check("Tráfego Pago aparece Sob consulta", /Tráfego\s+Pago[\s\S]{0,900}Sob consulta/i.test(text)),
       check("GMN não expõe R$399/mês", !/R\$\s*399\s*\/\s*m[eê]s/i.test(text)),
       check("GMN expõe R$397/único ou landing correta", /Google\s+Meu\s+Negócio[\s\S]{0,900}R\$\s*397[\s\S]{0,80}(único|pagamento único)/i.test(text) || /Plano Único\s*R\$\s*397/i.test(text)),
