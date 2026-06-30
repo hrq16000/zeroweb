@@ -255,6 +255,8 @@ async function signGallery(sb: any, raw: unknown): Promise<GalleryItem[]> {
 const COLS =
   "slug,name,category,title,h1,description,service_type,problems,benefits,process,faq,keywords,cta_label,image_path,image_alt,seo_title,seo_description,display_order,price,price_period,delivery_days,conditions,show_in_menu,show_in_footer,show_in_home_featured,show_in_sitemap,is_solution,funnels,gallery,sections,og_image_path,og_type,schema_jsonld,rich_html";
 
+const RETIRED_SERVICE_SLUGS = new Set(["site-24h"]);
+
 // Sem fallbacks de imagem: capa vem 100% do painel administrativo
 // (coluna image_path da tabela services + bucket service-images).
 const fileFallback = (s: ServiceData): PublicServiceFull => ({
@@ -309,12 +311,13 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
     // se ainda não foram migrados (legado de SEO city pages).
     const seen = new Set(mapped.map((s) => s.slug));
     for (const s of Object.values(SERVICES)) {
+      if (RETIRED_SERVICE_SLUGS.has(s.slug)) continue;
       if (!seen.has(s.slug)) mapped.push(fileFallback(s));
     }
     return { services: mapped };
   } catch (err) {
     console.error("[listServicesPublic] fallback to file", err);
-    return { services: Object.values(SERVICES).map(fileFallback) };
+    return { services: Object.values(SERVICES).filter((s) => !RETIRED_SERVICE_SLUGS.has(s.slug)).map(fileFallback) };
   }
 });
 
@@ -341,7 +344,8 @@ export const getServicePublic = createServerFn({ method: "GET" })
     } catch (err) {
       console.error("[getServicePublic] fallback to file", err);
     }
-    const fallback = SERVICES[data.slug];
+      if (RETIRED_SERVICE_SLUGS.has(data.slug)) return { service: null };
+      const fallback = SERVICES[data.slug];
     if (!fallback) return { service: null, source: "none" as const };
     return { service: fileFallback(fallback), source: "file" as const };
   });
