@@ -276,9 +276,16 @@ function ScrollToTop() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const hash = useRouterState({ select: (s) => s.location.hash });
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (hash) return; // preserve in-page anchor scrolling
-    if (typeof window !== "undefined") {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+    // Se estiver muito longe do topo, faz um salto instantâneo para evitar
+    // animação longa e travada; caso contrário, sobe de forma suave.
+    if (reduce || currentY > 2400) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
   }, [pathname, hash]);
   return null;
