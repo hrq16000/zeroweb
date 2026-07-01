@@ -79,12 +79,19 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  html {
+    /* NÃO usar scroll-behavior: smooth globalmente — trava wheel/trackpad em páginas longas.
+       Suavidade é aplicada via JS em cliques de âncora e trocas de rota. */
+    scroll-behavior: auto;
+    scroll-padding-top: 96px; /* offset para header fixo em âncoras #id */
+    overflow-anchor: auto;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
