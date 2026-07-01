@@ -139,9 +139,7 @@
   box-shadow: var(--shadow-glow);
 }
 
-/* Smooth scroll global with reduced-motion fallback */
-html { scroll-behavior: smooth; }
-
+/* Smooth scroll é opt-in via JS. Reduced-motion continua garantido. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
