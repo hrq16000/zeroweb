@@ -165,6 +165,7 @@ import { Route as AuthenticatedAppFunisIdRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppEditorialSkyscraperReviewRouteImport } from './routes/_authenticated/app.editorial.skyscraper-review'
 import { Route as AuthenticatedAppEditorialSkyscraperRouteImport } from './routes/_authenticated/app.editorial.skyscraper'
 import { Route as AuthenticatedAppAuditoriaIdentidadeRouteImport } from './routes/_authenticated/app.auditoria.identidade'
+import { Route as ApiPublicLandingImagePageFileRouteImport } from './routes/api/public/landing-image.$page.$file'
 import { Route as AuthenticatedAppFunisPipelineRegrasRouteImport } from './routes/_authenticated/app.funis.pipeline.regras'
 
 const TrafegoPagoLocalRoute = TrafegoPagoLocalRouteImport.update({
@@ -991,6 +992,12 @@ const AuthenticatedAppAuditoriaIdentidadeRoute =
     path: '/auditoria/identidade',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const ApiPublicLandingImagePageFileRoute =
+  ApiPublicLandingImagePageFileRouteImport.update({
+    id: '/api/public/landing-image/$page/$file',
+    path: '/api/public/landing-image/$page/$file',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAppFunisPipelineRegrasRoute =
   AuthenticatedAppFunisPipelineRegrasRouteImport.update({
     id: '/funis/pipeline/regras',
@@ -1155,6 +1162,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
+  '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1311,6 +1319,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/app/funis': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
+  '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1471,6 +1480,7 @@ export interface FileRoutesById {
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
   '/_authenticated/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/_authenticated/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
+  '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1631,6 +1641,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis/'
     | '/app/funis/pipeline/regras'
+    | '/api/public/landing-image/$page/$file'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1787,6 +1798,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/visitors-cleanup'
     | '/app/funis'
     | '/app/funis/pipeline/regras'
+    | '/api/public/landing-image/$page/$file'
   id:
     | '__root__'
     | '/'
@@ -1946,6 +1958,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/visitors-cleanup'
     | '/_authenticated/app/funis/'
     | '/_authenticated/app/funis/pipeline/regras'
+    | '/api/public/landing-image/$page/$file'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2048,6 +2061,7 @@ export interface RootRouteChildren {
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksStripeRoute: typeof ApiPublicHooksStripeRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
+  ApiPublicLandingImagePageFileRoute: typeof ApiPublicLandingImagePageFileRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -3144,6 +3158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAuditoriaIdentidadeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/api/public/landing-image/$page/$file': {
+      id: '/api/public/landing-image/$page/$file'
+      path: '/api/public/landing-image/$page/$file'
+      fullPath: '/api/public/landing-image/$page/$file'
+      preLoaderRoute: typeof ApiPublicLandingImagePageFileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/funis/pipeline/regras': {
       id: '/_authenticated/app/funis/pipeline/regras'
       path: '/funis/pipeline/regras'
@@ -3490,6 +3511,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksStripeRoute: ApiPublicHooksStripeRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
+  ApiPublicLandingImagePageFileRoute: ApiPublicLandingImagePageFileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
