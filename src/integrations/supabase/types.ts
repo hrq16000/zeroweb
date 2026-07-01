@@ -624,6 +624,13 @@ export type Database = {
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "company_categories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       consent_audit_log: {
@@ -3481,6 +3488,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "portal_companies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "portal_companies_portal_id_fkey"
             columns: ["portal_id"]
             isOneToOne: false
@@ -3580,6 +3594,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_providers_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -3861,6 +3882,13 @@ export type Database = {
             referencedRelation: "providers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "provider_categories_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       provider_portfolio: {
@@ -3900,6 +3928,13 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_portfolio_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -5052,6 +5087,69 @@ export type Database = {
       }
     }
     Views: {
+      companies_public: {
+        Row: {
+          categories: string[] | null
+          city: string | null
+          cover_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          logo_url: string | null
+          rating_avg: number | null
+          rating_count: number | null
+          service_regions: string[] | null
+          slug: string | null
+          social: Json | null
+          state: string | null
+          status: string | null
+          trade_name: string | null
+          verified: boolean | null
+          views_count: number | null
+          website: string | null
+        }
+        Insert: {
+          categories?: string[] | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          logo_url?: string | null
+          rating_avg?: number | null
+          rating_count?: number | null
+          service_regions?: string[] | null
+          slug?: string | null
+          social?: Json | null
+          state?: string | null
+          status?: string | null
+          trade_name?: string | null
+          verified?: boolean | null
+          views_count?: number | null
+          website?: string | null
+        }
+        Update: {
+          categories?: string[] | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          logo_url?: string | null
+          rating_avg?: number | null
+          rating_count?: number | null
+          service_regions?: string[] | null
+          slug?: string | null
+          social?: Json | null
+          state?: string | null
+          status?: string | null
+          trade_name?: string | null
+          verified?: boolean | null
+          views_count?: number | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       landing_overrides_public: {
         Row: {
           key: string | null
@@ -5132,6 +5230,69 @@ export type Database = {
           name: string | null
           partner_id: string | null
           revenue_cents_30d: number | null
+        }
+        Relationships: []
+      }
+      providers_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          cover_url: string | null
+          created_at: string | null
+          display_name: string | null
+          headline: string | null
+          id: string | null
+          rating_avg: number | null
+          rating_count: number | null
+          service_regions: string[] | null
+          slug: string | null
+          social: Json | null
+          specialties: string[] | null
+          state: string | null
+          status: string | null
+          verified: boolean | null
+          views_count: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          headline?: string | null
+          id?: string | null
+          rating_avg?: number | null
+          rating_count?: number | null
+          service_regions?: string[] | null
+          slug?: string | null
+          social?: Json | null
+          specialties?: string[] | null
+          state?: string | null
+          status?: string | null
+          verified?: boolean | null
+          views_count?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          headline?: string | null
+          id?: string | null
+          rating_avg?: number | null
+          rating_count?: number | null
+          service_regions?: string[] | null
+          slug?: string | null
+          social?: Json | null
+          specialties?: string[] | null
+          state?: string | null
+          status?: string | null
+          verified?: boolean | null
+          views_count?: number | null
         }
         Relationships: []
       }
