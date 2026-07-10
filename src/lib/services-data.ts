@@ -14,7 +14,9 @@ export type ServiceCategory =
   | "IA"
   | "Sistemas"
   | "Social"
-  | "Branding";
+  | "Branding"
+  | "Conteudo"
+  | "Midia";
 
 export type ServiceData = {
   slug: string;
@@ -590,6 +592,161 @@ export const SERVICES: Record<string, ServiceData> = {
     ],
     keywords: ["portfólio empresarial", "site portfólio", "site institucional", "one page"],
     ctaLabel: "Criar Meu Portfólio",
+  },
+  "ebook-profissional": {
+    slug: "ebook-profissional",
+    name: "E-Book Profissional",
+    category: "Conteudo",
+    title: "E-Book Profissional · Autoridade e Captação de Leads · 0WEB",
+    h1: "E-Book Profissional: Autoridade e Captação de Leads",
+    description:
+      "Transforme seu conhecimento em um e-book estratégico que posiciona sua empresa como autoridade e captura leads qualificados 24h por dia.",
+    serviceType: "Ebook Production",
+    problems: [
+      "Seus clientes não confiam em você como especialista do mercado",
+      "Você não tem um material rico para oferecer em troca de contatos",
+      "Concorrentes estão capturando leads com conteúdo de qualidade",
+    ],
+    benefits: [
+      "E-book estratégico com até 30 páginas (design profissional)",
+      "Posicionamento como autoridade no seu mercado",
+      "Material rico para captura de leads (landing page + formulário)",
+      "Design editorial premium (capa, diagramação, ícones)",
+      "Entrega em PDF editável + versão para web",
+      "Estratégia de distribuição (como usar para gerar leads)",
+    ],
+    process: [
+      { step: "Briefing estratégico", desc: "1h — definimos tema, público-objetivo e objetivos" },
+      { step: "Estrutura e roteiro", desc: "3 dias — criamos o sumário e fluxo de conteúdo" },
+      { step: "Redação do conteúdo", desc: "7 dias — escrevemos o texto completo" },
+      { step: "Design editorial", desc: "5 dias — diagramação profissional com imagens" },
+      { step: "Revisão e entrega", desc: "2 dias — você aprova e recebe os arquivos" },
+    ],
+    faq: [
+      { q: "Vocês escrevem o conteúdo?", a: "Sim, nossa equipe de redação cria todo o conteúdo estratégico." },
+      { q: "Posso revisar e pedir ajustes?", a: "Sim, incluímos 2 rodadas de revisão no texto e no design." },
+      { q: "Recebo os arquivos editáveis?", a: "Sim, você recebe PDF, Word e versão para web (HTML)." },
+      { q: "Quanto tempo leva?", a: "Entregamos em até 20 dias úteis após o briefing." },
+      { q: "Vocês ajudam na distribuição?", a: "Sim, entregamos um guia estratégico de como usar o e-book para captar leads." },
+    ],
+    keywords: ["e-book profissional", "ebook", "captura de leads", "material rico", "isca digital"],
+    ctaLabel: "Criar Meu E-Book",
+  },
+  "videos-empresariais": {
+    slug: "videos-empresariais",
+    name: "Vídeos Empresariais",
+    category: "Midia",
+    title: "Vídeos Empresariais · Conte Sua História com Impacto · 0WEB",
+    h1: "Vídeos Empresariais: Conte Sua História com Impacto",
+    description:
+      "Produção profissional de vídeos institucionais, de produtos e depoimentos que conectam, engajam e convertem.",
+    serviceType: "Corporate Video Production",
+    problems: [
+      "Vídeos amadores não passam credibilidade e afastam clientes",
+      "Você não tem conteúdo em vídeo para redes sociais e site",
+      "Concorrentes estão usando vídeo para se destacar no mercado",
+    ],
+    benefits: [
+      "Vídeo institucional completo (até 3 minutos)",
+      "Roteiro estratégico (storytelling que conecta)",
+      "Captação profissional (câmera 4K, iluminação, áudio)",
+      "Edição cinematográfica (trilha sonora, motion graphics, color grading)",
+      "Versões para diferentes plataformas (horizontal, vertical, quadrado)",
+      "Entrega em alta resolução (Full HD + 4K)",
+    ],
+    process: [
+      { step: "Briefing criativo", desc: "1h — entendemos sua marca, mensagem e objetivos" },
+      { step: "Roteiro e planejamento", desc: "3 dias — criamos o roteiro e cronograma" },
+      { step: "Captação de imagens", desc: "1 dia — gravação profissional na sua empresa" },
+      { step: "Edição e pós-produção", desc: "7 dias — edição, trilha, motion graphics" },
+      { step: "Revisão e ajustes", desc: "2 dias — você assiste e pede mudanças" },
+      { step: "Entrega final", desc: "1 dia — todos os arquivos e versões" },
+    ],
+    faq: [
+      { q: "Vocês vão até a empresa gravar?", a: "Sim, nossa equipe vai até seu local de gravação (incluído no preço para Curitiba/PR)." },
+      { q: "Quantos vídeos estão inclusos?", a: "Um vídeo principal de até 3 minutos + 3 versões curtas para redes sociais." },
+      { q: "Posso pedir ajustes na edição?", a: "Sim, incluímos 2 rodadas de revisão na edição final." },
+      { q: "Recebo os arquivos brutos?", a: "Sim, você recebe todos os arquivos gravados + versões editadas." },
+      { q: "Quanto tempo leva?", a: "Entregamos em até 15 dias úteis após a gravação." },
+    ],
+    keywords: ["vídeos empresariais", "vídeo institucional", "produção de vídeo", "vídeo corporativo"],
+    ctaLabel: "Produzir Meu Vídeo",
+  },
+  "comunicacao-visual": {
+    slug: "comunicacao-visual",
+    name: "Comunicação Visual",
+    category: "Branding",
+    title: "Comunicação Visual Profissional · Sua Marca em Todo Lugar · 0WEB",
+    h1: "Comunicação Visual Profissional: Sua Marca em Todo Lugar",
+    description:
+      "Design profissional para materiais impressos e digitais: banners, flyers, cartões, posts para redes sociais e muito mais.",
+    serviceType: "Visual Communication Design",
+    problems: [
+      "Materiais com design amador não passam credibilidade",
+      "Você perde tempo tentando fazer designs no Canva sem resultado",
+      "Sua marca não tem padrão visual consistente",
+    ],
+    benefits: [
+      "Pacote com 10 peças de comunicação visual",
+      "Design profissional e consistente com sua marca",
+      "Materiais para impressão (cartões, flyers, banners) + digital (posts, stories)",
+      "Arquivos prontos para gráfica e redes sociais",
+      "Entrega em até 7 dias úteis",
+      "Inclui 2 rodadas de ajustes",
+    ],
+    process: [
+      { step: "Briefing e referências", desc: "1 dia — você envia o que precisa e referências" },
+      { step: "Criação das peças", desc: "4 dias — desenvolvemos todos os designs" },
+      { step: "Revisão e ajustes", desc: "2 dias — você confere e pede mudanças" },
+      { step: "Entrega final", desc: "1 dia — todos os arquivos organizados" },
+    ],
+    faq: [
+      { q: "Quais peças estão inclusas?", a: "10 peças à sua escolha: cartões, flyers, banners, posts para Instagram, stories, capas para Facebook, etc." },
+      { q: "Vocês imprimem os materiais?", a: "Não, entregamos os arquivos prontos para gráfica. Indicamos parceiros de confiança." },
+      { q: "Posso pedir ajustes?", a: "Sim, incluímos 2 rodadas de ajustes em cada peça." },
+      { q: "Recebo os arquivos editáveis?", a: "Sim, você recebe PDF, PNG, JPG e arquivos editáveis (AI/PSD)." },
+      { q: "Quanto tempo leva?", a: "Entregamos em até 7 dias úteis após o briefing." },
+    ],
+    keywords: ["comunicação visual", "design gráfico", "material gráfico", "artes para redes sociais"],
+    ctaLabel: "Criar Minha Comunicação Visual",
+  },
+  "outdoor-digital": {
+    slug: "outdoor-digital",
+    name: "Outdoor Digital",
+    category: "Midia",
+    title: "Outdoor Digital · Sua Marca Onde as Pessoas Estão · 0WEB",
+    h1: "Outdoor Digital: Sua Marca Onde as Pessoas Estão",
+    description:
+      "Mídia OOH (Out-of-Home) em telas digitais estratégicas de Curitiba. Alcance milhares de pessoas por dia com impacto visual.",
+    serviceType: "Digital Out-of-Home Advertising",
+    problems: [
+      "Mídia tradicional (TV, rádio) é cara e difícil de mensurar",
+      "Você quer aparecer em locais estratégicos mas não sabe como",
+      "Concorrentes estão investindo em mídia offline e ganhando visibilidade",
+    ],
+    benefits: [
+      "Exibição em telas digitais estratégicas de Curitiba (shoppings, avenidas, academias)",
+      "Alcance de +50.000 pessoas por dia",
+      "Criativo em vídeo ou imagem (até 15 segundos)",
+      "Relatório mensal de exibição (quantas vezes passou, em quais telas)",
+      "Flexibilidade para trocar o criativo quando quiser",
+      "Sem fidelidade (cancele quando quiser)",
+    ],
+    process: [
+      { step: "Briefing e locais", desc: "1 dia — definimos onde e quando exibir" },
+      { step: "Criação do criativo", desc: "3 dias — produzimos o vídeo/imagem" },
+      { step: "Aprovação e agendamento", desc: "1 dia — você aprova e programamos" },
+      { step: "Exibição e relatório", desc: "Contínuo — seu outdoor no ar + relatório mensal" },
+    ],
+    faq: [
+      { q: "Onde ficam as telas?", a: "Temos telas em shoppings (Palladium, Park Shopping, etc), avenidas principais, academias e locais de grande circulação em Curitiba." },
+      { q: "Quantas vezes meu outdoor passa por dia?", a: "Em média, 120 vezes por dia em cada tela (loop a cada 5 minutos)." },
+      { q: "Posso trocar o criativo?", a: "Sim, você pode trocar o criativo quantas vezes quiser (produção cobrada à parte)." },
+      { q: "Recebo relatório?", a: "Sim, relatório mensal com quantas vezes passou, em quais telas e horário." },
+      { q: "Tem fidelidade?", a: "Não, contrato mensal sem fidelidade. Cancele quando quiser." },
+    ],
+    keywords: ["outdoor digital", "mídia OOH", "publicidade externa", "outdoor curitiba", "DOOH"],
+    ctaLabel: "Quero Aparecer em Outdoor Digital",
   },
 };
 
