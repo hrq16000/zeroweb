@@ -13,7 +13,8 @@ export type ServiceCategory =
   | "Tráfego"
   | "IA"
   | "Sistemas"
-  | "Social";
+  | "Social"
+  | "Branding";
 
 export type ServiceData = {
   slug: string;
@@ -435,6 +436,160 @@ export const SERVICES: Record<string, ServiceData> = {
     ],
     keywords: ["site express", "site rápido", "site barato", "criação de site express", "site profissional 499"],
     ctaLabel: "Quero meu Site Express",
+  },
+  "cartao-digital": {
+    slug: "cartao-digital",
+    name: "Cartão Digital",
+    category: "Branding",
+    title: "Cartão Digital Profissional · Sua Empresa na Palma da Mão · 0WEB",
+    h1: "Cartão Digital Profissional: Sua Empresa na Palma da Mão",
+    description:
+      "Substitua o cartão de papel por um cartão digital moderno, editável e que gera resultados. Compartilhe no WhatsApp, Instagram e QR Code.",
+    serviceType: "Digital Business Card Design",
+    problems: [
+      "Cartões de papel são perdidos, esquecidos e vão para o lixo",
+      "Seus contatos não têm como acessar seus serviços rapidamente",
+      "Você perde oportunidades de negócio por não estar digital",
+    ],
+    benefits: [
+      "Compartilhamento instantâneo via WhatsApp, SMS e e-mail",
+      "QR Code personalizado para eventos e materiais impressos",
+      "Links diretos para WhatsApp, Instagram, site e localização",
+      "Atualização em tempo real (mudou algo? atualize na hora)",
+      "Analytics de cliques (saiba quantas pessoas acessaram)",
+    ],
+    process: [
+      { step: "Briefing rápido", desc: "15 min — entendemos sua marca e serviços" },
+      { step: "Design personalizado", desc: "2 dias — criamos o layout exclusivo" },
+      { step: "Aprovação e ajustes", desc: "1 dia — você revisa e pede mudanças" },
+      { step: "Entrega e treinamento", desc: "1 dia — você recebe o cartão e aprende a usar" },
+    ],
+    faq: [
+      { q: "Posso editar depois de pronto?", a: "Sim, você pode atualizar informações, fotos e links quando quiser." },
+      { q: "Funciona em qualquer celular?", a: "Sim, é 100% responsivo e funciona em qualquer dispositivo." },
+      { q: "Preciso instalar algum app?", a: "Não, funciona direto no navegador, sem downloads." },
+      { q: "Como compartilho?", a: "Via link, QR Code, WhatsApp, Instagram, e-mail ou onde quiser." },
+      { q: "Quanto tempo leva para ficar pronto?", a: "Entregamos em até 5 dias úteis após o briefing." },
+    ],
+    keywords: ["cartão digital", "cartão de visitas digital", "cartão virtual", "cartão QR code"],
+    ctaLabel: "Criar Meu Cartão Digital",
+  },
+  "catalogo-digital": {
+    slug: "catalogo-digital",
+    name: "Catálogo Digital",
+    category: "E-commerce",
+    title: "Catálogo Digital Completo · Venda 24h por Dia · 0WEB",
+    h1: "Catálogo Digital Completo: Venda 24h por Dia",
+    description:
+      "Transforme seus produtos em um catálogo online profissional, com fotos, descrições, preços e botão direto para WhatsApp. Sem mensalidade.",
+    serviceType: "Digital Product Catalog",
+    problems: [
+      "Enviar fotos e preços pelo WhatsApp um por um toma muito tempo",
+      "Clientes querem ver tudo de uma vez, não ficar esperando resposta",
+      "Você perde vendas fora do horário comercial",
+    ],
+    benefits: [
+      "Catálogo online 24h, acessível de qualquer lugar",
+      "Botão de compra direto para WhatsApp (fechamento rápido)",
+      "Organização por categorias (facilita a navegação)",
+      "Fotos em alta qualidade com zoom",
+      "Busca inteligente por produto",
+      "Sem mensalidade (pague uma vez, use para sempre)",
+    ],
+    process: [
+      { step: "Coleta de produtos", desc: "3 dias — você envia fotos, nomes e preços" },
+      { step: "Organização e design", desc: "3 dias — montamos a estrutura e o visual" },
+      { step: "Cadastro dos produtos", desc: "2 dias — inserimos tudo no catálogo" },
+      { step: "Revisão e ajustes", desc: "2 dias — você confere e pede mudanças" },
+      { step: "Publicação e treinamento", desc: "1 dia — catálogo no ar e você aprende a atualizar" },
+    ],
+    faq: [
+      { q: "Posso adicionar produtos depois?", a: "Sim, você pode adicionar quantos produtos quiser, quando quiser." },
+      { q: "Funciona no celular?", a: "Sim, é 100% responsivo e otimizado para mobile." },
+      { q: "Preciso pagar mensalidade?", a: "Não, você paga uma vez só e usa para sempre." },
+      { q: "Como o cliente compra?", a: "Clica no produto e vai direto para o WhatsApp com a mensagem pronta." },
+      { q: "Posso mudar preços e fotos?", a: "Sim, você tem acesso para editar tudo quando quiser." },
+    ],
+    keywords: ["catálogo digital", "catálogo online", "catálogo whatsapp", "vitrine digital"],
+    ctaLabel: "Criar Meu Catálogo Digital",
+  },
+  "identidade-visual": {
+    slug: "identidade-visual",
+    name: "Identidade Visual",
+    category: "Branding",
+    title: "Identidade Visual Completa · Sua Marca Inesquecível · 0WEB",
+    h1: "Identidade Visual Profissional: Sua Marca Inesquecível",
+    description:
+      "Criamos uma identidade visual completa que transmite profissionalismo, confiança e diferencia sua empresa da concorrência.",
+    serviceType: "Brand Identity Design",
+    problems: [
+      "Sua marca não transmite profissionalismo e afasta clientes",
+      "Você não tem padrão visual (cada post é de um jeito)",
+      "Concorrentes com marcas melhores roubam seus clientes",
+    ],
+    benefits: [
+      "Logo profissional e memorável",
+      "Paleta de cores estratégica (psicologia das cores)",
+      "Tipografia exclusiva (fontes que combinam com sua marca)",
+      "Manual de marca completo (como aplicar em tudo)",
+      "Templates para redes sociais (padrão visual pronto)",
+      "Cartão de visita e papelaria (aplicação completa)",
+    ],
+    process: [
+      { step: "Briefing estratégico", desc: "1h — entendemos seu negócio, público e valores" },
+      { step: "Pesquisa e referências", desc: "3 dias — analisamos concorrentes e tendências" },
+      { step: "Criação de conceitos", desc: "5 dias — desenvolvemos 3 propostas de logo" },
+      { step: "Apresentação e escolha", desc: "1 dia — você escolhe a proposta vencedora" },
+      { step: "Refinamento e aplicação", desc: "5 dias — ajustamos e criamos todos os materiais" },
+      { step: "Entrega do manual de marca", desc: "2 dias — você recebe tudo organizado" },
+    ],
+    faq: [
+      { q: "Quantas propostas de logo vocês fazem?", a: "Apresentamos 3 conceitos diferentes para você escolher." },
+      { q: "Posso pedir ajustes?", a: "Sim, incluímos até 3 rodadas de ajustes na proposta escolhida." },
+      { q: "Recebo os arquivos editáveis?", a: "Sim, você recebe todos os arquivos em alta resolução e editáveis (AI, EPS, PNG, JPG, PDF)." },
+      { q: "O que é o manual de marca?", a: "É um documento que ensina como aplicar sua marca corretamente em tudo (cores, fontes, logos, etc)." },
+      { q: "Quanto tempo leva o projeto completo?", a: "Entregamos tudo em até 20 dias úteis após o briefing." },
+    ],
+    keywords: ["identidade visual", "logo", "branding", "manual de marca", "criação de logotipo"],
+    ctaLabel: "Criar Minha Identidade Visual",
+  },
+  "portfolio-empresarial": {
+    slug: "portfolio-empresarial",
+    name: "Portfólio Empresarial",
+    category: "Web",
+    title: "Portfólio Empresarial · Mostre Seu Trabalho com Profissionalismo · 0WEB",
+    h1: "Portfólio Empresarial: Mostre Seu Trabalho com Profissionalismo",
+    description:
+      "Um site de uma página, elegante e estratégico, para apresentar sua empresa, serviços e cases de sucesso. Perfeito para conquistar clientes.",
+    serviceType: "One-Page Portfolio Website",
+    problems: [
+      "Você não tem um lugar profissional para mostrar seu trabalho",
+      "Enviar PDFs e apresentações pelo WhatsApp não passa credibilidade",
+      "Clientes não encontram informações completas sobre sua empresa",
+    ],
+    benefits: [
+      "Site de uma página (landing page institucional) completo",
+      "Seções estratégicas: sobre, serviços, portfólio, depoimentos, contato",
+      "Design premium e responsivo (funciona em qualquer dispositivo)",
+      "Otimizado para SEO (aparece no Google)",
+      "Botão de WhatsApp integrado (conversão rápida)",
+      "Entrega em 10 dias úteis",
+    ],
+    process: [
+      { step: "Briefing e conteúdo", desc: "2 dias — você envia textos, fotos e informações" },
+      { step: "Design e estruturação", desc: "4 dias — criamos o layout e organizamos as seções" },
+      { step: "Desenvolvimento", desc: "3 dias — programamos o site com animações e responsividade" },
+      { step: "Revisão e publicação", desc: "1 dia — você aprova e colocamos no ar" },
+    ],
+    faq: [
+      { q: "Posso editar depois de pronto?", a: "Sim, você pode solicitar alterações (cobrado à parte) ou usar nosso plano de manutenção." },
+      { q: "Preciso pagar hospedagem?", a: "Sim, hospedagem e domínio são à parte (indicamos os melhores fornecedores)." },
+      { q: "Funciona no celular?", a: "Sim, é 100% responsivo e otimizado para mobile." },
+      { q: "Vai aparecer no Google?", a: "Sim, fazemos otimização básica de SEO para aparecer nas buscas." },
+      { q: "Quanto tempo leva?", a: "Entregamos em até 10 dias úteis após o recebimento do conteúdo." },
+    ],
+    keywords: ["portfólio empresarial", "site portfólio", "site institucional", "one page"],
+    ctaLabel: "Criar Meu Portfólio",
   },
 };
 
