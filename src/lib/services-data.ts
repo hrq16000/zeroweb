@@ -14,7 +14,9 @@ export type ServiceCategory =
   | "IA"
   | "Sistemas"
   | "Social"
-  | "Branding";
+  | "Branding"
+  | "Conteudo"
+  | "Midia";
 
 export type ServiceData = {
   slug: string;
