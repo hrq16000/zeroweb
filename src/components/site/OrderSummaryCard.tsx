@@ -101,8 +101,8 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
               item_names: itemNames,
               source: source ?? "direct",
             });
-            // Canonical GA4 ecommerce `purchase` — one per order, deduped by
-            // localStorage so refreshing /obrigado não conta compra em duplicidade.
+            // Canonical GA4 ecommerce `purchase` — one per order, deduped por
+            // localStorage para refresh em /obrigado não contar em duplicidade.
             try {
               const dedupKey = `0web_purchase_fired:${order.id}`;
               if (typeof window !== "undefined" && !localStorage.getItem(dedupKey)) {
@@ -115,16 +115,20 @@ export function OrderSummaryCard({ orderId, source }: { orderId: string; source?
                   quantity: Math.max(1, Number(i.qty) || 1),
                   index: idx,
                 }));
-                void import("@/lib/analytics").then(({ trackConversion: tc }) =>
-                  tc("purchase", {
-                    transaction_id: order.id,
-                    value: Number(order.total) || 0,
-                    currency: "BRL",
-                    payment_type: checkoutMethod,
-                    items: ecomItems as unknown as string, // GA4 accepts array; typed as any-payload downstream
-                    event_category: "ecommerce",
-                  }),
-                );
+                const payload = {
+                  transaction_id: order.id,
+                  value: Number(order.total) || 0,
+                  currency: "BRL",
+                  payment_type: checkoutMethod,
+                  items: ecomItems,
+                };
+                const w = window as unknown as {
+                  dataLayer?: Array<Record<string, unknown>>;
+                  gtag?: (...args: unknown[]) => void;
+                };
+                w.dataLayer = w.dataLayer ?? [];
+                w.dataLayer.push({ event: "purchase", ecommerce: payload });
+                if (typeof w.gtag === "function") w.gtag("event", "purchase", payload);
               }
             } catch { /* noop */ }
           });
