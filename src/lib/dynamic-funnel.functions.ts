@@ -112,6 +112,7 @@ const submitSchema = z.object({
       gclid: z.string().max(255).optional(),
       fbclid: z.string().max(255).optional(),
       started_at: z.string().max(50).optional(),
+      session_id: z.string().min(4).max(120).optional(),
     })
     .optional(),
 });
