@@ -4,8 +4,7 @@ import {
   sanitizeText,
   WHATSAPP_MESSAGE_MAX_LENGTH,
   WHATSAPP_REDIRECT_REUSE_WINDOW_MS,
-  resolveOperationalWhatsAppContact,
-} from "../whatsapp-redirect.server";
+} from "./whatsapp-redirect.helpers";
 
 describe("sanitizeText", () => {
   it("strips HTML tags", () => {
