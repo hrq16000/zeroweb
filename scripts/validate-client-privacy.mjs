@@ -15,8 +15,15 @@ const WA = /wa\.me/g;
 // e-mails: exclui domínios de vendors/schemas/typedefs conhecidos
 const EMAIL = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 const EMAIL_ALLOW = /^(?:.*@)(?:sentry|example|schema\.org|w3\.org|whatwg|graphql|googleapis|gstatic|facebook|npmjs|types|radix|tanstack|babel|react|supabase|ai-sdk|floating|lovable|vite|fontsource|hookform|lookout|stripe|internal\.|noreply\.)/i;
-// telefones BR: (41) 99745-2053 / 41997452053 / +5541997452053
-const PHONE = /(?<!\d)(?:\+?55)?\s?\(?[1-9]\d\)?[\s-]?9?\d{4}[\s-]?\d{4}(?!\d)/g;
+// telefones BR reais: precisam de FORMATAÇÃO (parênteses, +55 ou hifens
+// entre grupos) para não colidir com constantes numéricas (INT_MAX etc).
+const PHONE_PATTERNS = [
+  /\+55[- ]?\(?\d{2}\)?[- ]?9?\d{4}[- ]?\d{4}/g,       // +55 41 99745-2053
+  /\(\d{2}\)\s?9?\d{4}-?\d{4}/g,                        // (41) 99745-2053
+  /(?<!\d)\d{2}-9\d{4}-\d{4}(?!\d)/g,                   // 41-99745-2053
+];
+// placeholders comuns em form inputs — não são leak
+const PHONE_ALLOW = /^\(?\d?\d?\)?\s?9?9999-?9999$|^\(11\)\s?90000-0000$|^\(41\)\s?9\d{4}-\d{4}$/;
 
 const ADMIN_PREFIXES = ["app.pedidos", "app.servicos", "app.leads", "app.painel", "app.dashboard", "app.crm", "app.usuarios", "app.integracoes", "app.configuracoes", "app.marketplace", "app.b2b"];
 
