@@ -8,6 +8,7 @@ import {
   getPublicFunnel,
   type FunnelDefinition,
 } from "@/lib/dynamic-funnel.functions";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   open: boolean;
