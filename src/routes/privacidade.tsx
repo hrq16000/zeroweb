@@ -58,7 +58,7 @@ function PrivacyPage() {
       <h2>Seus direitos</h2>
       <p>
         Você pode solicitar acesso, correção, anonimização ou exclusão dos seus dados a qualquer momento
-        escrevendo para <a href={`mailto:${data.contactEmail}`}>{data.contactEmail}</a>.
+        pelo fluxo interno de privacidade e LGPD.
       </p>
 
       <p className="text-xs text-muted-foreground mt-12">

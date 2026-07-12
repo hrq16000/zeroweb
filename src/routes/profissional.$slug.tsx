@@ -30,7 +30,6 @@ function ProviderPage() {
   if (!data.provider) return <div className="p-12 text-center"><h1 className="text-2xl font-display">Profissional não encontrado</h1><Link to="/servicos/marketplace" className="text-primary mt-4 inline-block">Voltar ao marketplace</Link></div>;
 
   const p = data.provider;
-  const wa = p.whatsapp?.replace(/\D/g, "");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -44,9 +43,6 @@ function ProviderPage() {
             <p className="text-sm text-muted-foreground mt-2">{[p.city, p.state].filter(Boolean).join(", ")}</p>
             <div className="text-sm mt-2">★ {Number(p.rating_avg).toFixed(1)} ({p.rating_count} avaliações)</div>
             <div className="flex gap-3 mt-4 flex-wrap">
-              {wa && <a href={`https://wa.me/55${wa}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">WhatsApp</a>}
-              {p.phone && <a href={`tel:${p.phone}`} className="px-4 py-2 rounded-lg border border-border text-sm">Telefone</a>}
-              {p.email && <a href={`mailto:${p.email}`} className="px-4 py-2 rounded-lg border border-border text-sm">E-mail</a>}
             </div>
           </div>
         </header>
