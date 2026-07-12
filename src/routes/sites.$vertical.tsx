@@ -1,9 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { TrustStrip } from "@/components/site/TrustStrip";
 import { absUrl } from "@/lib/seo";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 type VerticalConfig = {
   slug: string;
@@ -254,12 +255,12 @@ function VerticalHub() {
               >
                 Solicitar diagnóstico grátis <ArrowRight className="w-4 h-4" />
               </Link>
-              <a
-                href={`https://wa.me/5541997452053?text=${encodeURIComponent(`Olá! Sou do segmento ${v.name} e quero um site.`)}`}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: `sites_${v.slug}_hero`, pagePath: `/sites/${v.slug}`, placement: "hero", serviceSlug: "criacao-de-sites" }}
+                label="Falar com especialista"
+                location={`sites_${v.slug}_hero`}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background hover:border-primary font-semibold px-6 py-3 text-sm uppercase tracking-wide"
-              >
-                <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
-              </a>
+              />
             </div>
           </div>
         </section>
