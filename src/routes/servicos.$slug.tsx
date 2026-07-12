@@ -250,11 +250,25 @@ function ServicePage() {
                   />
 
                   <div className="pt-1">
-                    <ServiceCTA
-                      serviceSlug={slug}
-                      funnels={funnels}
-                      location="hero"
+                    <ProductActionGate
+                      product={{
+                        slug,
+                        name: data.name,
+                        category: data.category,
+                        price: data.price!,
+                        pricePeriod: data.pricePeriod ?? null,
+                        imageUrl: data.imageUrl ?? null,
+                      }}
+                      intent={{
+                        purpose: "diagnosis",
+                        source: `product_${slug}_hero`,
+                        pagePath: `/servicos/${slug}`,
+                        placement: "hero",
+                        serviceSlug: slug,
+                      }}
                       label="Tirar dúvida sobre este produto"
+                      variant="outline"
+                      className="w-full"
                     />
                   </div>
 
