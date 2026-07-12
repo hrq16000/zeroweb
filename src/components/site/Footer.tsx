@@ -1,6 +1,7 @@
 import { Instagram, Linkedin, Youtube, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
+import { BrandLogo } from "@/components/site/BrandLogo";
 
 // Footer 4 colunas (estrutura fixa pós-reorganização IA):
 // 1. Marca + contatos + redes sociais
