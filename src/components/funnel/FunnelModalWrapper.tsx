@@ -9,12 +9,14 @@ import {
   type FunnelDefinition,
 } from "@/lib/dynamic-funnel.functions";
 import { trackEvent } from "@/lib/analytics";
+import type { ContactIntent } from "@/lib/contact-intent";
 
 type Props = {
   open: boolean;
   onClose: () => void;
   funnelSlug: string;
   serviceSlug?: string;
+  intent?: ContactIntent;
 };
 
 /**
@@ -22,7 +24,7 @@ type Props = {
  * Toda a lógica de etapas/leads/condições continua no FunnelRunner +
  * dynamic_forms — este componente só cuida da apresentação modal.
  */
-export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug }: Props) {
+export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug, intent }: Props) {
   const fetchFunnel = useServerFn(getPublicFunnel);
   const [funnel, setFunnel] = useState<FunnelDefinition | null>(null);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug }: P
     if (funnel?.slug === funnelSlug) {
       // Already loaded: emit funnel_open now that the modal is open with a
       // definition ready to render.
-      trackEvent("funnel_open", { funnel_slug: funnelSlug });
+      trackEvent("funnel_open", { funnel_slug: funnelSlug, service_slug: serviceSlug, purpose: intent?.purpose, source: intent?.source, page_path: intent?.pagePath });
       return;
     }
     setLoading(true);
@@ -44,18 +46,18 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug }: P
       .then((f) => {
         if (!f) {
           setError("Funil indisponível no momento.");
-          trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "not_found" });
+          trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "not_found", service_slug: serviceSlug, purpose: intent?.purpose, source: intent?.source });
         } else {
           setFunnel(f);
-          trackEvent("funnel_open", { funnel_slug: funnelSlug });
+          trackEvent("funnel_open", { funnel_slug: funnelSlug, service_slug: serviceSlug, purpose: intent?.purpose, source: intent?.source, page_path: intent?.pagePath });
         }
       })
       .catch(() => {
         setError("Não foi possível carregar o funil.");
-        trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "load_failed" });
+        trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "load_failed", service_slug: serviceSlug, purpose: intent?.purpose, source: intent?.source });
       })
       .finally(() => setLoading(false));
-  }, [open, funnelSlug, fetchFunnel, funnel?.slug]);
+  }, [open, funnelSlug, fetchFunnel, funnel?.slug, intent?.pagePath, intent?.purpose, intent?.source, serviceSlug]);
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={(o) => !o && onClose()}>
@@ -124,7 +126,7 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug }: P
                   Tudo certo!
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Recebemos sua resposta. Nossa equipe entrará em contato pelo WhatsApp.
+                  Recebemos sua resposta. Nossa equipe continuará o atendimento pelo funil.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   {serviceSlug && (

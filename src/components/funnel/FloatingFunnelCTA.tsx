@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import { FunnelModalWrapper } from "./FunnelModalWrapper";
 import { trackEvent } from "@/lib/analytics";
+import type { ContactIntent } from "@/lib/contact-intent";
 
 /**
  * Botão flutuante (canto inferior ESQUERDO — para não colidir com o
@@ -18,6 +19,12 @@ export function FloatingFunnelCTA({
   location?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const intent: ContactIntent = {
+    purpose: "diagnosis",
+    source: location,
+    pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+    placement: "sticky-mobile",
+  };
   return (
     <>
       <button
@@ -40,7 +47,8 @@ export function FloatingFunnelCTA({
       <FunnelModalWrapper
         open={open}
         onClose={() => setOpen(false)}
-        funnelSlug={funnelSlug}
+        funnelSlug="diagnostico-0web"
+        intent={intent}
       />
     </>
   );
