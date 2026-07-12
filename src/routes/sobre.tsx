@@ -51,7 +51,6 @@ export const Route = createFileRoute("/sobre")({
                 taxID: "41.723.708/0001-58",
                 url: "https://0web.com.br/",
                 logo: "https://0web.com.br/favicon.ico",
-                telephone: "+55-41-99745-2053",
               },
             },
             {
