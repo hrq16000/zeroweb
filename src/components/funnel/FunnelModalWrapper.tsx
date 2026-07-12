@@ -33,14 +33,27 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug }: P
     if (!open) return;
     setCompleted(false);
     setError(null);
-    if (funnel?.slug === funnelSlug) return;
+    if (funnel?.slug === funnelSlug) {
+      // Already loaded: emit funnel_open now that the modal is open with a
+      // definition ready to render.
+      trackEvent("funnel_open", { funnel_slug: funnelSlug });
+      return;
+    }
     setLoading(true);
     fetchFunnel({ data: { slug: funnelSlug } })
       .then((f) => {
-        if (!f) setError("Funil indisponível no momento.");
-        else setFunnel(f);
+        if (!f) {
+          setError("Funil indisponível no momento.");
+          trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "not_found" });
+        } else {
+          setFunnel(f);
+          trackEvent("funnel_open", { funnel_slug: funnelSlug });
+        }
       })
-      .catch(() => setError("Não foi possível carregar o funil."))
+      .catch(() => {
+        setError("Não foi possível carregar o funil.");
+        trackEvent("funnel_error", { funnel_slug: funnelSlug, reason: "load_failed" });
+      })
       .finally(() => setLoading(false));
   }, [open, funnelSlug, fetchFunnel, funnel?.slug]);
 
