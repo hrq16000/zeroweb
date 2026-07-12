@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
+import { ProductActionGate } from "@/components/site/ProductActionGate";
 import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
@@ -249,11 +250,25 @@ function ServicePage() {
                   />
 
                   <div className="pt-1">
-                    <ServiceCTA
-                      serviceSlug={slug}
-                      funnels={funnels}
-                      location="hero"
+                    <ProductActionGate
+                      product={{
+                        slug,
+                        name: data.name,
+                        category: data.category,
+                        price: data.price!,
+                        pricePeriod: data.pricePeriod ?? null,
+                        imageUrl: data.imageUrl ?? null,
+                      }}
+                      intent={{
+                        purpose: "diagnosis",
+                        source: `product_${slug}_hero`,
+                        pagePath: `/servicos/${slug}`,
+                        placement: "hero",
+                        serviceSlug: slug,
+                      }}
                       label="Tirar dúvida sobre este produto"
+                      variant="outline"
+                      className="w-full"
                     />
                   </div>
 
