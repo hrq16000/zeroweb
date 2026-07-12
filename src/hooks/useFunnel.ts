@@ -5,9 +5,9 @@ import { assertAllowedFunnelSlug, resolveFunnelFromIntent } from "@/lib/contact-
 export type FunnelPageType = "common" | "service" | "post";
 
 const BASE_SLUG: Record<FunnelPageType, string> = {
-  common: "funnel-common",
-  service: "funnel-service",
-  post: "funnel-post",
+  common: "diagnostico-0web",
+  service: "diagnostico-0web",
+  post: "diagnostico-0web",
 };
 
 /**

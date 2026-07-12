@@ -77,8 +77,12 @@ function optionalSlug(v: unknown): string | undefined {
   return isSlug(v) ? v : undefined;
 }
 
+/** Real published commercial funnel used while legacy aliases are migrated. */
+const COMMERCIAL_FALLBACK_FUNNEL = "diagnostico-0web";
+
 /** Small, safe funnel allowlist. Nothing else may be resolved. */
 const ALLOWED_FUNNELS = new Set([
+  "diagnostico-0web",
   "funnel-common",
   "funnel-service",
   "funnel-post",
@@ -97,17 +101,15 @@ const ALLOWED_FUNNELS = new Set([
 export function resolveFunnelFromIntent(intent: ContactIntent): string {
   switch (intent.purpose) {
     case "lgpd":
-      return "funnel-lgpd";
+      return COMMERCIAL_FALLBACK_FUNNEL;
     case "order-support":
-      return "funnel-order-support";
+      return COMMERCIAL_FALLBACK_FUNNEL;
     case "partnership":
-      return "funnel-partner";
+      return COMMERCIAL_FALLBACK_FUNNEL;
     case "diagnosis":
     case "commercial":
     case "proposal":
-      if (intent.serviceSlug) return "funnel-service";
-      if (intent.contentSlug || intent.caseSlug) return "funnel-post";
-      return "funnel-common";
+      return COMMERCIAL_FALLBACK_FUNNEL;
   }
 }
 
