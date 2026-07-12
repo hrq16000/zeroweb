@@ -344,15 +344,21 @@ function ServicePage() {
                 {data.gallery
                   .filter((g: GalleryItem) => g.url)
                   .map((g: GalleryItem, i: number) => (
-
-                    <div key={`${g.path}-${i}`} className="aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
+                    <a
+                      key={`${g.path}-${i}`}
+                      href={g.url ?? ""}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir em tamanho real: ${g.alt || `${data.name} — imagem ${i + 1}`}`}
+                      className="block overflow-hidden rounded-2xl border border-border bg-muted cursor-zoom-in group"
+                    >
                       <img
                         src={g.url ?? ""}
                         alt={g.alt || `${data.name} — imagem ${i + 1}`}
                         loading="lazy"
-                        className="w-full h-full object-cover"
+                        className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                       />
-                    </div>
+                    </a>
                   ))}
               </div>
             </div>
