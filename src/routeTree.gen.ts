@@ -110,6 +110,7 @@ import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as RWhatsappTokenRouteImport } from './routes/r.whatsapp.$token'
 import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
 import { Route as ApiPublicHealthDbRouteImport } from './routes/api/public/health-db'
@@ -679,6 +680,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const RWhatsappTokenRoute = RWhatsappTokenRouteImport.update({
+  id: '/r/whatsapp/$token',
+  path: '/r/whatsapp/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogClusterClusterRoute = BlogClusterClusterRouteImport.update({
   id: '/blog/cluster/$cluster',
   path: '/blog/cluster/$cluster',
@@ -1137,6 +1143,7 @@ export interface FileRoutesByFullPath {
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
+  '/r/whatsapp/$token': typeof RWhatsappTokenRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1294,6 +1301,7 @@ export interface FileRoutesByTo {
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
+  '/r/whatsapp/$token': typeof RWhatsappTokenRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1455,6 +1463,7 @@ export interface FileRoutesById {
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
+  '/r/whatsapp/$token': typeof RWhatsappTokenRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1616,6 +1625,7 @@ export interface FileRouteTypes {
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
+    | '/r/whatsapp/$token'
     | '/app/'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
@@ -1773,6 +1783,7 @@ export interface FileRouteTypes {
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
+    | '/r/whatsapp/$token'
     | '/app'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
@@ -1933,6 +1944,7 @@ export interface FileRouteTypes {
     | '/api/public/health-db'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
+    | '/r/whatsapp/$token'
     | '/_authenticated/app/'
     | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/editorial/skyscraper'
@@ -2051,6 +2063,7 @@ export interface RootRouteChildren {
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
+  RWhatsappTokenRoute: typeof RWhatsappTokenRoute
   ApiPublicHooksAnomalyScanRoute: typeof ApiPublicHooksAnomalyScanRoute
   ApiPublicHooksGscIngestRoute: typeof ApiPublicHooksGscIngestRoute
   ApiPublicHooksIndexCoverageSnapshotRoute: typeof ApiPublicHooksIndexCoverageSnapshotRoute
@@ -2772,6 +2785,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/r/whatsapp/$token': {
+      id: '/r/whatsapp/$token'
+      path: '/r/whatsapp/$token'
+      fullPath: '/r/whatsapp/$token'
+      preLoaderRoute: typeof RWhatsappTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/blog/cluster/$cluster': {
       id: '/blog/cluster/$cluster'
@@ -3498,6 +3518,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
+  RWhatsappTokenRoute: RWhatsappTokenRoute,
   ApiPublicHooksAnomalyScanRoute: ApiPublicHooksAnomalyScanRoute,
   ApiPublicHooksGscIngestRoute: ApiPublicHooksGscIngestRoute,
   ApiPublicHooksIndexCoverageSnapshotRoute:
