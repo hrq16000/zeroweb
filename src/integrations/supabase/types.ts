@@ -5279,62 +5279,47 @@ export type Database = {
         Row: {
           categories: string[] | null
           city: string | null
-          cover_url: string | null
           created_at: string | null
           description: string | null
           id: string | null
           logo_url: string | null
           rating_avg: number | null
           rating_count: number | null
-          service_regions: string[] | null
           slug: string | null
-          social: Json | null
           state: string | null
           status: string | null
           trade_name: string | null
           verified: boolean | null
-          views_count: number | null
-          website: string | null
         }
         Insert: {
           categories?: string[] | null
           city?: string | null
-          cover_url?: string | null
           created_at?: string | null
           description?: string | null
           id?: string | null
           logo_url?: string | null
           rating_avg?: number | null
           rating_count?: number | null
-          service_regions?: string[] | null
           slug?: string | null
-          social?: Json | null
           state?: string | null
           status?: string | null
           trade_name?: string | null
           verified?: boolean | null
-          views_count?: number | null
-          website?: string | null
         }
         Update: {
           categories?: string[] | null
           city?: string | null
-          cover_url?: string | null
           created_at?: string | null
           description?: string | null
           id?: string | null
           logo_url?: string | null
           rating_avg?: number | null
           rating_count?: number | null
-          service_regions?: string[] | null
           slug?: string | null
-          social?: Json | null
           state?: string | null
           status?: string | null
           trade_name?: string | null
           verified?: boolean | null
-          views_count?: number | null
-          website?: string | null
         }
         Relationships: []
       }
@@ -5424,63 +5409,48 @@ export type Database = {
       providers_public: {
         Row: {
           avatar_url: string | null
-          bio: string | null
           city: string | null
-          cover_url: string | null
           created_at: string | null
           display_name: string | null
           headline: string | null
           id: string | null
           rating_avg: number | null
           rating_count: number | null
-          service_regions: string[] | null
           slug: string | null
-          social: Json | null
           specialties: string[] | null
           state: string | null
           status: string | null
           verified: boolean | null
-          views_count: number | null
         }
         Insert: {
           avatar_url?: string | null
-          bio?: string | null
           city?: string | null
-          cover_url?: string | null
           created_at?: string | null
           display_name?: string | null
           headline?: string | null
           id?: string | null
           rating_avg?: number | null
           rating_count?: number | null
-          service_regions?: string[] | null
           slug?: string | null
-          social?: Json | null
           specialties?: string[] | null
           state?: string | null
           status?: string | null
           verified?: boolean | null
-          views_count?: number | null
         }
         Update: {
           avatar_url?: string | null
-          bio?: string | null
           city?: string | null
-          cover_url?: string | null
           created_at?: string | null
           display_name?: string | null
           headline?: string | null
           id?: string | null
           rating_avg?: number | null
           rating_count?: number | null
-          service_regions?: string[] | null
           slug?: string | null
-          social?: Json | null
           specialties?: string[] | null
           state?: string | null
           status?: string | null
           verified?: boolean | null
-          views_count?: number | null
         }
         Relationships: []
       }
