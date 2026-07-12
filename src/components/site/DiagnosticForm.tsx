@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const checks = [
@@ -155,7 +154,7 @@ export function DiagnosticForm() {
                   <button
                     type="button"
                     onClick={() => {
-                      trackConversion("whatsapp_click", { location: "diagnostic_result", score });
+                      trackConversion("contact_cta_click", { location: "diagnostic_result", score });
                       openFunnel("diagnostic_result");
                     }}
                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary"

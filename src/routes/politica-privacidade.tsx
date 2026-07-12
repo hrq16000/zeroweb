@@ -57,7 +57,7 @@ function PoliticaPage() {
 
             <section>
               <h2 className="text-xl font-bold font-display">5. Seus direitos (LGPD)</h2>
-              <p>Você pode solicitar acesso, correção, exclusão, anonimização ou portabilidade dos seus dados a qualquer momento pelo e-mail <a href="mailto:contato@0web.com.br" className="text-primary hover:underline">contato@0web.com.br</a>.</p>
+              <p>Você pode solicitar acesso, correção, exclusão, anonimização ou portabilidade dos seus dados pela página interna de privacidade e LGPD.</p>
             </section>
 
             <section>

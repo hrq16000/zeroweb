@@ -33,8 +33,6 @@ export const ORG_REF = {
   name: "0WEB",
   url: ORIGIN,
   logo: `${ORIGIN}/favicon.ico`,
-  telephone: "+55-41-99745-2053",
-  email: "contato@0web.com.br",
   taxID: "41.723.708/0001-58",
   areaServed: "BR",
 };

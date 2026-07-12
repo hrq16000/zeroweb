@@ -9,7 +9,6 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
-import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import cover from "@/assets/google-meu-negocio-capa.png.asset.json";
 
@@ -100,9 +99,6 @@ export const Route = createFileRoute("/servicos/google-meu-negocio")({
 });
 
 function GMBPage() {
-  const wa = (msg: string, content: string) =>
-    whatsappUrl(msg, content);
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -127,22 +123,18 @@ function GMBPage() {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href={wa("Olá! Quero o Plano PRO de Google Meu Negócio (R$247/mês).", "gmb_hero_pro")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "gmb_hero_pro", label: "Plano PRO" })}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "gmb_hero_pro", pagePath: "/servicos/google-meu-negocio", placement: "hero", serviceSlug: "google-meu-negocio" }}
+                label="Quero meu Plano PRO"
+                location="gmb_hero_pro"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 shadow-glow-primary hover:scale-[1.02] transition"
-              >
-                Quero meu Plano PRO <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href={wa("Olá! Quero o Plano Único de Google Meu Negócio (R$397).", "gmb_hero_unico")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "gmb_hero_unico", label: "Plano Único" })}
+              />
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "gmb_hero_unico", pagePath: "/servicos/google-meu-negocio", placement: "hero", serviceSlug: "google-meu-negocio" }}
+                label="Plano Único · R$397"
+                location="gmb_hero_unico"
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 text-white font-semibold px-6 py-3.5 hover:bg-white/10 transition"
-              >
-                Plano Único · R$397
-              </a>
+              />
             </div>
 
             <div className="mt-6 flex items-center gap-2 text-sm text-white/70">
@@ -248,14 +240,12 @@ function GMBPage() {
                   <li key={i} className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5" /> {i}</li>
                 ))}
               </ul>
-              <a
-                href={wa("Quero o Plano Único de Google Meu Negócio (R$397).", "gmb_pricing_unico")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "gmb_pricing_unico" })}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "gmb_pricing_unico", pagePath: "/servicos/google-meu-negocio", placement: "section", serviceSlug: "google-meu-negocio" }}
+                label="Contratar Plano Único"
+                location="gmb_pricing_unico"
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full border border-foreground text-foreground font-semibold px-6 py-3.5 hover:bg-foreground hover:text-background transition"
-              >
-                Contratar Plano Único
-              </a>
+              />
             </div>
 
             {/* PRO */}
@@ -274,14 +264,12 @@ function GMBPage() {
                   <li key={i} className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5" /> {i}</li>
                 ))}
               </ul>
-              <a
-                href={wa("Quero o Plano PRO de Google Meu Negócio (R$247/mês por 3 meses).", "gmb_pricing_pro")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackConversion("whatsapp_click", { location: "gmb_pricing_pro" })}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "gmb_pricing_pro", pagePath: "/servicos/google-meu-negocio", placement: "section", serviceSlug: "google-meu-negocio" }}
+                label="Quero o Plano PRO"
+                location="gmb_pricing_pro"
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 hover:scale-[1.02] transition"
-              >
-                Quero o Plano PRO <ArrowRight className="w-4 h-4" />
-              </a>
+              />
             </div>
           </div>
         </div>

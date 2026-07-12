@@ -12,7 +12,8 @@ import {
 } from "@/lib/wa-funnel";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { persistWaFunnelOpen, persistWaFunnelStep, persistWaFunnelComplete } from "@/lib/persistence";
-import { WHATSAPP, getActiveUtms } from "@/lib/site-config";
+import { FunnelModalWrapper } from "@/components/funnel/FunnelModalWrapper";
+import type { ContactIntent } from "@/lib/contact-intent";
 import { getLeadAttribution } from "@/lib/lead-attribution";
 import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 
@@ -42,20 +43,22 @@ export function WaFunnelProvider({ children }: { children: ReactNode }) {
     void persistWaFunnelOpen(cfg.steps.length);
   }, [cfg.steps.length]);
 
-  const mode = getEffectiveMode(cfg, pathname);
+  const intent: ContactIntent = {
+    purpose: location.includes("partner") ? "partnership" : "diagnosis",
+    source: location,
+    pagePath: pathname || "/",
+    placement: location.includes("footer") ? "footer" : location.includes("hero") ? "hero" : location.includes("floating") ? "sticky-mobile" : "section",
+  };
 
   return (
     <FunnelCtx.Provider value={{ open }}>
       {children}
-      <AnimatePresence>
-        {isOpen && cfg.enabled && (
-          mode === "diagnostic" ? (
-            <DiagnosticRedirect cfg={cfg} location={location} onClose={() => setOpen(false)} />
-          ) : (
-            <ChatbotModal cfg={cfg} mode={mode} location={location} onClose={() => setOpen(false)} />
-          )
-        )}
-      </AnimatePresence>
+      <FunnelModalWrapper
+        open={isOpen && cfg.enabled}
+        onClose={() => setOpen(false)}
+        funnelSlug="diagnostico-0web"
+        intent={intent}
+      />
     </FunnelCtx.Provider>
   );
 }
@@ -147,14 +150,7 @@ function ChatbotModal({
     trackConversion("wa_funnel_complete", { location, steps: total, mode });
     void persistWaFunnelComplete(finalAnswers);
     try { saveAttributionSnapshot(getLeadAttribution(`wa_funnel:${location}`, `wa_funnel_${location}`)); } catch { /* noop */ }
-    const utms = getActiveUtms();
-    const tail =
-      "\n\n—\nOrigem: " + Object.entries(utms).map(([k, v]) => `${k}=${v}`).join(" · ") + ` · location=${location}`;
-    const text = encodeURIComponent(renderTemplate(cfg.whatsappTemplate, finalAnswers) + tail);
-    trackConversion("whatsapp_click", { location: `wa_funnel:${location}` });
-    setTimeout(() => {
-      window.open(`https://wa.me/${WHATSAPP.number}?text=${text}`, "_blank");
-    }, 700);
+    trackConversion("funnel_complete", { location: `legacy_adapter:${location}` });
   }
 
   return (

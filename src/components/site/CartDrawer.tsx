@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, Sparkles } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Sparkles } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -108,17 +108,6 @@ export function CartDrawer() {
   const total = cartTotal(items);
   const hasUnpriced = items.some((i) => !i.price || i.price === 0);
   const empty = items.length === 0;
-
-  function buildWhatsAppLink() {
-    const lines = items.map(
-      (i) =>
-        `• ${i.name}${i.qty > 1 ? ` (x${i.qty})` : ""}${i.price ? ` — ${formatBRL(i.price)}` : ""}`,
-    );
-    const text = encodeURIComponent(
-      `Olá! Quero fechar este carrinho na 0WEB:\n\n${lines.join("\n")}\n\nTotal estimado: ${formatBRL(total)}`,
-    );
-    return `https://wa.me/5541997452053?text=${text}`;
-  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -254,26 +243,14 @@ export function CartDrawer() {
                 <Button
                   size="lg"
                   variant="outline"
-                  asChild
                   className="w-full"
+                  onClick={() => {
+                    reportStep("checkout_started", items, { paymentChannel: "site", paymentStatus: "pending" });
+                    setOpen(false);
+                    window.location.href = "/checkout";
+                  }}
                 >
-                  <a
-                    href={buildWhatsAppLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      void import("@/lib/analytics").then(({ trackWhatsAppClick }) =>
-                        trackWhatsAppClick("cart_drawer", { items: items.length, total }),
-                      );
-                      void import("@/lib/persistence").then(({ persistEvent }) =>
-                        persistEvent("whatsapp_click", { items: items.length, total, location: "cart_drawer" }),
-                      );
-                      reportStep("handoff_whatsapp", items, { paymentChannel: "whatsapp", paymentStatus: "handoff" });
-                    }}
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Fechar pelo WhatsApp
-                  </a>
+                  Finalizar com atendimento
                 </Button>
                 <button
                   type="button"

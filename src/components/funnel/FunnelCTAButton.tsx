@@ -62,6 +62,14 @@ export function FunnelCTAButton({
     ? buildContactFallbackHref(intent)
     : "/contato";
 
+  const runtimeIntent: ContactIntent = intent ?? {
+    purpose: resolvedPageType === "service" ? "proposal" : "diagnosis",
+    source: location ?? `${resolvedPageType}_${serviceSlug ?? "page"}`,
+    pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+    placement: resolvedPageType === "post" ? "article" : "section",
+    serviceSlug,
+  };
+
   const onClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
     // Preserve normal navigation for Ctrl/Cmd/middle-click.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -103,6 +111,7 @@ export function FunnelCTAButton({
         onClose={closeFunnel}
         funnelSlug={funnelSlug}
         serviceSlug={serviceSlug}
+        intent={runtimeIntent}
       />
     </>
   );

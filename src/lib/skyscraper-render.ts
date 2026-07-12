@@ -114,7 +114,7 @@ function renderCta(article: SkyscraperArticle) {
       ${article.cta.primary}
     </a>
   </p>
-  ${article.cta.secondary ? `<p class="mt-3 text-sm"><a href="https://wa.me/5541999999999" class="text-primary underline">${article.cta.secondary}</a></p>` : ""}
+  ${article.cta.secondary ? `<p class="mt-3 text-sm"><a href="/contato?purpose=diagnosis&source=skyscraper&placement=article&pagePath=/blog-skyscraper" class="text-primary underline">${article.cta.secondary}</a></p>` : ""}
 </aside>`;
 }
 

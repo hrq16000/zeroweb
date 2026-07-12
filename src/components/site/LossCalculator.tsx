@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { TrendingDown, ArrowRight } from "lucide-react";
 import { trackEvent, trackConversion } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const fmt = (n: number) =>
@@ -80,7 +79,7 @@ export function LossCalculator() {
             <button
               type="button"
               onClick={() => {
-                trackConversion("whatsapp_click", { location: "calculator", value: result.monthly });
+                trackConversion("contact_cta_click", { location: "calculator", value: result.monthly });
                 openFunnel("calculator");
               }}
               className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-accent text-foreground font-semibold px-6 py-3.5"

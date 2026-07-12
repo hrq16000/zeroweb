@@ -154,13 +154,13 @@ export function Hero() {
             <button
               type="button"
               onClick={() => {
-                trackConversion("whatsapp_click", { location: "hero", experiment_hero: heroVariant });
+                trackConversion("contact_cta_click", { location: "hero", experiment_hero: heroVariant });
                 openFunnel("hero");
               }}
               className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-11"
             >
               <MessageCircle className="w-4 h-4 text-accent" aria-hidden="true" />
-              Falar no WhatsApp
+              Falar com especialista
             </button>
             <a
               href="#diagnostico"

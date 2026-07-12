@@ -4,16 +4,14 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type PaymentSettings = {
   stripeEnabled: boolean;
-  whatsappNumber: string;
 };
 
 const DEFAULTS: PaymentSettings = {
   stripeEnabled: false,
-  whatsappNumber: "5541997452053",
 };
 
 /**
- * Lê as configurações públicas de pagamento (flag do Stripe + número do WhatsApp).
+ * Lê as configurações públicas de pagamento (somente flag do Stripe).
  * Usa supabaseAdmin pois a tabela app_settings é admin-only.
  */
 export const getPaymentSettings = createServerFn({ method: "GET" }).handler(
@@ -22,12 +20,11 @@ export const getPaymentSettings = createServerFn({ method: "GET" }).handler(
     const { data, error } = await supabaseAdmin
       .from("app_settings")
       .select("key, value")
-      .in("key", ["payments.stripe_enabled", "payments.whatsapp_number"]);
+      .in("key", ["payments.stripe_enabled"]);
     if (error) return DEFAULTS;
     const map = new Map((data ?? []).map((r) => [r.key, r.value]));
     return {
       stripeEnabled: (map.get("payments.stripe_enabled") ?? "false").toLowerCase() === "true",
-      whatsappNumber: map.get("payments.whatsapp_number") || DEFAULTS.whatsappNumber,
     };
   },
 );

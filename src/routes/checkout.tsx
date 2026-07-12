@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CreditCard, MessageCircle, ShieldCheck, LogIn, ArrowLeft } from "lucide-react";
+import { CreditCard, ShieldCheck, LogIn, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -41,22 +41,6 @@ export const Route = createFileRoute("/checkout")({
   ssr: false,
 });
 
-const DEFAULT_WHATSAPP = "5541997452053";
-
-function buildWhatsAppMessage(items: CartItem[], total: number, orderId: string) {
-  const lines = items.map((i) => `• ${i.name}${i.qty > 1 ? ` (x${i.qty})` : ""}${typeof i.price === "number" && i.price > 0 ? ` — ${formatBRL(i.price * i.qty)}` : ""}`);
-  return [
-    `Olá! Quero fechar meu pedido na 0WEB.`,
-    ``,
-    `Pedido: ${orderId.slice(0, 8).toUpperCase()}`,
-    ``,
-    `Itens:`,
-    ...lines,
-    ``,
-    `Total: ${formatBRL(total)}`,
-  ].join("\n");
-}
-
 function CheckoutPage() {
   const navigate = useNavigate();
   const fetchSettings = useServerFn(getPaymentSettings);
@@ -70,7 +54,6 @@ function CheckoutPage() {
   const [name, setName] = useState("");
   const [settings, setSettings] = useState<PaymentSettings>({
     stripeEnabled: false,
-    whatsappNumber: DEFAULT_WHATSAPP,
   });
   const total = useMemo(() => cartTotal(items), [items]);
   const hasUnpriced = items.some((i) => !i.price);
@@ -121,7 +104,7 @@ function CheckoutPage() {
     }
   }
 
-  async function handleWhatsApp() {
+  async function handleAssistedCheckout() {
     if (!session) return handleGoogle();
     if (items.length === 0) return;
     setSubmitting("whatsapp");
@@ -138,19 +121,16 @@ function CheckoutPage() {
         },
       });
       await markOrderWhatsAppHandoff({ data: { orderId: order.id } });
-      const msg = buildWhatsAppMessage(items, total, order.id);
-      // CRO tracking — handoff WhatsApp
+      // CRO tracking — assisted checkout handoff
       void import("@/lib/analytics").then(({ trackConversion }) =>
-        trackConversion("checkout_whatsapp_handoff", { order_id: order.id, total, items: items.length, location: "checkout" }),
+        trackConversion("checkout_assisted_handoff", { order_id: order.id, total, items: items.length, location: "checkout" }),
       );
       void import("@/lib/persistence").then(({ persistEvent }) =>
-        persistEvent("checkout_whatsapp_handoff", { order_id: order.id, total, items: items.length }),
+        persistEvent("checkout_assisted_handoff", { order_id: order.id, total, items: items.length }),
       );
       clearCart();
-      const wa = settings.whatsappNumber || DEFAULT_WHATSAPP;
-      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
-      toast.success("Pedido registrado", { description: "Continue a conversa pelo WhatsApp." });
-      navigate({ to: "/obrigado", search: { source: "checkout-whatsapp", order: order.id } });
+      toast.success("Pedido registrado", { description: "Nossa equipe continuará pelo fluxo de atendimento." });
+      navigate({ to: "/obrigado", search: { source: "checkout-assisted", order: order.id } });
     } catch (e) {
       toast.error("Não foi possível registrar o pedido", { description: (e as Error).message });
     } finally {
@@ -167,7 +147,7 @@ function CheckoutPage() {
         description: "Vamos finalizar pelo WhatsApp. Seu pedido fica salvo como pendente de pagamento.",
         duration: 4000,
       });
-      return handleWhatsApp();
+      return handleAssistedCheckout();
     }
     setSubmitting("stripe");
     try {
@@ -197,8 +177,8 @@ function CheckoutPage() {
       });
       if (!res.enabled || !res.url) {
         toast("Stripe ainda não está conectado", {
-          description: "Vamos finalizar pelo WhatsApp.",
-          action: { label: "WhatsApp", onClick: () => void handleWhatsApp() },
+          description: "Vamos finalizar pelo atendimento assistido.",
+          action: { label: "Atendimento", onClick: () => void handleAssistedCheckout() },
           duration: 6000,
         });
         return;
@@ -318,11 +298,10 @@ function CheckoutPage() {
                         size="lg"
                         variant={settings.stripeEnabled ? "outline" : "default"}
                         className="w-full"
-                        onClick={handleWhatsApp}
+                        onClick={handleAssistedCheckout}
                         disabled={submitting !== "none"}
                       >
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        {submitting === "whatsapp" ? "Enviando…" : "Fechar pelo WhatsApp"}
+                        {submitting === "whatsapp" ? "Enviando…" : "Finalizar com atendimento"}
                       </Button>
                     </>
                   )}

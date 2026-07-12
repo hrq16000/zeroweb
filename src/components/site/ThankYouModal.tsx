@@ -1,13 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { CheckCircle, ArrowRight, MessageCircle, HelpCircle, Layers, Sparkles, Star } from "lucide-react";
+import { CheckCircle, ArrowRight, HelpCircle, Layers, Sparkles, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent, type LeadSource } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
 import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
-import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
 import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
 
 type Props = {
@@ -51,13 +49,6 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
     trackEvent("thank_you_cta_click", { ...params, legacy: true });
   };
 
-  const wa = useWhatsappTracking({
-    ...evtAttr,
-    location: `thankyou_modal_${content.channel}`,
-    surface: "modal",
-    cta_id: THANK_YOU_CTA.WHATSAPP.id,
-  });
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
@@ -71,23 +62,13 @@ export function ThankYouModal({ open, onOpenChange, source }: Props) {
         </DialogHeader>
         <p className="text-center text-muted-foreground text-sm">{content.subtitle}</p>
 
-        <a
-          href={whatsappUrl(content.whatsappMessage, `thankyou_modal_${content.channel}`)}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => {
-            wa.onClick();
-            trackConversion(THANK_YOU_CTA.WHATSAPP.event, {
-              ...evtAttr,
-              surface: "modal",
-              location: `thankyou_modal_${content.channel}`,
-              cta_id: THANK_YOU_CTA.WHATSAPP.id,
-            });
-          }}
+        <Link
+          to={content.finalCtaTo}
+          onClick={() => fireCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 0, content.finalCtaTo)}
           className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
         >
-          <MessageCircle className="w-4 h-4" /> Falar no WhatsApp agora
-        </a>
+          <Sparkles className="w-4 h-4" /> {content.finalCtaLabel}
+        </Link>
 
         <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Link

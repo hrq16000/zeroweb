@@ -1,8 +1,8 @@
 // Simulador simples — recomenda plano de Gestão de Redes Sociais
 import { useMemo, useState } from "react";
 import { ArrowRight, Sparkles, Target, Hash, Users } from "lucide-react";
-import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 type Plan = "Essencial" | "Profissional" | "Avançado" | "Premium";
 
@@ -75,11 +75,6 @@ export function RedesSimulator() {
     setCalculou(true);
     trackEvent("simulador_redes", { nicho, canais, objetivo, plano: resultado.plano });
   };
-
-  const waLink = whatsappUrl(
-    `Olá! Usei o simulador da 0WEB. Nicho: ${nicho}. Canais: ${canais}. Objetivo: ${objetivo}. Plano recomendado: ${resultado.plano}. Quero um diagnóstico.`,
-    "redes_simulator",
-  );
 
   return (
     <div className="rounded-3xl border border-border bg-card p-6 lg:p-10 shadow-elegant">
@@ -197,15 +192,12 @@ export function RedesSimulator() {
                 <p><strong className="text-white">Objetivo:</strong> {OBJETIVOS.find((o) => o.id === objetivo)?.t}</p>
               </div>
 
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick("redes_simulator_cta", { plano: resultado.plano })}
+              <FunnelCTAButton
+                intent={{ purpose: "diagnosis", source: "redes_simulator", pagePath: typeof window === "undefined" ? "/servicos/gestao-redes-sociais" : window.location.pathname, placement: "section", serviceSlug: "gestao-redes-sociais" }}
+                label="Quero um diagnóstico grátis"
+                location="redes_simulator"
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-fuchsia-400 text-slate-900 font-bold px-5 py-3 hover:scale-[1.02] transition"
-              >
-                Quero um diagnóstico grátis <ArrowRight className="w-4 h-4" />
-              </a>
+              />
               <p className="mt-3 text-center text-[11px] text-white/60">
                 Sem compromisso · Resposta em até 1h em horário comercial
               </p>

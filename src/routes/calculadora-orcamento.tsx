@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Calculator, Check, ArrowRight, TrendingUp, Shield, Zap, MessageCircle, Sparkles } from "lucide-react";
 import { ORIGIN } from "@/lib/seo";
-import { whatsappUrl } from "@/lib/site-config";
 import { trackConversion, trackEvent } from "@/lib/analytics";
+import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 export const Route = createFileRoute("/calculadora-orcamento")({
   head: () => ({
@@ -63,6 +63,7 @@ function fmtBRL(n: number) {
 }
 
 function CalculadoraPage() {
+  const { open } = useWaFunnel();
   const [service, setService] = useState<ServiceKey | "">("");
   const [size, setSize] = useState<SizeKey | "">("");
   const [goal, setGoal] = useState<GoalKey | "">("");
@@ -99,9 +100,8 @@ function CalculadoraPage() {
 
   function handleWhats() {
     if (!result) return;
-    const msg = `Olá! Usei a calculadora da 0web e quero conversar sobre meu plano:%0A%0A• Serviço: ${result.service.label}%0A• Porte: ${result.size.label}%0A• Objetivo: ${result.goal.label}%0A• Faixa estimada: ${fmtBRL(result.min)} a ${fmtBRL(result.max)}/mês`;
-    trackConversion("whatsapp_click", { location: "calculator_result", value: result.max });
-    window.open(whatsappUrl(decodeURIComponent(msg), "calculadora"), "_blank", "noopener");
+    trackConversion("contact_cta_click", { location: "calculator_result", value: result.max, service: result.service.label });
+    open("calculator_result");
   }
 
   return (

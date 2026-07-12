@@ -230,6 +230,7 @@ function mapRow(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function signImage(sb: any, path: string | null): Promise<string | null> {
   if (!path) return null;
+  if (/^https?:\/\//i.test(path) || path.startsWith("/__l5e/")) return path;
   try {
     const { data } = await sb.storage
       .from("service-images")

@@ -92,8 +92,6 @@ export const Route = createFileRoute("/")({
               logo: "https://0web.com.br/favicon.ico",
               slogan: "Tecnologia que gera crescimento",
               taxID: "41.723.708/0001-58",
-              telephone: "+55-41-99745-2053",
-              email: "contato@0web.com.br",
               foundingDate: "2006",
               sameAs: [],
             },

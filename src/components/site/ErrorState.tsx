@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { AlertTriangle, Home, MessageCircle, RefreshCw, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Home, RefreshCw, ShieldAlert } from "lucide-react";
 import type { ReactNode } from "react";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 export type ErrorStateKind = "403" | "404" | "500";
 
@@ -28,14 +29,10 @@ const defaults: Record<ErrorStateKind, { title: string; description: string; Ico
   "500": {
     title: "Algo deu errado por aqui",
     description:
-      "Tivemos um problema inesperado ao carregar esta página. Tente novamente em alguns instantes ou fale com a gente pelo WhatsApp.",
+      "Tivemos um problema inesperado ao carregar esta página. Tente novamente em alguns instantes ou inicie um atendimento.",
     Icon: AlertTriangle,
   },
 };
-
-const whatsappUrl =
-  "https://wa.me/5541997452053?text=" +
-  encodeURIComponent("Olá! Tive um erro ao acessar o site da 0WEB e gostaria de ajuda.");
 
 export function ErrorState({ kind, title, description, onRetry, diagnostics }: ErrorStateProps) {
   const d = defaults[kind];
@@ -81,14 +78,17 @@ export function ErrorState({ kind, title, description, onRetry, diagnostics }: E
           >
             Ver Serviços
           </Link>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <FunnelCTAButton
+            intent={{
+              purpose: "commercial",
+              source: `error_${kind}`,
+              pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+              placement: "error-state",
+            }}
+            label="Iniciar atendimento"
+            location={`error_${kind}`}
             className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            <MessageCircle className="h-4 w-4" aria-hidden /> Falar no WhatsApp
-          </a>
+          />
         </div>
 
         {diagnostics ? (

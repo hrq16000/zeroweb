@@ -5,7 +5,6 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { persistLead } from "@/lib/persistence";
 import { trackConversion } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 
 const STORAGE_KEY = "0web_lead_widget_v1";
 const TOTAL_STEPS = 4;
@@ -296,18 +295,13 @@ export function LeadWidget() {
                     Recebemos seu pedido. Quer adiantar a conversa agora pelo WhatsApp?
                   </p>
                   <div className="flex flex-col gap-2">
-                    <a
-                      href={whatsappUrl(
-                        `Olá! Sou ${state.name}. Acabei de pedir uma proposta sobre ${state.serviceLabel ?? "seu serviço"}${state.budget ? ` (orçamento: ${BUDGETS.find((b) => b.id === state.budget)?.label})` : ""}.`,
-                        "lead_widget_confirm",
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackConversion("lead_widget_wa_click", { service: state.service ?? undefined })}
-                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] text-white text-sm font-medium h-10 px-4 hover:opacity-90 transition-opacity"
+                    <button
+                      type="button"
+                      onClick={() => trackConversion("lead_widget_next_step", { service: state.service ?? undefined })}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground text-sm font-medium h-10 px-4 hover:opacity-90 transition-opacity"
                     >
-                      <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
-                    </a>
+                      <MessageCircle className="w-4 h-4" /> Atendimento iniciado
+                    </button>
                     <a
                       href="/app/leads"
                       className="inline-flex items-center justify-center gap-2 rounded-full border border-border text-foreground text-xs font-medium h-9 px-4 hover:bg-muted/50 transition-colors"

@@ -54,12 +54,12 @@ export function WhatsAppFloat() {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         onClick={() => open("floating")}
-        aria-label="Falar no WhatsApp"
-        className="relative grid place-items-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-glow-primary"
+        aria-label="Iniciar atendimento"
+        className="relative grid place-items-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-glow-primary"
         style={{ originX: 0.5, originY: 0.5 }}
       >
         <motion.span animate={controls} className="absolute inset-0 grid place-items-center" style={{ originX: 0.5, originY: 0.5 }}>
-          <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
+          <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-30" />
           {showBubble && (
             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-destructive border-2 border-background animate-pulse" />
           )}

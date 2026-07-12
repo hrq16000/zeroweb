@@ -39,13 +39,6 @@ export function setAnalyticsIds(ga4: string, gtm: string) {
   window.dispatchEvent(new Event("0web:analytics-ids"));
 }
 
-// WhatsApp configuration (Curitiba/PR)
-export const WHATSAPP = {
-  number: "5541997452053",
-  message:
-    "Olá! Vim pelo site 0WEB e quero solicitar um diagnóstico gratuito para minha empresa.",
-};
-
 export const DEFAULT_UTM = {
   utm_source: "site",
   utm_medium: "0web",
@@ -131,15 +124,3 @@ export function withUtms(href: string, extra: Record<string, string> = {}) {
   }
 }
 
-export function whatsappUrl(extraMessage?: string, utmContent?: string) {
-  const baseMsg = extraMessage ?? WHATSAPP.message;
-  const utms = getActiveUtms();
-  if (utmContent) utms.utm_content = utmContent;
-  const tail =
-    "\n\n—\nOrigem: " +
-    Object.entries(utms)
-      .map(([k, v]) => `${k}=${v}`)
-      .join(" · ");
-  const text = encodeURIComponent(baseMsg + tail);
-  return `https://wa.me/${WHATSAPP.number}?text=${text}`;
-}

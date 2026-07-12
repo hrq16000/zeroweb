@@ -19,7 +19,6 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { ScrollTracker } from "@/components/site/ScrollTracker";
 import { cases, getCase } from "@/lib/cases-data";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 export const Route = createFileRoute("/cases/$slug")({
@@ -138,7 +137,7 @@ function CasePage() {
                 <button
                   type="button"
                   onClick={() => {
-                    trackConversion("whatsapp_click", { location: "case_hero", slug: c.slug });
+                    trackConversion("contact_cta_click", { location: "case_hero", slug: c.slug });
                     openFunnel(`case_${c.slug}`);
                   }}
                   className="inline-flex items-center gap-2 rounded-full bg-foreground text-background font-semibold px-6 py-3.5 hover:bg-foreground/90 transition"
@@ -269,12 +268,12 @@ function CasePage() {
               <button
                 type="button"
                 onClick={() => {
-                  trackConversion("whatsapp_click", { location: `case_${c.slug}_cta` });
+                  trackConversion("contact_cta_click", { location: `case_${c.slug}_cta` });
                   openFunnel(`case_${c.slug}_cta`);
                 }}
                 className="inline-flex items-center gap-2 rounded-full bg-background text-foreground font-semibold px-6 py-3.5"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-500" /> Falar no WhatsApp
+                <MessageCircle className="w-4 h-4 text-primary" /> Iniciar diagnóstico
               </button>
             </div>
           </div>

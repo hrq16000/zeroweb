@@ -1,10 +1,7 @@
-import { ArrowRight, MessageCircle } from "lucide-react";
-import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
-import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { Sparkles } from "lucide-react";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 export function CTA() {
-  const { open } = useWaFunnel();
   return (
     <section id="contato" className="py-24">
       <div className="mx-auto max-w-6xl px-5 lg:px-8">
@@ -22,64 +19,31 @@ export function CTA() {
               Diagnóstico gratuito, sem compromisso. Em 24h você recebe um plano sob medida.
             </p>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const data = new FormData(e.currentTarget);
-                trackConversion("form_submit", {
-                  form_name: "diagnostico",
-                  has_company: Boolean(data.get("company")),
-                });
-                window.open(
-                  whatsappUrl(
-                    `Olá! Sou ${data.get("name") || ""} (${data.get("company") || "—"}). Quero solicitar um diagnóstico.`,
-                    "final_cta_form",
-                  ),
-                  "_blank",
-                );
-              }}
-              className="mt-8 grid sm:grid-cols-2 gap-3 max-w-xl"
-            >
-              <input
-                name="name"
-                required
-                placeholder="Seu nome"
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
-              />
-              <input
-                name="company"
-                placeholder="Empresa"
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
-              />
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="E-mail"
-                className="sm:col-span-2 rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-sm placeholder:text-background/50 focus:outline-none focus:border-accent"
-              />
-              <button
-                type="submit"
-                className="sm:col-span-2 group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
-              >
-                Solicitar Diagnóstico
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </form>
-
-            <div className="mt-5">
-              <button
-                type="button"
-                onClick={() => {
-                  trackConversion("whatsapp_click", { location: "final_cta" });
-                  trackEvent("cta_click", { label: "falar_whatsapp", location: "final_cta" });
-                  open("final_cta");
+            <div className="mt-8 flex flex-wrap gap-3">
+              <FunnelCTAButton
+                intent={{
+                  purpose: "diagnosis",
+                  source: "final_cta",
+                  pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+                  placement: "section",
                 }}
+                label="Solicitar Diagnóstico"
+                location="final_cta"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
+              />
+              <FunnelCTAButton
+                intent={{
+                  purpose: "commercial",
+                  source: "final_cta_specialist",
+                  pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+                  placement: "section",
+                }}
+                label="Falar com especialista"
+                location="final_cta_specialist"
+                showArrow={false}
                 className="inline-flex items-center gap-2 rounded-full glass-dark text-background font-semibold px-6 py-3.5 hover:bg-background/10 transition"
-              >
-                <MessageCircle className="w-4 h-4 text-accent" />
-                Falar direto no WhatsApp
-              </button>
+              />
+              <Sparkles className="w-4 h-4 text-accent self-center" />
             </div>
           </div>
         </div>

@@ -77,8 +77,6 @@ export const Route = createFileRoute("/$city/$service")({
                 "@id": `${url}#localbusiness`,
                 name: `0WEB · ${service.name} em ${city.name}`,
                 url,
-                telephone: ORG_REF.telephone,
-                email: ORG_REF.email,
                 priceRange: "$$",
                 areaServed: {
                   "@type": "City",
