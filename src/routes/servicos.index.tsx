@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { ArrowRight, Sparkles, Zap, Clock, HelpCircle, Search, AlertCircle, Timer } from "lucide-react";
+import { ArrowRight, Sparkles, Search, AlertCircle, Timer } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
@@ -289,59 +289,10 @@ function ServicosHub() {
         {/* Busca inteligente agora vive no header sticky (servicos.tsx) e
             permanece presente em todas as páginas da loja virtual. */}
 
-        {/* DESTAQUE: Site Express */}
-        <section className="py-12 px-5">
-          <div className="mx-auto max-w-6xl">
-            <Link
-              to="/servicos/site-express"
-              className="group relative block overflow-hidden rounded-3xl bg-gradient-to-br from-orange-600 to-orange-500 text-white p-8 lg:p-12 shadow-2xl shadow-orange-600/20 hover:shadow-orange-600/40 transition-shadow"
-            >
-              <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-              <div className="relative flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
-                <div className="flex-1">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-xs font-bold uppercase tracking-wider">
-                    <Zap className="w-3.5 h-3.5" /> Turnkey · Mais procurado
-                  </span>
-                  <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">
-                    Site Express <span className="opacity-90">· a partir de R$ 499</span>
-                  </h2>
-                  <p className="mt-3 text-white/90 max-w-xl">
-                    Site profissional sob medida, mobile-first, chave-na-mão. Nosso time entrega
-                    pronto para vender, sem você tocar em código.
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-3 text-sm">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15">
-                      <Clock className="w-3.5 h-3.5" /> Turnkey profissional
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-white/15">Pagamento único</span>
-                    <span className="px-3 py-1 rounded-full bg-white/15">Domínio + SSL</span>
-                  </div>
-                </div>
-                <div className="shrink-0">
-                  <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-orange-600 font-bold uppercase tracking-wide px-6 py-4 text-sm shadow-lg group-hover:scale-105 transition-transform">
-                    Quero meu site <ArrowRight className="w-5 h-5" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </section>
+        {/* O banner de destaque do Site Express e o link da FAQ vivem apenas
+            na página dedicada do produto (/servicos/site-express) — a loja
+            fica neutra para não privilegiar visualmente um único item. */}
 
-        {/* FAQ do Site Express movida para a página dedicada do produto:
-            /servicos/site-express. Mantemos apenas um link de acesso rápido. */}
-        <section className="py-10 px-5">
-          <div className="mx-auto max-w-3xl text-center">
-            <Link
-              to="/servicos/site-express"
-              hash="faq"
-              className="inline-flex items-center gap-2 text-orange-600 font-semibold story-link"
-            >
-              <HelpCircle className="w-4 h-4" />
-              Perguntas frequentes sobre o Site Express
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </section>
 
 
 
@@ -478,7 +429,16 @@ function ServicosHub() {
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
-                {paginated.map((s) => (
+                {paginated.map((s) => {
+                  // Capa da miniatura: prefere imagem principal do produto e,
+                  // se ausente, usa a primeira imagem da galeria — assim
+                  // produtos que só têm galeria não caem no placeholder de sigla.
+                  const galleryCover = Array.isArray(s.gallery)
+                    ? (s.gallery.find((g: { url?: string | null; alt?: string | null }) => typeof g?.url === "string" && g.url) ?? null)
+                    : null;
+                  const coverUrl = s.imageUrl || galleryCover?.url || null;
+                  const coverAlt = s.imageAlt || galleryCover?.alt || s.name;
+                  return (
                   <Link
                     key={s.slug}
                     to="/servicos/$slug"
@@ -486,16 +446,17 @@ function ServicosHub() {
                     className="group relative flex flex-col rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-1 hover:shadow-elegant transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     aria-label={`Ver detalhes do serviço ${s.name}`}
                   >
+
                     {newSet.has(s.slug) && (
                       <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
                         <Sparkles className="w-3 h-3" /> Novo
                       </span>
                     )}
-                    {s.imageUrl ? (
+                    {coverUrl ? (
                       <div className="aspect-video overflow-hidden bg-muted">
                         <img
-                          src={s.imageUrl}
-                          alt={s.imageAlt || s.name}
+                          src={coverUrl}
+                          alt={coverAlt}
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
@@ -547,7 +508,9 @@ function ServicosHub() {
                       </div>
                     </div>
                   </Link>
-                ))}
+                  );
+                })}
+
               </div>
             )}
 
