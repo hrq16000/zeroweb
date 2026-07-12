@@ -1,6 +1,6 @@
-import { Instagram, Linkedin, Youtube, Mail, MessageCircle } from "lucide-react";
+import { Instagram, Linkedin, Youtube, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useWaFunnel } from "@/components/site/WaFunnelModal";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 // Footer 4 colunas (estrutura fixa pós-reorganização IA):
 // 1. Marca + contatos + redes sociais
@@ -36,8 +36,6 @@ const suporteCol: { label: string; to?: string; href?: string }[] = [
 ];
 
 export function Footer() {
-  const { open } = useWaFunnel();
-
   return (
     <footer className="bg-foreground text-background pt-20 pb-10">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -52,18 +50,18 @@ export function Footer() {
               Tecnologia que gera crescimento. Sites, IA e marketing digital para empresas que querem liderar.
             </p>
 
-            <div className="mt-6 space-y-2 text-sm text-background/80">
-              <button
-                onClick={() => open("footer")}
-                className="flex items-center gap-2 hover:text-accent text-left"
-              >
-                <MessageCircle className="w-4 h-4 text-accent" />
-                <span>WhatsApp · (41) 9 9745-2053</span>
-              </button>
-              <a href="mailto:contato@0web.com.br" className="flex items-center gap-2 hover:text-accent">
-                <Mail className="w-4 h-4 text-accent" />
-                <span>contato@0web.com.br</span>
-              </a>
+            <div className="mt-6 text-sm text-background/80">
+              <FunnelCTAButton
+                intent={{
+                  purpose: "commercial",
+                  source: "footer",
+                  pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+                  placement: "footer",
+                }}
+                label="Iniciar diagnóstico"
+                location="footer"
+                className="inline-flex items-center gap-2 rounded-full bg-background/10 border border-background/15 px-5 py-3 font-semibold hover:bg-background/15 transition"
+              />
             </div>
 
             <div className="mt-6 flex gap-3">
@@ -146,7 +144,7 @@ export function Footer() {
 
         <div className="mt-14 pt-8 border-t border-background/10 flex flex-wrap items-center justify-between gap-4 text-xs text-background/60">
           <p>
-            © {new Date().getFullYear()} 0WEB · CNPJ 41.723.708/0001-58 · Marketing Digital desde 2006.
+            © 2026 0WEB · CNPJ 41.723.708/0001-58 · Marketing Digital desde 2006.
           </p>
           <p className="text-background/50">Desenvolvido por 0web</p>
         </div>
