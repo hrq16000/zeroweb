@@ -206,16 +206,12 @@ function BairroPage() {
             <p className="mt-4 text-background/70 text-lg">
               Solicite agora um diagnóstico gratuito. Em 24h você recebe um plano com o que falta para sua empresa dominar o Google em {n.name}.
             </p>
-            <a
-              href={WA_URL(n)}
-              target="_blank"
-              rel="noreferrer"
+            <FunnelCTAButton
+              intent={{ purpose: "proposal", source: `bairro_bh_${n.slug}_final`, pagePath: `/bairros-bh/${n.slug}`, placement: "section", citySlug: n.slug }}
+              label="Falar com um especialista agora"
+              location={`bairro_bh_${n.slug}_final`}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-7 py-4 shadow-glow-primary"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Falar com um especialista agora
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            />
           </div>
         </section>
       </main>
