@@ -7,6 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ORIGIN, breadcrumbLd } from "@/lib/seo";
 import { findBHNeighborhood, type BHNeighborhood } from "@/lib/bh-neighborhoods";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const SERVICES = [
   { name: "Criação de Sites Profissionais", desc: "Sites rápidos, otimizados e prontos para converter visitantes em clientes." },
@@ -65,8 +66,6 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
                 description,
                 url,
                 image: `${ORIGIN}/favicon.ico`,
-                telephone: "+55-41-99745-2053",
-                email: "contato@0web.com.br",
                 priceRange: "$$",
                 address: {
                   "@type": "PostalAddress",
@@ -97,9 +96,6 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
   },
   component: BairroPage,
 });
-
-const WA_URL = (n: BHNeighborhood) =>
-  `https://wa.me/5541997452053?text=${encodeURIComponent(`Olá! Quero um orçamento de marketing digital para minha empresa em ${n.name}, BH.`)}`;
 
 function BairroPage() {
   const { bairro: n } = Route.useLoaderData();
@@ -132,16 +128,12 @@ function BairroPage() {
               Mais clientes do seu bairro, todos os dias. A 0web posiciona empresas de {n.name} no topo do Google e transforma buscas locais em vendas reais.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href={WA_URL(n)}
-                target="_blank"
-                rel="noreferrer"
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: `bairro_bh_${n.slug}`, pagePath: `/bairros-bh/${n.slug}`, placement: "hero", citySlug: n.slug }}
+                label="Solicitar Orçamento"
+                location={`bairro_bh_${n.slug}`}
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Solicitar Orçamento no WhatsApp
-                <ArrowRight className="w-4 h-4" />
-              </a>
+              />
               <Link
                 to="/servicos"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 font-semibold hover:bg-muted transition"
