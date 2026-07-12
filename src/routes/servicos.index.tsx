@@ -429,7 +429,16 @@ function ServicosHub() {
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4">
-                {paginated.map((s) => (
+                {paginated.map((s) => {
+                  // Capa da miniatura: prefere imagem principal do produto e,
+                  // se ausente, usa a primeira imagem da galeria — assim
+                  // produtos que só têm galeria não caem no placeholder de sigla.
+                  const galleryCover = Array.isArray(s.gallery)
+                    ? (s.gallery.find((g) => typeof g?.url === "string" && g.url) ?? null)
+                    : null;
+                  const coverUrl = s.imageUrl || galleryCover?.url || null;
+                  const coverAlt = s.imageAlt || galleryCover?.alt || s.name;
+                  return (
                   <Link
                     key={s.slug}
                     to="/servicos/$slug"
@@ -437,6 +446,7 @@ function ServicosHub() {
                     className="group relative flex flex-col rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-1 hover:shadow-elegant transition-all duration-300 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     aria-label={`Ver detalhes do serviço ${s.name}`}
                   >
+
                     {newSet.has(s.slug) && (
                       <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
                         <Sparkles className="w-3 h-3" /> Novo
