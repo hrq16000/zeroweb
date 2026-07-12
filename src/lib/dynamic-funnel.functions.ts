@@ -215,17 +215,12 @@ export const submitFunnel = createServerFn({ method: "POST" })
     const contact_email = (data.answers.email ?? null) as string | null;
     const contact_phone = (data.answers.telefone ?? data.answers.phone ?? data.answers.whatsapp ?? null) as string | null;
 
-    // ---- WhatsApp ----
+    // ---- Internal notification metadata ----
     const wa = (form.whatsapp_config ?? {}) as Record<string, unknown>;
     const answersText = fmtAnswers(data.answers, questions);
     const metadataText = fmtMetadata(metadata);
 
-    let whatsapp_user_url: string | null = null;
-    if (wa.enabled && wa.redirect_phone) {
-      const tpl = (wa.user_message_template as string) || "Olá! Acabei de preencher o formulário.\n\n{{answers}}";
-      const msg = applyTemplate(tpl, { answers: answersText, metadata: metadataText, name: contact_name ?? "" });
-      whatsapp_user_url = `https://wa.me/${digitsOnly(String(wa.redirect_phone))}?text=${encodeURIComponent(msg)}`;
-    }
+    const whatsapp_user_url: string | null = null;
 
     // ---- Scoring + tags ----
     const scoring = scoreLead(data.answers);
