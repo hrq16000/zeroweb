@@ -7,10 +7,9 @@
  *   consumeWhatsAppRedirectToken → mark_visitor_funnel_redirected → 302
  *
  * New tokens do NOT persist destination_digits or message. Both are derived
- * server-side at consumption time from lead/session/product/answers. Legacy
- * rows (created before this refactor) may still carry destination_digits +
- * message; the resolver returns those in `legacy` mode for compatibility
- * until they expire.
+ * server-side at consumption time. Legacy rows (created before this refactor)
+ * may still carry destination_digits + message; the resolver returns those
+ * in `isLegacy` mode for compatibility until they expire.
  */
 if (typeof window !== "undefined") {
   throw new Error("whatsapp-redirect.server.ts imported from client code");
@@ -18,35 +17,27 @@ if (typeof window !== "undefined") {
 
 import { randomBytes, createHash } from "node:crypto";
 import { getOperationalContact } from "@/lib/contact.server";
-import type { FunnelOption } from "@/lib/dynamic-funnel.functions";
+import {
+  WHATSAPP_TOKEN_TTL_MS,
+  WHATSAPP_REDIRECT_REUSE_WINDOW_MS,
+  buildWhatsAppLeadMessage as _buildLead,
+} from "./whatsapp-redirect.helpers";
 
-// ============================================================================
-// Constants
-// ============================================================================
+export {
+  WHATSAPP_REDIRECT_REUSE_WINDOW_MS,
+  WHATSAPP_MESSAGE_MAX_LENGTH,
+  WHATSAPP_TOKEN_TTL_MS,
+  sanitizeText,
+  buildWhatsAppLeadMessage,
+  buildWaMeUrl,
+} from "./whatsapp-redirect.helpers";
+export type { LeadMessageContext } from "./whatsapp-redirect.helpers";
 
-/** Duplo-toque: reusar token dentro dessa janela após o primeiro uso. */
-export const WHATSAPP_REDIRECT_REUSE_WINDOW_MS = 60_000;
-
-/** wa.me tolera URLs longas, mas limitamos por segurança/UX. */
-export const WHATSAPP_MESSAGE_MAX_LENGTH = 1400;
-
-/** TTL do token de redirect (curto para reduzir superfície de ataque). */
-export const WHATSAPP_TOKEN_TTL_MS = 15 * 60 * 1000;
-
-/** Limite de tamanho por resposta individual. */
-const ANSWER_VALUE_MAX = 240;
-
-/** Rate limit para criação de token. Chave = lead_id. */
+/** Rate limits (server-only). */
 export const CREATE_TOKEN_RATE_WINDOW_S = 60;
 export const CREATE_TOKEN_RATE_MAX = 3;
-
-/** Rate limit para consumo. Chave = token. */
 export const CONSUME_TOKEN_RATE_WINDOW_S = 60;
 export const CONSUME_TOKEN_RATE_MAX = 10;
-
-// ============================================================================
-// Small helpers
-// ============================================================================
 
 export function generateRedirectToken(): string {
   return randomBytes(16).toString("hex");
@@ -68,152 +59,21 @@ export function makeProtocol(): string {
   return `0W-${ymd}-${rand}`;
 }
 
-/** Sanitizes free-form text: strip HTML/scripts/control chars, normalize whitespace, cap length. */
-export function sanitizeText(input: unknown, maxLen = ANSWER_VALUE_MAX): string {
-  if (input === null || input === undefined) return "";
-  const raw = String(input);
-  // Remove tags, control chars, CR/LF collapsed to spaces to avoid header injection.
-  const stripped = raw
-    .replace(/<[^>]*>/g, " ")
-    .replace(/[\u0000-\u001f\u007f]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return stripped.length > maxLen ? `${stripped.slice(0, maxLen - 1)}…` : stripped;
-}
-
-function buildWaMeUrl(digits: string, message: string): string {
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
-}
-
 // ============================================================================
 // (1) resolveOperationalWhatsAppContact
 // ============================================================================
 
-export type OperationalWhatsAppContact = {
-  digits: string;
-};
+export type OperationalWhatsAppContact = { digits: string };
 
-/**
- * Reads operational number from server env. Rejects invalid values.
- * Never returned to the client; used only inside consumeWhatsAppRedirectToken.
- */
 export function resolveOperationalWhatsAppContact(): OperationalWhatsAppContact | null {
   const { whatsappNumber } = getOperationalContact();
   const digits = (whatsappNumber ?? "").replace(/\D/g, "");
-  // Plausível: 10 a 15 dígitos (E.164).
   if (!digits || digits.length < 10 || digits.length > 15) return null;
   return { digits };
 }
 
 // ============================================================================
-// (2) buildWhatsAppLeadMessage
-// ============================================================================
-
-export type LeadMessageContext = {
-  protocol: string;
-  funnelName?: string | null;
-  productName?: string | null;
-  productPriceLabel?: string | null;
-  serviceName?: string | null;
-  billingDescription?: string | null;
-  answers: Record<string, unknown>;
-  questions: { key: string; label: string; options: FunnelOption[] }[];
-  citySlug?: string | null;
-  neighborhoodSlug?: string | null;
-  serviceMode?: string | null;
-  cartSummary?: string | null;
-  pageTitle?: string | null;
-  pageUrl?: string | null;
-  utmCampaign?: string | null;
-};
-
-/**
- * Builds the WhatsApp message from persisted data only.
- * Never includes IP, UA, session ids, visitor ids or admin/telemetry fields.
- * Truncates safely preserving protocol + product + city + cart.
- */
-export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
-  const HIDDEN_KEYS = new Set(["email", "telefone", "phone", "whatsapp"]);
-  const push = (arr: string[], line: string) => {
-    if (line) arr.push(line);
-  };
-
-  const header: string[] = [];
-  header.push("Olá! Acabei de preencher uma solicitação na 0WEB.");
-  header.push("");
-  push(header, `PROTOCOLO`);
-  push(header, ctx.protocol);
-  header.push("");
-
-  const service: string[] = [];
-  push(service, ctx.productName ? `Produto: ${sanitizeText(ctx.productName, 120)}` : "");
-  push(service, ctx.billingDescription ? `Plano: ${sanitizeText(ctx.billingDescription, 120)}` : "");
-  push(service, ctx.productPriceLabel ? `Valor: ${sanitizeText(ctx.productPriceLabel, 60)}` : "");
-  push(service, ctx.serviceName ? `Serviço: ${sanitizeText(ctx.serviceName, 120)}` : "");
-  push(service, ctx.funnelName ? `Funil: ${sanitizeText(ctx.funnelName, 120)}` : "");
-
-  const answersLines: string[] = [];
-  for (const q of ctx.questions) {
-    if (HIDDEN_KEYS.has(q.key)) continue;
-    const raw = ctx.answers[q.key];
-    if (raw === undefined || raw === null || raw === "") continue;
-    const display = Array.isArray(raw)
-      ? raw.map((v) => q.options.find((o) => o.value === v)?.label ?? String(v)).join(", ")
-      : q.options.find((o) => o.value === raw)?.label ?? String(raw);
-    const safeLabel = sanitizeText(q.label, 80);
-    const safeVal = sanitizeText(display, ANSWER_VALUE_MAX);
-    if (safeLabel && safeVal) answersLines.push(`• ${safeLabel}: ${safeVal}`);
-  }
-
-  const local: string[] = [];
-  push(local, ctx.citySlug ? `Cidade: ${sanitizeText(ctx.citySlug, 80)}` : "");
-  push(local, ctx.neighborhoodSlug ? `Bairro: ${sanitizeText(ctx.neighborhoodSlug, 80)}` : "");
-  push(local, ctx.serviceMode ? `Modalidade: ${sanitizeText(ctx.serviceMode, 40)}` : "");
-
-  const cartLines: string[] = [];
-  if (ctx.cartSummary) push(cartLines, sanitizeText(ctx.cartSummary, 400));
-
-  const origin: string[] = [];
-  push(origin, ctx.pageTitle ? `Página: ${sanitizeText(ctx.pageTitle, 180)}` : ctx.pageUrl ? `Página: ${sanitizeText(ctx.pageUrl, 180)}` : "");
-  push(origin, ctx.utmCampaign ? `Campanha: ${sanitizeText(ctx.utmCampaign, 120)}` : "");
-
-  const sections: { title: string; lines: string[]; priority: number }[] = [
-    { title: "SERVIÇO OU PRODUTO", lines: service, priority: 1 },
-    { title: "MINHA SOLICITAÇÃO", lines: answersLines, priority: 2 },
-    { title: "LOCALIDADE", lines: local, priority: 1 },
-    { title: "CARRINHO", lines: cartLines, priority: 1 },
-    { title: "ORIGEM", lines: origin, priority: 3 },
-  ];
-
-  const assemble = (secs: typeof sections): string => {
-    const out = [...header];
-    for (const s of secs) {
-      if (!s.lines.length) continue;
-      out.push(s.title);
-      out.push(...s.lines);
-      out.push("");
-    }
-    return out.join("\n").trim();
-  };
-
-  let msg = assemble(sections);
-  if (msg.length > WHATSAPP_MESSAGE_MAX_LENGTH) {
-    // Drop lowest-priority sections first (higher priority number = lower).
-    const trimmed = [...sections].sort((a, b) => b.priority - a.priority);
-    for (const s of trimmed) {
-      s.lines = [];
-      msg = assemble(sections);
-      if (msg.length <= WHATSAPP_MESSAGE_MAX_LENGTH) break;
-    }
-  }
-  if (msg.length > WHATSAPP_MESSAGE_MAX_LENGTH) {
-    msg = `${msg.slice(0, WHATSAPP_MESSAGE_MAX_LENGTH - 40)}…\n\nPROTOCOLO\n${ctx.protocol}`;
-  }
-  return msg;
-}
-
-// ============================================================================
-// (3) createWhatsAppRedirectToken
+// (2) createWhatsAppRedirectToken
 // ============================================================================
 
 export type CreateWhatsAppRedirectTokenInput = {
@@ -238,18 +98,16 @@ export async function createWhatsAppRedirectToken(
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-  // Rate limit por lead + ip_hash.
-  const rlKey = `wa_token_create:${input.leadId}`;
   const rlHash = (input.ipHash ?? input.leadId).slice(0, 64);
-  const { data: rlOk } = await supabaseAdmin.rpc("check_and_record_rate_limit", {
-    p_scope: rlKey,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rlOk } = await (supabaseAdmin as any).rpc("check_and_record_rate_limit", {
+    p_scope: `wa_token_create:${input.leadId}`,
     p_ip_hash: rlHash,
     p_window_seconds: CREATE_TOKEN_RATE_WINDOW_S,
     p_max_hits: CREATE_TOKEN_RATE_MAX,
   });
   if (rlOk === false) return { ok: false, reason: "rate_limited" };
 
-  // Confirmar que o lead existe.
   const { data: lead } = await supabaseAdmin
     .from("dynamic_form_leads")
     .select("id")
@@ -257,7 +115,6 @@ export async function createWhatsAppRedirectToken(
     .maybeSingle();
   if (!lead) return { ok: false, reason: "lead_not_found" };
 
-  // Reutilizar token ativo existente para este lead (idempotência).
   const now = Date.now();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: existing } = await (supabaseAdmin as any)
@@ -279,7 +136,6 @@ export async function createWhatsAppRedirectToken(
     };
   }
 
-  // Criar novo token, SEM destination_digits e SEM message.
   const token = generateRedirectToken();
   const expiresAt = new Date(now + WHATSAPP_TOKEN_TTL_MS).toISOString();
 
@@ -304,7 +160,7 @@ export async function createWhatsAppRedirectToken(
 }
 
 // ============================================================================
-// (4) resolveWhatsAppRedirectToken — read only, no mutations
+// (3) resolveWhatsAppRedirectToken — read only
 // ============================================================================
 
 export type ResolvedTokenRow = {
@@ -312,12 +168,12 @@ export type ResolvedTokenRow = {
   token: string;
   lead_id: string | null;
   funnel_session_id: string | null;
-  destination_digits: string | null; // legacy
-  message: string | null; // legacy
+  destination_digits: string | null;
+  message: string | null;
   expires_at: string;
   used_at: string | null;
   use_count: number;
-  isLegacy: boolean; // true if destination_digits+message are set (old format)
+  isLegacy: boolean;
 };
 
 export type ResolveTokenResult =
@@ -326,9 +182,7 @@ export type ResolveTokenResult =
 
 export async function resolveWhatsAppRedirectToken(token: string): Promise<ResolveTokenResult> {
   if (!/^[a-f0-9]{16,64}$/.test(token)) return { ok: false, reason: "invalid_format" };
-
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data } = await (supabaseAdmin as any)
     .from("whatsapp_redirect_tokens")
@@ -337,7 +191,6 @@ export async function resolveWhatsAppRedirectToken(token: string): Promise<Resol
     )
     .eq("token", token)
     .maybeSingle();
-
   if (!data) return { ok: false, reason: "not_found" };
   return {
     ok: true,
@@ -357,7 +210,7 @@ export async function resolveWhatsAppRedirectToken(token: string): Promise<Resol
 }
 
 // ============================================================================
-// (5) consumeWhatsAppRedirectToken — atomic
+// (4) consumeWhatsAppRedirectToken — atomic via SQL RPC
 // ============================================================================
 
 export type ConsumeStatus =
@@ -376,11 +229,6 @@ export type ConsumeResult = {
   useCount: number;
 };
 
-/**
- * Atomically consumes the token via SQL RPC. Idempotent within the reuse
- * window; blocks reuse after. Returns the persisted row-level context but
- * NOT the final message/URL — those are built by the caller from live data.
- */
 export async function consumeWhatsAppRedirectToken(token: string): Promise<ConsumeResult> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -410,7 +258,7 @@ export async function consumeWhatsAppRedirectToken(token: string): Promise<Consu
 }
 
 // ============================================================================
-// Server-side status marker (idempotent) for the funnel session
+// (5) Server-side session status marker
 // ============================================================================
 
 export async function markVisitorFunnelRedirectedBySessionId(
@@ -424,24 +272,16 @@ export async function markVisitorFunnelRedirectedBySessionId(
   return Boolean(data);
 }
 
-// ============================================================================
-// Final wa.me URL assembly (server-only, never exported to client)
-// ============================================================================
-
 export function assembleWaMeUrl(digits: string, message: string): string {
-  return buildWaMeUrl(digits, message);
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
 // ---------------------------------------------------------------------------
-// Legacy compatibility (temporary) — retained for pre-existing tokens with
-// destination_digits + message. Drop once no legacy valid tokens remain and
-// the columns can be removed by a follow-up migration.
+// Legacy compat — will be removed once no legacy valid tokens remain.
 // ---------------------------------------------------------------------------
-
-/** @deprecated legacy alias for buildWhatsAppLeadMessage */
-export const buildFunnelWhatsAppMessage = buildWhatsAppLeadMessage;
-
-/** @deprecated legacy — do NOT use for new writes; kept for compat */
+/** @deprecated legacy alias — use buildWhatsAppLeadMessage */
+export const buildFunnelWhatsAppMessage = _buildLead;
+/** @deprecated legacy — new writes must NOT persist number in the token row */
 export function getWhatsAppDestinationDigits(): string | null {
   return resolveOperationalWhatsAppContact()?.digits ?? null;
 }
