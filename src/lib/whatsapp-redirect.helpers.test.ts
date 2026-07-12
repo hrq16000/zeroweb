@@ -29,8 +29,14 @@ describe("buildWhatsAppLeadMessage", () => {
   const baseCtx = {
     protocol: "0W-260712-ABC123",
     funnelName: "Tráfego Pago",
-    answers: { objetivo: "vendas", telefone: "31999999999", email: "x@y.com" },
+    answers: {
+      nome: "Teste E2E 0WEB",
+      objetivo: "vendas",
+      telefone: "41999990000",
+      email: "teste-e2e@example.test",
+    },
     questions: [
+      { key: "nome", label: "Nome", options: [] },
       { key: "objetivo", label: "Objetivo", options: [{ value: "vendas", label: "Aumentar vendas" }] },
       { key: "telefone", label: "Telefone", options: [] },
       { key: "email", label: "Email", options: [] },
@@ -44,30 +50,65 @@ describe("buildWhatsAppLeadMessage", () => {
     expect(msg).toContain("Aumentar vendas");
   });
 
-  it("hides telefone/email answers from the message body", () => {
+  it("preserves visitor-provided phone and email answers", () => {
     const msg = buildWhatsAppLeadMessage(baseCtx);
-    expect(msg).not.toContain("31999999999");
-    expect(msg).not.toContain("x@y.com");
+    expect(msg).toContain("41999990000");
+    expect(msg).toContain("teste-e2e@example.test");
+    expect(msg).toContain("Teste E2E 0WEB");
   });
 
-  it("never includes IP, UA, session ids or telemetry", () => {
+  it("never leaks internal telemetry keys as answers", () => {
     const msg = buildWhatsAppLeadMessage({
       ...baseCtx,
-      // These fields are not in the type — even if callers try to inject
-      // via `any`, sanitizeText and the schema shape prevent them.
-      answers: { objetivo: "vendas", ip: "1.2.3.4", user_agent: "Mozilla" },
+      answers: {
+        objetivo: "vendas",
+        ip: "1.2.3.4",
+        ip_hash: "abc123deadbeef",
+        user_agent: "Mozilla/5.0",
+        session_id: "sess_xyz",
+        visitor_id: "vis_xyz",
+        funnel_session_id: "fs_xyz",
+        lead_id: "lead_xyz",
+        token: "tok_xyz",
+      },
       questions: [
-        ...baseCtx.questions,
+        { key: "objetivo", label: "Objetivo", options: [] },
         { key: "ip", label: "IP", options: [] },
+        { key: "ip_hash", label: "IP hash", options: [] },
         { key: "user_agent", label: "UA", options: [] },
+        { key: "session_id", label: "Session", options: [] },
+        { key: "visitor_id", label: "Visitor", options: [] },
+        { key: "funnel_session_id", label: "Funnel session", options: [] },
+        { key: "lead_id", label: "Lead", options: [] },
+        { key: "token", label: "Token", options: [] },
       ],
     });
-    // Values passed as legit "answers" WILL show — but only if the caller
-    // treats them as questions. In real flow, submitFunnel never passes IP
-    // as an answer. Test the message-level guarantees:
-    expect(msg).not.toMatch(/session[_-]?id/i);
-    expect(msg).not.toMatch(/visitor[_-]?id/i);
-    expect(msg).not.toMatch(/funnel[_-]?session/i);
+    expect(msg).not.toContain("1.2.3.4");
+    expect(msg).not.toContain("abc123deadbeef");
+    expect(msg).not.toContain("Mozilla/5.0");
+    expect(msg).not.toContain("sess_xyz");
+    expect(msg).not.toContain("vis_xyz");
+    expect(msg).not.toContain("fs_xyz");
+    expect(msg).not.toContain("lead_xyz");
+    expect(msg).not.toContain("tok_xyz");
+  });
+
+  it("never includes operational contact keys even if injected as answers", () => {
+    const msg = buildWhatsAppLeadMessage({
+      ...baseCtx,
+      answers: {
+        objetivo: "vendas",
+        operational_phone: "555111222333",
+        operational_email: "ops@0web.internal",
+      },
+      questions: [
+        { key: "objetivo", label: "Objetivo", options: [] },
+        { key: "operational_phone", label: "Contato interno", options: [] },
+        { key: "operational_email", label: "E-mail interno", options: [] },
+      ],
+    });
+    expect(msg).not.toContain("555111222333");
+    expect(msg).not.toContain("ops@0web.internal");
   });
 
   it("respects max length", () => {
