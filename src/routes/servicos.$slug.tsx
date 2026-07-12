@@ -218,21 +218,22 @@ function ServicePage() {
             )}
 
             {data.imageUrl && (
-              <div
-                className="mt-8 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted"
-                style={{ aspectRatio: "16 / 9" }}
+              <a
+                href={data.imageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir imagem em tamanho real: ${data.imageAlt || data.h1}`}
+                className="mt-8 mx-auto max-w-3xl block overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted cursor-zoom-in group"
               >
                 <img
                   src={data.imageUrl}
                   alt={data.imageAlt || data.h1}
-                  width={1280}
-                  height={720}
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
                 />
-              </div>
+              </a>
             )}
             <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-3">
               <ServiceCTA
