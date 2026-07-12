@@ -44,12 +44,10 @@ function withOfferDefaults(offer: OfferLike, fallbackUrl: string): OfferLike {
   };
 }
 
-function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
-  return [
-    { name: "Essencial", price: Math.round(basePrice * 0.7).toString() },
-    { name: "Pro", price: Math.round(basePrice).toString() },
-    { name: "Avançado", price: Math.round(basePrice * 1.6).toString() },
-  ].map((o) => withOfferDefaults(o, url));
+function buildSingleOffer(basePrice: number, url: string): OfferLike[] {
+  // Serviços digitais têm preço único por escopo — sem inventar variantes
+  // "Essencial/Pro/Avançado" no schema (o Google reprova Offers fictícias).
+  return [withOfferDefaults({ price: basePrice.toString() }, url)];
 }
 
 export const Route = createFileRoute("/servicos/$slug")({
