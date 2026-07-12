@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Gift, X, ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 import { trackConversion, trackEvent } from "@/lib/analytics";
-import { whatsappUrl } from "@/lib/site-config";
 import { useWaFunnel } from "@/components/site/WaFunnelModal";
 
 const STORAGE_KEY = "0web_exit_seen_v1";
@@ -106,13 +105,7 @@ export function ExitIntent() {
                   form_name: "exit_intent",
                   has_company: Boolean(data.get("company")),
                 });
-                window.open(
-                  whatsappUrl(
-                    `Olá! Sou ${data.get("name") || ""} (${data.get("company") || "—"}). Vi o pop-up de saída e quero meu diagnóstico gratuito.`,
-                    "exit_intent",
-                  ),
-                  "_blank",
-                );
+                openFunnel("exit_intent_form");
                 setOpen(false);
               }}
             >
@@ -148,14 +141,14 @@ export function ExitIntent() {
               <button
                 type="button"
                 onClick={() => {
-                  trackConversion("whatsapp_click", { location: "exit_intent" });
+                  trackConversion("contact_cta_click", { location: "exit_intent" });
                   openFunnel("exit_intent");
                   setOpen(false);
                 }}
                 className="inline-flex items-center justify-center gap-2 text-sm font-medium text-foreground/70 hover:text-foreground"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-500" />
-                Prefiro falar agora no WhatsApp
+                Prefiro iniciar o diagnóstico
               </button>
 
               <p className="text-[11px] text-muted-foreground text-center">

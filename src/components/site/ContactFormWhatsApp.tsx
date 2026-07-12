@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
-import { whatsappUrl } from "@/lib/site-config";
 import { ORIGIN } from "@/lib/seo";
 import { trackConversion, trackWhatsAppClick } from "@/lib/analytics";
 import { persistLead } from "@/lib/persistence";
@@ -138,7 +137,6 @@ export function ContactFormWhatsApp({
               geo_source: geo?.source,
             },
           });
-          // WhatsApp message: only include non-empty lines, with name/city/interest.
           const ctaUrl = `${ORIGIN}${content.finalCtaTo}`;
           const loc = formatLocation(geo);
           const interest = defaultMessage.replace(/\.$/, "");
@@ -156,8 +154,7 @@ export function ContactFormWhatsApp({
           ].filter((l) => l !== "" || true).filter(Boolean);
           // Remove falsy lines but preserve intentional blank separators
           const msg = lines.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
-          window.open(whatsappUrl(msg, attr.ctx), "_blank", "noopener,noreferrer");
-          trackWhatsAppClick(`form_${source}`, { form_name: source });
+          trackConversion("contact_form_captured", { form_name: source, next_step: ctaUrl, loc, interest, message_length: msg.length });
           setSent(true);
           if (shouldUseModal) {
             setModalOpen(true);
