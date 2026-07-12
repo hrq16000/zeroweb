@@ -1,18 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { z } from "zod";
-import { ArrowRight, CheckCircle, MessageCircle, HelpCircle, Layers, FileText, Star, Sparkles, Package } from "lucide-react";
+import { ArrowRight, CheckCircle, HelpCircle, Layers, FileText, Star, Sparkles, Package } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { trackConversion, trackEvent } from "@/lib/analytics";
 import { absUrl, ORIGIN, breadcrumbLd } from "@/lib/seo";
 import { useEffect, useMemo, type ReactElement } from "react";
-import { whatsappUrl } from "@/lib/site-config";
 import { getThankYouContent } from "@/lib/thank-you-content";
 import { getLeadAttribution, attributionToEventParams } from "@/lib/lead-attribution";
 import { loadAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
-import { useWhatsappTracking } from "@/lib/use-whatsapp-tracking";
 import { THANK_YOU_CTA, buildThankYouCtaParams } from "@/lib/event-taxonomy";
 import { OrderSummaryCard } from "@/components/site/OrderSummaryCard";
 
@@ -105,9 +103,6 @@ function ObrigadoPage() {
     trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
 
-  const waHero = useWhatsappTracking({ ...evtAttr, location: `obrigado_page_${content.channel}`, surface: "page", cta_id: "whatsapp_hero", position: 0 });
-  const waFinal = useWhatsappTracking({ ...evtAttr, location: `obrigado_cta_final_${content.channel}`, surface: "page", cta_id: "whatsapp_final", position: 99 });
-
   const ICONS: Record<string, ReactElement> = {
     layers: <Layers className="w-6 h-6 text-primary" />,
     help: <HelpCircle className="w-6 h-6 text-primary" />,
@@ -188,16 +183,14 @@ function ObrigadoPage() {
             transition={{ delay: 0.45, duration: 0.5 }}
             className="mt-8 flex flex-wrap justify-center gap-3"
           >
-            <a
-              href={whatsappUrl(content.whatsappMessage, `obrigado_page_${content.channel}`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={waHero.onClick}
+            <Link
+              to={content.finalCtaTo}
+              onClick={() => handleCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 0, content.finalCtaTo)}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-4 shadow-glow-primary"
             >
-              <MessageCircle className="w-5 h-5" />
-              Falar no WhatsApp agora
-            </a>
+              <Sparkles className="w-5 h-5" />
+              {content.finalCtaLabel}
+            </Link>
             <Link
               to={content.finalCtaTo}
               onClick={() => handleCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, content.finalCtaLabel, 0, content.finalCtaTo)}
@@ -392,19 +385,17 @@ function ObrigadoPage() {
           <div className="mx-auto max-w-3xl px-5 lg:px-8 text-center rounded-3xl border border-border bg-card p-8 lg:p-12">
             <h2 className="text-2xl font-bold font-display">Não quer esperar?</h2>
             <p className="mt-2 text-muted-foreground">
-              Fale direto pelo WhatsApp e receba um diagnóstico gratuito em poucos minutos.
+              Inicie o próximo passo pelo funil e receba um diagnóstico gratuito.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <a
-                href={whatsappUrl("Quero agilizar minha proposta. Pode me atender agora?", `obrigado_cta_final_${content.channel}`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={waFinal.onClick}
+              <Link
+                to={content.finalCtaTo}
+                onClick={() => handleCta(THANK_YOU_CTA.DIAGNOSTICO.event, THANK_YOU_CTA.DIAGNOSTICO.id, "Quero agilizar", 99, content.finalCtaTo)}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-8 py-3 shadow-glow-primary"
               >
-                <MessageCircle className="w-5 h-5" />
-                Quero falar agora
-              </a>
+                <Sparkles className="w-5 h-5" />
+                Quero agilizar
+              </Link>
               <Link
                 to="/"
                 onClick={() => handleCta("thank_you_cta_home", "home", "Voltar para o início", 100, "/")}

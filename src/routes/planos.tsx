@@ -4,7 +4,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
 import { Check, Sparkles } from "lucide-react";
-import { whatsappUrl } from "@/lib/site-config";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const URL = "https://0web.com.br/planos";
 const TITLE = "Planos e Preços · Sites, SEO, Tráfego e Automações · 0WEB";
@@ -159,16 +159,17 @@ function PlansPage() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={whatsappUrl(`Quero contratar o plano ${p.name}.`, `planos_${p.name.toLowerCase()}`)}
+                <FunnelCTAButton
+                  intent={{ purpose: "proposal", source: `planos_${p.name.toLowerCase()}`, pagePath: "/planos", placement: "section", campaign: p.name.toLowerCase() }}
+                  label={p.cta}
+                  location={`planos_${p.name.toLowerCase()}`}
+                  showArrow={false}
                   className={`mt-8 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold ${
                     p.featured
                       ? "bg-gradient-primary text-primary-foreground shadow-glow-primary"
                       : "bg-foreground text-background"
                   }`}
-                >
-                  {p.cta}
-                </a>
+                />
               </div>
             ))}
           </div>
@@ -185,7 +186,7 @@ function PlansPage() {
               desenhado para metas agressivas de receita, com squad dedicado e estratégia omnichannel.
             </p>
             <p>
-              Todos os planos incluem dashboards de performance, suporte humano via WhatsApp e contrato
+              Todos os planos incluem dashboards de performance, suporte humano pelo funil e contrato
               flexível. Quer ajuda para escolher? <Link to="/contato">Fale com um especialista</Link>.
             </p>
           </div>
