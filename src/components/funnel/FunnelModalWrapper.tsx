@@ -123,10 +123,10 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug, int
             {completed && (
               <div className="p-8 sm:p-10 text-center space-y-5">
                 <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
-                  Tudo certo!
+                  Solicitação registrada
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Recebemos sua resposta. Nossa equipe continuará o atendimento pelo funil.
+                  Recebemos sua resposta. Em instantes entraremos em contato.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                   {serviceSlug && (

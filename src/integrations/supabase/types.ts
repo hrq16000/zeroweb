@@ -4983,6 +4983,134 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_funnel_sessions: {
+        Row: {
+          abandoned_at: string | null
+          cart_snapshot_final: Json | null
+          cart_snapshot_open: Json | null
+          city_slug: string | null
+          consent_state: Json
+          created_at: string
+          expires_at: string
+          fbclid: string | null
+          funnel_slug: string | null
+          gclid: string | null
+          id: string
+          last_step: number
+          lead_id: string | null
+          network_context: Json
+          opened_at: string
+          origin_snapshot: Json
+          page_path: string | null
+          page_url: string | null
+          partial_answers: Json
+          product_id: string | null
+          product_slug: string | null
+          protocol: string | null
+          redirected_at: string | null
+          referrer: string | null
+          service_slug: string | null
+          session_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["visitor_funnel_status"]
+          submitted_at: string | null
+          technical_context: Json
+          updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string
+        }
+        Insert: {
+          abandoned_at?: string | null
+          cart_snapshot_final?: Json | null
+          cart_snapshot_open?: Json | null
+          city_slug?: string | null
+          consent_state?: Json
+          created_at?: string
+          expires_at?: string
+          fbclid?: string | null
+          funnel_slug?: string | null
+          gclid?: string | null
+          id?: string
+          last_step?: number
+          lead_id?: string | null
+          network_context?: Json
+          opened_at?: string
+          origin_snapshot?: Json
+          page_path?: string | null
+          page_url?: string | null
+          partial_answers?: Json
+          product_id?: string | null
+          product_slug?: string | null
+          protocol?: string | null
+          redirected_at?: string | null
+          referrer?: string | null
+          service_slug?: string | null
+          session_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["visitor_funnel_status"]
+          submitted_at?: string | null
+          technical_context?: Json
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id: string
+        }
+        Update: {
+          abandoned_at?: string | null
+          cart_snapshot_final?: Json | null
+          cart_snapshot_open?: Json | null
+          city_slug?: string | null
+          consent_state?: Json
+          created_at?: string
+          expires_at?: string
+          fbclid?: string | null
+          funnel_slug?: string | null
+          gclid?: string | null
+          id?: string
+          last_step?: number
+          lead_id?: string | null
+          network_context?: Json
+          opened_at?: string
+          origin_snapshot?: Json
+          page_path?: string | null
+          page_url?: string | null
+          partial_answers?: Json
+          product_id?: string | null
+          product_slug?: string | null
+          protocol?: string | null
+          redirected_at?: string | null
+          referrer?: string | null
+          service_slug?: string | null
+          session_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["visitor_funnel_status"]
+          submitted_at?: string | null
+          technical_context?: Json
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitor_funnel_sessions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "lead_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       visitor_saved_filters: {
         Row: {
           created_at: string
@@ -5422,6 +5550,7 @@ export type Database = {
       purge_rate_limit_buckets: { Args: never; Returns: number }
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
+      purge_visitor_funnel_sessions: { Args: never; Returns: number }
       refresh_visitor_mvs: { Args: never; Returns: undefined }
       resolve_or_create_identity: {
         Args: {
@@ -5512,6 +5641,16 @@ export type Database = {
         | "config"
       territory_exclusivity: "exclusivo" | "compartilhado"
       territory_scope: "cidade" | "regiao" | "estado" | "nacional"
+      visitor_funnel_status:
+        | "session_created"
+        | "funnel_opened"
+        | "funnel_started"
+        | "cart_suggested"
+        | "cart_accepted"
+        | "cart_declined"
+        | "form_submitted"
+        | "whatsapp_redirected"
+        | "abandoned"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5721,6 +5860,17 @@ export const Constants = {
       ],
       territory_exclusivity: ["exclusivo", "compartilhado"],
       territory_scope: ["cidade", "regiao", "estado", "nacional"],
+      visitor_funnel_status: [
+        "session_created",
+        "funnel_opened",
+        "funnel_started",
+        "cart_suggested",
+        "cart_accepted",
+        "cart_declined",
+        "form_submitted",
+        "whatsapp_redirected",
+        "abandoned",
+      ],
     },
   },
 } as const
