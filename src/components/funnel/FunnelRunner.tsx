@@ -82,7 +82,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
   const [answers, setAnswers] = useState<Answers>({});
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState<null | { whatsapp?: string | null }>(null);
+  const [done, setDone] = useState<null | { nextPath: string }>(null);
   const [startedAt] = useState(() => new Date().toISOString());
 
   const currentIdx = stack[stack.length - 1];
@@ -134,7 +134,6 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
         utm_source: utm.utm_source,
         utm_medium: utm.utm_medium,
         utm_campaign: utm.utm_campaign,
-        whatsapp_redirect: result.whatsapp_user_url ? true : false,
       });
       // Persist attribution snapshot so /obrigado + ThankYouModal show the
       // same source/channel/UTM as this submission.
@@ -142,17 +141,19 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
         const attr = getLeadAttribution(`funnel:${funnel.slug}`, `funnel_${funnel.slug}`);
         saveAttributionSnapshot(attr);
       } catch { /* noop */ }
-      setDone({ whatsapp: result.whatsapp_user_url });
+      // Funnel-first policy: never redirect to WhatsApp from the client.
+      // The server returns only { success, submissionId, nextPath }.
+      const nextPath = result.nextPath ?? "/obrigado";
+      setDone({ nextPath });
       if (onComplete) setTimeout(() => onComplete(), 1200);
-      if (result.whatsapp_user_url && !embedded) {
-        // Open after a short beat so the success state can render.
-        setTimeout(() => { window.location.href = result.whatsapp_user_url!; }, 900);
+      if (!embedded) {
+        setTimeout(() => { window.location.href = nextPath; }, 900);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro ao enviar. Tente novamente.");
       setSubmitting(false);
     }
-  }, [funnel.id, funnel.slug, submit, startedAt, total]);
+  }, [funnel.id, funnel.slug, submit, startedAt, total, embedded, onComplete]);
 
   const goNext = useCallback((overrideValue?: unknown) => {
     setError(null);
@@ -222,15 +223,8 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
           </div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">Recebido! 🚀</h2>
           <p className="text-muted-foreground">
-            {done.whatsapp
-              ? "Estamos abrindo o WhatsApp para você concluir o atendimento."
-              : "Em instantes nossa equipe entrará em contato."}
+            Em instantes nossa equipe entrará em contato.
           </p>
-          {done.whatsapp && (
-            <Button asChild size="lg" className="w-full">
-              <a href={done.whatsapp}>Abrir WhatsApp</a>
-            </Button>
-          )}
         </motion.div>
       </div>
     );
