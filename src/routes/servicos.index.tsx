@@ -452,11 +452,11 @@ function ServicosHub() {
                         <Sparkles className="w-3 h-3" /> Novo
                       </span>
                     )}
-                    {s.imageUrl ? (
+                    {coverUrl ? (
                       <div className="aspect-video overflow-hidden bg-muted">
                         <img
-                          src={s.imageUrl}
-                          alt={s.imageAlt || s.name}
+                          src={coverUrl}
+                          alt={coverAlt}
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
@@ -508,7 +508,9 @@ function ServicosHub() {
                       </div>
                     </div>
                   </Link>
-                ))}
+                  );
+                })}
+
               </div>
             )}
 
