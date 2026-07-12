@@ -40,7 +40,25 @@ export type LeadMessageContext = {
 };
 
 export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
-  const HIDDEN_KEYS = new Set(["email", "telefone", "phone", "whatsapp"]);
+  // Preserve visitor-provided contact/data (name, phone, email, city, budget…)
+  // and block only internal telemetry / operational contact keys. Sanitization
+  // still strips HTML, control chars and enforces length limits per value.
+  const INTERNAL_KEYS = new Set([
+    "ip",
+    "ip_hash",
+    "asn",
+    "user_agent",
+    "ua_browser",
+    "ua_os",
+    "ua_device",
+    "session_id",
+    "visitor_id",
+    "funnel_session_id",
+    "lead_id",
+    "token",
+    "operational_phone",
+    "operational_email",
+  ]);
   const push = (arr: string[], line: string) => {
     if (line) arr.push(line);
   };
@@ -61,7 +79,7 @@ export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
 
   const answersLines: string[] = [];
   for (const q of ctx.questions) {
-    if (HIDDEN_KEYS.has(q.key)) continue;
+    if (INTERNAL_KEYS.has(q.key)) continue;
     const raw = ctx.answers[q.key];
     if (raw === undefined || raw === null || raw === "") continue;
     const display = Array.isArray(raw)
