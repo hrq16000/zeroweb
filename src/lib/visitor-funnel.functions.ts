@@ -69,7 +69,7 @@ const updateSchema = z.object({
   protocol: z.string().max(40).optional(),
 });
 
-function pickNetworkContext(): { ip_hash: string | null; user_agent: string | null; accept_language: string | null } {
+async function pickNetworkContext(): Promise<{ ip_hash: string | null; user_agent: string | null; accept_language: string | null }> {
   let ip: string | null = null;
   let user_agent: string | null = null;
   let accept_language: string | null = null;
@@ -79,7 +79,6 @@ function pickNetworkContext(): { ip_hash: string | null; user_agent: string | nu
     user_agent = req.headers.get("user-agent");
     accept_language = getRequestHeader("accept-language") ?? null;
   } catch { /* SSR only */ }
-  // Hash simples do IP (não recuperável); nunca gravar IP em claro nesta tabela.
   let ip_hash: string | null = null;
   if (ip) {
     try {
@@ -94,7 +93,7 @@ export const createVisitorFunnelSession = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => createSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const net = pickNetworkContext();
+    const net = await pickNetworkContext();
 
     const row = {
       visitor_id: data.visitor_id,
