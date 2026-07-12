@@ -298,11 +298,10 @@ function CheckoutPage() {
                         size="lg"
                         variant={settings.stripeEnabled ? "outline" : "default"}
                         className="w-full"
-                        onClick={handleWhatsApp}
+                        onClick={handleAssistedCheckout}
                         disabled={submitting !== "none"}
                       >
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        {submitting === "whatsapp" ? "Enviando…" : "Fechar pelo WhatsApp"}
+                        {submitting === "whatsapp" ? "Enviando…" : "Finalizar com atendimento"}
                       </Button>
                     </>
                   )}
