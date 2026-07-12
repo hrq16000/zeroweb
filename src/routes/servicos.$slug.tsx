@@ -130,20 +130,21 @@ export const Route = createFileRoute("/servicos/$slug")({
       }
       return node;
     });
+    const metaDescription = loaderData.seoDescription || loaderData.description;
     return {
       meta: [
         { title: loaderData.title },
-        { name: "description", content: loaderData.description },
+        { name: "description", content: metaDescription },
         { name: "keywords", content: loaderData.keywords.join(", ") },
         { property: "og:title", content: loaderData.title },
-        { property: "og:description", content: loaderData.description },
+        { property: "og:description", content: metaDescription },
         { property: "og:type", content: ogType },
         { property: "og:url", content: url },
         { property: "og:image", content: ogImage },
         { property: "og:image:alt", content: ogAlt },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: loaderData.title },
-        { name: "twitter:description", content: loaderData.description },
+        { name: "twitter:description", content: metaDescription },
         { name: "twitter:image", content: ogImage },
         { name: "robots", content: "index, follow, max-image-preview:large" },
       ],
