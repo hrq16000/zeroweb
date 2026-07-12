@@ -3,10 +3,10 @@ import { motion } from "motion/react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
-import { whatsappUrl } from "@/lib/site-config";
 import { CheckCircle2, XCircle, MessageCircle, Phone, ShoppingCart, Rocket, AlertTriangle, ArrowRight, Sparkles, Target } from "lucide-react";
 import capa from "@/assets/trafego-pago-499-capa.png.asset.json";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 const URL = "https://0web.com.br/servicos/trafego-pago-local";
 const TITLE = "Tráfego Pago para Negócios Locais a partir de R$499/mês · 0WEB";
@@ -91,11 +91,7 @@ export const Route = createFileRoute("/servicos/trafego-pago-local")({
   component: TrafegoPagoLocalPage,
 });
 
-const wa = (msg: string, ctx: string) => whatsappUrl(msg, ctx);
-
 function TrafegoPagoLocalPage() {
-  const ctaLink = wa("Quero começar com o tráfego pago da 0WEB a partir de R$499/mês.", "lp_trafego_local");
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -117,9 +113,7 @@ function TrafegoPagoLocalPage() {
                 Anúncios no Instagram, Facebook e Google com foco total em gerar clientes — não curtidas.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <a href={ctaLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold shadow-glow-primary">
-                  Quero receber clientes essa semana <ArrowRight className="w-4 h-4" />
-                </a>
+                <FunnelCTAButton intent={{ purpose: "proposal", source: "lp_trafego_local_hero", pagePath: "/servicos/trafego-pago-local", placement: "hero", serviceSlug: "trafego-pago-local" }} label="Quero receber clientes essa semana" location="lp_trafego_local_hero" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold shadow-glow-primary" />
                 <Link to="/planos" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-border hover:bg-muted text-sm font-medium">
                   Ver planos
                 </Link>
@@ -219,9 +213,7 @@ function TrafegoPagoLocalPage() {
                 <li key={x} className="rounded-xl border border-border bg-background/60 py-2 font-medium">{x}</li>
               ))}
             </ul>
-            <a href={ctaLink} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-primary text-primary-foreground font-semibold">
-              Começar agora <ArrowRight className="w-4 h-4" />
-            </a>
+            <FunnelCTAButton intent={{ purpose: "proposal", source: "lp_trafego_local_pricing", pagePath: "/servicos/trafego-pago-local", placement: "section", serviceSlug: "trafego-pago-local" }} label="Começar agora" location="lp_trafego_local_pricing" className="mt-8 inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-primary text-primary-foreground font-semibold" />
           </div>
         </section>
 
@@ -278,9 +270,7 @@ function TrafegoPagoLocalPage() {
             Se você não anuncia, seu concorrente anuncia — e ele fica com seus clientes.
             Ou você aparece. Ou você desaparece.
           </p>
-          <a href={ctaLink} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold">
-            Quero meus primeiros clientes <ArrowRight className="w-4 h-4" />
-          </a>
+          <FunnelCTAButton intent={{ purpose: "proposal", source: "lp_trafego_local_final", pagePath: "/servicos/trafego-pago-local", placement: "section", serviceSlug: "trafego-pago-local" }} label="Quero meus primeiros clientes" location="lp_trafego_local_final" className="mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold" />
         </section>
       </main>
       <Footer />
