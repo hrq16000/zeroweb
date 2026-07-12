@@ -12,9 +12,15 @@ import {
   type FunnelDefinition,
   type FunnelQuestion,
 } from "@/lib/dynamic-funnel.functions";
+import {
+  createVisitorFunnelSession,
+  updateVisitorFunnelSession,
+} from "@/lib/visitor-funnel.functions";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { getLeadAttribution } from "@/lib/lead-attribution";
 import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
+import { getVisitorId, newFunnelSessionId, collectTechnicalContext } from "@/lib/visitor-id";
+import { readCart } from "@/lib/cart";
 
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
