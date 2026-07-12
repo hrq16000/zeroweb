@@ -188,95 +188,145 @@ function ServicePage() {
         ? "Sob consulta"
         : `R$ ${Number(data.price).toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`;
 
+  const isProduct = !isTrafegoPago && data.price != null && data.price > 0;
+
+  // Constrói galeria da loja: imagem principal + imagens da galeria (sem duplicar).
+  const shopImages = (() => {
+    const arr: { url: string; alt?: string }[] = [];
+    if (data.imageUrl) arr.push({ url: data.imageUrl, alt: data.imageAlt || data.h1 });
+    for (const g of data.gallery) {
+      if (g.url && !arr.some((a) => a.url === g.url)) {
+        arr.push({ url: g.url, alt: g.alt || data.name });
+      }
+    }
+    return arr;
+  })();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="pt-6">
-        <section className="py-16 bg-hero">
-          <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
-            <p className="text-xs uppercase tracking-wider text-primary font-semibold">{data.category}</p>
-            <h1 className="mt-3 text-4xl lg:text-6xl font-bold tracking-tight">
-              {data.h1.split(" ").slice(0, -2).join(" ")}{" "}
-              <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
+        {isProduct && shopImages.length > 0 ? (
+          // Layout estilo loja virtual: galeria à esquerda, info do produto à direita.
+          <section className="py-10 lg:py-14">
+            <div className="mx-auto max-w-6xl px-5 lg:px-8">
+              <p className="text-xs uppercase tracking-wider text-primary font-semibold mb-2">{data.category}</p>
+              <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-8 lg:gap-12 items-start">
+                <div>
+                  <ProductGallery images={shopImages} productName={data.name} />
+                </div>
+                <aside className="space-y-5 lg:sticky lg:top-24">
+                  <h1 className="text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
+                    {data.h1}
+                  </h1>
+                  <p className="text-base text-muted-foreground leading-relaxed">{data.description}</p>
 
-            {(priceLabel || data.deliveryDays) && (
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                {priceLabel && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                    <BadgeCheck className="w-4 h-4" />
-                    {!isTrafegoPago && data.price && data.price > 0 ? `A partir de ${priceLabel}` : priceLabel}
-                    {!isTrafegoPago && data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
-                  </span>
-                )}
-                {data.deliveryDays && (
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm">
-                    <Timer className="w-4 h-4" /> {data.deliveryDays}
-                  </span>
-                )}
+                  <div className="flex flex-wrap gap-2">
+                    {priceLabel && (
+                      <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                        <BadgeCheck className="w-4 h-4" />
+                        A partir de {priceLabel}
+                        {data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
+                      </span>
+                    )}
+                    {data.deliveryDays && (
+                      <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-sm">
+                        <Timer className="w-4 h-4" /> {data.deliveryDays}
+                      </span>
+                    )}
+                  </div>
+
+                  <ServicePurchasePanel
+                    item={{
+                      slug,
+                      name: data.name,
+                      category: data.category,
+                      price: data.price!,
+                      pricePeriod: data.pricePeriod ?? null,
+                      imageUrl: data.imageUrl ?? null,
+                    }}
+                  />
+
+                  <div className="pt-1">
+                    <ServiceCTA
+                      serviceSlug={slug}
+                      funnels={funnels}
+                      location="hero"
+                      label="Tirar dúvida sobre este produto"
+                    />
+                  </div>
+
+                  {data.conditions && (
+                    <p className="text-xs text-muted-foreground whitespace-pre-line pt-2 border-t border-border">
+                      {data.conditions}
+                    </p>
+                  )}
+                </aside>
               </div>
-            )}
-
-            {data.imageUrl && (
-              <a
-                href={data.imageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Abrir imagem em tamanho real: ${data.imageAlt || data.h1}`}
-                className="mt-8 mx-auto max-w-3xl block overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted cursor-zoom-in group"
-              >
-                <img
-                  src={data.imageUrl}
-                  alt={data.imageAlt || data.h1}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
-                />
-              </a>
-            )}
-            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-3">
-              <ServiceCTA
-                serviceSlug={slug}
-                funnels={funnels}
-                location="hero"
-                label={data.ctaLabel}
-              />
-              {!isTrafegoPago && data.price != null && data.price > 0 ? (
-                <AddToCartButton
-                  item={{
-                    slug,
-                    name: data.name,
-                    category: data.category,
-                    price: data.price,
-                    pricePeriod: data.pricePeriod ?? null,
-                    imageUrl: data.imageUrl ?? null,
-                  }}
-                />
-              ) : null}
             </div>
-            {!isTrafegoPago && data.price != null && data.price > 0 ? (
-              <div className="mt-10">
-                <ServicePurchasePanel
-                  item={{
-                    slug,
-                    name: data.name,
-                    category: data.category,
-                    price: data.price,
-                    pricePeriod: data.pricePeriod ?? null,
-                    imageUrl: data.imageUrl ?? null,
-                  }}
+          </section>
+        ) : (
+          <section className="py-16 bg-hero">
+            <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
+              <p className="text-xs uppercase tracking-wider text-primary font-semibold">{data.category}</p>
+              <h1 className="mt-3 text-4xl lg:text-6xl font-bold tracking-tight">
+                {data.h1.split(" ").slice(0, -2).join(" ")}{" "}
+                <span className="text-gradient">{data.h1.split(" ").slice(-2).join(" ")}</span>
+              </h1>
+              <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">{data.description}</p>
+
+              {(priceLabel || data.deliveryDays) && (
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  {priceLabel && (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                      <BadgeCheck className="w-4 h-4" />
+                      {priceLabel}
+                      {data.pricePeriod ? <span className="opacity-70">/{data.pricePeriod}</span> : null}
+                    </span>
+                  )}
+                  {data.deliveryDays && (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm">
+                      <Timer className="w-4 h-4" /> {data.deliveryDays}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {data.imageUrl && (
+                <a
+                  href={data.imageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Abrir imagem em tamanho real: ${data.imageAlt || data.h1}`}
+                  className="mt-8 mx-auto max-w-3xl block overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted cursor-zoom-in group"
+                >
+                  <img
+                    src={data.imageUrl}
+                    alt={data.imageAlt || data.h1}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
+                  />
+                </a>
+              )}
+              <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-3">
+                <ServiceCTA
+                  serviceSlug={slug}
+                  funnels={funnels}
+                  location="hero"
+                  label={data.ctaLabel}
                 />
               </div>
-            ) : null}
-            {data.conditions && (
-              <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
-                {data.conditions}
-              </p>
-            )}
-          </div>
-        </section>
+              {data.conditions && (
+                <p className="mt-4 text-xs text-muted-foreground max-w-2xl mx-auto whitespace-pre-line">
+                  {data.conditions}
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
 
 
 
