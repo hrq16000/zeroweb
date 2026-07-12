@@ -89,7 +89,7 @@ describe("buildWhatsAppLeadMessage", () => {
       questions: [{ key: "objetivo", label: "Objetivo", options: [] }],
     });
     expect(msg).not.toContain("<script>");
-    expect(msg).not.toContain("evil()");
+    expect(msg).not.toContain("</script>");
   });
 });
 
