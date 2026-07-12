@@ -201,6 +201,20 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       const protocol = (result as { protocol?: string | null }).protocol ?? null;
 
       setDone({ nextPath, redirectPath, protocol });
+
+      // Persist submitted status to the pre-lead session.
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          status: "form_submitted",
+          partial_answers: finalAnswers as Record<string, unknown>,
+          protocol: protocol ?? undefined,
+          cart_snapshot_final: readCart().map((c) => ({
+            slug: c.slug, name: c.name, price: c.price ?? null, qty: c.qty,
+          })),
+        },
+      }).catch((err) => console.warn("[FunnelRunner] update form_submitted failed", err));
+
       // IMPORTANT: when we have a tokenized redirect, we OWN the completion UI
       // (auto-redirect + fallback button). Never hand control back to the
       // wrapper, or it will replace this UI with a static "Tudo certo" screen
@@ -214,6 +228,9 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
           funnel_slug: funnel.slug,
           protocol: protocol ?? undefined,
         });
+        updateSession({
+          data: { session_id: funnelSessionId, status: "whatsapp_redirected" },
+        }).catch(() => { /* noop */ });
         // Small delay so the transition frame is visible.
         setTimeout(() => {
           try {
