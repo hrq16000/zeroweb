@@ -255,13 +255,13 @@ export const submitFunnel = createServerFn({ method: "POST" })
         const msg = applyTemplate(tpl, { answers: answersText, metadata: metadataText, form: form.name });
 
         const baseUrl = (wa.api_base_url as string) || process.env.UAZAPI_BASE_URL || "";
-        const token = (wa.api_token as string) || process.env.UAZAPI_TOKEN || "";
+        const alertToken = (wa.api_token as string) || process.env.UAZAPI_TOKEN || "";
         const provider = (wa.provider as string) || "uazapi";
 
-        if (baseUrl && token && provider === "uazapi") {
+        if (baseUrl && alertToken && provider === "uazapi") {
           const r = await fetch(`${baseUrl.replace(/\/$/, "")}/send/text`, {
             method: "POST",
-            headers: { "Content-Type": "application/json", token },
+            headers: { "Content-Type": "application/json", token: alertToken },
             body: JSON.stringify({ number: digitsOnly(String(wa.alert_phone)), text: msg }),
             signal: AbortSignal.timeout(5000),
           });
@@ -283,12 +283,61 @@ export const submitFunnel = createServerFn({ method: "POST" })
       }).eq("id", lead.id);
     }
 
-    // Funnel-first policy: the client never receives a WhatsApp URL or any
-    // operational contact. It gets a success ack + submission id + the safe
-    // internal path to navigate to. The 0WEB team follows up asynchronously.
+    // ---- Tokenized WhatsApp redirect (funnel-first) ----
+    // The client receives ONLY an opaque token. The number + message are
+    // built and stored server-side; the /r/whatsapp/:token route 302s to
+    // the wa.me URL.
+    const {
+      generateRedirectToken,
+      buildFunnelWhatsAppMessage,
+      getWhatsAppDestinationDigits,
+      hashIp,
+      makeProtocol,
+    } = await import("@/lib/whatsapp-redirect.server");
+
+    let redirectToken: string | null = null;
+    let redirectAvailable = false;
+    const destinationDigits = getWhatsAppDestinationDigits();
+    const protocol = makeProtocol();
+
+    if (destinationDigits) {
+      const message = buildFunnelWhatsAppMessage({
+        funnelName: form.name,
+        answers: data.answers,
+        questions,
+        pageUrl: data.client_metadata?.page_url ?? null,
+        pageTitle: null,
+        utm: data.client_metadata?.utm ?? null,
+        protocol,
+      });
+      redirectToken = generateRedirectToken();
+      const { error: tokErr } = await (supabaseAdmin as unknown as {
+        from: (t: string) => { insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }> };
+      })
+        .from("whatsapp_redirect_tokens")
+        .insert({
+          token: redirectToken,
+          lead_id: lead.id,
+          destination_digits: destinationDigits,
+          message,
+          ip_hash: hashIp(ip),
+          expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        });
+      if (tokErr) {
+        console.error("[submitFunnel] failed to persist redirect token", tokErr);
+        redirectToken = null;
+      } else {
+        redirectAvailable = true;
+      }
+    }
+
     return {
       success: true as const,
       submissionId: lead.id,
+      protocol,
+      redirectToken,
+      redirectPath: redirectToken ? (`/r/whatsapp/${redirectToken}` as const) : null,
+      redirectAvailable,
       nextPath: "/obrigado" as const,
       alert_status: alertStatus,
     };
