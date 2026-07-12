@@ -95,6 +95,19 @@ export const createVisitorFunnelSession = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const net = await pickNetworkContext();
 
+    // Rate limit por visitor_id + ip_hash — evita spam de criação de sessão.
+    const rlHash = (net.ip_hash ?? data.visitor_id).slice(0, 64);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: rlOk } = await (supabaseAdmin as any).rpc("check_and_record_rate_limit", {
+      p_scope: `vfs_create:${data.visitor_id.slice(0, 40)}`,
+      p_ip_hash: rlHash,
+      p_window_seconds: 60,
+      p_max_hits: 20,
+    });
+    if (rlOk === false) {
+      return { ok: false as const, error: "rate_limited" };
+    }
+
     const row = {
       visitor_id: data.visitor_id,
       session_id: data.session_id,
@@ -147,6 +160,20 @@ export const updateVisitorFunnelSession = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => updateSchema.parse(data))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const net = await pickNetworkContext();
+
+    // Rate limit permissivo (fluxo normal de wizard).
+    const rlHash = (net.ip_hash ?? data.session_id).slice(0, 64);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: rlOk } = await (supabaseAdmin as any).rpc("check_and_record_rate_limit", {
+      p_scope: `vfs_update:${data.session_id.slice(0, 40)}`,
+      p_ip_hash: rlHash,
+      p_window_seconds: 60,
+      p_max_hits: 60,
+    });
+    if (rlOk === false) {
+      return { ok: false as const, error: "rate_limited" };
+    }
 
     const patch: Record<string, unknown> = {};
     if (data.status) patch.status = data.status;
@@ -171,3 +198,85 @@ export const updateVisitorFunnelSession = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+// ============================================================================
+// Server-only named transitions (importable by other server functions).
+// These bypass createServerFn so they can be called from submitFunnel /
+// the redirect route directly, without incurring another HTTP hop.
+// ============================================================================
+
+/**
+ * Marks the session form_submitted. Idempotent. Does NOT set lead_id on
+ * the session row: visitor_funnel_sessions.lead_id has FK to
+ * lead_submissions (not dynamic_form_leads); this correlation is left
+ * to protocol+session_id until a future normalization migration.
+ */
+export async function completeVisitorFunnelSession(
+  sessionId: string,
+  protocol: string,
+): Promise<{ ok: boolean; error?: string }> {
+  if (!sessionId || sessionId.length < 4) return { ok: false, error: "invalid_session_id" };
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const now = new Date().toISOString();
+  const { error } = await supabaseAdmin
+    .from("visitor_funnel_sessions" as never)
+    .update({
+      status: "form_submitted",
+      submitted_at: now,
+      protocol,
+    } as never)
+    .eq("session_id", sessionId)
+    // Idempotent: don't downgrade whatsapp_redirected → form_submitted.
+    .in("status", [
+      "session_created",
+      "funnel_opened",
+      "funnel_started",
+      "cart_suggested",
+      "cart_accepted",
+      "cart_declined",
+      "form_submitted",
+    ] as never);
+  if (error) {
+    console.error("[completeVisitorFunnelSession]", error.message);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true };
+}
+
+/**
+ * Server-only. Marks session whatsapp_redirected via SQL function
+ * (atomic, idempotent, refuses to overwrite abandoned).
+ */
+export async function markVisitorFunnelRedirected(
+  sessionId: string,
+): Promise<boolean> {
+  if (!sessionId || sessionId.length < 4) return false;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabaseAdmin as any).rpc("mark_visitor_funnel_redirected", {
+    p_session_id: sessionId,
+  });
+  return Boolean(data);
+}
+
+/**
+ * Server-only. Marks session abandoned. Refuses to overwrite
+ * form_submitted or whatsapp_redirected (those are terminal wins).
+ */
+export async function markVisitorFunnelAbandoned(
+  sessionId: string,
+): Promise<{ ok: boolean; skipped?: boolean }> {
+  if (!sessionId || sessionId.length < 4) return { ok: false };
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("visitor_funnel_sessions" as never)
+    .update({
+      status: "abandoned",
+      abandoned_at: new Date().toISOString(),
+    } as never)
+    .eq("session_id", sessionId)
+    .not("status", "in", "(form_submitted,whatsapp_redirected,abandoned)" as never)
+    .select("id");
+  const rows = (data ?? []) as { id: string }[];
+  return { ok: true, skipped: rows.length === 0 };
+}
