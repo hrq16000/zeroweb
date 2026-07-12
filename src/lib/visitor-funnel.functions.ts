@@ -82,11 +82,8 @@ function pickNetworkContext(): { ip_hash: string | null; user_agent: string | nu
   // Hash simples do IP (não recuperável); nunca gravar IP em claro nesta tabela.
   let ip_hash: string | null = null;
   if (ip) {
-    // digest síncrono via node crypto (Worker nodejs_compat expõe crypto)
-    // Import dinâmico para não quebrar bundle client.
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const nodeCrypto: typeof import("crypto") = require("crypto");
+      const nodeCrypto = await import("crypto");
       ip_hash = nodeCrypto.createHash("sha256").update(ip).digest("hex").slice(0, 32);
     } catch { ip_hash = null; }
   }
