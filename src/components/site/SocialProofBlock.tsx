@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Star, Quote, Users, TrendingUp, Clock, ArrowRight } from "lucide-react";
-import { whatsappUrl } from "@/lib/site-config";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const testimonials = [
   {
@@ -35,8 +35,6 @@ const steps = [
 ];
 
 export function SocialProofBlock({ ctxId = "servicos_social_proof" }: { ctxId?: string }) {
-  const ctaWa = whatsappUrl("Quero um diagnóstico gratuito da 0WEB.", ctxId);
-
   // Reference (don't redefine) the root #org Organization to avoid duplicate
   // @id nodes; expose only AggregateRating + Reviews as separate nodes that
   // point back to the canonical Organization via itemReviewed.
@@ -103,9 +101,12 @@ export function SocialProofBlock({ ctxId = "servicos_social_proof" }: { ctxId?: 
             ))}
           </div>
           <div className="mt-8 text-center">
-            <a href={ctaWa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary">
-              Quero esses resultados também <ArrowRight className="w-4 h-4" />
-            </a>
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: `${ctxId}_results`, pagePath: typeof window === "undefined" ? "/servicos" : window.location.pathname, placement: "section" }}
+              label="Quero esses resultados também"
+              location={`${ctxId}_results`}
+              className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
+            />
           </div>
         </div>
       </section>
@@ -129,9 +130,12 @@ export function SocialProofBlock({ ctxId = "servicos_social_proof" }: { ctxId?: 
             ))}
           </ol>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href={ctaWa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary">
-              Falar com especialista <ArrowRight className="w-4 h-4" />
-            </a>
+            <FunnelCTAButton
+              intent={{ purpose: "commercial", source: `${ctxId}_specialist`, pagePath: typeof window === "undefined" ? "/servicos" : window.location.pathname, placement: "section" }}
+              label="Falar com especialista"
+              location={`${ctxId}_specialist`}
+              className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
+            />
             <Link to="/planos" className="inline-flex items-center gap-2 rounded-full border border-border hover:bg-muted font-semibold px-6 py-3">
               Ver planos e preços
             </Link>
