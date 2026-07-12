@@ -82,7 +82,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
   const [answers, setAnswers] = useState<Answers>({});
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState<null | { whatsapp?: string | null }>(null);
+  const [done, setDone] = useState<null | { nextPath: string }>(null);
   const [startedAt] = useState(() => new Date().toISOString());
 
   const currentIdx = stack[stack.length - 1];
