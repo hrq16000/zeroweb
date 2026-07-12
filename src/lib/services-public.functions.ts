@@ -43,17 +43,41 @@ type DbServiceRow = {
   rich_html: string | null;
 };
 
+/**
+ * Aceita tanto array de strings puras quanto array de objetos
+ * `{title, description}` (formato usado no painel novo). Para objetos,
+ * concatena "Título — Descrição" preservando o conteúdo editorial.
+ */
 function asStringArray(v: unknown): string[] {
   if (!Array.isArray(v)) return [];
-  return v.filter((x): x is string => typeof x === "string");
+  return v
+    .map((x) => {
+      if (typeof x === "string") return x;
+      if (x && typeof x === "object") {
+        const o = x as { title?: unknown; description?: unknown; label?: unknown; text?: unknown };
+        const title = String(o.title ?? o.label ?? "").trim();
+        const desc = String(o.description ?? o.text ?? "").trim();
+        if (title && desc) return `${title} — ${desc}`;
+        return title || desc;
+      }
+      return "";
+    })
+    .filter((x): x is string => Boolean(x));
 }
 
+/**
+ * Aceita `{step, desc}` legado e o novo `{step, title, description}` do painel.
+ */
 function asProcess(v: unknown): { step: string; desc: string }[] {
   if (!Array.isArray(v)) return [];
   return v
-    .filter((x): x is { step?: unknown; desc?: unknown } => typeof x === "object" && x !== null)
-    .map((x) => ({ step: String(x.step ?? ""), desc: String(x.desc ?? "") }))
-    .filter((x) => x.step);
+    .filter((x): x is Record<string, unknown> => typeof x === "object" && x !== null)
+    .map((x) => {
+      const step = String(x.title ?? x.step ?? "").trim();
+      const desc = String(x.description ?? x.desc ?? "").trim();
+      return { step, desc };
+    })
+    .filter((x) => x.step || x.desc);
 }
 
 function asFaq(v: unknown): { q: string; a: string }[] {
@@ -64,11 +88,18 @@ function asFaq(v: unknown): { q: string; a: string }[] {
     .filter((x) => x.q && x.a);
 }
 
+/**
+ * Aceita tanto o shape legado `{path, alt}` quanto o novo `{url, alt, kind}`
+ * usado pelo painel do CMS (URLs assinadas em `/__l5e/...` que já são absolutas).
+ */
 function asGalleryRaw(v: unknown): { path: string; alt: string | null }[] {
   if (!Array.isArray(v)) return [];
   return v
-    .filter((x): x is { path?: unknown; alt?: unknown } => typeof x === "object" && x !== null)
-    .map((x) => ({ path: String(x.path ?? ""), alt: x.alt == null ? null : String(x.alt) }))
+    .filter((x): x is Record<string, unknown> => typeof x === "object" && x !== null)
+    .map((x) => ({
+      path: String(x.path ?? x.url ?? ""),
+      alt: x.alt == null ? null : String(x.alt),
+    }))
     .filter((x) => x.path);
 }
 

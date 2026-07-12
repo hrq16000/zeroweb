@@ -44,12 +44,10 @@ function withOfferDefaults(offer: OfferLike, fallbackUrl: string): OfferLike {
   };
 }
 
-function buildPackageOffers(basePrice: number, url: string): OfferLike[] {
-  return [
-    { name: "Essencial", price: Math.round(basePrice * 0.7).toString() },
-    { name: "Pro", price: Math.round(basePrice).toString() },
-    { name: "Avançado", price: Math.round(basePrice * 1.6).toString() },
-  ].map((o) => withOfferDefaults(o, url));
+function buildSingleOffer(basePrice: number, url: string): OfferLike[] {
+  // Serviços digitais têm preço único por escopo — sem inventar variantes
+  // "Essencial/Pro/Avançado" no schema (o Google reprova Offers fictícias).
+  return [withOfferDefaults({ price: basePrice.toString() }, url)];
 }
 
 export const Route = createFileRoute("/servicos/$slug")({
@@ -95,7 +93,7 @@ export const Route = createFileRoute("/servicos/$slug")({
         areaServed: { "@type": "Country", name: "BR" },
         provider: { "@id": `${ORIGIN}/#org` },
         ...(typeof loaderData.price === "number" && loaderData.price > 0
-          ? { offers: buildPackageOffers(loaderData.price, url) }
+          ? { offers: buildSingleOffer(loaderData.price, url) }
           : {}),
       },
       ...(loaderData.faq?.length
@@ -220,21 +218,22 @@ function ServicePage() {
             )}
 
             {data.imageUrl && (
-              <div
-                className="mt-8 mx-auto max-w-3xl overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted"
-                style={{ aspectRatio: "16 / 9" }}
+              <a
+                href={data.imageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir imagem em tamanho real: ${data.imageAlt || data.h1}`}
+                className="mt-8 mx-auto max-w-3xl block overflow-hidden rounded-3xl border border-border shadow-elegant bg-muted cursor-zoom-in group"
               >
                 <img
                   src={data.imageUrl}
                   alt={data.imageAlt || data.h1}
-                  width={1280}
-                  height={720}
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
                 />
-              </div>
+              </a>
             )}
             <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-3">
               <ServiceCTA
@@ -345,15 +344,21 @@ function ServicePage() {
                 {data.gallery
                   .filter((g: GalleryItem) => g.url)
                   .map((g: GalleryItem, i: number) => (
-
-                    <div key={`${g.path}-${i}`} className="aspect-video overflow-hidden rounded-2xl border border-border bg-muted">
+                    <a
+                      key={`${g.path}-${i}`}
+                      href={g.url ?? ""}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir em tamanho real: ${g.alt || `${data.name} — imagem ${i + 1}`}`}
+                      className="block overflow-hidden rounded-2xl border border-border bg-muted cursor-zoom-in group"
+                    >
                       <img
                         src={g.url ?? ""}
                         alt={g.alt || `${data.name} — imagem ${i + 1}`}
                         loading="lazy"
-                        className="w-full h-full object-cover"
+                        className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                       />
-                    </div>
+                    </a>
                   ))}
               </div>
             </div>
