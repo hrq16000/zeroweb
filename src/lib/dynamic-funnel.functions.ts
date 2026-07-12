@@ -288,9 +288,13 @@ export const submitFunnel = createServerFn({ method: "POST" })
       }).eq("id", lead.id);
     }
 
+    // Funnel-first policy: the client never receives a WhatsApp URL or any
+    // operational contact. It gets a success ack + submission id + the safe
+    // internal path to navigate to. The 0WEB team follows up asynchronously.
     return {
-      lead_id: lead.id,
-      whatsapp_user_url,
+      success: true as const,
+      submissionId: lead.id,
+      nextPath: "/obrigado" as const,
       alert_status: alertStatus,
     };
   });
