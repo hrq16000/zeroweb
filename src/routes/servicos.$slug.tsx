@@ -12,6 +12,7 @@ import { getServicePublic, type PublicServiceFull, type GalleryItem } from "@/li
 import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { ServicePurchasePanel } from "@/components/site/ServicePurchasePanel";
 import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarousel";
+import { ProductGallery } from "@/components/site/ProductGallery";
 
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
