@@ -5530,6 +5530,17 @@ export type Database = {
           score: number
         }[]
       }
+      consume_whatsapp_redirect_token: {
+        Args: { p_reuse_window_ms?: number; p_token: string }
+        Returns: {
+          destination_digits: string
+          funnel_session_id: string
+          lead_id: string
+          message: string
+          status: string
+          use_count: number
+        }[]
+      }
       db_required_tables_check: {
         Args: { _tables: string[] }
         Returns: {
@@ -5560,6 +5571,10 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _uid: string }; Returns: boolean }
+      mark_visitor_funnel_redirected: {
+        Args: { p_session_id: string }
+        Returns: boolean
+      }
       normalize_phone: { Args: { p: string }; Returns: string }
       pgrst_reload_schema: { Args: never; Returns: undefined }
       purge_ip_blocklist: { Args: never; Returns: number }
