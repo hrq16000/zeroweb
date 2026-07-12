@@ -108,7 +108,7 @@ function ObrigadoPage() {
     help: <HelpCircle className="w-6 h-6 text-primary" />,
     file: <FileText className="w-6 h-6 text-primary" />,
     sparkles: <Sparkles className="w-6 h-6 text-primary" />,
-    message: <MessageCircle className="w-6 h-6 text-primary" />,
+    message: <Sparkles className="w-6 h-6 text-primary" />,
     package: <Package className="w-6 h-6 text-primary" />,
   };
 
