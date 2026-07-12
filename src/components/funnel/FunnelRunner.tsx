@@ -153,7 +153,11 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       const protocol = (result as { protocol?: string | null }).protocol ?? null;
 
       setDone({ nextPath, redirectPath, protocol });
-      if (onComplete) setTimeout(() => onComplete(), 1500);
+      // IMPORTANT: when we have a tokenized redirect, we OWN the completion UI
+      // (auto-redirect + fallback button). Never hand control back to the
+      // wrapper, or it will replace this UI with a static "Tudo certo" screen
+      // and the redirect never happens.
+      if (onComplete && !redirectPath) setTimeout(() => onComplete(), 1500);
 
       // Auto-redirect to WhatsApp (tokenized, server-side). If unavailable,
       // fall back to /obrigado where the user can also reach support.
