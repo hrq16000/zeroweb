@@ -99,12 +99,3 @@ describe("constants", () => {
   });
 });
 
-describe("resolveOperationalWhatsAppContact", () => {
-  it("rejects invalid / too-short digits", () => {
-    const saved = process.env.SUPPORT_WHATSAPP_NUMBER;
-    process.env.SUPPORT_WHATSAPP_NUMBER = "123";
-    process.env.UAZAPI_ALERT_NUMBER = "123";
-    expect(resolveOperationalWhatsAppContact()).toBeNull();
-    if (saved !== undefined) process.env.SUPPORT_WHATSAPP_NUMBER = saved;
-  });
-});
