@@ -223,15 +223,8 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
           </div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">Recebido! 🚀</h2>
           <p className="text-muted-foreground">
-            {done.whatsapp
-              ? "Estamos abrindo o WhatsApp para você concluir o atendimento."
-              : "Em instantes nossa equipe entrará em contato."}
+            Em instantes nossa equipe entrará em contato.
           </p>
-          {done.whatsapp && (
-            <Button asChild size="lg" className="w-full">
-              <a href={done.whatsapp}>Abrir WhatsApp</a>
-            </Button>
-          )}
         </motion.div>
       </div>
     );
