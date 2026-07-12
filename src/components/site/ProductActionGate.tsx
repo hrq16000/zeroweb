@@ -45,7 +45,7 @@ export function ProductActionGate({
     purpose: "diagnosis",
     source: `product_${product.slug}`,
     pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
-    placement: "product_card",
+    placement: "section",
     serviceSlug: product.slug,
   };
   const { isOpen, openFunnel, closeFunnel, funnelSlug } = useFunnel(
