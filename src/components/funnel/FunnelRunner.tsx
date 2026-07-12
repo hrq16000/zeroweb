@@ -146,12 +146,39 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
         const attr = getLeadAttribution(`funnel:${funnel.slug}`, `funnel_${funnel.slug}`);
         saveAttributionSnapshot(attr);
       } catch { /* noop */ }
-      // Funnel-first policy: never redirect to WhatsApp from the client.
-      // The server returns only { success, submissionId, nextPath }.
+
       const nextPath = result.nextPath ?? "/obrigado";
-      setDone({ nextPath });
-      if (onComplete) setTimeout(() => onComplete(), 1200);
-      if (!embedded) {
+      const redirectPath =
+        (result as { redirectPath?: string | null }).redirectPath ?? null;
+      const protocol = (result as { protocol?: string | null }).protocol ?? null;
+
+      setDone({ nextPath, redirectPath, protocol });
+      if (onComplete) setTimeout(() => onComplete(), 1500);
+
+      // Auto-redirect to WhatsApp (tokenized, server-side). If unavailable,
+      // fall back to /obrigado where the user can also reach support.
+      if (redirectPath) {
+        trackEvent("whatsapp_redirect_requested", {
+          funnel_slug: funnel.slug,
+          protocol: protocol ?? undefined,
+        });
+        // Small delay so the transition frame is visible.
+        setTimeout(() => {
+          try {
+            window.location.href = redirectPath;
+          } catch {
+            setDone((prev) =>
+              prev ? { ...prev, redirectFailed: true } : prev,
+            );
+          }
+        }, 700);
+        // If we're still on this page after ~4s, treat as blocked and show fallback.
+        setTimeout(() => {
+          setDone((prev) =>
+            prev && !prev.redirectFailed ? { ...prev, redirectFailed: true } : prev,
+          );
+        }, 4000);
+      } else if (!embedded) {
         setTimeout(() => { window.location.href = nextPath; }, 900);
       }
     } catch (e) {
