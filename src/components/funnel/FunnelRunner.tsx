@@ -254,7 +254,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       setError(e instanceof Error ? e.message : "Erro ao enviar. Tente novamente.");
       setSubmitting(false);
     }
-  }, [funnel.id, funnel.slug, submit, startedAt, total, embedded, onComplete]);
+  }, [funnel.id, funnel.slug, submit, startedAt, total, embedded, onComplete, updateSession, funnelSessionId]);
 
   const goNext = useCallback((overrideValue?: unknown) => {
     setError(null);
