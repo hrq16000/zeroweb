@@ -224,7 +224,7 @@ function mapRow(
     category: row.category as ServiceCategory,
     title: row.seo_title || row.title,
     h1: row.h1,
-    description: row.seo_description || row.description,
+    description: row.description || row.seo_description,
     serviceType: row.service_type,
     problems: asStringArray(row.problems),
     benefits: asStringArray(row.benefits),
