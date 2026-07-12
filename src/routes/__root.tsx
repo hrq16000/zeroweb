@@ -189,8 +189,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               name: "0WEB",
               url: "https://0web.com.br",
               logo: "https://0web.com.br/favicon.ico",
-              email: "contato@0web.com.br",
-              telephone: "+55-41-99745-2053",
               taxID: "41.723.708/0001-58",
               sameAs: [
                 "https://www.instagram.com/0web.com.br",
@@ -203,8 +201,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               name: "0WEB",
               image: "https://0web.com.br/favicon.ico",
               url: "https://0web.com.br",
-              telephone: "+55-41-99745-2053",
-              email: "contato@0web.com.br",
               priceRange: "$$",
               address: {
                 "@type": "PostalAddress",

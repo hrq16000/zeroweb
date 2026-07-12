@@ -160,6 +160,6 @@ export const getLgpdSettings = createServerFn({ method: "GET" }).handler(async (
   return {
     anonymizeAfterDays: parseNum(map.lgpd_anonymize_after_days, 30),
     purgeAfterDays: parseNum(map.lgpd_purge_after_days, 180),
-    contactEmail: parseStr(map.lgpd_privacy_contact, "privacidade@example.com"),
+    contactEmail: parseStr(map.lgpd_privacy_contact, "/lgpd"),
   };
 });
