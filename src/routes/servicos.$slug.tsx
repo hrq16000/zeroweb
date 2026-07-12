@@ -93,7 +93,7 @@ export const Route = createFileRoute("/servicos/$slug")({
         areaServed: { "@type": "Country", name: "BR" },
         provider: { "@id": `${ORIGIN}/#org` },
         ...(typeof loaderData.price === "number" && loaderData.price > 0
-          ? { offers: buildPackageOffers(loaderData.price, url) }
+          ? { offers: buildSingleOffer(loaderData.price, url) }
           : {}),
       },
       ...(loaderData.faq?.length
