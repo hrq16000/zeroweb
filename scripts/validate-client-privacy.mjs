@@ -14,7 +14,7 @@ const DIST = "dist/client/assets";
 const WA = /wa\.me/g;
 // e-mails: exclui domínios de vendors/schemas/typedefs conhecidos
 const EMAIL = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
-const EMAIL_ALLOW = /^(?:.*@)(?:sentry|example|schema\.org|w3\.org|whatwg|graphql|googleapis|gstatic|facebook|npmjs|types|radix|tanstack|babel|react|supabase|ai-sdk|floating|lovable|vite|fontsource|hookform|lookout|stripe|internal\.|noreply\.)/i;
+const EMAIL_ALLOW = /^(?:.*@)(?:sentry|example|schema\.org|w3\.org|whatwg|graphql|googleapis|gstatic|facebook|npmjs|types|radix|tanstack|babel|react|supabase|ai-sdk|floating|lovable|vite|fontsource|hookform|lookout|stripe|internal\.|noreply\.)|^(?:seu|email|nome|contato)@(?:email|exemplo|dominio)\./i;
 // telefones BR reais: precisam de FORMATAÇÃO (parênteses, +55 ou hifens
 // entre grupos) para não colidir com constantes numéricas (INT_MAX etc).
 const PHONE_PATTERNS = [
