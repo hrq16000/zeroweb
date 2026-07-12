@@ -80,6 +80,8 @@ function validate(q: FunnelQuestion, value: unknown): string | null {
 
 export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel: FunnelDefinition; embedded?: boolean; onComplete?: () => void }) {
   const submit = useServerFn(submitFunnel);
+  const createSession = useServerFn(createVisitorFunnelSession);
+  const updateSession = useServerFn(updateVisitorFunnelSession);
   const ordered = useMemo(
     () => [...funnel.questions].sort((a, b) => a.order_index - b.order_index),
     [funnel.questions],
@@ -95,6 +97,46 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
     redirectFailed?: boolean;
   }>(null);
   const [startedAt] = useState(() => new Date().toISOString());
+  const [funnelSessionId] = useState<string>(() => newFunnelSessionId());
+  const [sessionStarted, setSessionStarted] = useState(false);
+
+  // Fire-and-forget: cria a visitor_funnel_session ao abrir o funil.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const utm = readUtm();
+    const cartSnap = readCart().map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      price: c.price ?? null,
+      qty: c.qty,
+    }));
+    createSession({
+      data: {
+        visitor_id: getVisitorId(),
+        session_id: funnelSessionId,
+        funnel_slug: funnel.slug,
+        origin: {
+          page_path: window.location.pathname,
+          page_url: window.location.href,
+          referrer: document.referrer || undefined,
+          utm_source: utm.utm_source,
+          utm_medium: utm.utm_medium,
+          utm_campaign: utm.utm_campaign,
+          utm_content: utm.utm_content,
+          utm_term: utm.utm_term,
+          gclid: url.searchParams.get("gclid") ?? undefined,
+          fbclid: url.searchParams.get("fbclid") ?? undefined,
+          funnel_slug: funnel.slug,
+        },
+        technical_context: collectTechnicalContext(),
+        cart_snapshot_open: cartSnap.length ? cartSnap : undefined,
+      },
+    }).catch((err) => {
+      console.warn("[FunnelRunner] createVisitorFunnelSession failed", err);
+    });
+  }, [createSession, funnel.slug, funnelSessionId]);
+
 
   const currentIdx = stack[stack.length - 1];
   const current = ordered[currentIdx];
