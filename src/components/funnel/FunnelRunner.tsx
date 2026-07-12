@@ -243,6 +243,8 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
   }, [current, done, submitting, goNext]);
 
   if (done) {
+    const hasRedirect = Boolean(done.redirectPath);
+    const showFallback = done.redirectFailed || !hasRedirect;
     return (
       <div className={`${embedded ? "py-10" : "min-h-screen"} flex items-center justify-center px-6 bg-background text-foreground`}>
         <motion.div
@@ -251,12 +253,52 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
           className="max-w-md text-center space-y-6"
         >
           <div className="mx-auto h-16 w-16 rounded-full bg-primary/15 grid place-items-center">
-            <Check className="h-8 w-8 text-primary" />
+            {showFallback ? (
+              <Check className="h-8 w-8 text-primary" />
+            ) : (
+              <Loader2 className="h-8 w-8 text-primary animate-spin" />
+            )}
           </div>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">Recebido! 🚀</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            {showFallback ? "Solicitação registrada" : "Abrindo o WhatsApp…"}
+          </h2>
           <p className="text-muted-foreground">
-            Em instantes nossa equipe entrará em contato.
+            {showFallback
+              ? hasRedirect
+                ? "Se o WhatsApp não abriu automaticamente, use o botão abaixo para continuar."
+                : "Recebemos sua solicitação. Nossa equipe entrará em contato em instantes."
+              : "Estamos preparando sua mensagem com o resumo da solicitação."}
           </p>
+          {done.protocol && (
+            <p className="text-xs text-muted-foreground">
+              Protocolo: <span className="font-mono">{done.protocol}</span>
+            </p>
+          )}
+          {hasRedirect && (
+            <a
+              href={done.redirectPath!}
+              rel="noopener"
+              onClick={() =>
+                trackEvent("whatsapp_redirect_requested", {
+                  funnel_slug: funnel.slug,
+                  protocol: done.protocol ?? undefined,
+                  source: "fallback_button",
+                })
+              }
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary hover:opacity-95 transition-opacity"
+            >
+              Continuar no WhatsApp
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          )}
+          {!hasRedirect && (
+            <a
+              href={done.nextPath}
+              className="text-sm text-primary hover:underline"
+            >
+              Voltar ao site
+            </a>
+          )}
         </motion.div>
       </div>
     );
