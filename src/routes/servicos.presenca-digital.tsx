@@ -12,7 +12,6 @@ import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { RelatedLinksGrid } from "@/components/site/RelatedLinksGrid";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
-import { whatsappUrl } from "@/lib/site-config";
 import { trackEvent, trackWhatsAppClick } from "@/lib/analytics";
 import cover from "@/assets/presenca-digital-google-capa.png.asset.json";
 
@@ -118,8 +117,6 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
 });
 
 function PresencaDigitalPage() {
-  const wa = (msg: string, content: string) => whatsappUrl(msg, content);
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -141,14 +138,12 @@ function PresencaDigitalPage() {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href={wa("Olá! Quero saber mais sobre o plano de Presença Digital de R$399/mês.", "presdig_hero_principal")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick("presdig_hero_principal", { label: "Fale Conosco" })}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "presdig_hero_principal", pagePath: "/servicos/presenca-digital", placement: "hero", serviceSlug: "presenca-digital" }}
+                label="Fale Conosco"
+                location="presdig_hero_principal"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 shadow-glow-primary hover:scale-[1.02] transition"
-              >
-                Fale Conosco <ArrowRight className="w-4 h-4" />
-              </a>
+              />
               <Link
                 to="/solicitar-diagnostico"
                 onClick={() => trackEvent("cta_click", { label: "Solicitar Diagnóstico", location: "presdig_hero" })}
@@ -304,14 +299,12 @@ function PresencaDigitalPage() {
                   <li key={i} className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5" /> {i}</li>
                 ))}
               </ul>
-              <a
-                href={wa("Quero o plano de Presença Digital de R$399/mês da 0WEB.", "presdig_pricing")}
-                target="_blank" rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick("presdig_pricing")}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "presdig_pricing", pagePath: "/servicos/presenca-digital", placement: "section", serviceSlug: "presenca-digital" }}
+                label="Quero começar agora"
+                location="presdig_pricing"
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-amber-400 text-slate-900 font-bold px-6 py-3.5 hover:scale-[1.02] transition"
-              >
-                Quero começar agora <ArrowRight className="w-4 h-4" />
-              </a>
+              />
             </div>
           </div>
         </div>
