@@ -41,7 +41,7 @@ function scan(file) {
 
   const waHits = [...src.matchAll(WA)].length;
   const emailHits = [...src.matchAll(EMAIL)].filter((m) => !EMAIL_ALLOW.test(m[0])).map((m) => m[0]);
-  const phoneHits = [...src.matchAll(PHONE)].map((m) => m[0]);
+  const phoneHits = PHONE_PATTERNS.flatMap((rx) => [...src.matchAll(rx)].map((m) => m[0])).filter((v) => !PHONE_ALLOW.test(v));
 
   if (waHits === 0 && emailHits.length === 0 && phoneHits.length === 0) return;
 
