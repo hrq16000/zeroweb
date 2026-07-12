@@ -12,9 +12,15 @@ import {
   type FunnelDefinition,
   type FunnelQuestion,
 } from "@/lib/dynamic-funnel.functions";
+import {
+  createVisitorFunnelSession,
+  updateVisitorFunnelSession,
+} from "@/lib/visitor-funnel.functions";
 import { trackEvent, trackConversion } from "@/lib/analytics";
 import { getLeadAttribution } from "@/lib/lead-attribution";
 import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
+import { getVisitorId, newFunnelSessionId, collectTechnicalContext } from "@/lib/visitor-id";
+import { readCart } from "@/lib/cart";
 
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -74,6 +80,8 @@ function validate(q: FunnelQuestion, value: unknown): string | null {
 
 export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel: FunnelDefinition; embedded?: boolean; onComplete?: () => void }) {
   const submit = useServerFn(submitFunnel);
+  const createSession = useServerFn(createVisitorFunnelSession);
+  const updateSession = useServerFn(updateVisitorFunnelSession);
   const ordered = useMemo(
     () => [...funnel.questions].sort((a, b) => a.order_index - b.order_index),
     [funnel.questions],
@@ -89,6 +97,46 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
     redirectFailed?: boolean;
   }>(null);
   const [startedAt] = useState(() => new Date().toISOString());
+  const [funnelSessionId] = useState<string>(() => newFunnelSessionId());
+  const [sessionStarted, setSessionStarted] = useState(false);
+
+  // Fire-and-forget: cria a visitor_funnel_session ao abrir o funil.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const utm = readUtm();
+    const cartSnap = readCart().map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      price: c.price ?? null,
+      qty: c.qty,
+    }));
+    createSession({
+      data: {
+        visitor_id: getVisitorId(),
+        session_id: funnelSessionId,
+        funnel_slug: funnel.slug,
+        origin: {
+          page_path: window.location.pathname,
+          page_url: window.location.href,
+          referrer: document.referrer || undefined,
+          utm_source: utm.utm_source,
+          utm_medium: utm.utm_medium,
+          utm_campaign: utm.utm_campaign,
+          utm_content: utm.utm_content,
+          utm_term: utm.utm_term,
+          gclid: url.searchParams.get("gclid") ?? undefined,
+          fbclid: url.searchParams.get("fbclid") ?? undefined,
+          funnel_slug: funnel.slug,
+        },
+        technical_context: collectTechnicalContext(),
+        cart_snapshot_open: cartSnap.length ? cartSnap : undefined,
+      },
+    }).catch((err) => {
+      console.warn("[FunnelRunner] createVisitorFunnelSession failed", err);
+    });
+  }, [createSession, funnel.slug, funnelSessionId]);
+
 
   const currentIdx = stack[stack.length - 1];
   const current = ordered[currentIdx];
@@ -153,6 +201,20 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       const protocol = (result as { protocol?: string | null }).protocol ?? null;
 
       setDone({ nextPath, redirectPath, protocol });
+
+      // Persist submitted status to the pre-lead session.
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          status: "form_submitted",
+          partial_answers: finalAnswers as Record<string, unknown>,
+          protocol: protocol ?? undefined,
+          cart_snapshot_final: readCart().map((c) => ({
+            slug: c.slug, name: c.name, price: c.price ?? null, qty: c.qty,
+          })),
+        },
+      }).catch((err) => console.warn("[FunnelRunner] update form_submitted failed", err));
+
       // IMPORTANT: when we have a tokenized redirect, we OWN the completion UI
       // (auto-redirect + fallback button). Never hand control back to the
       // wrapper, or it will replace this UI with a static "Tudo certo" screen
@@ -166,6 +228,9 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
           funnel_slug: funnel.slug,
           protocol: protocol ?? undefined,
         });
+        updateSession({
+          data: { session_id: funnelSessionId, status: "whatsapp_redirected" },
+        }).catch(() => { /* noop */ });
         // Small delay so the transition frame is visible.
         setTimeout(() => {
           try {
@@ -189,7 +254,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       setError(e instanceof Error ? e.message : "Erro ao enviar. Tente novamente.");
       setSubmitting(false);
     }
-  }, [funnel.id, funnel.slug, submit, startedAt, total, embedded, onComplete]);
+  }, [funnel.id, funnel.slug, submit, startedAt, total, embedded, onComplete, updateSession, funnelSessionId]);
 
   const goNext = useCallback((overrideValue?: unknown) => {
     setError(null);
@@ -215,6 +280,28 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       utm_campaign: utm.utm_campaign,
     });
 
+    // First answer triggers funnel_started + partial persistence.
+    if (!sessionStarted) {
+      setSessionStarted(true);
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          status: "funnel_started",
+          last_step: currentIdx,
+          partial_answers: nextAnswers as Record<string, unknown>,
+        },
+      }).catch(() => { /* noop */ });
+    } else {
+      // Debounced-ish: only send partial when moving forward.
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          last_step: currentIdx,
+          partial_answers: nextAnswers as Record<string, unknown>,
+        },
+      }).catch(() => { /* noop */ });
+    }
+
     const cond = evaluateCondition(current, nextAnswers, funnel);
     if (cond.end) { void finalize(nextAnswers); return; }
     let nextIdx = currentIdx + 1;
@@ -224,7 +311,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
     }
     if (nextIdx >= ordered.length) { void finalize(nextAnswers); return; }
     setStack([...stack, nextIdx]);
-  }, [answers, current, currentIdx, finalize, funnel, ordered, stack]);
+  }, [answers, current, currentIdx, finalize, funnel, ordered, stack, sessionStarted, updateSession, funnelSessionId]);
 
   const goBack = () => {
     setError(null);
