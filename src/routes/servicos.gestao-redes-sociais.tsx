@@ -563,7 +563,6 @@ function GestaoRedesSociaisPage() {
           </div>
 
           <CtaStrip
-            wa={wa}
             location="redes_pos_entregaveis"
             title="Quer o detalhamento do plano ideal pro seu negócio?"
             sub="Recebe em até 1h útil uma proposta com o volume exato de posts, reels e relatórios."
@@ -634,7 +633,6 @@ function GestaoRedesSociaisPage() {
           </p>
 
           <CtaStrip
-            wa={wa}
             location="redes_pos_comparativo"
             title="Na dúvida entre Profissional e Avançado?"
             sub="Te ajudamos a escolher com base no seu volume real de conteúdo e canais."
@@ -805,7 +803,6 @@ function GestaoRedesSociaisPage() {
           </div>
 
           <CtaStrip
-            wa={wa}
             location="redes_pos_exemplos"
             title="Quer receber esse mesmo relatório com a sua marca?"
             sub="Peça um diagnóstico gratuito — analisamos seu Instagram e mostramos o que mudar."
@@ -903,19 +900,16 @@ function GestaoRedesSociaisPage() {
 }
 
 function CtaStrip({
-  wa,
   location,
   title,
   sub,
   variant = "default",
 }: {
-  wa: (msg: string, content: string) => string;
   location: string;
   title: string;
   sub: string;
   variant?: "default" | "muted";
 }) {
-  const waHref = wa(`${title} — Vim pela página de Gestão de Redes Sociais.`, location);
   return (
     <div
       className={[
@@ -932,20 +926,17 @@ function CtaStrip({
         </p>
       </div>
       <div className="flex flex-wrap gap-3 shrink-0">
-        <a
-          href={waHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackWhatsAppClick(location, { label: "Falar no WhatsApp" })}
+        <FunnelCTAButton
+          intent={{ purpose: "proposal", source: location, pagePath: "/servicos/gestao-redes-sociais", placement: "section", serviceSlug: "gestao-redes-sociais" }}
+          label="Iniciar diagnóstico"
+          location={location}
           className={[
             "inline-flex items-center gap-2 rounded-full font-bold px-5 py-3 transition hover:scale-[1.02]",
             variant === "muted"
               ? "bg-fuchsia-500 text-white"
               : "bg-white text-fuchsia-700",
           ].join(" ")}
-        >
-          <MessageCircle className="w-4 h-4" /> Falar no WhatsApp
-        </a>
+        />
         <Link
           to="/solicitar-diagnostico"
           onClick={() => trackEvent("cta_click", { label: "Solicitar diagnóstico", location })}
