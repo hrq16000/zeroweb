@@ -280,6 +280,28 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       utm_campaign: utm.utm_campaign,
     });
 
+    // First answer triggers funnel_started + partial persistence.
+    if (!sessionStarted) {
+      setSessionStarted(true);
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          status: "funnel_started",
+          last_step: currentIdx,
+          partial_answers: nextAnswers as Record<string, unknown>,
+        },
+      }).catch(() => { /* noop */ });
+    } else {
+      // Debounced-ish: only send partial when moving forward.
+      updateSession({
+        data: {
+          session_id: funnelSessionId,
+          last_step: currentIdx,
+          partial_answers: nextAnswers as Record<string, unknown>,
+        },
+      }).catch(() => { /* noop */ });
+    }
+
     const cond = evaluateCondition(current, nextAnswers, funnel);
     if (cond.end) { void finalize(nextAnswers); return; }
     let nextIdx = currentIdx + 1;
@@ -289,7 +311,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
     }
     if (nextIdx >= ordered.length) { void finalize(nextAnswers); return; }
     setStack([...stack, nextIdx]);
-  }, [answers, current, currentIdx, finalize, funnel, ordered, stack]);
+  }, [answers, current, currentIdx, finalize, funnel, ordered, stack, sessionStarted, updateSession, funnelSessionId]);
 
   const goBack = () => {
     setError(null);
