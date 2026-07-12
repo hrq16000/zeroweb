@@ -434,7 +434,7 @@ function ServicosHub() {
                   // se ausente, usa a primeira imagem da galeria — assim
                   // produtos que só têm galeria não caem no placeholder de sigla.
                   const galleryCover = Array.isArray(s.gallery)
-                    ? (s.gallery.find((g) => typeof g?.url === "string" && g.url) ?? null)
+                    ? (s.gallery.find((g: { url?: string | null; alt?: string | null }) => typeof g?.url === "string" && g.url) ?? null)
                     : null;
                   const coverUrl = s.imageUrl || galleryCover?.url || null;
                   const coverAlt = s.imageAlt || galleryCover?.alt || s.name;
