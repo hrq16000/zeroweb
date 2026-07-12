@@ -387,7 +387,7 @@ function ServicePage() {
         )}
 
 
-        {data.gallery.length > 0 && (
+        {!isProduct && data.gallery.length > 0 && (
           <section className="py-16">
             <div className="mx-auto max-w-6xl px-5 lg:px-8">
               <h2 className="text-2xl lg:text-3xl font-bold mb-6">Galeria</h2>
