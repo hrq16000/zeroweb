@@ -43,9 +43,8 @@ export function Footer() {
         <div className="grid lg:grid-cols-12 gap-10">
           {/* Col 1 — Marca */}
           <div className="lg:col-span-4">
-            <Link to="/" className="flex items-center gap-2 font-display font-bold text-2xl">
-              <span className="grid place-items-center w-10 h-10 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow-primary">0</span>
-              <span>0<span className="text-gradient">WEB</span></span>
+            <Link to="/" className="inline-flex items-center gap-2" aria-label="0WEB — Início">
+              <BrandLogo size={36} className="brightness-0 invert" />
             </Link>
             <p className="mt-4 text-background/70 max-w-sm leading-relaxed">
               Tecnologia que gera crescimento. Sites, IA e marketing digital para empresas que querem liderar.
