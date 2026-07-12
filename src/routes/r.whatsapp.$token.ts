@@ -1,78 +1,245 @@
 /**
  * Tokenized WhatsApp redirect endpoint.
  *
- * The client never sees the operational WhatsApp number. Flow:
- *   1) Funnel submit persists a lead + creates a redirect token (server-side).
- *   2) Client navigates to /r/whatsapp/:token.
- *   3) This handler validates the token, marks it used, and 302s to wa.me
- *      with the fully-rendered message built server-side.
+ * Flow (server-only, atomic):
+ *   validate token → rate-limit → resolve → resolve operational contact →
+ *   build message from persisted data → consume atomically → mark session
+ *   whatsapp_redirected → 302 to wa.me.
  *
- * The token is single-use and expires quickly (15 minutes by default).
+ * The client never sees the number, and never controls the message body.
+ * Legacy tokens (created before this refactor) that still carry
+ * destination_digits + message are honored via a compat branch until expiry.
  */
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/r/whatsapp/$token")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
         const token = String(params.token ?? "").trim();
         if (!/^[a-f0-9]{16,64}$/.test(token)) {
           return new Response("Invalid token", { status: 400 });
         }
 
+        const {
+          resolveWhatsAppRedirectToken,
+          resolveOperationalWhatsAppContact,
+          buildWhatsAppLeadMessage,
+          consumeWhatsAppRedirectToken,
+          markVisitorFunnelRedirectedBySessionId,
+          assembleWaMeUrl,
+          hashIp,
+          makeProtocol,
+          CONSUME_TOKEN_RATE_WINDOW_S,
+          CONSUME_TOKEN_RATE_MAX,
+        } = await import("@/lib/whatsapp-redirect.server");
+
         const { supabaseAdmin } = await import(
           "@/integrations/supabase/client.server"
         );
 
+        // Rate limit by token + ip_hash — allows the reuse window but blocks abuse.
+        const ip =
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+          request.headers.get("cf-connecting-ip") ??
+          null;
+        const ipHash = hashIp(ip) ?? "no-ip";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data, error } = await (supabaseAdmin as any)
-          .from("whatsapp_redirect_tokens")
-          .select("id, token, destination_digits, message, expires_at, used_at")
-          .eq("token", token)
-          .maybeSingle();
+        const { data: rlOk } = await (supabaseAdmin as any).rpc(
+          "check_and_record_rate_limit",
+          {
+            p_scope: `wa_redirect:${token.slice(0, 16)}`,
+            p_ip_hash: ipHash,
+            p_window_seconds: CONSUME_TOKEN_RATE_WINDOW_S,
+            p_max_hits: CONSUME_TOKEN_RATE_MAX,
+          },
+        );
+        if (rlOk === false) {
+          return htmlErrorPage(
+            "Muitas tentativas",
+            "Aguarde alguns instantes antes de tentar novamente.",
+          );
+        }
 
-        if (error || !data) {
+        // Resolve token metadata (read-only, no side effect yet).
+        const resolved = await resolveWhatsAppRedirectToken(token);
+        if (!resolved.ok) {
           return htmlErrorPage(
             "Link expirado ou inválido",
             "Volte ao site e envie novamente sua solicitação.",
           );
         }
 
-        const now = Date.now();
-        const expired =
-          data.expires_at && new Date(data.expires_at).getTime() < now;
-        // Single-use: allow re-use within a 60s window (mobile double-tap safety).
-        const alreadyUsed =
-          data.used_at &&
-          Date.now() - new Date(data.used_at).getTime() > 60_000;
-
-        if (expired || alreadyUsed) {
+        // Pre-check expiration for cleaner UX; RPC will re-validate atomically.
+        if (new Date(resolved.row.expires_at).getTime() < Date.now()) {
           return htmlErrorPage(
             "Link expirado",
-            "Este link de redirecionamento já foi usado ou expirou. Volte ao site e refaça a solicitação.",
+            "Este link de redirecionamento já expirou. Volte ao site e refaça a solicitação.",
           );
         }
 
-        if (!data.used_at) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (supabaseAdmin as any)
-            .from("whatsapp_redirect_tokens")
-            .update({ used_at: new Date().toISOString() })
-            .eq("id", data.id);
-        }
-
-        const digits = String(data.destination_digits ?? "").replace(/\D/g, "");
-        if (!digits) {
+        // Resolve operational contact BEFORE consumption — if it isn't
+        // configured, don't burn the token.
+        const contact = resolveOperationalWhatsAppContact();
+        if (!contact && !resolved.row.isLegacy) {
           return htmlErrorPage(
             "Canal indisponível",
-            "Não foi possível abrir o WhatsApp agora. Nossa equipe entrará em contato pelos dados enviados.",
+            "Sua solicitação foi registrada. Nossa equipe entrará em contato pelos dados enviados.",
+            503,
           );
         }
 
-        const url = `https://wa.me/${digits}?text=${encodeURIComponent(
-          String(data.message ?? ""),
-        )}`;
+        // Build the message from persisted data (or reuse legacy stored
+        // message for pre-refactor rows). Do this BEFORE consuming so we
+        // don't burn the token on a build failure.
+        let finalMessage: string;
+        let finalDigits: string;
 
+        if (resolved.row.isLegacy && resolved.row.destination_digits && resolved.row.message) {
+          // Legacy compat path — no new writes go here.
+          finalDigits = String(resolved.row.destination_digits).replace(/\D/g, "");
+          finalMessage = String(resolved.row.message);
+          if (!finalDigits) {
+            return htmlErrorPage(
+              "Canal indisponível",
+              "Sua solicitação foi registrada. Nossa equipe entrará em contato pelos dados enviados.",
+              503,
+            );
+          }
+        } else {
+          // Modern path: build from lead + session + form + questions.
+          if (!contact || !resolved.row.lead_id) {
+            return htmlErrorPage(
+              "Canal indisponível",
+              "Sua solicitação foi registrada. Nossa equipe entrará em contato pelos dados enviados.",
+              503,
+            );
+          }
+          finalDigits = contact.digits;
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: lead } = await (supabaseAdmin as any)
+            .from("dynamic_form_leads")
+            .select("id, form_id, answers_json, metadata_json")
+            .eq("id", resolved.row.lead_id)
+            .maybeSingle();
+          if (!lead) {
+            return htmlErrorPage(
+              "Link inválido",
+              "Não foi possível localizar sua solicitação. Refaça o envio.",
+            );
+          }
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: form } = await (supabaseAdmin as any)
+            .from("dynamic_forms")
+            .select("id, name")
+            .eq("id", lead.form_id)
+            .maybeSingle();
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: qs } = await (supabaseAdmin as any)
+            .from("dynamic_form_questions")
+            .select("key, label, options_json")
+            .eq("form_id", lead.form_id)
+            .order("order_index", { ascending: true });
+
+          const questions = (qs ?? []).map(
+            (q: { key: string; label: string; options_json: unknown }) => ({
+              key: q.key,
+              label: q.label,
+              options: Array.isArray(q.options_json)
+                ? (q.options_json as { value: string; label: string }[])
+                : [],
+            }),
+          );
+
+          // Try to pull session context (page, city, product, cart) if any.
+          let session: {
+            page_url: string | null;
+            city_slug: string | null;
+            product_slug: string | null;
+            service_slug: string | null;
+            utm_campaign: string | null;
+            protocol: string | null;
+            cart_snapshot_final: unknown;
+          } | null = null;
+          if (resolved.row.funnel_session_id) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: s } = await (supabaseAdmin as any)
+              .from("visitor_funnel_sessions")
+              .select(
+                "page_url, city_slug, product_slug, service_slug, utm_campaign, protocol, cart_snapshot_final",
+              )
+              .eq("id", resolved.row.funnel_session_id)
+              .maybeSingle();
+            session = s ?? null;
+          }
+
+          const meta = (lead.metadata_json ?? {}) as Record<string, unknown>;
+          const pageUrl =
+            (session?.page_url as string | null) ??
+            ((meta.page_url as string) ?? null);
+
+          const cartLines = Array.isArray(session?.cart_snapshot_final)
+            ? (session!.cart_snapshot_final as Array<Record<string, unknown>>)
+                .slice(0, 10)
+                .map((it) => {
+                  const name = typeof it.name === "string" ? it.name : String(it.slug ?? "item");
+                  const qty = typeof it.qty === "number" ? it.qty : 1;
+                  return `• ${qty}× ${name}`;
+                })
+                .join("\n")
+            : null;
+
+          finalMessage = buildWhatsAppLeadMessage({
+            protocol: session?.protocol ?? makeProtocol(),
+            funnelName: form?.name ?? null,
+            answers: (lead.answers_json ?? {}) as Record<string, unknown>,
+            questions,
+            citySlug: session?.city_slug ?? null,
+            pageUrl,
+            pageTitle: null,
+            utmCampaign: session?.utm_campaign ?? null,
+            cartSummary: cartLines,
+          });
+        }
+
+        // Atomic consume.
+        const consumed = await consumeWhatsAppRedirectToken(token);
+        if (consumed.status === "not_found") {
+          return htmlErrorPage(
+            "Link inválido",
+            "Volte ao site e envie novamente sua solicitação.",
+          );
+        }
+        if (consumed.status === "expired" || consumed.status === "used_out_of_window") {
+          return htmlErrorPage(
+            "Link expirado",
+            "Este link já foi utilizado ou expirou. Refaça a solicitação.",
+          );
+        }
+
+        // Mark session redirected — idempotent, best-effort. Do NOT fail the
+        // redirect if this errors (we already consumed the token; user
+        // deserves the redirect).
+        if (consumed.funnelSessionId) {
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { data: s } = await (supabaseAdmin as any)
+              .from("visitor_funnel_sessions")
+              .select("session_id")
+              .eq("id", consumed.funnelSessionId)
+              .maybeSingle();
+            if (s?.session_id) {
+              await markVisitorFunnelRedirectedBySessionId(s.session_id);
+            }
+          } catch (e) {
+            console.error("[r/whatsapp] failed to mark session redirected", e);
+          }
+        }
+
+        const url = assembleWaMeUrl(finalDigits, finalMessage);
         return new Response(null, {
           status: 302,
           headers: {
@@ -86,7 +253,7 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
   },
 });
 
-function htmlErrorPage(title: string, body: string): Response {
+function htmlErrorPage(title: string, body: string, status = 410): Response {
   const html = `<!doctype html>
 <html lang="pt-BR"><head>
   <meta charset="utf-8"/>
@@ -106,7 +273,7 @@ function htmlErrorPage(title: string, body: string): Response {
   <a href="/contato">Voltar ao site</a>
 </div></body></html>`;
   return new Response(html, {
-    status: 410,
+    status,
     headers: { "content-type": "text/html; charset=utf-8" },
   });
 }
