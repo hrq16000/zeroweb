@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { CTA } from "@/components/site/CTA";
 import { ServiceCTA } from "@/components/site/ServiceCTA";
+import { ProductActionGate } from "@/components/site/ProductActionGate";
 import { absUrl, ORIGIN, DEFAULT_OG_IMAGE, breadcrumbLd } from "@/lib/seo";
 import { GEO_SERVICE_SLUGS, relatedServices } from "@/lib/services-data";
 import { CITIES } from "@/lib/geo-data";
