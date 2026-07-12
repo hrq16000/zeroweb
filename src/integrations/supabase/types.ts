@@ -5216,38 +5216,54 @@ export type Database = {
       whatsapp_redirect_tokens: {
         Row: {
           created_at: string
-          destination_digits: string
+          destination_digits: string | null
           expires_at: string
+          funnel_session_id: string | null
           id: string
           ip_hash: string | null
+          last_used_at: string | null
           lead_id: string | null
-          message: string
+          message: string | null
           token: string
+          use_count: number
           used_at: string | null
         }
         Insert: {
           created_at?: string
-          destination_digits: string
+          destination_digits?: string | null
           expires_at?: string
+          funnel_session_id?: string | null
           id?: string
           ip_hash?: string | null
+          last_used_at?: string | null
           lead_id?: string | null
-          message: string
+          message?: string | null
           token: string
+          use_count?: number
           used_at?: string | null
         }
         Update: {
           created_at?: string
-          destination_digits?: string
+          destination_digits?: string | null
           expires_at?: string
+          funnel_session_id?: string | null
           id?: string
           ip_hash?: string | null
+          last_used_at?: string | null
           lead_id?: string | null
-          message?: string
+          message?: string | null
           token?: string
+          use_count?: number
           used_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "whatsapp_redirect_tokens_funnel_session_fkey"
+            columns: ["funnel_session_id"]
+            isOneToOne: false
+            referencedRelation: "visitor_funnel_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "whatsapp_redirect_tokens_lead_id_fkey"
             columns: ["lead_id"]
@@ -5551,6 +5567,7 @@ export type Database = {
       purge_visitantes_rastreio_old: { Args: never; Returns: number }
       purge_visitor_events_old: { Args: never; Returns: number }
       purge_visitor_funnel_sessions: { Args: never; Returns: number }
+      purge_whatsapp_redirect_tokens: { Args: never; Returns: number }
       refresh_visitor_mvs: { Args: never; Returns: undefined }
       resolve_or_create_identity: {
         Args: {
