@@ -5085,6 +5085,50 @@ export type Database = {
           },
         ]
       }
+      whatsapp_redirect_tokens: {
+        Row: {
+          created_at: string
+          destination_digits: string
+          expires_at: string
+          id: string
+          ip_hash: string | null
+          lead_id: string | null
+          message: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          destination_digits: string
+          expires_at?: string
+          id?: string
+          ip_hash?: string | null
+          lead_id?: string | null
+          message: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          destination_digits?: string
+          expires_at?: string
+          id?: string
+          ip_hash?: string | null
+          lead_id?: string | null
+          message?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_redirect_tokens_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "dynamic_form_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       companies_public: {
