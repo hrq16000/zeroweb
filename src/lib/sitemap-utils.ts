@@ -3,12 +3,9 @@ import type {} from "@tanstack/react-start";
 
 const DEFAULT_BASE_URL = "https://0web.com.br";
 
-export function resolveBaseUrl(request: Request): string {
-  try {
-    const host = request.headers.get("host") ?? "";
-    const proto = request.headers.get("x-forwarded-proto") ?? "https";
-    if (host) return `${proto}://${host}`;
-  } catch {}
+// Always return the canonical production domain — sitemaps must advertise
+// the indexable host, never the preview/staging origin the request came from.
+export function resolveBaseUrl(_request?: Request): string {
   return DEFAULT_BASE_URL;
 }
 
