@@ -2,22 +2,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const DEFAULT_BASE_URL = "https://0web.com.br";
-
-function resolveBaseUrl(request: Request): string {
-  try {
-    const host = request.headers.get("host") ?? "";
-    const proto = request.headers.get("x-forwarded-proto") ?? "https";
-    if (host) return `${proto}://${host}`;
-  } catch {}
-  return DEFAULT_BASE_URL;
-}
+const BASE_URL = "https://0web.com.br";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const BASE_URL = resolveBaseUrl(request);
+      GET: async () => {
         const today = new Date().toISOString().slice(0, 10);
         const children = [
           "sitemap-pages.xml",
