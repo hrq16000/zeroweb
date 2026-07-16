@@ -18,7 +18,7 @@ import cover from "@/assets/presenca-digital-google-capa.png.asset.json";
 const TITLE = "Presença Digital para Empresas · 0WEB · Planos a partir de R$399/mês";
 const DESC =
   "Seus clientes estão no Google. E a sua empresa? A 0WEB coloca seu negócio no topo das buscas, no Maps e no WhatsApp do cliente. Planos a partir de R$399/mês.";
-const URL = "https://zeroweb.lovable.app/presenca-digital";
+const URL = "https://0web.com.br/servicos/presenca-digital";
 
 const benefits = [
   { icon: TrendingUp, t: "Mais visibilidade", d: "Sua empresa aparecendo para quem busca o que você oferece." },
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
           provider: {
             "@type": "Organization",
             name: "0WEB Marketing Digital",
-            url: "https://zeroweb.lovable.app",
+            url: "https://0web.com.br",
           },
           areaServed: "BR",
           description: DESC,
@@ -92,8 +92,8 @@ export const Route = createFileRoute("/servicos/presenca-digital")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Início", item: "https://zeroweb.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Serviços", item: "https://zeroweb.lovable.app/servicos" },
+            { "@type": "ListItem", position: 1, name: "Início", item: "https://0web.com.br/" },
+            { "@type": "ListItem", position: 2, name: "Serviços", item: "https://0web.com.br/servicos" },
             { "@type": "ListItem", position: 3, name: "Presença Digital", item: URL },
           ],
         }),
