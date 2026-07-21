@@ -155,8 +155,8 @@ export async function persistWaFunnelStep(stepIndex: number, answers: Record<str
       p_session_id: getSessionId(),
       p_current_step: stepIndex,
       p_answers: answers,
-      p_completed: null,
-      p_completed_at: null,
+      p_completed: undefined,
+      p_completed_at: undefined,
     });
   } catch {
     /* swallow */
