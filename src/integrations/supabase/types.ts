@@ -5454,6 +5454,42 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews_public: {
+        Row: {
+          author_name: string | null
+          comment: string | null
+          created_at: string | null
+          id: string | null
+          rating: number | null
+          status: string | null
+          target_id: string | null
+          target_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          status?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author_name?: string | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          rating?: number | null
+          status?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       vw_unified_leads: {
         Row: {
           created_at: string | null
@@ -5568,6 +5604,17 @@ export type Database = {
         Returns: number
       }
       user_portal_ids: { Args: { _uid: string }; Returns: string[] }
+      wa_funnel_update_session: {
+        Args: {
+          p_answers?: Json
+          p_completed?: boolean
+          p_completed_at?: string
+          p_current_step?: number
+          p_id: string
+          p_session_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
