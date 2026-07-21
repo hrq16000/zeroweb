@@ -150,10 +150,14 @@ export async function persistWaFunnelOpen(totalSteps: number) {
 export async function persistWaFunnelStep(stepIndex: number, answers: Record<string, string>) {
   if (typeof window === "undefined" || !waSessionRowId) return;
   try {
-    await supabase
-      .from("wa_funnel_sessions")
-      .update({ current_step: stepIndex, answers_json: answers })
-      .eq("id", waSessionRowId);
+    await supabase.rpc("wa_funnel_update_session", {
+      p_id: waSessionRowId,
+      p_session_id: getSessionId(),
+      p_current_step: stepIndex,
+      p_answers: answers,
+      p_completed: null,
+      p_completed_at: null,
+    });
   } catch {
     /* swallow */
   }
@@ -163,14 +167,14 @@ export async function persistWaFunnelComplete(answers: Record<string, string>) {
   if (typeof window === "undefined") return;
   try {
     if (waSessionRowId) {
-      await supabase
-        .from("wa_funnel_sessions")
-        .update({
-          completed: true,
-          completed_at: new Date().toISOString(),
-          answers_json: answers,
-        })
-        .eq("id", waSessionRowId);
+      await supabase.rpc("wa_funnel_update_session", {
+        p_id: waSessionRowId,
+        p_session_id: getSessionId(),
+        p_current_step: null,
+        p_answers: answers,
+        p_completed: true,
+        p_completed_at: new Date().toISOString(),
+      });
     }
   } catch {
     /* swallow */
