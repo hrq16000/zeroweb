@@ -170,7 +170,7 @@ export async function persistWaFunnelComplete(answers: Record<string, string>) {
       await supabase.rpc("wa_funnel_update_session", {
         p_id: waSessionRowId,
         p_session_id: getSessionId(),
-        p_current_step: null,
+        p_current_step: undefined,
         p_answers: answers,
         p_completed: true,
         p_completed_at: new Date().toISOString(),
