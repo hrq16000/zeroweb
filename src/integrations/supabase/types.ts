@@ -1656,6 +1656,45 @@ export type Database = {
           },
         ]
       }
+      field_audit_log: {
+        Row: {
+          actor: string | null
+          actor_is_admin: boolean | null
+          created_at: string
+          field_name: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          operation: string
+          row_id: string
+          table_name: string
+        }
+        Insert: {
+          actor?: string | null
+          actor_is_admin?: boolean | null
+          created_at?: string
+          field_name: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          operation: string
+          row_id: string
+          table_name: string
+        }
+        Update: {
+          actor?: string | null
+          actor_is_admin?: boolean | null
+          created_at?: string
+          field_name?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          operation?: string
+          row_id?: string
+          table_name?: string
+        }
+        Relationships: []
+      }
       gps_consent_log: {
         Row: {
           created_at: string
@@ -5212,6 +5251,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wa_funnel_update_audit: {
+        Row: {
+          actor: string | null
+          changed_fields: string[]
+          created_at: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          session_id: string
+          session_row_id: string
+          success: boolean
+        }
+        Insert: {
+          actor?: string | null
+          changed_fields: string[]
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          session_id: string
+          session_row_id: string
+          success: boolean
+        }
+        Update: {
+          actor?: string | null
+          changed_fields?: string[]
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          session_id?: string
+          session_row_id?: string
+          success?: boolean
+        }
+        Relationships: []
       }
       whatsapp_redirect_tokens: {
         Row: {
