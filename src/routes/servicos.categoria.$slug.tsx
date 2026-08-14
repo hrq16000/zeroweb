@@ -101,7 +101,7 @@ function CategoryHub() {
           <p className="mt-4 text-lg text-muted-foreground">{hub.intro}</p>
           <div className="mt-6">
             <FunnelCTAButton
-              pageType="category"
+              pageType="common"
               intent={{
                 purpose: "diagnosis",
                 source: `categoria_${hub.slug}_hero`,
@@ -182,7 +182,7 @@ function CategoryHub() {
           </p>
           <div className="mt-6 flex justify-center">
             <FunnelCTAButton
-              pageType="category"
+              pageType="common"
               intent={{
                 purpose: "diagnosis",
                 source: `categoria_${hub.slug}_footer`,
