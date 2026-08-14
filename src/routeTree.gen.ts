@@ -113,6 +113,7 @@ import { Route as BairrosBhSlugRouteImport } from './routes/bairros-bh.$slug'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as CityServiceRouteImport } from './routes/$city.$service'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as ServicosCategoriaSlugRouteImport } from './routes/servicos.categoria.$slug'
 import { Route as RWhatsappTokenRouteImport } from './routes/r.whatsapp.$token'
 import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
@@ -699,6 +700,11 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const ServicosCategoriaSlugRoute = ServicosCategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => ServicosRoute,
+} as any)
 const RWhatsappTokenRoute = RWhatsappTokenRouteImport.update({
   id: '/r/whatsapp/$token',
   path: '/r/whatsapp/$token',
@@ -1171,6 +1177,7 @@ export interface FileRoutesByFullPath {
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
+  '/servicos/categoria/$slug': typeof ServicosCategoriaSlugRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1333,6 +1340,7 @@ export interface FileRoutesByTo {
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
+  '/servicos/categoria/$slug': typeof ServicosCategoriaSlugRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1499,6 +1507,7 @@ export interface FileRoutesById {
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
+  '/servicos/categoria/$slug': typeof ServicosCategoriaSlugRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/auditoria/identidade': typeof AuthenticatedAppAuditoriaIdentidadeRoute
   '/_authenticated/app/editorial/skyscraper': typeof AuthenticatedAppEditorialSkyscraperRoute
@@ -1665,6 +1674,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
+    | '/servicos/categoria/$slug'
     | '/app/'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
@@ -1827,6 +1837,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
+    | '/servicos/categoria/$slug'
     | '/app'
     | '/app/auditoria/identidade'
     | '/app/editorial/skyscraper'
@@ -1992,6 +2003,7 @@ export interface FileRouteTypes {
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
+    | '/servicos/categoria/$slug'
     | '/_authenticated/app/'
     | '/_authenticated/app/auditoria/identidade'
     | '/_authenticated/app/editorial/skyscraper'
@@ -2859,6 +2871,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/servicos/categoria/$slug': {
+      id: '/servicos/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/servicos/categoria/$slug'
+      preLoaderRoute: typeof ServicosCategoriaSlugRouteImport
+      parentRoute: typeof ServicosRoute
+    }
     '/r/whatsapp/$token': {
       id: '/r/whatsapp/$token'
       path: '/r/whatsapp/$token'
@@ -3487,6 +3506,7 @@ interface ServicosRouteChildren {
   ServicosTrafegoPagoRoute: typeof ServicosTrafegoPagoRoute
   ServicosTrafegoPagoLocalRoute: typeof ServicosTrafegoPagoLocalRoute
   ServicosIndexRoute: typeof ServicosIndexRoute
+  ServicosCategoriaSlugRoute: typeof ServicosCategoriaSlugRoute
 }
 
 const ServicosRouteChildren: ServicosRouteChildren = {
@@ -3502,6 +3522,7 @@ const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosTrafegoPagoRoute: ServicosTrafegoPagoRoute,
   ServicosTrafegoPagoLocalRoute: ServicosTrafegoPagoLocalRoute,
   ServicosIndexRoute: ServicosIndexRoute,
+  ServicosCategoriaSlugRoute: ServicosCategoriaSlugRoute,
 }
 
 const ServicosRouteWithChildren = ServicosRoute._addFileChildren(
