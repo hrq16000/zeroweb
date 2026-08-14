@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { listServicesNav, type NavService } from "@/lib/services-nav.functions";
+import { type NavService } from "@/lib/services-nav.functions";
+import { servicesNavQuery } from "@/lib/services-nav-query";
 
 type Props = {
   title?: string;
@@ -15,19 +16,19 @@ type Props = {
  * 100% gerenciada pelo painel administrativo via flag show_in_home_featured
  * e ordem display_order. Sem itens marcados, a seção não renderiza nada
  * (a Home não exibe duplicatas do catálogo).
+ *
+ * A query é pré-carregada no loader da rota, então SSR e cliente renderizam
+ * o mesmo HTML.
  */
 export function FeaturedServices({
   title = "Serviços em destaque",
   subtitle = "Selecionados pelo nosso time. Catálogo completo na página de Serviços.",
   limit = 4,
 }: Props) {
-  const { data } = useQuery({
-    queryKey: ["services-nav"],
-    queryFn: () => listServicesNav(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data } = useQuery(servicesNavQuery);
   const items = (data?.homeFeatured ?? []).slice(0, limit);
   if (items.length === 0) return null;
+
 
   return (
     <section className="py-20" id="servicos-destaque">

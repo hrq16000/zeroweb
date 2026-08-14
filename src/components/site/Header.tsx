@@ -1,3 +1,4 @@
+import { subscribeScroll } from "@/lib/scroll-bus";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search, ShoppingCart, LogIn, ChevronDown } from "lucide-react";
@@ -6,7 +7,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 
-import { listServicesNav } from "@/lib/services-nav.functions";
+import { servicesNavQuery } from "@/lib/services-nav-query";
 const GlobalSearch = lazy(() =>
   import("@/components/site/GlobalSearch").then((m) => ({ default: m.GlobalSearch })),
 );
@@ -43,11 +44,7 @@ export function Header() {
   // WhatsApp removido do header; o botão flutuante mantém o canal.
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { data: navData } = useQuery({
-    queryKey: ["services-nav"],
-    queryFn: () => listServicesNav(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: navData } = useQuery(servicesNavQuery);
   const menuServices = navData?.menu ?? [];
 
   const isLojaArea =
@@ -75,10 +72,7 @@ export function Header() {
 
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    return subscribeScroll((s) => setScrolled(s.y > 12));
   }, []);
 
   // Global ⌘K / Ctrl+K opens search

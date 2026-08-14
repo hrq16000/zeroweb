@@ -1,3 +1,4 @@
+import { subscribeScroll } from "@/lib/scroll-bus";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Gift, X, ArrowRight, MessageCircle, Sparkles } from "lucide-react";
@@ -41,11 +42,11 @@ export function ExitIntent() {
     };
 
     document.addEventListener("mouseout", onLeave);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const unsub = subscribeScroll(onScroll);
     return () => {
       clearTimeout(arm);
       document.removeEventListener("mouseout", onLeave);
-      window.removeEventListener("scroll", onScroll);
+      unsub();
     };
   }, [open]);
 
