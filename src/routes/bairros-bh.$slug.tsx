@@ -238,6 +238,60 @@ function BairroPage() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section className="py-16 bg-muted/30">
+          <div className="mx-auto max-w-3xl px-5 lg:px-8">
+            <h2 className="text-3xl font-bold font-display">Perguntas frequentes sobre marketing digital em {n.name}</h2>
+            <div className="mt-8 space-y-4">
+              {faq.map((f) => (
+                <details key={f.q} className="group rounded-2xl border border-border bg-card p-5">
+                  <summary className="cursor-pointer list-none font-semibold flex items-start justify-between gap-4">
+                    {f.q}
+                    <ArrowRight className="w-4 h-4 mt-1 shrink-0 text-primary group-open:rotate-90 transition" />
+                  </summary>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* BAIRROS VIZINHOS — interlinking do silo */}
+        <section className="py-16">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <h2 className="text-3xl font-bold font-display">Também atendemos perto de {n.name}</h2>
+            <p className="mt-3 text-muted-foreground">
+              Bairros vizinhos da região {n.region} e arredores com estratégia local dedicada.
+            </p>
+            <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {nearby.map((v) => (
+                <Link
+                  key={v.slug}
+                  to="/bairros-bh/$slug"
+                  params={{ slug: v.slug }}
+                  className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:shadow-elegant transition"
+                >
+                  <div className="flex items-center gap-2 text-primary">
+                    <MapPin className="w-4 h-4" />
+                    <span className="font-semibold">Marketing digital no {v.name}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{v.vibe}</p>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
+              <Link to="/bairros-bh" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+                Ver todos os 30 bairros de BH <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link to="/areas-de-atendimento" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+                Todas as áreas de atendimento <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+
+
         {/* CTA FINAL */}
         <section className="py-20 bg-foreground text-background">
           <div className="mx-auto max-w-3xl px-5 lg:px-8 text-center">
