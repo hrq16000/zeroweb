@@ -12,6 +12,7 @@ import { Picture } from "@/components/site/Picture";
 import { AuthorBio } from "@/components/site/AuthorBio";
 import { ContactFormWhatsApp } from "@/components/site/ContactFormWhatsApp";
 import { suggestLinksForArticle } from "@/lib/interlinking";
+import { BlogContent } from "@/components/site/BlogContent";
 import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/blog/$slug")({
