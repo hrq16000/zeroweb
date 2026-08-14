@@ -176,6 +176,7 @@ export function FunnelRunner({
     }).catch((err) => {
       console.warn("[FunnelRunner] createVisitorFunnelSession failed", err);
     }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createSession, funnel.slug, funnelSessionId]);
 
 
