@@ -161,25 +161,26 @@ function Index() {
         {on("hero") && <Hero />}
         {on("trustbar") && <TrustBar />}
         {on("trust_strip") !== false && <TrustStrip variant="compact" />}
-        <Suspense fallback={<Skel />}>
-          {on("problems") && <Problems key="problems" />}
-          {on("loss_calculator") && <LossCalculator key="loss_calculator" />}
-          {on("solutions") && <Solutions key="solutions" />}
-          <HighlightTrio key="highlight_trio" />
-          <HomeSpotlight key="home_spotlight" />
-          <FeatureShowcase key="feature_showcase" />
-          {on("featured_services") && <FeaturedServices key="featured_services" />}
-          {on("ai_section") && <AISection key="ai_section" />}
-          {on("diagnostic_form") && <DiagnosticForm key="diagnostic_form" />}
-          {on("differentials") && <Differentials key="differentials" />}
-          {on("cases") && <Cases key="cases" />}
-          <StatsStrip key="stats_strip" />
-          {on("plans") && <Plans key="plans" />}
-          {on("process") && <Process key="process" />}
-          <Testimonials key="testimonials" />
-          {on("social_proof") && <SocialProofSection key="social_proof" />}
-          {on("cta") && <CTA key="cta" />}
-        </Suspense>
+        {/* Cada seção lazy tem seu próprio boundary: evita mismatch de
+            hidratação quando os chunks resolvem em ordens diferentes. */}
+        {on("problems") && <Suspense key="problems" fallback={<Skel />}><Problems /></Suspense>}
+        {on("loss_calculator") && <Suspense key="loss_calculator" fallback={<Skel />}><LossCalculator /></Suspense>}
+        {on("solutions") && <Suspense key="solutions" fallback={<Skel />}><Solutions /></Suspense>}
+        <Suspense key="highlight_trio" fallback={<Skel />}><HighlightTrio /></Suspense>
+        <Suspense key="home_spotlight" fallback={<Skel />}><HomeSpotlight /></Suspense>
+        <Suspense key="feature_showcase" fallback={<Skel />}><FeatureShowcase /></Suspense>
+        {on("featured_services") && <Suspense key="featured_services" fallback={<Skel />}><FeaturedServices /></Suspense>}
+        {on("ai_section") && <Suspense key="ai_section" fallback={<Skel />}><AISection /></Suspense>}
+        {on("diagnostic_form") && <Suspense key="diagnostic_form" fallback={<Skel />}><DiagnosticForm /></Suspense>}
+        {on("differentials") && <Suspense key="differentials" fallback={<Skel />}><Differentials /></Suspense>}
+        {on("cases") && <Suspense key="cases" fallback={<Skel />}><Cases /></Suspense>}
+        <Suspense key="stats_strip" fallback={<Skel />}><StatsStrip /></Suspense>
+        {on("plans") && <Suspense key="plans" fallback={<Skel />}><Plans /></Suspense>}
+        {on("process") && <Suspense key="process" fallback={<Skel />}><Process /></Suspense>}
+        <Suspense key="testimonials" fallback={<Skel />}><Testimonials /></Suspense>
+        {on("social_proof") && <Suspense key="social_proof" fallback={<Skel />}><SocialProofSection /></Suspense>}
+        {on("cta") && <Suspense key="cta" fallback={<Skel />}><CTA /></Suspense>}
+
 
       </main>
       <Footer />

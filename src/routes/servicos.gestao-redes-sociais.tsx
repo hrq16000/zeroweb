@@ -430,9 +430,30 @@ function GestaoRedesSociaisPage() {
             ))}
           </div>
 
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            Precisa de algo personalizado? <Link to="/contato" className="text-primary font-semibold underline">Fale com a gente</Link> para um plano sob medida.
-          </p>
+          <div className="mt-8 flex flex-col items-center gap-3">
+            <p className="text-center text-sm text-muted-foreground">
+              Precisa de algo personalizado? Monte um plano sob medida em 1 minuto.
+            </p>
+            <FunnelCTAButton
+              pageType="service"
+              serviceSlug="gestao-redes-sociais"
+              label="Montar plano sob medida"
+              location="redes_sociais_plano_custom"
+              intent={{
+                purpose: "proposal",
+                source: "redes_sociais_plano_custom",
+                pagePath: "/servicos/gestao-redes-sociais",
+                placement: "section",
+                serviceSlug: "gestao-redes-sociais",
+              }}
+            />
+            <noscript>
+              <a href="/contato?purpose=proposal&source=redes_sociais_plano_custom" className="text-primary font-semibold underline">
+                Fale com a gente
+              </a>
+            </noscript>
+          </div>
+
         </div>
       </section>
 
