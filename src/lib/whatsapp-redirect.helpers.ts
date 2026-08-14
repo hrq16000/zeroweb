@@ -39,7 +39,10 @@ export type LeadMessageContext = {
   pageTitle?: string | null;
   pageUrl?: string | null;
   utmCampaign?: string | null;
+  /** Linhas de contexto sintetizadas da página/CTA de origem. */
+  contextLines?: string[] | null;
 };
+
 
 export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
   // Preserve visitor-provided contact/data (name, phone, email, city, budget…)

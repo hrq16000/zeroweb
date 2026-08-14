@@ -181,9 +181,21 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
           }
 
           const meta = (lead.metadata_json ?? {}) as Record<string, unknown>;
+          const originSnap = (session?.origin_snapshot ?? null) as {
+            neighborhood_slug?: string;
+            page_title?: string;
+            page_context?: Record<string, unknown>;
+          } | null;
           const pageUrl =
             (session?.page_url as string | null) ??
             ((meta.page_url as string) ?? null);
+
+          const contextLines = originSnap?.page_context
+            ? Object.entries(originSnap.page_context)
+                .slice(0, 8)
+                .filter(([, v]) => typeof v === "string" && v)
+                .map(([k, v]) => `• ${k}: ${String(v)}`)
+            : [];
 
           const cartLines = Array.isArray(session?.cart_snapshot_final)
             ? (session!.cart_snapshot_final as Array<Record<string, unknown>>)
@@ -202,14 +214,14 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
             answers: (lead.answers_json ?? {}) as Record<string, unknown>,
             questions,
             citySlug: session?.city_slug ?? null,
-            neighborhoodSlug:
-              (session?.origin_snapshot as { neighborhood_slug?: string } | null)
-                ?.neighborhood_slug ?? null,
+            neighborhoodSlug: originSnap?.neighborhood_slug ?? null,
             pageUrl,
-            pageTitle: null,
+            pageTitle: originSnap?.page_title ?? null,
+            contextLines,
             utmCampaign: session?.utm_campaign ?? null,
             cartSummary: cartLines,
           });
+
         }
 
         // Atomic consume.
