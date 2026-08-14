@@ -90,16 +90,28 @@ export function Plans() {
                   ))}
                 </ul>
 
-                <a
-                  href={p.cta_href}
+                <FunnelCTAButton
+                  intent={{
+                    purpose: "commercial",
+                    source: `plan_${p.slug}`,
+                    pagePath: typeof window === "undefined" ? "/" : window.location.pathname,
+                    placement: "section",
+                  }}
+                  label={p.cta_label ?? "Quero esse plano"}
+                  location={`plan_${p.slug}`}
+                  showArrow={false}
+                  prefill={{ plano: p.name }}
+                  context={{
+                    Plano: p.name,
+                    Investimento: period ? `${price} ${period}` : price,
+                  }}
                   className={`mt-8 inline-flex items-center justify-center rounded-full font-semibold px-5 py-3 transition ${
                     p.highlight
                       ? "bg-gradient-primary text-primary-foreground hover:opacity-95"
                       : "bg-foreground text-background hover:bg-foreground/90"
                   }`}
-                >
-                  {p.cta_label}
-                </a>
+                />
+
               </motion.div>
             );
           })}
