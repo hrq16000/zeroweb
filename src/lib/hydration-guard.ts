@@ -79,11 +79,10 @@ export const HYDRATION_GUARD_SCRIPT = `(function(){
   window.addEventListener('load', function(){
     setTimeout(function(){
       if (done) return;
-      var hasPayload = !!(window.$_TSR);
       var text = (document.body && document.body.innerText || '').trim();
       var blank = text.length < 10;
-      if (!hasPayload || blank) {
-        recover('missing_dehydrated', 'tsr=' + hasPayload + ' blank=' + blank);
+      if (blank) {
+        recover('blank_screen', 'tsr=' + !!(window.$_TSR) + ' blank=1');
       } else {
         try { sessionStorage.removeItem(KEY); } catch (e) {}
       }
