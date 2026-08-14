@@ -103,6 +103,12 @@ export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
   const cartLines: string[] = [];
   if (ctx.cartSummary) push(cartLines, sanitizeText(ctx.cartSummary, 400));
 
+  const contextSection: string[] = [];
+  for (const line of ctx.contextLines ?? []) {
+    const safe = sanitizeText(line, 200);
+    if (safe) contextSection.push(safe.startsWith("•") ? safe : `• ${safe}`);
+  }
+
   const origin: string[] = [];
   push(origin, ctx.pageTitle ? `Página: ${sanitizeText(ctx.pageTitle, 180)}` : ctx.pageUrl ? `Página: ${sanitizeText(ctx.pageUrl, 180)}` : "");
   push(origin, ctx.utmCampaign ? `Campanha: ${sanitizeText(ctx.utmCampaign, 120)}` : "");
@@ -110,10 +116,12 @@ export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
   const sections: { title: string; lines: string[]; priority: number }[] = [
     { title: "SERVIÇO OU PRODUTO", lines: service, priority: 1 },
     { title: "MINHA SOLICITAÇÃO", lines: answersLines, priority: 2 },
+    { title: "CONTEXTO DA PÁGINA", lines: contextSection, priority: 1 },
     { title: "LOCALIDADE", lines: local, priority: 1 },
     { title: "CARRINHO", lines: cartLines, priority: 1 },
     { title: "ORIGEM", lines: origin, priority: 3 },
   ];
+
 
   const assemble = (secs: typeof sections): string => {
     const out = [...header];
