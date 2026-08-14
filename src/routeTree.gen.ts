@@ -145,6 +145,7 @@ import { Route as AuthenticatedAppCroRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAdminRouteImport } from './routes/_authenticated/app.admin'
 import { Route as AuthenticatedAppFunisIndexRouteImport } from './routes/_authenticated/app.funis.index'
+import { Route as RWhatsappReissueTokenRouteImport } from './routes/r.whatsapp.reissue.$token'
 import { Route as ApiPublicHooksVisitorsCleanupRouteImport } from './routes/api/public/hooks/visitors-cleanup'
 import { Route as ApiPublicHooksStripeRouteImport } from './routes/api/public/hooks/stripe'
 import { Route as ApiPublicHooksSeoMonitorRouteImport } from './routes/api/public/hooks/seo-monitor'
@@ -875,6 +876,11 @@ const AuthenticatedAppFunisIndexRoute =
     path: '/funis/',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const RWhatsappReissueTokenRoute = RWhatsappReissueTokenRouteImport.update({
+  id: '/r/whatsapp/reissue/$token',
+  path: '/r/whatsapp/reissue/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksVisitorsCleanupRoute =
   ApiPublicHooksVisitorsCleanupRouteImport.update({
     id: '/api/public/hooks/visitors-cleanup',
@@ -1174,6 +1180,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
+  '/r/whatsapp/reissue/$token': typeof RWhatsappReissueTokenRoute
   '/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
   '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
@@ -1333,6 +1340,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
+  '/r/whatsapp/reissue/$token': typeof RWhatsappReissueTokenRoute
   '/app/funis': typeof AuthenticatedAppFunisIndexRoute
   '/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
   '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
@@ -1496,6 +1504,7 @@ export interface FileRoutesById {
   '/api/public/hooks/seo-monitor': typeof ApiPublicHooksSeoMonitorRoute
   '/api/public/hooks/stripe': typeof ApiPublicHooksStripeRoute
   '/api/public/hooks/visitors-cleanup': typeof ApiPublicHooksVisitorsCleanupRoute
+  '/r/whatsapp/reissue/$token': typeof RWhatsappReissueTokenRoute
   '/_authenticated/app/funis/': typeof AuthenticatedAppFunisIndexRoute
   '/_authenticated/app/funis/pipeline/regras': typeof AuthenticatedAppFunisPipelineRegrasRoute
   '/api/public/landing-image/$page/$file': typeof ApiPublicLandingImagePageFileRoute
@@ -1659,6 +1668,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
+    | '/r/whatsapp/reissue/$token'
     | '/app/funis/'
     | '/app/funis/pipeline/regras'
     | '/api/public/landing-image/$page/$file'
@@ -1818,6 +1828,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
+    | '/r/whatsapp/reissue/$token'
     | '/app/funis'
     | '/app/funis/pipeline/regras'
     | '/api/public/landing-image/$page/$file'
@@ -1980,6 +1991,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/seo-monitor'
     | '/api/public/hooks/stripe'
     | '/api/public/hooks/visitors-cleanup'
+    | '/r/whatsapp/reissue/$token'
     | '/_authenticated/app/funis/'
     | '/_authenticated/app/funis/pipeline/regras'
     | '/api/public/landing-image/$page/$file'
@@ -2087,6 +2099,7 @@ export interface RootRouteChildren {
   ApiPublicHooksSeoMonitorRoute: typeof ApiPublicHooksSeoMonitorRoute
   ApiPublicHooksStripeRoute: typeof ApiPublicHooksStripeRoute
   ApiPublicHooksVisitorsCleanupRoute: typeof ApiPublicHooksVisitorsCleanupRoute
+  RWhatsappReissueTokenRoute: typeof RWhatsappReissueTokenRoute
   ApiPublicLandingImagePageFileRoute: typeof ApiPublicLandingImagePageFileRoute
 }
 
@@ -3044,6 +3057,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFunisIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/r/whatsapp/reissue/$token': {
+      id: '/r/whatsapp/reissue/$token'
+      path: '/r/whatsapp/reissue/$token'
+      fullPath: '/r/whatsapp/reissue/$token'
+      preLoaderRoute: typeof RWhatsappReissueTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/visitors-cleanup': {
       id: '/api/public/hooks/visitors-cleanup'
       path: '/api/public/hooks/visitors-cleanup'
@@ -3553,6 +3573,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksSeoMonitorRoute: ApiPublicHooksSeoMonitorRoute,
   ApiPublicHooksStripeRoute: ApiPublicHooksStripeRoute,
   ApiPublicHooksVisitorsCleanupRoute: ApiPublicHooksVisitorsCleanupRoute,
+  RWhatsappReissueTokenRoute: RWhatsappReissueTokenRoute,
   ApiPublicLandingImagePageFileRoute: ApiPublicLandingImagePageFileRoute,
 }
 export const routeTree = rootRouteImport

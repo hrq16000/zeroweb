@@ -25,6 +25,7 @@ import { Footer } from "../components/site/Footer";
 import { Toaster } from "../components/ui/sonner";
 import { SpacingDebugOverlay } from "../components/site/SpacingDebugOverlay";
 import { logNotFound } from "../lib/route-404.functions";
+import { primeGeoSilently } from "@/lib/geo-location";
 
 const NOT_FOUND_SERVICES: Array<{ slug: string; name: string; desc: string; Icon: typeof Globe }> = [
   { slug: "criacao-de-sites", name: "Criação de Sites", desc: "Sites profissionais, rápidos e prontos para converter.", Icon: Globe },
@@ -289,6 +290,13 @@ function ScrollToTop() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Estimativa de localidade por IP, em background e silenciosa. Sem prompt
+  // de GPS, sem exibição ao visitante e sem impacto se falhar.
+  useEffect(() => {
+    primeGeoSilently();
+  }, []);
+
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -91,3 +91,42 @@ export function formatLocation(g: GeoInfo | null | undefined): string {
   if (!g) return "";
   return [g.city, g.region].filter(Boolean).join(" / ");
 }
+
+// ---------------------------------------------------------------------------
+// Captura silenciosa (sem prompt de GPS) — usada para enriquecer o lead.
+// Falha em silêncio: se o IP-geo não responder, a sessão segue normal.
+// ---------------------------------------------------------------------------
+
+export function slugifyGeo(v: string | undefined | null): string | undefined {
+  if (!v) return undefined;
+  const s = v
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return s || undefined;
+}
+
+/** Dispara a resolução por IP em background. Nunca lança, nunca bloqueia. */
+export function primeGeoSilently(): void {
+  if (typeof window === "undefined") return;
+  void getIpGeo().catch(() => null);
+}
+
+/** Geo por IP com timeout curto — estimativa, nunca exibida ao visitante. */
+export async function getGeoForLead(timeoutMs = 1200): Promise<GeoInfo | null> {
+  if (typeof window === "undefined") return null;
+  const cached = readCache();
+  if (cached) return cached;
+  return Promise.race([
+    getIpGeo().catch(() => null),
+    new Promise<null>((r) => setTimeout(() => r(null), timeoutMs)),
+  ]);
+}
+
+/** Bairro inferido pela URL quando o visitante veio de um hub /bairros-*. */
+export function inferNeighborhoodSlug(pathname: string): string | undefined {
+  const m = /^\/bairros-(?:bh|cwb)\/([a-z0-9-]+)\/?$/.exec(pathname);
+  return m?.[1];
+}

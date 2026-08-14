@@ -21,6 +21,7 @@ import { getLeadAttribution } from "@/lib/lead-attribution";
 import { saveAttributionSnapshot } from "@/lib/lead-attribution-snapshot";
 import { getVisitorId, newFunnelSessionId, collectTechnicalContext } from "@/lib/visitor-id";
 import { readCart } from "@/lib/cart";
+import { getGeoForLead, inferNeighborhoodSlug, slugifyGeo } from "@/lib/geo-location";
 
 function readUtm(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -111,12 +112,19 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       price: c.price ?? null,
       qty: c.qty,
     }));
+    const neighborhoodSlug = inferNeighborhoodSlug(window.location.pathname);
+    void getGeoForLead().then((geo) =>
     createSession({
       data: {
         visitor_id: getVisitorId(),
         session_id: funnelSessionId,
         funnel_slug: funnel.slug,
         origin: {
+          city_slug: slugifyGeo(geo?.city),
+          neighborhood_slug: neighborhoodSlug,
+          geo_city: geo?.city,
+          geo_region: geo?.region,
+          geo_source: geo?.source,
           page_path: window.location.pathname,
           page_url: window.location.href,
           referrer: document.referrer || undefined,
@@ -134,7 +142,7 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
       },
     }).catch((err) => {
       console.warn("[FunnelRunner] createVisitorFunnelSession failed", err);
-    });
+    }));
   }, [createSession, funnel.slug, funnelSessionId]);
 
 

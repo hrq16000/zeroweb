@@ -14,6 +14,7 @@ import { ProductActionGate } from "@/components/site/ProductActionGate";
 import { ShopHero } from "@/components/site/ShopHero";
 import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import {
   SITE_EXPRESS_FAQ_KEYS,
   normalizeFaqKey,
@@ -403,12 +404,12 @@ function ServicosHub() {
                   A vitrine exibe apenas produtos com valor cadastrado. Se você quer publicar um novo item, solicite o cadastramento.
                 </p>
                 <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <Link
-                    to="/contato"
+                  <FunnelCTAButton
+                    intent={{ purpose: "proposal", source: "servicos_empty_state", pagePath: "/servicos", placement: "section" }}
+                    label="Solicitar cadastramento"
+                    location="servicos_empty_state"
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
-                  >
-                    Solicitar cadastramento <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  />
                   <Link to="/solucoes" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">
                     Ver soluções sem preço
                   </Link>

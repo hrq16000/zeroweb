@@ -11,6 +11,7 @@ const GlobalSearch = lazy(() =>
   import("@/components/site/GlobalSearch").then((m) => ({ default: m.GlobalSearch })),
 );
 import logoAsset from "@/assets/logo-0web.png.asset.json";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 // Desktop nav (Cases, Planos, FAQ ficam só no footer — Header enxuto)
 const desktopNav: { to: string; label: string }[] = [
@@ -262,13 +263,13 @@ export function Header() {
           >
             <LogIn className="w-4 h-4" /> Conectar
           </Link>
-          <Link
-            to="/contato"
-            onClick={() => trackEvent("cta_click", { label: "solicitar_diagnostico", location: "header" })}
+          <FunnelCTAButton
+            intent={{ purpose: "diagnosis", source: "header", pagePath: "/", placement: "header" }}
+            label="Solicitar Diagnóstico"
+            location="header"
+            showArrow={false}
             className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold px-5 py-2.5 shadow-glow-primary hover:opacity-95 transition"
-          >
-            Solicitar Diagnóstico
-          </Link>
+          />
         </div>
 
         <div className="lg:hidden flex items-center gap-1">
@@ -396,16 +397,13 @@ export function Header() {
                 >
                   <LogIn className="w-4 h-4" /> Conectar
                 </Link>
-                <Link
-                  to="/contato"
-                  onClick={() => {
-                    trackEvent("cta_click", { label: "solicitar_diagnostico", location: "mobile_menu" });
-                    setOpen(false);
-                  }}
-                  className="mt-1 text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3 shadow-glow-primary hover:opacity-95 transition"
-                >
-                  Solicitar Diagnóstico
-                </Link>
+                <FunnelCTAButton
+                  intent={{ purpose: "diagnosis", source: "mobile_menu", pagePath: "/", placement: "header" }}
+                  label="Solicitar Diagnóstico"
+                  location="mobile_menu"
+                  showArrow={false}
+                  className="mt-1 justify-center text-center rounded-full bg-gradient-primary text-primary-foreground font-semibold px-5 py-3 shadow-glow-primary hover:opacity-95 transition inline-flex items-center"
+                />
               </nav>
             </motion.div>
           </>
