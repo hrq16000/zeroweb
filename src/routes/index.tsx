@@ -162,26 +162,25 @@ function Index() {
         {on("trustbar") && <TrustBar />}
         {on("trust_strip") !== false && <TrustStrip variant="compact" />}
         <Suspense fallback={<Skel />}>
-          {on("problems") && <Problems />}
-          {on("loss_calculator") && <LossCalculator />}
-          {on("solutions") && <Solutions />}
-          <HighlightTrio />
-          <HomeSpotlight />
-          <FeatureShowcase />
-          {on("featured_services") && <FeaturedServices />}
-          {on("ai_section") && <AISection />}
-          {on("diagnostic_form") && <DiagnosticForm />}
-          {on("differentials") && <Differentials />}
-          {on("cases") && <Cases />}
-          <StatsStrip />
-          {on("plans") && <Plans />}
-          {on("process") && <Process />}
-          <Testimonials />
-          
-          
-          {on("social_proof") && <SocialProofSection />}
-          {on("cta") && <CTA />}
+          {on("problems") && <Problems key="problems" />}
+          {on("loss_calculator") && <LossCalculator key="loss_calculator" />}
+          {on("solutions") && <Solutions key="solutions" />}
+          <HighlightTrio key="highlight_trio" />
+          <HomeSpotlight key="home_spotlight" />
+          <FeatureShowcase key="feature_showcase" />
+          {on("featured_services") && <FeaturedServices key="featured_services" />}
+          {on("ai_section") && <AISection key="ai_section" />}
+          {on("diagnostic_form") && <DiagnosticForm key="diagnostic_form" />}
+          {on("differentials") && <Differentials key="differentials" />}
+          {on("cases") && <Cases key="cases" />}
+          <StatsStrip key="stats_strip" />
+          {on("plans") && <Plans key="plans" />}
+          {on("process") && <Process key="process" />}
+          <Testimonials key="testimonials" />
+          {on("social_proof") && <SocialProofSection key="social_proof" />}
+          {on("cta") && <CTA key="cta" />}
         </Suspense>
+
       </main>
       <Footer />
       <Suspense fallback={null}>

@@ -31,8 +31,10 @@ export const Route = createFileRoute("/bairros-cwb/")({
             "@context": "https://schema.org",
             ...breadcrumbLd([
               { name: "Início", path: "/" },
+              { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
               { name: "Bairros Curitiba/RMC", path: "/bairros-cwb" },
             ]),
+
           }),
         },
       ],
@@ -50,7 +52,7 @@ function HubPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Breadcrumbs items={[{ name: "Início", path: "/" }, { name: "Bairros Curitiba/RMC", path: "/bairros-cwb" }]} />
+      <Breadcrumbs items={[{ name: "Início", path: "/" }, { name: "Áreas de Atendimento", path: "/areas-de-atendimento" }, { name: "Bairros Curitiba/RMC", path: "/bairros-cwb" }]} />
       <main className="pt-8 pb-20">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <h1 className="text-4xl sm:text-5xl font-bold font-display">
@@ -59,6 +61,12 @@ function HubPage() {
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
             Sua empresa onde seus clientes estão. Atendimento especializado em 25+ bairros de Curitiba e cidades da Região Metropolitana.
           </p>
+          <p className="mt-3 text-sm">
+            <Link to="/areas-de-atendimento" className="text-primary font-semibold hover:underline">
+              ← Ver todas as áreas de atendimento da 0web
+            </Link>
+          </p>
+
 
           <div className="mt-12 space-y-10">
             {Object.entries(byCity).map(([city, items]) => (

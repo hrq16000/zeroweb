@@ -30,8 +30,10 @@ export const Route = createFileRoute("/sitemap-pages.xml")({
           { path: "/planos-comparativo", changefreq: "monthly", priority: "0.9" },
           { path: "/servicos/trafego-pago-local", changefreq: "weekly", priority: "0.85" },
           { path: "/servicos/consultoria", changefreq: "monthly", priority: "0.75" },
+          { path: "/areas-de-atendimento", changefreq: "weekly", priority: "0.9" },
           { path: "/cidades", changefreq: "weekly", priority: "0.85" },
           { path: "/estados", changefreq: "weekly", priority: "0.75" },
+
           { path: "/cases", changefreq: "weekly", priority: "0.8" },
           { path: "/blog", changefreq: "weekly", priority: "0.8" },
           { path: "/planos", changefreq: "monthly", priority: "0.8" },

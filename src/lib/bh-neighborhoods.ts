@@ -51,3 +51,31 @@ export const ALL_BH_NEIGHBORHOOD_SLUGS = BH_NEIGHBORHOODS.map((n) => n.slug);
 export function findBHNeighborhood(slug: string): BHNeighborhood | undefined {
   return BH_NEIGHBORHOODS.find((n) => n.slug === slug);
 }
+
+/** Distância aproximada (km) entre dois pontos — suficiente para ordenar vizinhança. */
+function distanceKm(a: [number, number], b: [number, number]): number {
+  const dLat = (a[0] - b[0]) * 111;
+  const dLng = (a[1] - b[1]) * 111 * Math.cos((a[0] * Math.PI) / 180);
+  return Math.sqrt(dLat * dLat + dLng * dLng);
+}
+
+/**
+ * Bairros para interlinking do silo: prioriza a mesma região e, dentro dela,
+ * os geograficamente mais próximos. Completa com os vizinhos mais próximos
+ * de outras regiões até atingir `limit`.
+ */
+export function nearbyBHNeighborhoods(slug: string, limit = 6): BHNeighborhood[] {
+  const current = findBHNeighborhood(slug);
+  if (!current) return BH_NEIGHBORHOODS.slice(0, limit);
+
+  const others = BH_NEIGHBORHOODS.filter((n) => n.slug !== slug);
+  const sorted = [...others].sort((a, b) => {
+    const regionA = a.region === current.region ? 0 : 1;
+    const regionB = b.region === current.region ? 0 : 1;
+    if (regionA !== regionB) return regionA - regionB;
+    return distanceKm(current.geo, a.geo) - distanceKm(current.geo, b.geo);
+  });
+
+  return sorted.slice(0, limit);
+}
+

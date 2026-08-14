@@ -1,12 +1,13 @@
 // Landing local /bairros-bh/$slug — agência de marketing digital por bairro de BH.
-// Estratégia: copy comercial agressiva + LocalBusiness com coordenadas + BreadcrumbList + CTA WhatsApp.
+// Estratégia: copy comercial agressiva + LocalBusiness com coordenadas + BreadcrumbList + FAQPage
+// + interlinking do silo (bairros vizinhos ↔ hub ↔ áreas de atendimento).
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, Check, MapPin, MessageCircle, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight, Check, MapPin, Sparkles, TrendingUp } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { findBHNeighborhood, type BHNeighborhood } from "@/lib/bh-neighborhoods";
+import { findBHNeighborhood, nearbyBHNeighborhoods, type BHNeighborhood } from "@/lib/bh-neighborhoods";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const SERVICES = [
@@ -24,6 +25,33 @@ function casesFor(n: BHNeighborhood) {
     result: ["+312% em leads orgânicos em 90 dias", "ROI 4,8x em Google Ads no 1º trimestre", "Top 3 no Google para 12 palavras-chave locais"][i],
   }));
 }
+
+function faqFor(n: BHNeighborhood) {
+  const main = n.typicalBusinesses[0];
+  return [
+    {
+      q: `Quanto custa contratar uma agência de marketing digital em ${n.name}?`,
+      a: `O investimento depende do escopo. Projetos de site institucional e landing page são orçados por entrega, enquanto SEO local, Google Ads e gestão de redes sociais funcionam em mensalidade. Para empresas de ${n.name} montamos o orçamento a partir do diagnóstico gratuito, sem pacote fechado imposto.`,
+    },
+    {
+      q: `Em quanto tempo minha empresa em ${n.name} aparece no Google?`,
+      a: `Campanhas pagas com segmentação por raio no bairro começam a gerar contatos nos primeiros dias após a aprovação. SEO local e Google Meu Negócio dão os primeiros sinais entre 30 e 60 dias, com consolidação de posições a partir do terceiro mês.`,
+    },
+    {
+      q: `Vocês atendem ${main} em ${n.name}?`,
+      a: `Sim. ${n.name} é um ${n.vibe}, e trabalhamos exatamente com esse perfil: ${n.typicalBusinesses.join(", ")}. A pesquisa de palavras-chave é refeita para o seu segmento e para a concorrência real do bairro.`,
+    },
+    {
+      q: `Preciso ter endereço em ${n.name} para ranquear no bairro?`,
+      a: `Para SEO orgânico e anúncios com raio geográfico, não. Para disputar o pacote de mapas do Google, ter endereço ou declarar ${n.name} como área de serviço no Google Meu Negócio aumenta bastante a força do resultado.`,
+    },
+    {
+      q: `O atendimento é presencial em ${n.name}?`,
+      a: `Reuniões presenciais são possíveis em Belo Horizonte mediante agendamento. A operação do dia a dia é remota, com relatórios e acompanhamento periódico — o que mantém o custo previsível sem perder proximidade.`,
+    },
+  ];
+}
+
 
 export const Route = createFileRoute("/bairros-bh/$slug")({
   loader: ({ params }) => {
@@ -85,9 +113,19 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
               },
               breadcrumbLd([
                 { name: "Início", path: "/" },
+                { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
                 { name: "Bairros BH", path: "/bairros-bh" },
                 { name: n.name, path: `/bairros-bh/${params.slug}` },
               ]),
+              {
+                "@type": "FAQPage",
+                "@id": `${url}#faq`,
+                mainEntity: faqFor(n).map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              },
             ],
           }),
         },
@@ -100,6 +138,8 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
 function BairroPage() {
   const { bairro: n } = Route.useLoaderData();
   const cases = casesFor(n);
+  const faq = faqFor(n);
+  const nearby = nearbyBHNeighborhoods(n.slug, 6);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -107,10 +147,12 @@ function BairroPage() {
       <Breadcrumbs
         items={[
           { name: "Início", path: "/" },
+          { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
           { name: "Bairros BH", path: "/bairros-bh" },
           { name: n.name, path: `/bairros-bh/${n.slug}` },
         ]}
       />
+
 
       <main>
         {/* HERO */}
@@ -195,6 +237,60 @@ function BairroPage() {
             </div>
           </div>
         </section>
+
+        {/* FAQ */}
+        <section className="py-16 bg-muted/30">
+          <div className="mx-auto max-w-3xl px-5 lg:px-8">
+            <h2 className="text-3xl font-bold font-display">Perguntas frequentes sobre marketing digital em {n.name}</h2>
+            <div className="mt-8 space-y-4">
+              {faq.map((f) => (
+                <details key={f.q} className="group rounded-2xl border border-border bg-card p-5">
+                  <summary className="cursor-pointer list-none font-semibold flex items-start justify-between gap-4">
+                    {f.q}
+                    <ArrowRight className="w-4 h-4 mt-1 shrink-0 text-primary group-open:rotate-90 transition" />
+                  </summary>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* BAIRROS VIZINHOS — interlinking do silo */}
+        <section className="py-16">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <h2 className="text-3xl font-bold font-display">Também atendemos perto de {n.name}</h2>
+            <p className="mt-3 text-muted-foreground">
+              Bairros vizinhos da região {n.region} e arredores com estratégia local dedicada.
+            </p>
+            <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {nearby.map((v) => (
+                <Link
+                  key={v.slug}
+                  to="/bairros-bh/$slug"
+                  params={{ slug: v.slug }}
+                  className="group rounded-2xl border border-border bg-card p-5 hover:border-primary hover:shadow-elegant transition"
+                >
+                  <div className="flex items-center gap-2 text-primary">
+                    <MapPin className="w-4 h-4" />
+                    <span className="font-semibold">Marketing digital no {v.name}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{v.vibe}</p>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold">
+              <Link to="/bairros-bh" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+                Ver todos os 30 bairros de BH <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link to="/areas-de-atendimento" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+                Todas as áreas de atendimento <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+
 
         {/* CTA FINAL */}
         <section className="py-20 bg-foreground text-background">
