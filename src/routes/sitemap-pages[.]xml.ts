@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { resolveBaseUrl, renderSitemap } from "@/lib/sitemap-utils";
 import { SATELLITES } from "@/lib/sites-robustos";
+import { SERVICE_CATEGORY_HUBS } from "@/lib/service-categories";
 
 export const Route = createFileRoute("/sitemap-pages.xml")({
   server: {
@@ -33,6 +34,11 @@ export const Route = createFileRoute("/sitemap-pages.xml")({
           { path: "/servicos/consultoria", changefreq: "monthly", priority: "0.75" },
           { path: "/areas-de-atendimento", changefreq: "weekly", priority: "0.9" },
           { path: "/sites-robustos", changefreq: "weekly", priority: "0.95" },
+          ...SERVICE_CATEGORY_HUBS.map((c) => ({
+            path: `/servicos/categoria/${c.slug}`,
+            changefreq: "weekly" as const,
+            priority: "0.85",
+          })),
           ...SATELLITES.map((s) => ({
             path: `/sites-robustos/${s.slug}`,
             changefreq: "monthly" as const,
