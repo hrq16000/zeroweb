@@ -8,6 +8,7 @@ import { CTA } from "@/components/site/CTA";
 import { AuthorBio } from "@/components/site/AuthorBio";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CLUSTERS, CLUSTER_RELATIONS, type Cluster } from "@/lib/content-taxonomy";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 import { posts as ALL_POSTS } from "@/lib/blog-data";
 
 // Mapeamento cluster → slug de serviço (Bloco 3 da reorganização IA).
@@ -26,12 +27,26 @@ const CLUSTER_TO_SERVICE: Record<string, { slug: string; label: string }> = {
   vendas: { slug: "consultoria", label: "consultoria estratégica" },
 };
 
-export function HubPage({ cluster }: { cluster: Cluster }) {
+export const HUB_PAGE_SIZE = 6;
+
+/** Artigos publicados de um cluster (fonte: blog-data). */
+export function clusterPosts(cluster: Cluster) {
+  return ALL_POSTS.filter((p) => p.category.toLowerCase() === cluster.title.toLowerCase());
+}
+
+export function hubTotalPages(cluster: Cluster) {
+  return Math.max(1, Math.ceil(clusterPosts(cluster).length / HUB_PAGE_SIZE));
+}
+
+export function HubPage({ cluster, page = 1 }: { cluster: Cluster; page?: number }) {
   const related = (CLUSTER_RELATIONS[cluster.slug] ?? [])
     .map((s) => CLUSTERS.find((c) => c.slug === s))
     .filter(Boolean) as Cluster[];
 
-  const posts = ALL_POSTS.filter((p) => p.category.toLowerCase() === cluster.title.toLowerCase()).slice(0, 6);
+  const allPosts = clusterPosts(cluster);
+  const totalPages = hubTotalPages(cluster);
+  const current = Math.min(Math.max(1, page), totalPages);
+  const posts = allPosts.slice((current - 1) * HUB_PAGE_SIZE, current * HUB_PAGE_SIZE);
   const bofu = cluster.subclusters.filter((s) => s.funnel === "bofu");
   const mofu = cluster.subclusters.filter((s) => s.funnel === "mofu");
   const tofu = cluster.subclusters.filter((s) => s.funnel === "tofu");
@@ -92,7 +107,9 @@ export function HubPage({ cluster }: { cluster: Cluster }) {
 
           {posts.length > 0 && (
             <section className="mt-16">
-              <h2 className="text-2xl font-bold">Artigos publicados</h2>
+              <h2 className="text-2xl font-bold">
+                Artigos publicados{totalPages > 1 ? ` — página ${current} de ${totalPages}` : ""}
+              </h2>
               <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {posts.map((p) => (
                   <Link
@@ -107,8 +124,51 @@ export function HubPage({ cluster }: { cluster: Cluster }) {
                   </Link>
                 ))}
               </div>
+
+              {totalPages > 1 && (
+                <nav aria-label="Paginação de artigos" className="mt-8 flex flex-wrap items-center gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                    <Link
+                      key={n}
+                      to={cluster.hubPath}
+                      search={n === 1 ? {} : { page: n }}
+                      aria-current={n === current ? "page" : undefined}
+                      className={
+                        n === current
+                          ? "rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold"
+                          : "rounded-full border border-border px-4 py-2 text-sm hover:border-primary hover:text-primary transition-colors"
+                      }
+                    >
+                      {n}
+                    </Link>
+                  ))}
+                </nav>
+              )}
             </section>
           )}
+
+          <section className="mt-16 rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-8 text-center">
+            <h2 className="text-2xl lg:text-3xl font-bold">
+              Quer um diagnóstico de {cluster.title.toLowerCase()} do seu projeto?
+            </h2>
+            <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
+              Analisamos seu cenário atual e mostramos, em poucos minutos, onde estão as maiores
+              oportunidades de tráfego e conversão. Sem compromisso.
+            </p>
+            <div className="mt-6 flex justify-center">
+              <FunnelCTAButton
+                pageType="post"
+                intent={{
+                  purpose: "diagnosis",
+                  source: `hub_${cluster.slug}_diagnostico`,
+                  pagePath: cluster.hubPath,
+                  placement: "section",
+                }}
+                label="Solicitar diagnóstico gratuito"
+                location={`hub_${cluster.slug}_diagnostico`}
+              />
+            </div>
+          </section>
 
           {bofu.length > 0 && (
             <Section title="Decisão de compra (BOFU)" subtitle="Conteúdos com alta intenção comercial." items={bofu} />
@@ -177,9 +237,16 @@ function Section({
   );
 }
 
-export function buildHubHead(cluster: Cluster) {
-  const url = `https://0web.com.br${cluster.hubPath}`;
-  const title = `${cluster.title} — Guia completo, artigos e serviços · 0WEB`;
+export function buildHubHead(cluster: Cluster, page = 1) {
+  const base = `https://0web.com.br${cluster.hubPath}`;
+  const totalPages = hubTotalPages(cluster);
+  const current = Math.min(Math.max(1, page), totalPages);
+  const pageUrl = (n: number) => (n <= 1 ? base : `${base}?page=${n}`);
+  const url = pageUrl(current);
+  const title =
+    current > 1
+      ? `${cluster.title} — artigos (página ${current}) · 0WEB`
+      : `${cluster.title} — Guia completo, artigos e serviços · 0WEB`;
   return {
     meta: [
       { title },
@@ -190,7 +257,11 @@ export function buildHubHead(cluster: Cluster) {
       { property: "og:url", content: url },
       { name: "robots", content: "index, follow, max-image-preview:large" },
     ],
-    links: [{ rel: "canonical", href: url }],
+    links: [
+      { rel: "canonical", href: url },
+      ...(current > 1 ? [{ rel: "prev", href: pageUrl(current - 1) }] : []),
+      ...(current < totalPages ? [{ rel: "next", href: pageUrl(current + 1) }] : []),
+    ],
     scripts: [
       {
         type: "application/ld+json",

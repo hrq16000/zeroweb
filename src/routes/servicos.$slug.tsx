@@ -14,6 +14,8 @@ import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { ServicePurchasePanel } from "@/components/site/ServicePurchasePanel";
 import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarousel";
 import { ProductGallery } from "@/components/site/ProductGallery";
+import { WorkProcess } from "@/components/site/WorkProcess";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 
 const GEO_SET = new Set(GEO_SERVICE_SLUGS);
@@ -98,6 +100,23 @@ export const Route = createFileRoute("/servicos/$slug")({
           ? { offers: buildSingleOffer(loaderData.price, url) }
           : {}),
       },
+      // Product/Offer só para itens realmente transacionais (preço > 0).
+      // Sem AggregateRating: não há avaliações reais cadastradas e schema
+      // de nota inventada viola as diretrizes do Google.
+      ...(typeof loaderData.price === "number" && loaderData.price > 0
+        ? [{
+            "@type": "Product",
+            "@id": `${url}#product`,
+            name: loaderData.name,
+            description: loaderData.seoDescription || loaderData.description,
+            category: loaderData.category,
+            url,
+            ...(loaderData.imageUrl ? { image: [loaderData.imageUrl] } : {}),
+            brand: { "@id": `${ORIGIN}/#org` },
+            offers: buildSingleOffer(loaderData.price, url),
+          }]
+        : []),
+
       ...(loaderData.faq?.length
         ? [{
             "@type": "FAQPage",
@@ -451,22 +470,30 @@ function ServicePage() {
 
 
 
+        <WorkProcess className="bg-muted/20" />
+
         <section className="py-16">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
             <h2 className="text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-3">
               <HelpCircle className="w-7 h-7 text-primary" /> Perguntas frequentes
             </h2>
-            <div className="space-y-3">
-              {data.faq.map((f: { q: string; a: string }) => (
-                <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
-                  <summary className="cursor-pointer font-semibold list-none flex justify-between items-center">
+            <Accordion type="single" collapsible className="space-y-3">
+              {data.faq.map((f: { q: string; a: string }, i: number) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`faq-${i}`}
+                  className="rounded-2xl border border-border bg-card px-5 border-b"
+                >
+                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
                     {f.q}
-                    <span className="text-primary group-open:rotate-45 transition-transform">+</span>
-                  </summary>
-                  <p className="mt-3 text-muted-foreground leading-relaxed">{f.a}</p>
-                </details>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
+
           </div>
         </section>
 

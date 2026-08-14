@@ -8,6 +8,7 @@ import {
   matchesCategory,
 } from "@/lib/service-categories";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
+import { WorkProcess } from "@/components/site/WorkProcess";
 
 const ORIGIN = "https://0web.com.br";
 
@@ -152,6 +153,8 @@ function CategoryHub() {
             </article>
           ))}
         </section>
+
+        <WorkProcess />
 
         <section className="mt-16">
           <h2 className="text-2xl font-bold">Outras categorias</h2>
