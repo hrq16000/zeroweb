@@ -135,8 +135,8 @@ describe("buildWhatsAppLeadMessage", () => {
 });
 
 describe("constants", () => {
-  it("reuse window is 60s", () => {
-    expect(WHATSAPP_REDIRECT_REUSE_WINDOW_MS).toBe(60_000);
+  it("reuse window is 30min", () => {
+    expect(WHATSAPP_REDIRECT_REUSE_WINDOW_MS).toBe(30 * 60 * 1000);
   });
 });
 
