@@ -58,6 +58,8 @@ export const Route = createFileRoute("/sitemap-pages.xml")({
           { path: "/solicitar-diagnostico", changefreq: "monthly", priority: "0.85" },
           { path: "/politica-privacidade", changefreq: "yearly", priority: "0.2" },
           { path: "/privacidade", changefreq: "yearly", priority: "0.2" },
+          { path: "/lgpd", changefreq: "yearly", priority: "0.3" },
+
           { path: "/termos", changefreq: "yearly", priority: "0.2" },
           { path: "/rss.xml", changefreq: "daily", priority: "0.5" },
         ]);
