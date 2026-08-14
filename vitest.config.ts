@@ -9,7 +9,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
-    environment: "happy-dom",
+    // Node por padrão (testes leem arquivos/SQL); arquivos que precisam de DOM
+    // declaram `@vitest-environment happy-dom` no topo.
+    environment: "node",
     globals: false,
     include: [
       "src/**/*.test.{ts,tsx}",

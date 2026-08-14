@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import { describe, expect, it, beforeEach } from "vitest";
 import { saveAttributionSnapshot, loadAttributionSnapshot, clearAttributionSnapshot } from "./lead-attribution-snapshot";
 import type { LeadAttribution } from "./lead-attribution";
