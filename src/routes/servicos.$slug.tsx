@@ -98,6 +98,23 @@ export const Route = createFileRoute("/servicos/$slug")({
           ? { offers: buildSingleOffer(loaderData.price, url) }
           : {}),
       },
+      // Product/Offer só para itens realmente transacionais (preço > 0).
+      // Sem AggregateRating: não há avaliações reais cadastradas e schema
+      // de nota inventada viola as diretrizes do Google.
+      ...(typeof loaderData.price === "number" && loaderData.price > 0
+        ? [{
+            "@type": "Product",
+            "@id": `${url}#product`,
+            name: loaderData.name,
+            description: loaderData.seoDescription || loaderData.description,
+            category: loaderData.category,
+            url,
+            ...(loaderData.imageUrl ? { image: [loaderData.imageUrl] } : {}),
+            brand: { "@id": `${ORIGIN}/#org` },
+            offers: buildSingleOffer(loaderData.price, url),
+          }]
+        : []),
+
       ...(loaderData.faq?.length
         ? [{
             "@type": "FAQPage",
