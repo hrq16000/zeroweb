@@ -9,6 +9,7 @@ import { TrustStrip } from "@/components/site/TrustStrip";
 import { Footer } from "@/components/site/Footer";
 
 import { getPageSections } from "@/lib/site-sections.functions";
+import { servicesNavQuery } from "@/lib/services-nav-query";
 
 // Below-the-fold: code-split + lazy-load to slash initial JS and TTI on mobile.
 const Problems = lazy(() => import("@/components/site/Problems").then((m) => ({ default: m.Problems })));
@@ -147,7 +148,14 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: Index,
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeSectionsQuery),
+  loader: async ({ context }) => {
+    // Ambos precisam estar no cache antes do SSR: FeaturedServices lê
+    // services-nav e precisa renderizar o mesmo HTML no cliente.
+    await Promise.all([
+      context.queryClient.ensureQueryData(homeSectionsQuery),
+      context.queryClient.ensureQueryData(servicesNavQuery),
+    ]);
+  },
 });
 
 function Index() {
