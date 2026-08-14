@@ -290,6 +290,13 @@ function ScrollToTop() {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Estimativa de localidade por IP, em background e silenciosa. Sem prompt
+  // de GPS, sem exibição ao visitante e sem impacto se falhar.
+  useEffect(() => {
+    primeGeoSilently();
+  }, []);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <WaFunnelProvider>
