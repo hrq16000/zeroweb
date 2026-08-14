@@ -45,6 +45,7 @@ import { Route as PainelRouteImport } from './routes/painel'
 import { Route as ObrigadoRouteImport } from './routes/obrigado'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
+import { Route as LgpdRouteImport } from './routes/lgpd'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as InfraestruturaRouteImport } from './routes/infraestrutura'
 import { Route as IaRouteImport } from './routes/ia'
@@ -356,6 +357,11 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
 const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
   id: '/mapa-do-site',
   path: '/mapa-do-site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LgpdRoute = LgpdRouteImport.update({
+  id: '/lgpd',
+  path: '/lgpd',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingPagesRoute = LandingPagesRouteImport.update({
@@ -1061,6 +1067,7 @@ export interface FileRoutesByFullPath {
   '/ia': typeof IaRoute
   '/infraestrutura': typeof InfraestruturaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
@@ -1226,6 +1233,7 @@ export interface FileRoutesByTo {
   '/ia': typeof IaRoute
   '/infraestrutura': typeof InfraestruturaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
@@ -1391,6 +1399,7 @@ export interface FileRoutesById {
   '/ia': typeof IaRoute
   '/infraestrutura': typeof InfraestruturaRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
   '/marketplace': typeof MarketplaceRoute
   '/obrigado': typeof ObrigadoRoute
@@ -1558,6 +1567,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/infraestrutura'
     | '/landing-pages'
+    | '/lgpd'
     | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
@@ -1723,6 +1733,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/infraestrutura'
     | '/landing-pages'
+    | '/lgpd'
     | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
@@ -1887,6 +1898,7 @@ export interface FileRouteTypes {
     | '/ia'
     | '/infraestrutura'
     | '/landing-pages'
+    | '/lgpd'
     | '/mapa-do-site'
     | '/marketplace'
     | '/obrigado'
@@ -2054,6 +2066,7 @@ export interface RootRouteChildren {
   IaRoute: typeof IaRoute
   InfraestruturaRoute: typeof InfraestruturaRoute
   LandingPagesRoute: typeof LandingPagesRoute
+  LgpdRoute: typeof LgpdRoute
   MapaDoSiteRoute: typeof MapaDoSiteRoute
   MarketplaceRoute: typeof MarketplaceRoute
   ObrigadoRoute: typeof ObrigadoRoute
@@ -2393,6 +2406,13 @@ declare module '@tanstack/react-router' {
       path: '/mapa-do-site'
       fullPath: '/mapa-do-site'
       preLoaderRoute: typeof MapaDoSiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lgpd': {
+      id: '/lgpd'
+      path: '/lgpd'
+      fullPath: '/lgpd'
+      preLoaderRoute: typeof LgpdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing-pages': {
@@ -3550,6 +3570,7 @@ const rootRouteChildren: RootRouteChildren = {
   IaRoute: IaRoute,
   InfraestruturaRoute: InfraestruturaRoute,
   LandingPagesRoute: LandingPagesRoute,
+  LgpdRoute: LgpdRoute,
   MapaDoSiteRoute: MapaDoSiteRoute,
   MarketplaceRoute: MarketplaceRoute,
   ObrigadoRoute: ObrigadoRoute,

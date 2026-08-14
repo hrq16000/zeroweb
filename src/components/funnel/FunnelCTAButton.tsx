@@ -28,6 +28,10 @@ type Props = Partial<LegacyProps> & {
   className?: string;
   location?: string;
   showArrow?: boolean;
+  /** Respostas pré-preenchidas repassadas ao funil. */
+  prefill?: Record<string, string | string[]>;
+  /** Contexto sintetizado da página/oferta de origem. */
+  context?: Record<string, string>;
 };
 
 /**
@@ -46,6 +50,8 @@ export function FunnelCTAButton({
   className,
   location,
   showArrow = true,
+  prefill,
+  context,
 }: Props) {
   const resolvedPageType: FunnelPageType = pageType ?? "common";
   const {
@@ -98,6 +104,7 @@ export function FunnelCTAButton({
         href={fallbackHref}
         onClick={onClick}
         data-funnel-slug={funnelSlug}
+        data-testid="funnel-cta" 
         className={
           className ??
           "inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition-opacity"
@@ -112,6 +119,8 @@ export function FunnelCTAButton({
         funnelSlug={funnelSlug}
         serviceSlug={serviceSlug}
         intent={runtimeIntent}
+        prefill={prefill}
+        context={context}
       />
     </>
   );

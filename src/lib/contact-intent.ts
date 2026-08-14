@@ -77,8 +77,8 @@ function optionalSlug(v: unknown): string | undefined {
   return isSlug(v) ? v : undefined;
 }
 
-/** Real published commercial funnel used while legacy aliases are migrated. */
-const COMMERCIAL_FALLBACK_FUNNEL = "diagnostico-0web";
+/** Funil comercial genérico. */
+const COMMON_FUNNEL = "funnel-common";
 
 /** Small, safe funnel allowlist. Nothing else may be resolved. */
 const ALLOWED_FUNNELS = new Set([
@@ -94,24 +94,27 @@ const ALLOWED_FUNNELS = new Set([
 /**
  * Resolve which funnel slug should be opened for a given intent.
  *
- * The resolver is intentionally narrow: purpose alone decides the funnel
- * family. `serviceSlug` and friends are passed through to the funnel runtime
- * as *context* (persisted with the lead) but never used to pick a slug.
+ * The resolver is intentionally narrow: purpose (plus the mere presence of a
+ * service context) decides the funnel family. Slugs are never taken from the
+ * caller or the URL.
  */
 export function resolveFunnelFromIntent(intent: ContactIntent): string {
   switch (intent.purpose) {
     case "lgpd":
-      return COMMERCIAL_FALLBACK_FUNNEL;
+      return "funnel-lgpd";
     case "order-support":
-      return COMMERCIAL_FALLBACK_FUNNEL;
+      return "funnel-order-support";
     case "partnership":
-      return COMMERCIAL_FALLBACK_FUNNEL;
+      return COMMON_FUNNEL;
     case "diagnosis":
-    case "commercial":
+      return "diagnostico-0web";
     case "proposal":
-      return COMMERCIAL_FALLBACK_FUNNEL;
+      return "funnel-service";
+    case "commercial":
+      return intent.serviceSlug ? "funnel-service" : COMMON_FUNNEL;
   }
 }
+
 
 /**
  * Validate an externally-supplied funnel slug (e.g. loaded from

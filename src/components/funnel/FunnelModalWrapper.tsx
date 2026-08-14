@@ -17,6 +17,10 @@ type Props = {
   funnelSlug: string;
   serviceSlug?: string;
   intent?: ContactIntent;
+  /** Respostas já conhecidas (ex.: plano clicado na home). */
+  prefill?: Record<string, string | string[]>;
+  /** Contexto da página de origem enviado junto ao lead. */
+  context?: Record<string, string>;
 };
 
 /**
@@ -24,7 +28,8 @@ type Props = {
  * Toda a lógica de etapas/leads/condições continua no FunnelRunner +
  * dynamic_forms — este componente só cuida da apresentação modal.
  */
-export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug, intent }: Props) {
+export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug, intent, prefill, context }: Props) {
+
   const fetchFunnel = useServerFn(getPublicFunnel);
   const [funnel, setFunnel] = useState<FunnelDefinition | null>(null);
   const [loading, setLoading] = useState(false);
@@ -114,12 +119,17 @@ export function FunnelModalWrapper({ open, onClose, funnelSlug, serviceSlug, int
               </div>
             )}
             {!loading && !error && funnel && !completed && (
-              <FunnelRunner
-                funnel={funnel}
-                embedded
-                onComplete={() => setCompleted(true)}
-              />
+              <div data-testid="funnel-modal" data-funnel-slug={funnel.slug}>
+                <FunnelRunner
+                  funnel={funnel}
+                  embedded
+                  prefill={prefill}
+                  context={context}
+                  onComplete={() => setCompleted(true)}
+                />
+              </div>
             )}
+
             {completed && (
               <div className="p-8 sm:p-10 text-center space-y-5">
                 <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
