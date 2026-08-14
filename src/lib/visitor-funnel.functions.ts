@@ -41,8 +41,12 @@ const originSnapshotSchema = z
     intent_purpose: z.string().max(60).optional(),
     intent_source: z.string().max(255).optional(),
     placement: z.string().max(60).optional(),
+    page_title: z.string().max(200).optional(),
+    /** Síntese do contexto da página de origem (rótulo → valor). */
+    page_context: z.record(z.string().max(60), z.string().max(200)).optional(),
   })
   .strict();
+
 
 const createSchema = z.object({
   visitor_id: z.string().min(4).max(120),

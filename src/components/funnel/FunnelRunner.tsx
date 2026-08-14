@@ -166,7 +166,10 @@ export function FunnelRunner({
           gclid: url.searchParams.get("gclid") ?? undefined,
           fbclid: url.searchParams.get("fbclid") ?? undefined,
           funnel_slug: funnel.slug,
+          page_title: document.title?.slice(0, 200) || undefined,
+          page_context: context && Object.keys(context).length ? context : undefined,
         },
+
         technical_context: collectTechnicalContext(),
         cart_snapshot_open: cartSnap.length ? cartSnap : undefined,
       },
