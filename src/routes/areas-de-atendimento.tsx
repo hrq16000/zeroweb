@@ -277,6 +277,41 @@ function AreasPage() {
           </div>
         </section>
 
+        {/* LEIA TAMBÉM — cluster Sites Robustos */}
+        <section className="py-14 border-t border-border">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <h2 className="text-3xl font-bold font-display">Leia também</h2>
+            <p className="mt-3 text-muted-foreground">
+              Antes de escolher a região, entenda o que sustenta um projeto que realmente performa.
+            </p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              <li>
+                <Link
+                  to="/sites-robustos"
+                  className="block h-full rounded-2xl border border-border bg-card p-5 hover:bg-muted transition"
+                >
+                  <span className="font-semibold">Guia de criação de sites robustos</span>
+                  <span className="mt-2 block text-sm text-muted-foreground">
+                    As cinco camadas de um site que carrega rápido, ranqueia e converte.
+                  </span>
+                </Link>
+              </li>
+              {SITES_ROBUSTOS.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    to="/sites-robustos/$slug"
+                    params={{ slug: s.slug }}
+                    className="block h-full rounded-2xl border border-border bg-card p-5 hover:bg-muted transition"
+                  >
+                    <span className="font-semibold">{s.h1}</span>
+                    <span className="mt-2 block text-sm text-muted-foreground">Ler sobre {s.anchor}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         {/* FAQ */}
         <section className="py-14">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
