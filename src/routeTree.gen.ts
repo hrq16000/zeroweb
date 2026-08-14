@@ -60,6 +60,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CalculadoraOrcamentoRouteImport } from './routes/calculadora-orcamento'
 import { Route as AutomacaoRouteImport } from './routes/automacao'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AreasDeAtendimentoRouteImport } from './routes/areas-de-atendimento'
 import { Route as R403RouteImport } from './routes/403'
 import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -426,6 +427,11 @@ const AutomacaoRoute = AutomacaoRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AreasDeAtendimentoRoute = AreasDeAtendimentoRouteImport.update({
+  id: '/areas-de-atendimento',
+  path: '/areas-de-atendimento',
   getParentRoute: () => rootRouteImport,
 } as any)
 const R403Route = R403RouteImport.update({
@@ -1015,6 +1021,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
   '/403': typeof R403Route
+  '/areas-de-atendimento': typeof AreasDeAtendimentoRoute
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
@@ -1175,6 +1182,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$service': typeof ServiceRoute
   '/403': typeof R403Route
+  '/areas-de-atendimento': typeof AreasDeAtendimentoRoute
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
@@ -1335,6 +1343,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$service': typeof ServiceRoute
   '/403': typeof R403Route
+  '/areas-de-atendimento': typeof AreasDeAtendimentoRoute
   '/auth': typeof AuthRoute
   '/automacao': typeof AutomacaoRoute
   '/calculadora-orcamento': typeof CalculadoraOrcamentoRoute
@@ -1497,6 +1506,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$service'
     | '/403'
+    | '/areas-de-atendimento'
     | '/auth'
     | '/automacao'
     | '/calculadora-orcamento'
@@ -1657,6 +1667,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$service'
     | '/403'
+    | '/areas-de-atendimento'
     | '/auth'
     | '/automacao'
     | '/calculadora-orcamento'
@@ -1816,6 +1827,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/$service'
     | '/403'
+    | '/areas-de-atendimento'
     | '/auth'
     | '/automacao'
     | '/calculadora-orcamento'
@@ -1978,6 +1990,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ServiceRoute: typeof ServiceRoute
   R403Route: typeof R403Route
+  AreasDeAtendimentoRoute: typeof AreasDeAtendimentoRoute
   AuthRoute: typeof AuthRoute
   AutomacaoRoute: typeof AutomacaoRoute
   CalculadoraOrcamentoRoute: typeof CalculadoraOrcamentoRoute
@@ -2434,6 +2447,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/areas-de-atendimento': {
+      id: '/areas-de-atendimento'
+      path: '/areas-de-atendimento'
+      fullPath: '/areas-de-atendimento'
+      preLoaderRoute: typeof AreasDeAtendimentoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/403': {
@@ -3433,6 +3453,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ServiceRoute: ServiceRoute,
   R403Route: R403Route,
+  AreasDeAtendimentoRoute: AreasDeAtendimentoRoute,
   AuthRoute: AuthRoute,
   AutomacaoRoute: AutomacaoRoute,
   CalculadoraOrcamentoRoute: CalculadoraOrcamentoRoute,

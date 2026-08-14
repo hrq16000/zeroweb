@@ -1,12 +1,13 @@
 // Landing local /bairros-bh/$slug — agência de marketing digital por bairro de BH.
-// Estratégia: copy comercial agressiva + LocalBusiness com coordenadas + BreadcrumbList + CTA WhatsApp.
+// Estratégia: copy comercial agressiva + LocalBusiness com coordenadas + BreadcrumbList + FAQPage
+// + interlinking do silo (bairros vizinhos ↔ hub ↔ áreas de atendimento).
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, Check, MapPin, MessageCircle, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowRight, Check, MapPin, Sparkles, TrendingUp } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ORIGIN, breadcrumbLd } from "@/lib/seo";
-import { findBHNeighborhood, type BHNeighborhood } from "@/lib/bh-neighborhoods";
+import { findBHNeighborhood, nearbyBHNeighborhoods, type BHNeighborhood } from "@/lib/bh-neighborhoods";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const SERVICES = [
@@ -24,6 +25,33 @@ function casesFor(n: BHNeighborhood) {
     result: ["+312% em leads orgânicos em 90 dias", "ROI 4,8x em Google Ads no 1º trimestre", "Top 3 no Google para 12 palavras-chave locais"][i],
   }));
 }
+
+function faqFor(n: BHNeighborhood) {
+  const main = n.typicalBusinesses[0];
+  return [
+    {
+      q: `Quanto custa contratar uma agência de marketing digital em ${n.name}?`,
+      a: `O investimento depende do escopo. Projetos de site institucional e landing page são orçados por entrega, enquanto SEO local, Google Ads e gestão de redes sociais funcionam em mensalidade. Para empresas de ${n.name} montamos o orçamento a partir do diagnóstico gratuito, sem pacote fechado imposto.`,
+    },
+    {
+      q: `Em quanto tempo minha empresa em ${n.name} aparece no Google?`,
+      a: `Campanhas pagas com segmentação por raio no bairro começam a gerar contatos nos primeiros dias após a aprovação. SEO local e Google Meu Negócio dão os primeiros sinais entre 30 e 60 dias, com consolidação de posições a partir do terceiro mês.`,
+    },
+    {
+      q: `Vocês atendem ${main} em ${n.name}?`,
+      a: `Sim. ${n.name} é um ${n.vibe}, e trabalhamos exatamente com esse perfil: ${n.typicalBusinesses.join(", ")}. A pesquisa de palavras-chave é refeita para o seu segmento e para a concorrência real do bairro.`,
+    },
+    {
+      q: `Preciso ter endereço em ${n.name} para ranquear no bairro?`,
+      a: `Para SEO orgânico e anúncios com raio geográfico, não. Para disputar o pacote de mapas do Google, ter endereço ou declarar ${n.name} como área de serviço no Google Meu Negócio aumenta bastante a força do resultado.`,
+    },
+    {
+      q: `O atendimento é presencial em ${n.name}?`,
+      a: `Reuniões presenciais são possíveis em Belo Horizonte mediante agendamento. A operação do dia a dia é remota, com relatórios e acompanhamento periódico — o que mantém o custo previsível sem perder proximidade.`,
+    },
+  ];
+}
+
 
 export const Route = createFileRoute("/bairros-bh/$slug")({
   loader: ({ params }) => {
