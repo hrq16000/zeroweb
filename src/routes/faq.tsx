@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
 import { HelpCircle } from "lucide-react";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const URL = "https://0web.com.br/faq";
 const TITLE = "Perguntas Frequentes · Sites, SEO, Tráfego e IA · 0WEB";
@@ -185,7 +186,15 @@ function FaqPage() {
             })}
           </div>
           <p className="text-center mt-12 text-muted-foreground">
-            Não encontrou sua dúvida? <Link to="/contato" className="text-primary font-medium underline">Fale com a gente</Link>.
+            Não encontrou sua dúvida?{" "}
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: "faq_inline", pagePath: "/faq", placement: "section" }}
+              label="Fale com a gente"
+              location="faq_inline"
+              showArrow={false}
+              className="text-primary font-medium underline"
+            />
+            .
           </p>
         </section>
       </main>

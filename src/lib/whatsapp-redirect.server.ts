@@ -38,6 +38,10 @@ export const CREATE_TOKEN_RATE_WINDOW_S = 60;
 export const CREATE_TOKEN_RATE_MAX = 3;
 export const CONSUME_TOKEN_RATE_WINDOW_S = 60;
 export const CONSUME_TOKEN_RATE_MAX = 10;
+/** Reemissão: no máximo 3 por lead a cada 24h. IP não é usado como chave
+ *  primária de limite para não bloquear redes corporativas (NAT). */
+export const REISSUE_TOKEN_RATE_WINDOW_S = 24 * 60 * 60;
+export const REISSUE_TOKEN_RATE_MAX = 3;
 
 export function generateRedirectToken(): string {
   return randomBytes(16).toString("hex");
@@ -284,4 +288,65 @@ export const buildFunnelWhatsAppMessage = _buildLead;
 /** @deprecated legacy — new writes must NOT persist number in the token row */
 export function getWhatsAppDestinationDigits(): string | null {
   return resolveOperationalWhatsAppContact()?.digits ?? null;
+}
+
+// ============================================================================
+// (6) Reemissão de token expirado — evita "beco sem saída" no link expirado
+// ============================================================================
+
+export type ReissueResult =
+  | { ok: true; redirectPath: string }
+  | { ok: false; reason: "not_found" | "rate_limited" | "db_error" };
+
+/**
+ * Emite um novo token para o MESMO lead de um token antigo/expirado.
+ * Limite: REISSUE_TOKEN_RATE_MAX por lead dentro da janela.
+ */
+export async function reissueWhatsAppRedirectToken(
+  oldToken: string,
+  ipHash?: string | null,
+): Promise<ReissueResult> {
+  const resolved = await resolveWhatsAppRedirectToken(oldToken);
+  if (!resolved.ok || !resolved.row.lead_id) return { ok: false, reason: "not_found" };
+  const leadId = resolved.row.lead_id;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rlOk } = await (supabaseAdmin as any).rpc("check_and_record_rate_limit", {
+    p_scope: `wa_token_reissue:${leadId}`,
+    p_ip_hash: leadId.slice(0, 64),
+    p_window_seconds: REISSUE_TOKEN_RATE_WINDOW_S,
+    p_max_hits: REISSUE_TOKEN_RATE_MAX,
+  });
+  if (rlOk === false) return { ok: false, reason: "rate_limited" };
+
+  const token = generateRedirectToken();
+  const expiresAt = new Date(Date.now() + WHATSAPP_TOKEN_TTL_MS).toISOString();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabaseAdmin as any).from("whatsapp_redirect_tokens").insert({
+    token,
+    lead_id: leadId,
+    funnel_session_id: resolved.row.funnel_session_id ?? null,
+    expires_at: expiresAt,
+    ip_hash: ipHash ?? null,
+  });
+  if (error) {
+    console.error("[reissueWhatsAppRedirectToken] insert failed", error.message);
+    return { ok: false, reason: "db_error" };
+  }
+  return { ok: true, redirectPath: `/r/whatsapp/${token}` };
+}
+
+/** Protocolo da sessão associada ao token (para exibir na página de erro). */
+export async function getProtocolForToken(token: string): Promise<string | null> {
+  const resolved = await resolveWhatsAppRedirectToken(token);
+  if (!resolved.ok || !resolved.row.funnel_session_id) return null;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabaseAdmin as any)
+    .from("visitor_funnel_sessions")
+    .select("protocol")
+    .eq("id", resolved.row.funnel_session_id)
+    .maybeSingle();
+  return (data?.protocol as string | null) ?? null;
 }

@@ -7,6 +7,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { CITIES, STATES } from "@/lib/geo-data";
 import { GEO_SERVICE_SLUGS, SERVICES } from "@/lib/services-data";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 export const Route = createFileRoute("/cidades")({
   head: () => {
@@ -112,9 +113,12 @@ function CidadesHub() {
         <section className="py-12 bg-muted/30">
           <div className="mx-auto max-w-5xl px-5 lg:px-8 text-center">
             <p className="text-muted-foreground">Sua cidade não está listada?</p>
-            <Link to="/contato" className="mt-2 inline-flex items-center gap-2 text-primary font-semibold story-link">
-              Entre em contato — atendemos remoto em todo o Brasil <ArrowRight className="w-4 h-4" />
-            </Link>
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: "cidades_nao_listada", pagePath: "/cidades", placement: "section" }}
+              label="Entre em contato — atendemos remoto em todo o Brasil"
+              location="cidades_nao_listada"
+              className="mt-2 inline-flex items-center gap-2 text-primary font-semibold story-link"
+            />
           </div>
         </section>
 

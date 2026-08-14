@@ -187,7 +187,15 @@ function PlansPage() {
             </p>
             <p>
               Todos os planos incluem dashboards de performance, suporte humano pelo funil e contrato
-              flexível. Quer ajuda para escolher? <Link to="/contato">Fale com um especialista</Link>.
+              flexível. Quer ajuda para escolher?{" "}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "planos_inline", pagePath: "/planos", placement: "section" }}
+                label="Fale com um especialista"
+                location="planos_inline"
+                showArrow={false}
+                className="text-primary font-medium underline"
+              />
+              .
             </p>
           </div>
         </section>

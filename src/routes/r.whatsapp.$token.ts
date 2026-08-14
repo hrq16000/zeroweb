@@ -72,9 +72,12 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
 
         // Pre-check expiration for cleaner UX; RPC will re-validate atomically.
         if (new Date(resolved.row.expires_at).getTime() < Date.now()) {
+          const { getProtocolForToken } = await import("@/lib/whatsapp-redirect.server");
           return htmlErrorPage(
             "Link expirado",
-            "Este link de redirecionamento já expirou. Volte ao site e refaça a solicitação.",
+            "Este link de atendimento expirou por segurança. Sua solicitação continua registrada — reenvie em um clique.",
+            410,
+            { reissueToken: token, protocol: await getProtocolForToken(token) },
           );
         }
 
@@ -163,13 +166,14 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
             utm_campaign: string | null;
             protocol: string | null;
             cart_snapshot_final: unknown;
+            origin_snapshot: unknown;
           } | null = null;
           if (resolved.row.funnel_session_id) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { data: s } = await (supabaseAdmin as any)
               .from("visitor_funnel_sessions")
               .select(
-                "page_url, city_slug, product_slug, service_slug, utm_campaign, protocol, cart_snapshot_final",
+                "page_url, city_slug, product_slug, service_slug, utm_campaign, protocol, cart_snapshot_final, origin_snapshot",
               )
               .eq("id", resolved.row.funnel_session_id)
               .maybeSingle();
@@ -198,6 +202,9 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
             answers: (lead.answers_json ?? {}) as Record<string, unknown>,
             questions,
             citySlug: session?.city_slug ?? null,
+            neighborhoodSlug:
+              (session?.origin_snapshot as { neighborhood_slug?: string } | null)
+                ?.neighborhood_slug ?? null,
             pageUrl,
             pageTitle: null,
             utmCampaign: session?.utm_campaign ?? null,
@@ -214,9 +221,12 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
           );
         }
         if (consumed.status === "expired" || consumed.status === "used_out_of_window") {
+          const { getProtocolForToken } = await import("@/lib/whatsapp-redirect.server");
           return htmlErrorPage(
             "Link expirado",
-            "Este link já foi utilizado ou expirou. Refaça a solicitação.",
+            "Este link já foi utilizado ou expirou. Sua solicitação continua registrada — reenvie em um clique.",
+            410,
+            { reissueToken: token, protocol: await getProtocolForToken(token) },
           );
         }
 
@@ -253,7 +263,18 @@ export const Route = createFileRoute("/r/whatsapp/$token")({
   },
 });
 
-function htmlErrorPage(title: string, body: string, status = 410): Response {
+function htmlErrorPage(
+  title: string,
+  body: string,
+  status = 410,
+  opts?: { reissueToken?: string | null; protocol?: string | null },
+): Response {
+  const reissue = opts?.reissueToken
+    ? `<a class="primary" href="/r/whatsapp/reissue/${escapeHtml(opts.reissueToken)}">Reenviar minha solicitação</a>`
+    : "";
+  const protocol = opts?.protocol
+    ? `<p class="proto">Protocolo <strong>${escapeHtml(opts.protocol)}</strong><br/>Guarde este código: sua solicitação já está registrada conosco.</p>`
+    : "";
   const html = `<!doctype html>
 <html lang="pt-BR"><head>
   <meta charset="utf-8"/>
@@ -261,20 +282,35 @@ function htmlErrorPage(title: string, body: string, status = 410): Response {
   <meta name="robots" content="noindex,nofollow"/>
   <title>${escapeHtml(title)} · 0WEB</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0f19;color:#e5e7eb;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:24px;}
-    .card{max-width:420px;text-align:center;border:1px solid #1f2937;padding:32px;border-radius:16px;background:#0f172a}
-    h1{font-size:20px;margin:0 0 12px}
-    p{color:#9ca3af;margin:0 0 24px;font-size:14px;line-height:1.55}
-    a{display:inline-block;padding:10px 20px;border-radius:9999px;background:#3b82f6;color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+    :root{color-scheme:dark}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#12203c 0%,#0b0f19 60%);color:#e5e7eb;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:24px;}
+    .card{max-width:440px;width:100%;text-align:center;border:1px solid #1f2937;padding:36px 28px;border-radius:20px;background:rgba(15,23,42,.92);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+    .brand{font-weight:800;letter-spacing:.14em;font-size:13px;color:#60a5fa;margin:0 0 18px}
+    h1{font-size:21px;margin:0 0 12px;line-height:1.3}
+    p{color:#9ca3af;margin:0 0 22px;font-size:14px;line-height:1.6}
+    .proto{font-size:13px;color:#cbd5e1;background:#111c33;border:1px dashed #334155;border-radius:12px;padding:12px;margin:0 0 22px}
+    .proto strong{color:#fff;letter-spacing:.06em}
+    .actions{display:flex;flex-direction:column;gap:10px}
+    a{display:block;padding:12px 20px;border-radius:9999px;text-decoration:none;font-weight:600;font-size:14px}
+    a.primary{background:#22c55e;color:#052e16}
+    a.ghost{background:transparent;color:#93c5fd;border:1px solid #1e3a8a}
   </style>
 </head><body><div class="card">
+  <p class="brand">0WEB</p>
   <h1>${escapeHtml(title)}</h1>
   <p>${escapeHtml(body)}</p>
-  <a href="/contato">Voltar ao site</a>
+  ${protocol}
+  <div class="actions">
+    ${reissue}
+    <a class="ghost" href="/">Voltar ao site</a>
+  </div>
 </div></body></html>`;
   return new Response(html, {
     status,
-    headers: { "content-type": "text/html; charset=utf-8" },
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store, no-cache, must-revalidate",
+    },
   });
 }
 

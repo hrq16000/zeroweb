@@ -5,9 +5,11 @@
  */
 import type { FunnelOption } from "@/lib/dynamic-funnel.functions";
 
-export const WHATSAPP_REDIRECT_REUSE_WINDOW_MS = 60_000;
+/** Janela em que o mesmo token pode ser reaproveitado (duplo clique, voltar). */
+export const WHATSAPP_REDIRECT_REUSE_WINDOW_MS = 30 * 60 * 1000;
 export const WHATSAPP_MESSAGE_MAX_LENGTH = 1400;
-export const WHATSAPP_TOKEN_TTL_MS = 15 * 60 * 1000;
+/** TTL do link de redirecionamento — 24h. */
+export const WHATSAPP_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 const ANSWER_VALUE_MAX = 240;
 
 export function sanitizeText(input: unknown, maxLen = ANSWER_VALUE_MAX): string {

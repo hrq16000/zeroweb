@@ -12,6 +12,7 @@ import { ServiceCTA } from "@/components/site/ServiceCTA";
 import { ServiceImageFallback } from "@/components/site/ServiceImageFallback";
 import { absUrl, ORIGIN, breadcrumbLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 export const Route = createFileRoute("/solucoes")({
   loader: async () => {
@@ -195,12 +196,12 @@ function SolucoesPage() {
             <p className="mt-2 text-muted-foreground">
               Cada negócio é único. Conte seu desafio e desenhamos uma proposta dedicada.
             </p>
-            <Link
-              to="/contato"
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: "solucoes_footer_cta", pagePath: "/solucoes", placement: "footer" }}
+              label="Falar com a 0WEB"
+              location="solucoes_footer_cta"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition-opacity"
-            >
-              Falar com a 0WEB <ArrowRight className="w-4 h-4" />
-            </Link>
+            />
           </div>
         </section>
       </main>

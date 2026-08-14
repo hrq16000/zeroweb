@@ -99,13 +99,13 @@ export function IntentLanding(p: IntentLandingProps) {
                 location={`lp_${p.intent}_hero`}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 transition"
               />
-              <Link
-                to="/contato"
-                onClick={() => handleCta("hero_form")}
+              <FunnelCTAButton
+                intent={{ purpose: "diagnosis", source: `lp_${p.intent}_hero_form`, pagePath: servicePath, placement: "hero", serviceSlug: p.serviceSlug }}
+                label="Falar com especialista"
+                location={`lp_${p.intent}_hero_form`}
+                showArrow={false}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border hover:bg-muted transition text-sm font-medium"
-              >
-                Falar com especialista
-              </Link>
+              />
             </motion.div>
           </div>
         </section>
@@ -183,13 +183,13 @@ export function IntentLanding(p: IntentLandingProps) {
               location={`lp_${p.intent}_footer`}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold"
             />
-            <Link
-              to="/contato"
-              onClick={() => handleCta("footer_form")}
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: `lp_${p.intent}_footer_form`, pagePath: servicePath, placement: "footer", serviceSlug: p.serviceSlug }}
+              label="Solicitar Diagnóstico"
+              location={`lp_${p.intent}_footer_form`}
+              showArrow={false}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-border hover:bg-muted transition text-sm font-medium"
-            >
-              Solicitar Diagnóstico
-            </Link>
+            />
           </div>
         </section>
       </main>

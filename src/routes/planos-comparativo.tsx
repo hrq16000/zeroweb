@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { TrustStrip } from "@/components/site/TrustStrip";
 import { absUrl } from "@/lib/seo";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const TITLE = "Comparativo Site START vs PRO vs ENTERPRISE · 0WEB";
 const DESC =
@@ -182,12 +183,12 @@ function PlanosComparativo() {
             <p className="mt-3 text-muted-foreground">
               Em 15 minutos de conversa, indicamos o plano certo para o seu momento — sem empurroterapia.
             </p>
-            <Link
-              to="/contato"
+            <FunnelCTAButton
+              intent={{ purpose: "proposal", source: "planos_comparativo_cta", pagePath: "/planos-comparativo", placement: "footer" }}
+              label="Falar com especialista"
+              location="planos_comparativo_cta"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-7 py-3.5 shadow-glow-primary uppercase text-sm tracking-wide"
-            >
-              Falar com especialista <ArrowRight className="w-4 h-4" />
-            </Link>
+            />
           </div>
         </section>
       </main>

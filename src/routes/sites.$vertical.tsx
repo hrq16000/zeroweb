@@ -249,12 +249,12 @@ function VerticalHub() {
             <h1 className="mt-3 text-4xl sm:text-5xl font-bold leading-tight">{v.hero}</h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-3xl">{v.subheadline}</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                to="/contato"
+              <FunnelCTAButton
+                intent={{ purpose: "diagnosis", source: `sites_${v.slug}_hero_diag`, pagePath: `/sites/${v.slug}`, placement: "hero", serviceSlug: "criacao-de-sites" }}
+                label="Solicitar diagnóstico grátis"
+                location={`sites_${v.slug}_hero_diag`}
                 className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary uppercase text-sm tracking-wide"
-              >
-                Solicitar diagnóstico grátis <ArrowRight className="w-4 h-4" />
-              </Link>
+              />
               <FunnelCTAButton
                 intent={{ purpose: "proposal", source: `sites_${v.slug}_hero`, pagePath: `/sites/${v.slug}`, placement: "hero", serviceSlug: "criacao-de-sites" }}
                 label="Falar com especialista"
@@ -310,12 +310,12 @@ function VerticalHub() {
             <p className="mt-4 text-muted-foreground">
               Em até 24h, você recebe um diagnóstico gratuito da sua presença digital e uma proposta sob medida.
             </p>
-            <Link
-              to="/contato"
+            <FunnelCTAButton
+              intent={{ purpose: "diagnosis", source: `sites_${v.slug}_footer`, pagePath: `/sites/${v.slug}`, placement: "footer", serviceSlug: "criacao-de-sites" }}
+              label="Solicitar diagnóstico grátis"
+              location={`sites_${v.slug}_footer`}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-7 py-3.5 shadow-glow-primary uppercase text-sm tracking-wide"
-            >
-              Solicitar diagnóstico grátis <ArrowRight className="w-4 h-4" />
-            </Link>
+            />
           </div>
         </section>
       </main>

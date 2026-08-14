@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Activity, ArrowRight, Check, Globe, MousePointerClick } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { useExperiment, trackExperimentEvent } from "@/lib/ab-testing";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const BULLETS = [
   { strong: "Site projetado para converter", rest: "visitantes das suas campanhas em clientes reais." },
@@ -84,17 +85,12 @@ export function HomeSpotlight() {
             </ul>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/contato"
-                onClick={() => {
-                  trackEvent("cta_click", { label: "spotlight_orcamento", location: "home_spotlight", variant });
-                  trackExperimentEvent("conversion", "home_spotlight_copy", variant, { label: "spotlight_orcamento" });
-                }}
+              <FunnelCTAButton
+                intent={{ purpose: "proposal", source: "home_spotlight", pagePath: "/", placement: "section" }}
+                label={ctaLabel}
+                location="home_spotlight"
                 className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary hover:opacity-95 transition uppercase text-sm tracking-wide"
-              >
-                {ctaLabel}
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              />
               <Link
                 to="/servicos"
                 onClick={() => {

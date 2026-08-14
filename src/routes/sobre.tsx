@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const TITLE = "Sobre a 0WEB · Tecnologia que gera crescimento desde 2006";
 const DESC =
@@ -152,12 +153,13 @@ function SobrePage() {
                 Conte seu desafio e devolvemos um diagnóstico em até 24 horas, sem compromisso.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  to="/contato"
+                <FunnelCTAButton
+                  intent={{ purpose: "diagnosis", source: "sobre_footer_cta", pagePath: "/sobre", placement: "footer" }}
+                  label="Falar com a 0WEB"
+                  location="sobre_footer_cta"
+                  showArrow={false}
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3 shadow-glow-primary"
-                >
-                  Falar com a 0WEB
-                </Link>
+                />
                 <Link
                   to="/"
                   hash="cases"
