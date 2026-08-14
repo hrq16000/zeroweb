@@ -79,7 +79,21 @@ function validate(q: FunnelQuestion, value: unknown): string | null {
   return null;
 }
 
-export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel: FunnelDefinition; embedded?: boolean; onComplete?: () => void }) {
+export function FunnelRunner({
+  funnel,
+  embedded = false,
+  onComplete,
+  prefill,
+  context,
+}: {
+  funnel: FunnelDefinition;
+  embedded?: boolean;
+  onComplete?: () => void;
+  /** Respostas pré-preenchidas (ex.: plano escolhido na home). */
+  prefill?: Record<string, string | string[]>;
+  /** Contexto sintetizado da página de origem, enviado junto ao lead. */
+  context?: Record<string, string>;
+}) {
   const submit = useServerFn(submitFunnel);
   const createSession = useServerFn(createVisitorFunnelSession);
   const updateSession = useServerFn(updateVisitorFunnelSession);
@@ -87,8 +101,24 @@ export function FunnelRunner({ funnel, embedded = false, onComplete }: { funnel:
     () => [...funnel.questions].sort((a, b) => a.order_index - b.order_index),
     [funnel.questions],
   );
-  const [stack, setStack] = useState<number[]>([0]);
-  const [answers, setAnswers] = useState<Answers>({});
+  // Prefill só é aceito para chaves que existem no funil.
+  const initialAnswers = useMemo<Answers>(() => {
+    if (!prefill) return {};
+    const keys = new Set(ordered.map((q) => q.key));
+    const out: Answers = {};
+    for (const [k, v] of Object.entries(prefill)) {
+      if (keys.has(k) && v != null && v !== "") out[k] = v;
+    }
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordered]);
+  const initialIdx = useMemo(() => {
+    const idx = ordered.findIndex((q) => initialAnswers[q.key] === undefined);
+    return idx < 0 ? 0 : idx;
+  }, [ordered, initialAnswers]);
+  const [stack, setStack] = useState<number[]>(() => [initialIdx]);
+  const [answers, setAnswers] = useState<Answers>(() => initialAnswers);
+
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<null | {
