@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { resolveBaseUrl, renderSitemap } from "@/lib/sitemap-utils";
+import { SATELLITES } from "@/lib/sites-robustos";
 
 export const Route = createFileRoute("/sitemap-pages.xml")({
   server: {
