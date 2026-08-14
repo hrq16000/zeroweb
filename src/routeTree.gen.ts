@@ -74,6 +74,7 @@ import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscrape
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as SitesVerticalRouteImport } from './routes/sites.$vertical'
+import { Route as SitesRobustosSlugRouteImport } from './routes/sites-robustos.$slug'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteProRouteImport } from './routes/servicos.site-pro'
@@ -498,6 +499,11 @@ const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
 const SitesVerticalRoute = SitesVerticalRouteImport.update({
   id: '/sites/$vertical',
   path: '/sites/$vertical',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesRobustosSlugRoute = SitesRobustosSlugRouteImport.update({
+  id: '/sites-robustos/$slug',
+  path: '/sites-robustos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosTrafegoPagoLocalRoute =
@@ -1122,6 +1128,7 @@ export interface FileRoutesByFullPath {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
@@ -1283,6 +1290,7 @@ export interface FileRoutesByTo {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
@@ -1448,6 +1456,7 @@ export interface FileRoutesById {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
@@ -1613,6 +1622,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
@@ -1774,6 +1784,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh'
     | '/bairros-cwb'
@@ -1938,6 +1949,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
@@ -2090,6 +2102,7 @@ export interface RootRouteChildren {
   PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
+  SitesRobustosSlugRoute: typeof SitesRobustosSlugRoute
   SitesVerticalRoute: typeof SitesVerticalRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
@@ -2571,6 +2584,13 @@ declare module '@tanstack/react-router' {
       path: '/sites/$vertical'
       fullPath: '/sites/$vertical'
       preLoaderRoute: typeof SitesVerticalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites-robustos/$slug': {
+      id: '/sites-robustos/$slug'
+      path: '/sites-robustos/$slug'
+      fullPath: '/sites-robustos/$slug'
+      preLoaderRoute: typeof SitesRobustosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/trafego-pago-local': {
@@ -3569,6 +3589,7 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
+  SitesRobustosSlugRoute: SitesRobustosSlugRoute,
   SitesVerticalRoute: SitesVerticalRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
