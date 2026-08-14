@@ -183,13 +183,13 @@ export function parseContactIntent(
   const source = typeof sourceRaw === "string" && SOURCE_RE.test(sourceRaw) ? sourceRaw : null;
   const pagePath = typeof pageRaw === "string" && PAGE_PATH_RE.test(pageRaw) ? pageRaw : null;
 
-  if (!purpose || !placement || !source || !pagePath) return null;
+  if (!purpose || !placement || !source) return null;
 
   return {
     purpose,
     placement,
     source: source.slice(0, MAX_LEN),
-    pagePath: pagePath.slice(0, MAX_LEN),
+    pagePath: (pagePath ?? "/").slice(0, MAX_LEN),
     serviceSlug: optionalSlug(get("serviceSlug")),
     citySlug: optionalSlug(get("citySlug")),
     neighborhoodSlug: optionalSlug(get("neighborhoodSlug")),
@@ -209,7 +209,11 @@ export function parseContactIntent(
  */
 export function buildContactFallbackHref(intent: ContactIntent): string {
   const base = intent.purpose === "lgpd" ? "/lgpd" : "/contato";
-  const params = new URLSearchParams(serializeContactIntent(intent));
+  // `pagePath` fica fora do href: alguns CTAs o derivam de `window.location`,
+  // o que gerava href diferente entre SSR e cliente (hydration mismatch).
+  // Ele continua viajando no intent em runtime (telemetria/contexto do funil).
+  const { pagePath: _pagePath, ...rest } = serializeContactIntent(intent);
+  const params = new URLSearchParams(rest);
   const qs = params.toString();
   return qs ? `${base}?${qs}` : base;
 }

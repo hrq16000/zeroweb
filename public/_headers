@@ -25,3 +25,11 @@
   Cache-Control: public, max-age=3600
 /robots.txt
   Cache-Control: public, max-age=3600
+
+# HTML nunca deve ficar em cache: o documento carrega o bundle versionado.
+# Sem isso o navegador pode servir um HTML antigo apontando para um JS que
+# não existe mais -> falha de hidratação / tela branca.
+/
+  Cache-Control: no-cache, must-revalidate
+/*
+  Cache-Control: no-cache, must-revalidate
