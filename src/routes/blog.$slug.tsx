@@ -166,9 +166,7 @@ function PostPage() {
             />
           </div>
 
-          <div className="mt-10 text-lg leading-relaxed text-foreground/90 whitespace-pre-line">
-            {post.content}
-          </div>
+          <BlogContent content={post.content} postSlug={post.slug} pagePath={`/blog/${post.slug}`} />
 
           {inlineImages[post.slug as keyof typeof inlineImages] && (
             <figure className="mt-10">
