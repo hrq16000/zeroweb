@@ -9,6 +9,7 @@ import { ORIGIN, breadcrumbLd } from "@/lib/seo";
 import { BH_NEIGHBORHOODS } from "@/lib/bh-neighborhoods";
 import { CWB_NEIGHBORHOODS } from "@/lib/curitiba-neighborhoods";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
+import { SATELLITES as SITES_ROBUSTOS } from "@/lib/sites-robustos";
 
 const TITLE = "Áreas de Atendimento | Agência de Marketing Digital 0web";
 const DESC =
