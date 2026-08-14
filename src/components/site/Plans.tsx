@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listPlansPublic, formatPrice, type PlanRow } from "@/lib/plans.functions";
+import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
+
 
 // Fallback usado quando o banco não responde (preserva a UX da landing).
 const fallback: PlanRow[] = [
