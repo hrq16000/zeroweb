@@ -7,7 +7,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { trackEvent } from "@/lib/analytics";
 
-import { listServicesNav } from "@/lib/services-nav.functions";
+import { servicesNavQuery } from "@/lib/services-nav-query";
 const GlobalSearch = lazy(() =>
   import("@/components/site/GlobalSearch").then((m) => ({ default: m.GlobalSearch })),
 );
@@ -44,11 +44,7 @@ export function Header() {
   // WhatsApp removido do header; o botão flutuante mantém o canal.
   const headerRef = useRef<HTMLElement | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { data: navData } = useQuery({
-    queryKey: ["services-nav"],
-    queryFn: () => listServicesNav(),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: navData } = useQuery(servicesNavQuery);
   const menuServices = navData?.menu ?? [];
 
   const isLojaArea =
