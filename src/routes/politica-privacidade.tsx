@@ -39,8 +39,11 @@ function PoliticaPage() {
             <section>
               <h2 className="text-xl font-bold font-display">2. Dados que coletamos</h2>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Dados de contato</strong>: nome, e-mail, telefone e empresa enviados via formulários.</li>
+                <li><strong>Dados de contato</strong>: nome, e-mail, telefone e empresa enviados via formulários e funis de atendimento.</li>
                 <li><strong>Dados de navegação</strong>: páginas visitadas, origem (UTMs), dispositivo e tempo de leitura, via GA4 e GTM.</li>
+                <li><strong>Identificador de visitante</strong>: um código anônimo (<em>visitor_id</em>) gerado no seu navegador para ligar as etapas do atendimento a uma mesma solicitação. Não identifica você isoladamente.</li>
+                <li><strong>Localidade estimada</strong>: cidade e estado aproximados obtidos a partir do seu endereço IP, de forma automática e em segundo plano, apenas para direcionar o atendimento à sua região. É uma estimativa, não uma localização precisa, e não usamos GPS sem que você autorize expressamente.</li>
+                <li><strong>Registro do atendimento</strong>: respostas do funil, itens do carrinho e a página de origem são salvos como pré-cadastro e, ao concluir o envio, viram uma solicitação (lead) com um número de protocolo.</li>
                 <li><strong>Cookies</strong>: utilizados apenas após consentimento, conforme banner exibido na primeira visita.</li>
               </ul>
             </section>
@@ -48,7 +51,9 @@ function PoliticaPage() {
             <section>
               <h2 className="text-xl font-bold font-display">3. Como usamos</h2>
               <p>Utilizamos os dados para: responder seu contato, enviar propostas comerciais, melhorar nosso site e mensurar campanhas de marketing.</p>
+              <p className="mt-2">Ao concluir um funil, geramos um link temporário de atendimento que abre uma conversa no WhatsApp já com o resumo da sua solicitação. O conteúdo dessa mensagem é montado nos nossos servidores a partir do que você informou; o link tem validade limitada e pode ser reenviado por você. A partir do momento em que a conversa começa, o tratamento de dados dentro do WhatsApp segue também a política do próprio aplicativo.</p>
             </section>
+
 
             <section>
               <h2 className="text-xl font-bold font-display">4. Compartilhamento</h2>
