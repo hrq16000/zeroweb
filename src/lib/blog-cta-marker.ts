@@ -8,7 +8,8 @@
 export const CTA_PURPOSES = [
   "diagnosis",
   "proposal",
-  "support",
+  "commercial",
+  "order-support",
   "lgpd",
 ] as const;
 
