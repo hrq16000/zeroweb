@@ -66,6 +66,7 @@ import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SitesIndexRouteImport } from './routes/sites.index'
+import { Route as SitesRobustosIndexRouteImport } from './routes/sites-robustos.index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -73,6 +74,7 @@ import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscrape
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
 import { Route as SitesVerticalRouteImport } from './routes/sites.$vertical'
+import { Route as SitesRobustosSlugRouteImport } from './routes/sites-robustos.$slug'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
 import { Route as ServicosTrafegoPagoRouteImport } from './routes/servicos.trafego-pago'
 import { Route as ServicosSiteProRouteImport } from './routes/servicos.site-pro'
@@ -459,6 +461,11 @@ const SitesIndexRoute = SitesIndexRouteImport.update({
   path: '/sites/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitesRobustosIndexRoute = SitesRobustosIndexRouteImport.update({
+  id: '/sites-robustos/',
+  path: '/sites-robustos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -492,6 +499,11 @@ const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
 const SitesVerticalRoute = SitesVerticalRouteImport.update({
   id: '/sites/$vertical',
   path: '/sites/$vertical',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesRobustosSlugRoute = SitesRobustosSlugRouteImport.update({
+  id: '/sites-robustos/$slug',
+  path: '/sites-robustos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosTrafegoPagoLocalRoute =
@@ -1116,6 +1128,7 @@ export interface FileRoutesByFullPath {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
@@ -1123,6 +1136,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1276,6 +1290,7 @@ export interface FileRoutesByTo {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
@@ -1283,6 +1298,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
+  '/sites-robustos': typeof SitesRobustosIndexRoute
   '/sites': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1440,6 +1456,7 @@ export interface FileRoutesById {
   '/servicos/site-pro': typeof ServicosSiteProRoute
   '/servicos/trafego-pago': typeof ServicosTrafegoPagoRoute
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
+  '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
@@ -1447,6 +1464,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1604,6 +1622,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
@@ -1611,6 +1630,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites-robustos/'
     | '/sites/'
     | '/app/admin'
     | '/app/campaigns'
@@ -1764,6 +1784,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh'
     | '/bairros-cwb'
@@ -1771,6 +1792,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cases'
     | '/servicos'
+    | '/sites-robustos'
     | '/sites'
     | '/app/admin'
     | '/app/campaigns'
@@ -1927,6 +1949,7 @@ export interface FileRouteTypes {
     | '/servicos/site-pro'
     | '/servicos/trafego-pago'
     | '/servicos/trafego-pago-local'
+    | '/sites-robustos/$slug'
     | '/sites/$vertical'
     | '/bairros-bh/'
     | '/bairros-cwb/'
@@ -1934,6 +1957,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites-robustos/'
     | '/sites/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
@@ -2078,12 +2102,14 @@ export interface RootRouteChildren {
   PedidoIdRoute: typeof PedidoIdRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
+  SitesRobustosSlugRoute: typeof SitesRobustosSlugRoute
   SitesVerticalRoute: typeof SitesVerticalRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  SitesRobustosIndexRoute: typeof SitesRobustosIndexRoute
   SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
@@ -2504,6 +2530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sites-robustos/': {
+      id: '/sites-robustos/'
+      path: '/sites-robustos'
+      fullPath: '/sites-robustos/'
+      preLoaderRoute: typeof SitesRobustosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos/': {
       id: '/servicos/'
       path: '/'
@@ -2551,6 +2584,13 @@ declare module '@tanstack/react-router' {
       path: '/sites/$vertical'
       fullPath: '/sites/$vertical'
       preLoaderRoute: typeof SitesVerticalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites-robustos/$slug': {
+      id: '/sites-robustos/$slug'
+      path: '/sites-robustos/$slug'
+      fullPath: '/sites-robustos/$slug'
+      preLoaderRoute: typeof SitesRobustosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/trafego-pago-local': {
@@ -3549,12 +3589,14 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoIdRoute: PedidoIdRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
+  SitesRobustosSlugRoute: SitesRobustosSlugRoute,
   SitesVerticalRoute: SitesVerticalRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  SitesRobustosIndexRoute: SitesRobustosIndexRoute,
   SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
