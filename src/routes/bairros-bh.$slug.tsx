@@ -113,9 +113,19 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
               },
               breadcrumbLd([
                 { name: "Início", path: "/" },
+                { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
                 { name: "Bairros BH", path: "/bairros-bh" },
                 { name: n.name, path: `/bairros-bh/${params.slug}` },
               ]),
+              {
+                "@type": "FAQPage",
+                "@id": `${url}#faq`,
+                mainEntity: faqFor(n).map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              },
             ],
           }),
         },
@@ -128,6 +138,8 @@ export const Route = createFileRoute("/bairros-bh/$slug")({
 function BairroPage() {
   const { bairro: n } = Route.useLoaderData();
   const cases = casesFor(n);
+  const faq = faqFor(n);
+  const nearby = nearbyBHNeighborhoods(n.slug, 6);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -135,10 +147,12 @@ function BairroPage() {
       <Breadcrumbs
         items={[
           { name: "Início", path: "/" },
+          { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
           { name: "Bairros BH", path: "/bairros-bh" },
           { name: n.name, path: `/bairros-bh/${n.slug}` },
         ]}
       />
+
 
       <main>
         {/* HERO */}
