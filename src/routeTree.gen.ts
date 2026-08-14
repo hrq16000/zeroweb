@@ -118,6 +118,7 @@ import { Route as ServicosCategoriaSlugRouteImport } from './routes/servicos.cat
 import { Route as RWhatsappTokenRouteImport } from './routes/r.whatsapp.$token'
 import { Route as BlogClusterClusterRouteImport } from './routes/blog.cluster.$cluster'
 import { Route as ApiPublicLeadWebhookRouteImport } from './routes/api/public/lead-webhook'
+import { Route as ApiPublicHydrationReportRouteImport } from './routes/api/public/hydration-report'
 import { Route as ApiPublicHealthDbRouteImport } from './routes/api/public/health-db'
 import { Route as AuthenticatedAppVisitantesRouteImport } from './routes/_authenticated/app.visitantes'
 import { Route as AuthenticatedAppUsuariosRouteImport } from './routes/_authenticated/app.usuarios'
@@ -726,6 +727,12 @@ const ApiPublicLeadWebhookRoute = ApiPublicLeadWebhookRouteImport.update({
   path: '/api/public/lead-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHydrationReportRoute =
+  ApiPublicHydrationReportRouteImport.update({
+    id: '/api/public/hydration-report',
+    path: '/api/public/hydration-report',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHealthDbRoute = ApiPublicHealthDbRouteImport.update({
   id: '/api/public/health-db',
   path: '/api/public/health-db',
@@ -1181,6 +1188,7 @@ export interface FileRoutesByFullPath {
   '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
+  '/api/public/hydration-report': typeof ApiPublicHydrationReportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
@@ -1345,6 +1353,7 @@ export interface FileRoutesByTo {
   '/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
+  '/api/public/hydration-report': typeof ApiPublicHydrationReportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
@@ -1513,6 +1522,7 @@ export interface FileRoutesById {
   '/_authenticated/app/usuarios': typeof AuthenticatedAppUsuariosRoute
   '/_authenticated/app/visitantes': typeof AuthenticatedAppVisitantesRoute
   '/api/public/health-db': typeof ApiPublicHealthDbRoute
+  '/api/public/hydration-report': typeof ApiPublicHydrationReportRoute
   '/api/public/lead-webhook': typeof ApiPublicLeadWebhookRoute
   '/blog/cluster/$cluster': typeof BlogClusterClusterRoute
   '/r/whatsapp/$token': typeof RWhatsappTokenRoute
@@ -1681,6 +1691,7 @@ export interface FileRouteTypes {
     | '/app/usuarios'
     | '/app/visitantes'
     | '/api/public/health-db'
+    | '/api/public/hydration-report'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
@@ -1845,6 +1856,7 @@ export interface FileRouteTypes {
     | '/app/usuarios'
     | '/app/visitantes'
     | '/api/public/health-db'
+    | '/api/public/hydration-report'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
@@ -2012,6 +2024,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/usuarios'
     | '/_authenticated/app/visitantes'
     | '/api/public/health-db'
+    | '/api/public/hydration-report'
     | '/api/public/lead-webhook'
     | '/blog/cluster/$cluster'
     | '/r/whatsapp/$token'
@@ -2137,6 +2150,7 @@ export interface RootRouteChildren {
   SitesRobustosIndexRoute: typeof SitesRobustosIndexRoute
   SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
+  ApiPublicHydrationReportRoute: typeof ApiPublicHydrationReportRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
   BlogClusterClusterRoute: typeof BlogClusterClusterRoute
   RWhatsappTokenRoute: typeof RWhatsappTokenRoute
@@ -2919,6 +2933,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hydration-report': {
+      id: '/api/public/hydration-report'
+      path: '/api/public/hydration-report'
+      fullPath: '/api/public/hydration-report'
+      preLoaderRoute: typeof ApiPublicHydrationReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/health-db': {
       id: '/api/public/health-db'
       path: '/api/public/health-db'
@@ -3641,6 +3662,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitesRobustosIndexRoute: SitesRobustosIndexRoute,
   SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
+  ApiPublicHydrationReportRoute: ApiPublicHydrationReportRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
   BlogClusterClusterRoute: BlogClusterClusterRoute,
   RWhatsappTokenRoute: RWhatsappTokenRoute,
