@@ -14,6 +14,7 @@ import { AddToCartButton } from "@/components/site/AddToCartButton";
 import { ServicePurchasePanel } from "@/components/site/ServicePurchasePanel";
 import { RelatedServicesCarousel } from "@/components/site/RelatedServicesCarousel";
 import { ProductGallery } from "@/components/site/ProductGallery";
+import { WorkProcess } from "@/components/site/WorkProcess";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 
@@ -468,6 +469,8 @@ function ServicePage() {
         )}
 
 
+
+        <WorkProcess className="bg-muted/20" />
 
         <section className="py-16">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
