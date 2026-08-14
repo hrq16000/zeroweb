@@ -31,8 +31,10 @@ export const Route = createFileRoute("/bairros-cwb/")({
             "@context": "https://schema.org",
             ...breadcrumbLd([
               { name: "Início", path: "/" },
+              { name: "Áreas de Atendimento", path: "/areas-de-atendimento" },
               { name: "Bairros Curitiba/RMC", path: "/bairros-cwb" },
             ]),
+
           }),
         },
       ],
