@@ -1,3 +1,4 @@
+import { subscribeScroll } from "./scroll-bus";
 import { useEffect, useRef, useState } from "react";
 
 type EventParams = Record<string, string | number | boolean | undefined>;
@@ -209,8 +210,7 @@ export function useScrollDepthTracking() {
         }
       });
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return subscribeScroll(onScroll);
   }, []);
 }
 
