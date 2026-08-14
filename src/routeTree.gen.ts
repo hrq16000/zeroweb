@@ -66,6 +66,7 @@ import { Route as ServiceRouteImport } from './routes/$service'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SitesIndexRouteImport } from './routes/sites.index'
+import { Route as SitesRobustosIndexRouteImport } from './routes/sites-robustos.index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -457,6 +458,11 @@ const IndexRoute = IndexRouteImport.update({
 const SitesIndexRoute = SitesIndexRouteImport.update({
   id: '/sites/',
   path: '/sites/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesRobustosIndexRoute = SitesRobustosIndexRouteImport.update({
+  id: '/sites-robustos/',
+  path: '/sites-robustos/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
@@ -1123,6 +1129,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1283,6 +1290,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
   '/servicos': typeof ServicosIndexRoute
+  '/sites-robustos': typeof SitesRobustosIndexRoute
   '/sites': typeof SitesIndexRoute
   '/app/admin': typeof AuthenticatedAppAdminRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1447,6 +1455,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
   '/servicos/': typeof ServicosIndexRoute
+  '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
   '/_authenticated/app/admin': typeof AuthenticatedAppAdminRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
@@ -1611,6 +1620,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites-robustos/'
     | '/sites/'
     | '/app/admin'
     | '/app/campaigns'
@@ -1771,6 +1781,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cases'
     | '/servicos'
+    | '/sites-robustos'
     | '/sites'
     | '/app/admin'
     | '/app/campaigns'
@@ -1934,6 +1945,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cases/'
     | '/servicos/'
+    | '/sites-robustos/'
     | '/sites/'
     | '/_authenticated/app/admin'
     | '/_authenticated/app/campaigns'
@@ -2084,6 +2096,7 @@ export interface RootRouteChildren {
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  SitesRobustosIndexRoute: typeof SitesRobustosIndexRoute
   SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
   ApiPublicLeadWebhookRoute: typeof ApiPublicLeadWebhookRoute
@@ -2502,6 +2515,13 @@ declare module '@tanstack/react-router' {
       path: '/sites'
       fullPath: '/sites/'
       preLoaderRoute: typeof SitesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites-robustos/': {
+      id: '/sites-robustos/'
+      path: '/sites-robustos'
+      fullPath: '/sites-robustos/'
+      preLoaderRoute: typeof SitesRobustosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos/': {
@@ -3555,6 +3575,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  SitesRobustosIndexRoute: SitesRobustosIndexRoute,
   SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
   ApiPublicLeadWebhookRoute: ApiPublicLeadWebhookRoute,
