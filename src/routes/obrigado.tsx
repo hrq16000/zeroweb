@@ -98,7 +98,7 @@ function ObrigadoPage() {
       surface: "page",
       ctaId, target, label, position,
     });
-    trackConversion(eventName, { ...params, order_id: order ?? null });
+    trackConversion(eventName, { ...params, order_id: order ?? undefined });
     // Legacy event kept for back-compat dashboards.
     trackEvent("obrigado_cta_click", { ...params, legacy: true });
   };
