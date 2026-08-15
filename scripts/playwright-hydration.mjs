@@ -1,4 +1,6 @@
 import { chromium } from "playwright";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://localhost:8080";
 const routes = [
@@ -12,7 +14,18 @@ const routes = [
   "/politica-privacidade",
 ];
 const invariant = /Expected to find a dehydrated data|Invariant failed.*dehydrated|\$_TSR\.router/i;
-const browser = await chromium.launch({ headless: true });
+const bundledExecutable = chromium.executablePath();
+const browserRoot = "/opt/ms-playwright";
+const installedExecutable = existsSync(browserRoot)
+  ? readdirSync(browserRoot)
+      .filter((name) => name.startsWith("chromium-") && !name.includes("headless"))
+      .map((name) => join(browserRoot, name, "chrome-linux", "chrome"))
+      .find((path) => existsSync(path))
+  : undefined;
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: existsSync(bundledExecutable) ? bundledExecutable : installedExecutable,
+});
 
 try {
   for (const route of routes) {
