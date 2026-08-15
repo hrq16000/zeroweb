@@ -36,25 +36,25 @@ const fail = (msg) => {
 const ok = (msg) => console.log(`✓ ${msg}`);
 
 async function answerCurrentStep(page) {
-  const option = page.locator('[data-testid="funnel-option"]').first();
+  const option = page.locator('[data-testid="funnel-option"]:visible').first();
   if (await option.count()) {
     await option.click();
     return true;
   }
-  const input = page.locator('[data-testid="funnel-input"]').first();
+  const input = page.locator('[data-testid="funnel-input"]:visible').first();
   if (await input.count()) {
     const tag = await input.evaluate((el) => el.tagName.toLowerCase());
     if (tag === "select") {
       await input.selectOption({ index: 1 }).catch(async () => {
         await input.evaluate((el) => {
-          const opt = Array.from(el.options).find((o) => o.value);
+          const opt = Array.from(el.querySelectorAll("option")).find((o) => o.value);
           if (opt) {
             el.value = opt.value;
             el.dispatchEvent(new Event("change", { bubbles: true }));
           }
         });
       });
-      const nextSel = page.locator('[data-testid="funnel-next"]');
+      const nextSel = page.locator('[data-testid="funnel-next"]:visible').first();
       if (await nextSel.count()) await nextSel.click();
       return true;
     }
@@ -63,7 +63,7 @@ async function answerCurrentStep(page) {
     const value = type === "email" ? "teste-e2e@example.test" : mode === "tel" ? "41999990000" : "Teste E2E 0WEB";
     await input.fill(value);
   }
-  const next = page.locator('[data-testid="funnel-next"]');
+  const next = page.locator('[data-testid="funnel-next"]:visible').first();
   if (await next.count()) {
     await next.click();
     return true;
