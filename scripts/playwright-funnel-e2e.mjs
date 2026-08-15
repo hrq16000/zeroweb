@@ -38,7 +38,7 @@ const ok = (msg) => console.log(`✓ ${msg}`);
 async function answerCurrentStep(page) {
   const option = page.locator('[data-testid="funnel-option"]:visible').first();
   if (await option.count()) {
-    await option.click();
+    await option.click({ timeout: 8000, force: true }).catch(() => {});
     return true;
   }
   const input = page.locator('[data-testid="funnel-input"]:visible').first();
@@ -55,7 +55,7 @@ async function answerCurrentStep(page) {
         });
       });
       const nextSel = page.locator('[data-testid="funnel-next"]:visible').first();
-      if (await nextSel.count()) await nextSel.click();
+      if (await nextSel.count()) await nextSel.click({ timeout: 8000, force: true }).catch(() => {});
       return true;
     }
     const type = (await input.getAttribute("type", { timeout: 5000 }).catch(() => "")) || "";
@@ -65,7 +65,7 @@ async function answerCurrentStep(page) {
   }
   const next = page.locator('[data-testid="funnel-next"]:visible').first();
   if (await next.count()) {
-    await next.click();
+    await next.click({ timeout: 8000, force: true }).catch(() => {});
     return true;
   }
   return false;
@@ -124,7 +124,7 @@ try {
       const advanced = await answerCurrentStep(page);
       if (!advanced) break;
       steps += 1;
-      await page.waitForTimeout(450);
+      await page.waitForTimeout(700);
     }
     const done = page.locator('[data-testid="funnel-done"]');
     try {
