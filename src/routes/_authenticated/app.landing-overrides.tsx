@@ -29,10 +29,15 @@ function LandingOverridesAdmin() {
   const saveDraft = useServerFn(adminSaveLandingOverrideDraft);
   const publish = useServerFn(adminPublishLandingOverride);
   const unpublish = useServerFn(adminUnpublishLandingOverride);
+  const previewFn = useServerFn(adminPreviewLandingOverride);
+  const historyFn = useServerFn(adminListLandingOverrideHistory);
+  const rollback = useServerFn(adminRollbackLandingOverride);
 
   const [scope, setScope] = useState("global");
   const [key, setKey] = useState("");
   const [draftValue, setDraftValue] = useState('{\n  "title": ""\n}');
+  const [openId, setOpenId] = useState<string | null>(null);
+
 
   const overrides = useQuery({
     queryKey: ["admin", "landing-overrides"],
