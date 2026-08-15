@@ -12,7 +12,7 @@ Atue como uma equipe formada por:
 
 - UI Designer Especialista em Conversão
 
-- Desenvolvedor Next.js Sênior
+- Desenvolvedor TanStack Start / React Sênior
 
 - Especialista SEO Técnico
 
@@ -32,7 +32,7 @@ NÃO quero apenas uma landing page.
 
 
 
-Quero um site completo de alta conversão inspirado na estrutura, posicionamento e proposta comercial do site ativasite.com.br, porém muito mais moderno, tecnológico, persuasivo e preparado para SEO.
+Quero um site completo de alta conversão inspirado na estrutura, posicionamento e proposta comercial do site ativasite.com.br, porém muito mais moderno, tecnológico, persuasivo e preparado para produção.
 
 
 
@@ -76,9 +76,9 @@ A tecnologia obrigatória:
 
 
 
-- Next.js 15+
+- TanStack React Start + Vite (SSR)
 
-- React
+- React 19
 
 - TypeScript
 
@@ -368,23 +368,13 @@ Cards:
 
 ❌ Site lento
 
-
-
 ❌ Não aparece no Google
-
-
 
 ❌ Poucos contatos
 
-
-
 ❌ Redes sociais sem resultado
 
-
-
 ❌ Falta automação
-
-
 
 ❌ Concorrentes na frente
 
@@ -492,39 +482,21 @@ Itens:
 
 ✓ Mobile First
 
-
-
 ✓ SEO Estrutural
-
-
 
 ✓ Core Web Vitals
 
-
-
 ✓ LGPD
-
-
 
 ✓ Segurança Avançada
 
-
-
 ✓ Hospedagem Premium
-
-
 
 ✓ Suporte Humanizado
 
-
-
 ✓ IA Integrada
 
-
-
 ✓ Escalabilidade
-
-
 
 ✓ Performance Máxima
 
@@ -602,11 +574,7 @@ PLANOS
 
 START
 
-
-
 PRO
-
-
 
 ENTERPRISE
 
@@ -690,7 +658,7 @@ Categorias:
 
 - Inteligência Artificial
 
-- Automação
+- Automações
 
 - Tecnologia
 
@@ -856,7 +824,7 @@ RESULTADO ESPERADO
 
 
 
-Gerar todo o projeto pronto para produção com arquitetura profissional, componentes reutilizáveis, animações premium, SEO avançado, foco extremo em conversão e aparência comparável a empresas SaaS internacionais.
+Gerar todo o projeto pronto para produção com arquitetura profissional, componentes reutilizáveis, animações premium, SEO avançado, foco extremo em conversão e aparência comparável a empresas de referência.
 
 This project was built with [Lovable](https://lovable.dev).
 
@@ -874,9 +842,21 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
+This repository already uses TanStack React Start for SSR. The codebase includes server and client entrypoints (src/server.ts, src/client.tsx) and file-based routes (src/routes/). The README has been updated to reflect the actual stack.
+
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+git clone https://github.com/hrq16000/zeroweb.git
+cd zeroweb
+npm install
 npm run dev
 ```
+
+## Notes about running in production
+
+- The server entry exports a Cloud-Worker-style `fetch` handler (src/server.ts) that delegates to `@tanstack/react-start/server-entry` and applies middleware from `src/start.ts`.
+- For local development `npm run dev` starts Vite; the SSR entry is exercised during production builds / previews.
+- The project uses Bun for some postbuild steps (see bun.lock / bunfig.toml). Having Bun installed is recommended for `npm run build` to run `bun run postbuild`.
+
+---
+
+Migration to TanStack Start: this repository was already on TanStack React Start; no code-level migration was necessary. This commit updates documentation to remove references to other stacks and clarifies how to run the project locally.
