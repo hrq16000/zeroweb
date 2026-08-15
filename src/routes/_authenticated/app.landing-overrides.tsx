@@ -9,11 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
+  adminListLandingOverrideHistory,
   adminListLandingOverrides,
+  adminPreviewLandingOverride,
   adminPublishLandingOverride,
+  adminRollbackLandingOverride,
   adminSaveLandingOverrideDraft,
   adminUnpublishLandingOverride,
 } from "@/lib/landing-overrides-admin.functions";
+
 
 export const Route = createFileRoute("/_authenticated/app/landing-overrides")({
   component: LandingOverridesAdmin,
@@ -25,10 +29,15 @@ function LandingOverridesAdmin() {
   const saveDraft = useServerFn(adminSaveLandingOverrideDraft);
   const publish = useServerFn(adminPublishLandingOverride);
   const unpublish = useServerFn(adminUnpublishLandingOverride);
+  const previewFn = useServerFn(adminPreviewLandingOverride);
+  const historyFn = useServerFn(adminListLandingOverrideHistory);
+  const rollback = useServerFn(adminRollbackLandingOverride);
 
   const [scope, setScope] = useState("global");
   const [key, setKey] = useState("");
   const [draftValue, setDraftValue] = useState('{\n  "title": ""\n}');
+  const [openId, setOpenId] = useState<string | null>(null);
+
 
   const overrides = useQuery({
     queryKey: ["admin", "landing-overrides"],
@@ -165,7 +174,26 @@ function LandingOverridesAdmin() {
                   >
                     Despublicar
                   </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setOpenId(openId === row.id ? null : row.id)}
+                  >
+                    {openId === row.id ? "Fechar" : "Preview & histórico"}
+                  </Button>
                 </div>
+                {openId === row.id && (
+                  <OverrideDetails
+                    id={row.id}
+                    loadPreview={() => previewFn({ data: { id: row.id } })}
+                    loadHistory={() => historyFn({ data: { id: row.id } })}
+                    onRollback={async (historyId) => {
+                      await rollback({ data: { id: row.id, historyId } });
+                      toast.success("Rollback aplicado — versão anterior republicada.");
+                      void invalidate();
+                    }}
+                  />
+                )}
               </article>
             );
           })}
@@ -174,3 +202,85 @@ function LandingOverridesAdmin() {
     </div>
   );
 }
+
+type OverrideDetailsProps = {
+  id: string;
+  loadPreview: () => Promise<{
+    draft: unknown;
+    published: unknown;
+    publishedAt: string | null;
+  }>;
+  loadHistory: () => Promise<{
+    rows: Array<{
+      id: string;
+      action: string;
+      valueJson: string;
+      created_at: string;
+      created_by: string | null;
+    }>;
+  }>;
+  onRollback: (historyId: string) => Promise<void>;
+};
+
+function OverrideDetails({ id, loadPreview, loadHistory, onRollback }: OverrideDetailsProps) {
+  const preview = useQuery({ queryKey: ["admin", "lo-preview", id], queryFn: loadPreview });
+  const history = useQuery({ queryKey: ["admin", "lo-history", id], queryFn: loadHistory });
+
+  const rollbackMutation = useMutation({
+    mutationFn: onRollback,
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  return (
+    <div className="rounded-md border border-dashed border-border p-3 space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <p className="text-xs font-semibold uppercase text-muted-foreground">Rascunho</p>
+          <pre className="mt-1 max-h-48 overflow-auto rounded bg-muted p-3 text-xs">
+            {JSON.stringify(preview.data?.draft ?? null, null, 2)}
+          </pre>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase text-muted-foreground">
+            Publicado {preview.data?.publishedAt ? `· ${preview.data.publishedAt}` : ""}
+          </p>
+          <pre className="mt-1 max-h-48 overflow-auto rounded bg-muted p-3 text-xs">
+            {JSON.stringify(preview.data?.published ?? null, null, 2)}
+          </pre>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-xs font-semibold uppercase text-muted-foreground">Histórico</p>
+        {history.isLoading && <p className="text-xs text-muted-foreground">Carregando...</p>}
+        {(history.data?.rows.length ?? 0) === 0 && !history.isLoading && (
+          <p className="text-xs text-muted-foreground">Nenhuma publicação registrada ainda.</p>
+        )}
+        {history.data?.rows.map((h) => (
+          <div key={h.id} className="rounded border border-border p-2 space-y-1">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-xs">
+                <Badge variant="outline" className="mr-2 text-[11px]">
+                  {h.action}
+                </Badge>
+                {h.created_at}
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={h.valueJson === "null" || rollbackMutation.isPending}
+                onClick={() => rollbackMutation.mutate(h.id)}
+              >
+                Restaurar
+              </Button>
+            </div>
+            <pre className="max-h-32 overflow-auto rounded bg-muted p-2 text-[11px]">
+              {h.valueJson}
+            </pre>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

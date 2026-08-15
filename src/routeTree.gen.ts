@@ -74,6 +74,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
+import { Route as SuportePedidoTokenRouteImport } from './routes/suporte-pedido.$token'
 import { Route as SitesVerticalRouteImport } from './routes/sites.$vertical'
 import { Route as SitesRobustosSlugRouteImport } from './routes/sites-robustos.$slug'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
@@ -144,6 +145,7 @@ import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppLandingOverridesRouteImport } from './routes/_authenticated/app.landing-overrides'
 import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
 import { Route as AuthenticatedAppIndexacaoRouteImport } from './routes/_authenticated/app.indexacao'
+import { Route as AuthenticatedAppHydrationRouteImport } from './routes/_authenticated/app.hydration'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppEcosystemRouteImport } from './routes/_authenticated/app.ecosystem'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
@@ -503,6 +505,11 @@ const BairrosCwbIndexRoute = BairrosCwbIndexRouteImport.update({
 const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
   id: '/bairros-bh/',
   path: '/bairros-bh/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuportePedidoTokenRoute = SuportePedidoTokenRouteImport.update({
+  id: '/suporte-pedido/$token',
+  path: '/suporte-pedido/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitesVerticalRoute = SitesVerticalRouteImport.update({
@@ -874,6 +881,12 @@ const AuthenticatedAppIndexacaoRoute =
     path: '/indexacao',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppHydrationRoute =
+  AuthenticatedAppHydrationRouteImport.update({
+    id: '/hydration',
+    path: '/hydration',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppEditorialRoute =
   AuthenticatedAppEditorialRouteImport.update({
     id: '/editorial',
@@ -1157,6 +1170,7 @@ export interface FileRoutesByFullPath {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
@@ -1171,6 +1185,7 @@ export interface FileRoutesByFullPath {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1323,6 +1338,7 @@ export interface FileRoutesByTo {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
   '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
@@ -1337,6 +1353,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1493,6 +1510,7 @@ export interface FileRoutesById {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
@@ -1507,6 +1525,7 @@ export interface FileRoutesById {
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/_authenticated/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1663,6 +1682,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
@@ -1677,6 +1697,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/hydration'
     | '/app/indexacao'
     | '/app/integracoes'
     | '/app/landing-overrides'
@@ -1829,6 +1850,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh'
     | '/bairros-cwb'
     | '/blog-skyscraper'
@@ -1843,6 +1865,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/hydration'
     | '/app/indexacao'
     | '/app/integracoes'
     | '/app/landing-overrides'
@@ -1998,6 +2021,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
@@ -2012,6 +2036,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/documents'
     | '/_authenticated/app/ecosystem'
     | '/_authenticated/app/editorial'
+    | '/_authenticated/app/hydration'
     | '/_authenticated/app/indexacao'
     | '/_authenticated/app/integracoes'
     | '/_authenticated/app/landing-overrides'
@@ -2155,6 +2180,7 @@ export interface RootRouteChildren {
   RCodeRoute: typeof RCodeRoute
   SitesRobustosSlugRoute: typeof SitesRobustosSlugRoute
   SitesVerticalRoute: typeof SitesVerticalRoute
+  SuportePedidoTokenRoute: typeof SuportePedidoTokenRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
@@ -2636,6 +2662,13 @@ declare module '@tanstack/react-router' {
       path: '/bairros-bh'
       fullPath: '/bairros-bh/'
       preLoaderRoute: typeof BairrosBhIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suporte-pedido/$token': {
+      id: '/suporte-pedido/$token'
+      path: '/suporte-pedido/$token'
+      fullPath: '/suporte-pedido/$token'
+      preLoaderRoute: typeof SuportePedidoTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sites/$vertical': {
@@ -3128,6 +3161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexacaoRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/hydration': {
+      id: '/_authenticated/app/hydration'
+      path: '/hydration'
+      fullPath: '/app/hydration'
+      preLoaderRoute: typeof AuthenticatedAppHydrationRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/editorial': {
       id: '/_authenticated/app/editorial'
       path: '/editorial'
@@ -3457,6 +3497,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRouteWithChildren
+  AuthenticatedAppHydrationRoute: typeof AuthenticatedAppHydrationRoute
   AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLandingOverridesRoute: typeof AuthenticatedAppLandingOverridesRoute
@@ -3496,6 +3537,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRouteWithChildren,
+  AuthenticatedAppHydrationRoute: AuthenticatedAppHydrationRoute,
   AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLandingOverridesRoute: AuthenticatedAppLandingOverridesRoute,
@@ -3676,6 +3718,7 @@ const rootRouteChildren: RootRouteChildren = {
   RCodeRoute: RCodeRoute,
   SitesRobustosSlugRoute: SitesRobustosSlugRoute,
   SitesVerticalRoute: SitesVerticalRoute,
+  SuportePedidoTokenRoute: SuportePedidoTokenRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
