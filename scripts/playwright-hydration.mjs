@@ -46,9 +46,14 @@ try {
     });
 
     const response = await page.goto(`${baseUrl}${route}`, {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
       timeout: 30_000,
     });
+    await page.waitForFunction(
+      () => Boolean(window.__0WEB_RENDER_MODE__),
+      undefined,
+      { timeout: 10_000 },
+    );
     await page.waitForTimeout(250);
 
     const state = await page.evaluate(() => ({
