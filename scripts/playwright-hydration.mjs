@@ -45,6 +45,12 @@ try {
       }
     });
 
+    const ssrResponse = await context.request.get(`${baseUrl}${route}`, { timeout: 30_000 });
+    const ssrHtml = await ssrResponse.text();
+    const hasSsrPayload = ssrHtml.includes("$_TSR.router");
+    if (!ssrResponse.ok()) throw new Error(`${route}: SSR HTTP ${ssrResponse.status()}`);
+    if (!hasSsrPayload) throw new Error(`${route}: HTML SSR sem dehydrated state`);
+
     const response = await page.goto(`${baseUrl}${route}`, {
       waitUntil: "domcontentloaded",
       timeout: 30_000,
@@ -73,7 +79,9 @@ try {
     if (actionableConsoleErrors.length) throw new Error(`${route}: console errors: ${actionableConsoleErrors.join(" | ")}`);
     if (pageErrors.length) throw new Error(`${route}: page errors: ${pageErrors.join(" | ")}`);
 
-    console.log(`✓ ${route} payload=${state.hasRouterPayload} mode=${state.renderMode}`);
+    console.log(
+      `✓ ${route} ssrPayload=${hasSsrPayload} runtimePayload=${state.hasRouterPayload} mode=${state.renderMode}`,
+    );
     if (failedResponses.length) console.warn(`  recursos com erro: ${failedResponses.join(" | ")}`);
     await context.close();
   }
