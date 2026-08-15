@@ -1,0 +1,51 @@
+name: E2E · Hidratação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hydration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      E2E_BASE_URL: http://localhost:8080
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Instalar dependências
+        run: bun install --frozen-lockfile
+
+      - name: Instalar Chromium (Playwright)
+        run: bunx playwright install --with-deps chromium
+
+      - name: Build
+        run: bun run build
+
+      - name: Subir servidor de preview
+        run: |
+          bun run dev > /tmp/dev-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf -o /dev/null "$E2E_BASE_URL/" && exit 0
+            sleep 2
+          done
+          echo "Servidor não respondeu"; cat /tmp/dev-server.log; exit 1
+
+      - name: Gate — dehydrated state no HTML SSR
+        run: bun run validate:ssr-payload
+
+      - name: Gate — E2E de hidratação (sem console error, sem blank screen)
+        run: bun run test:e2e:hydration
+
+      - name: Logs do servidor (em caso de falha)
+        if: failure()
+        run: tail -n 200 /tmp/dev-server.log

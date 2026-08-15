@@ -27,7 +27,9 @@
     "catalog:images": "node scripts/validate-catalog-images.mjs",
     "seo:diff": "node scripts/run-seo-diff.mjs",
     "offers:validate": "node scripts/validate-public-offers.mjs",
-    "test:e2e:hydration": "node scripts/playwright-hydration.mjs"
+    "test:e2e:hydration": "node scripts/playwright-hydration.mjs",
+    "validate:ssr-payload": "node scripts/validate-ssr-dehydrated.mjs",
+    "ci:hydration": "bun run validate:ssr-payload && bun run test:e2e:hydration"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

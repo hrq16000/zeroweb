@@ -6,6 +6,8 @@ export type BlogPost = {
   excerpt: string;
   category: string;
   date: string;
+  /** Data da última revisão editorial (ISO yyyy-mm-dd). Default: `date`. */
+  updatedAt?: string;
   readTime: string;
   content: string;
   cover?: string;
