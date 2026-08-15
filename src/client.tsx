@@ -13,6 +13,15 @@ declare global {
 
 const PAYLOAD_WAIT_MS = 1_500;
 
+/** Correlaciona todos os relatórios de hidratação do mesmo carregamento. */
+const CORRELATION_ID = (() => {
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `cid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+})();
+
 function reportHydrationState(reason: string, detail: string, mode: "hydrate" | "client-only"): void {
   const payload = JSON.stringify({
     reason,
@@ -21,6 +30,7 @@ function reportHydrationState(reason: string, detail: string, mode: "hydrate" | 
     search: window.location.search.slice(0, 300),
     mode,
     ua: navigator.userAgent.slice(0, 200),
+    cid: CORRELATION_ID,
     ts: Date.now(),
   });
 
@@ -62,6 +72,9 @@ async function renderClientOnly(): Promise<void> {
     "client-only",
   );
 
+  console.warn(
+    `[hydration-fallback] cid=${CORRELATION_ID} route=${window.location.pathname} render=client-only`,
+  );
   const router = getRouter();
   await router.load();
   window.__0WEB_RENDER_MODE__ = "client-only-fallback";
