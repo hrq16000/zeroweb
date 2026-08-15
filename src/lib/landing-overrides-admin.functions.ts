@@ -71,7 +71,7 @@ export const adminSaveLandingOverrideDraft = createServerFn({ method: "POST" })
           updated_by: userId,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: "scope,key" },
+        { onConflict: "key" },
       )
       .select("id")
       .single();
