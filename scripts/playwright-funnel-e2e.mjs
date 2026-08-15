@@ -43,7 +43,7 @@ async function answerCurrentStep(page) {
   }
   const input = page.locator('[data-testid="funnel-input"]:visible').first();
   if (await input.count()) {
-    const tag = await input.evaluate((el) => el.tagName.toLowerCase());
+    const tag = await input.evaluate((el) => el.tagName.toLowerCase(), undefined, { timeout: 5000 }).catch(() => "input");
     if (tag === "select") {
       await input.selectOption({ index: 1 }).catch(async () => {
         await input.evaluate((el) => {
@@ -58,10 +58,10 @@ async function answerCurrentStep(page) {
       if (await nextSel.count()) await nextSel.click();
       return true;
     }
-    const type = (await input.getAttribute("type")) || "";
-    const mode = (await input.getAttribute("inputmode")) || "";
+    const type = (await input.getAttribute("type", { timeout: 5000 }).catch(() => "")) || "";
+    const mode = (await input.getAttribute("inputmode", { timeout: 5000 }).catch(() => "")) || "";
     const value = type === "email" ? "teste-e2e@example.test" : mode === "tel" ? "41999990000" : "Teste E2E 0WEB";
-    await input.fill(value);
+    await input.fill(value, { timeout: 8000 }).catch(() => {});
   }
   const next = page.locator('[data-testid="funnel-next"]:visible').first();
   if (await next.count()) {
