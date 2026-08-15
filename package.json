@@ -26,8 +26,8 @@
     "prepare": "node scripts/install-git-hooks.mjs",
     "catalog:images": "node scripts/validate-catalog-images.mjs",
     "seo:diff": "node scripts/run-seo-diff.mjs",
-    "offers:validate": "node scripts/validate-public-offers.mjs"
-    ,"test:e2e:hydration": "node scripts/playwright-hydration.mjs"
+    "offers:validate": "node scripts/validate-public-offers.mjs",
+    "test:e2e:hydration": "node scripts/playwright-hydration.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -115,6 +115,7 @@
     "globals": "^15.15.0",
     "happy-dom": "^20.10.2",
     "nitro": "3.0.260603-beta",
+    "playwright": "^1.62.1",
     "prettier": "^3.7.3",
     "sharp": "^0.34.5",
     "typescript": "^5.8.3",
