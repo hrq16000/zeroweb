@@ -37,7 +37,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
-function preventStaleHtml(response: Response): Response {
+function verifyAndProtectSsrHtml(response: Response, request: Request): Response {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("text/html")) return response;
 
@@ -45,7 +45,36 @@ function preventStaleHtml(response: Response): Response {
   headers.set("cache-control", "private, no-cache, no-store, must-revalidate");
   headers.set("pragma", "no-cache");
   headers.set("expires", "0");
-  return new Response(response.body, {
+  headers.set("x-0web-ssr-payload", "streaming-verification");
+
+  if (!response.body) {
+    console.error(`[ssr-payload-missing] route=${new URL(request.url).pathname} reason=empty-body`);
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
+
+  const route = new URL(request.url).pathname;
+  const decoder = new TextDecoder();
+  let hasDehydratedRouter = false;
+  let trailingText = "";
+  const inspector = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      const text = trailingText + decoder.decode(chunk, { stream: true });
+      if (text.includes("$_TSR.router")) hasDehydratedRouter = true;
+      trailingText = text.slice(-32);
+      controller.enqueue(chunk);
+    },
+    flush() {
+      if (!hasDehydratedRouter) {
+        console.error(`[ssr-payload-missing] route=${route} status=${response.status}`);
+      }
+    },
+  });
+
+  return new Response(response.body.pipeThrough(inspector), {
     status: response.status,
     statusText: response.statusText,
     headers,
@@ -58,7 +87,7 @@ export default {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
-      return preventStaleHtml(normalized);
+      return verifyAndProtectSsrHtml(normalized, request);
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

@@ -1,20 +1,25 @@
 import { StrictMode, startTransition } from "react";
-import { hydrateRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
+import { RouterProvider } from "@tanstack/react-router";
 import { StartClient } from "@tanstack/react-start/client";
+import { getRouter } from "./router";
 
 declare global {
   interface Window {
     $_TSR?: { router?: unknown };
+    __0WEB_RENDER_MODE__?: "ssr-hydrated" | "client-only-fallback";
   }
 }
 
-const RETRY_KEY = "0web:missing-tsr-retry";
+const PAYLOAD_WAIT_MS = 1_500;
 
-function reportMissingPayload(): void {
+function reportHydrationState(reason: string, detail: string, mode: "hydrate" | "client-only"): void {
   const payload = JSON.stringify({
-    reason: "missing_router_payload_before_hydrate",
-    detail: "window.$_TSR.router was unavailable at the client entry",
+    reason,
+    detail,
     path: window.location.pathname,
+    search: window.location.search.slice(0, 300),
+    mode,
     ua: navigator.userAgent.slice(0, 200),
     ts: Date.now(),
   });
@@ -38,60 +43,8 @@ function reportMissingPayload(): void {
   }
 }
 
-function showRecoveryScreen(): void {
-  document.body.replaceChildren();
-
-  const main = document.createElement("main");
-  main.setAttribute(
-    "style",
-    "min-height:100vh;display:grid;place-items:center;padding:24px;background:#fff;color:#0b1120;font-family:system-ui,-apple-system,Segoe UI,sans-serif;text-align:center",
-  );
-  main.innerHTML =
-    '<div style="max-width:430px"><h1 style="font-size:22px;margin:0 0 10px">Não foi possível carregar a página</h1>' +
-    '<p style="font-size:15px;line-height:1.55;color:#475569;margin:0 0 20px">A versão do site armazenada no navegador está desatualizada. Atualize para tentar novamente.</p>' +
-    '<button type="button" style="border:0;border-radius:8px;padding:12px 20px;background:#0066ff;color:#fff;font:600 15px system-ui;cursor:pointer">Atualizar página</button></div>';
-
-  main.querySelector("button")?.addEventListener("click", () => {
-    sessionStorage.removeItem(RETRY_KEY);
-    window.location.reload();
-  });
-  document.body.appendChild(main);
-}
-
-function recoverFromMissingPayload(): void {
-  reportMissingPayload();
-
-  let alreadyRetried = false;
-  try {
-    alreadyRetried = sessionStorage.getItem(RETRY_KEY) === "1";
-  } catch {
-    // Storage can be unavailable in privacy modes.
-  }
-
-  if (!alreadyRetried) {
-    try {
-      sessionStorage.setItem(RETRY_KEY, "1");
-    } catch {
-      // Continue with a cache-busted navigation.
-    }
-    const url = new URL(window.location.href);
-    url.searchParams.set("__hb", Date.now().toString(36));
-    window.location.replace(url);
-    return;
-  }
-
-  showRecoveryScreen();
-}
-
-if (!window.$_TSR?.router) {
-  recoverFromMissingPayload();
-} else {
-  try {
-    sessionStorage.removeItem(RETRY_KEY);
-  } catch {
-    // Hydration can proceed without storage.
-  }
-
+function hydrateFromServerPayload(): void {
+  window.__0WEB_RENDER_MODE__ = "ssr-hydrated";
   startTransition(() => {
     hydrateRoot(
       document,
@@ -101,3 +54,47 @@ if (!window.$_TSR?.router) {
     );
   });
 }
+
+async function renderClientOnly(): Promise<void> {
+  reportHydrationState(
+    "missing_router_payload_before_hydrate",
+    `window.$_TSR.router remained unavailable after ${PAYLOAD_WAIT_MS}ms`,
+    "client-only",
+  );
+
+  const router = getRouter();
+  await router.load();
+  window.__0WEB_RENDER_MODE__ = "client-only-fallback";
+  createRoot(document).render(
+    <StrictMode>
+      <RouterProvider router={router} />
+    </StrictMode>,
+  );
+}
+
+async function waitForServerPayload(): Promise<boolean> {
+  if (window.$_TSR?.router) return true;
+
+  const startedAt = performance.now();
+  while (performance.now() - startedAt < PAYLOAD_WAIT_MS) {
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 25));
+    if (window.$_TSR?.router) return true;
+  }
+  return false;
+}
+
+void waitForServerPayload().then((hasPayload) => {
+  if (hasPayload) {
+    hydrateFromServerPayload();
+    return;
+  }
+
+  void renderClientOnly().catch((error: unknown) => {
+    console.error("[hydration-fallback] client-only render failed", error);
+    reportHydrationState(
+      "client_only_fallback_failed",
+      error instanceof Error ? error.message.slice(0, 500) : String(error).slice(0, 500),
+      "client-only",
+    );
+  });
+});
