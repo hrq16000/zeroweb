@@ -74,6 +74,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
 import { Route as BairrosCwbIndexRouteImport } from './routes/bairros-cwb.index'
 import { Route as BairrosBhIndexRouteImport } from './routes/bairros-bh.index'
+import { Route as SuportePedidoTokenRouteImport } from './routes/suporte-pedido.$token'
 import { Route as SitesVerticalRouteImport } from './routes/sites.$vertical'
 import { Route as SitesRobustosSlugRouteImport } from './routes/sites-robustos.$slug'
 import { Route as ServicosTrafegoPagoLocalRouteImport } from './routes/servicos.trafego-pago-local'
@@ -504,6 +505,11 @@ const BairrosCwbIndexRoute = BairrosCwbIndexRouteImport.update({
 const BairrosBhIndexRoute = BairrosBhIndexRouteImport.update({
   id: '/bairros-bh/',
   path: '/bairros-bh/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuportePedidoTokenRoute = SuportePedidoTokenRouteImport.update({
+  id: '/suporte-pedido/$token',
+  path: '/suporte-pedido/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitesVerticalRoute = SitesVerticalRouteImport.update({
@@ -1164,6 +1170,7 @@ export interface FileRoutesByFullPath {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
@@ -1331,6 +1338,7 @@ export interface FileRoutesByTo {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh': typeof BairrosBhIndexRoute
   '/bairros-cwb': typeof BairrosCwbIndexRoute
   '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
@@ -1502,6 +1510,7 @@ export interface FileRoutesById {
   '/servicos/trafego-pago-local': typeof ServicosTrafegoPagoLocalRoute
   '/sites-robustos/$slug': typeof SitesRobustosSlugRoute
   '/sites/$vertical': typeof SitesVerticalRoute
+  '/suporte-pedido/$token': typeof SuportePedidoTokenRoute
   '/bairros-bh/': typeof BairrosBhIndexRoute
   '/bairros-cwb/': typeof BairrosCwbIndexRoute
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
@@ -1673,6 +1682,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
@@ -1840,6 +1850,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh'
     | '/bairros-cwb'
     | '/blog-skyscraper'
@@ -2010,6 +2021,7 @@ export interface FileRouteTypes {
     | '/servicos/trafego-pago-local'
     | '/sites-robustos/$slug'
     | '/sites/$vertical'
+    | '/suporte-pedido/$token'
     | '/bairros-bh/'
     | '/bairros-cwb/'
     | '/blog-skyscraper/'
@@ -2168,6 +2180,7 @@ export interface RootRouteChildren {
   RCodeRoute: typeof RCodeRoute
   SitesRobustosSlugRoute: typeof SitesRobustosSlugRoute
   SitesVerticalRoute: typeof SitesVerticalRoute
+  SuportePedidoTokenRoute: typeof SuportePedidoTokenRoute
   BairrosBhIndexRoute: typeof BairrosBhIndexRoute
   BairrosCwbIndexRoute: typeof BairrosCwbIndexRoute
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
@@ -2649,6 +2662,13 @@ declare module '@tanstack/react-router' {
       path: '/bairros-bh'
       fullPath: '/bairros-bh/'
       preLoaderRoute: typeof BairrosBhIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suporte-pedido/$token': {
+      id: '/suporte-pedido/$token'
+      path: '/suporte-pedido/$token'
+      fullPath: '/suporte-pedido/$token'
+      preLoaderRoute: typeof SuportePedidoTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sites/$vertical': {
@@ -3698,6 +3718,7 @@ const rootRouteChildren: RootRouteChildren = {
   RCodeRoute: RCodeRoute,
   SitesRobustosSlugRoute: SitesRobustosSlugRoute,
   SitesVerticalRoute: SitesVerticalRoute,
+  SuportePedidoTokenRoute: SuportePedidoTokenRoute,
   BairrosBhIndexRoute: BairrosBhIndexRoute,
   BairrosCwbIndexRoute: BairrosCwbIndexRoute,
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
