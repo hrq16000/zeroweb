@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import {
+  hydrationTelemetrySnapshot,
+  recordHydrationReport,
+} from "@/lib/hydration-telemetry.server";
 
 /**
  * Telemetria de falhas de hidratação. Sem PII: apenas motivo, mensagem
- * truncada, rota e user-agent. Apenas loga (visível nos Server Logs).
+ * truncada, rota, correlação e user-agent.
+ *
+ * POST — recebe o relatório do cliente (beacon) e agrega por rota.
+ * GET  — devolve o painel consolidado (contagens por rota, sem PII).
  */
 const payloadSchema = z.object({
   reason: z.string().max(60),
@@ -12,6 +19,7 @@ const payloadSchema = z.object({
   search: z.string().max(300).optional().default(""),
   mode: z.enum(["hydrate", "client-only"]).optional().default("hydrate"),
   ua: z.string().max(200).optional().default(""),
+  cid: z.string().max(64).optional().default(""),
   ts: z.number().optional(),
 });
 
@@ -28,11 +36,30 @@ export const Route = createFileRoute("/api/public/hydration-report")({
           return new Response("Invalid payload", { status: 400 });
         }
 
+        const entry = recordHydrationReport({
+          reason: parsed.reason,
+          detail: parsed.detail,
+          path: parsed.path,
+          search: parsed.search,
+          mode: parsed.mode,
+          ua: parsed.ua,
+          correlationId: parsed.cid,
+        });
+
         console.error(
-          `[hydration-failure] reason=${parsed.reason} route=${parsed.path}${parsed.search} mode=${parsed.mode} detail=${parsed.detail} ua=${parsed.ua}`,
+          `[hydration-failure] cid=${parsed.cid || "n/a"} reason=${parsed.reason} route=${parsed.path}${parsed.search} mode=${parsed.mode} routeTotal=${entry.total} clientOnly=${entry.clientOnlyFallbacks} detail=${parsed.detail} ua=${parsed.ua}`,
         );
 
         return new Response(null, { status: 204 });
+      },
+      GET: async () => {
+        const snapshot = hydrationTelemetrySnapshot();
+        console.warn(
+          `[hydration-telemetry] totalReports=${snapshot.totalReports} routesTracked=${snapshot.routesTracked}`,
+        );
+        return Response.json(snapshot, {
+          headers: { "cache-control": "no-store" },
+        });
       },
     },
   },
