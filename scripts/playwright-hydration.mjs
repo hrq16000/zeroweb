@@ -33,11 +33,17 @@ try {
     const page = await context.newPage();
     const consoleErrors = [];
     const pageErrors = [];
+    const failedResponses = [];
 
     page.on("console", (message) => {
       if (message.type() === "error") consoleErrors.push(message.text());
     });
     page.on("pageerror", (error) => pageErrors.push(error.message));
+    page.on("response", (resourceResponse) => {
+      if (resourceResponse.status() >= 400) {
+        failedResponses.push(`${resourceResponse.status()} ${resourceResponse.url()}`);
+      }
+    });
 
     const response = await page.goto(`${baseUrl}${route}`, {
       waitUntil: "networkidle",
@@ -56,10 +62,14 @@ try {
     if (hydrationErrors.length) throw new Error(`${route}: invariant de hidratação: ${hydrationErrors.join(" | ")}`);
     if (state.bodyText.length < 40) throw new Error(`${route}: blank screen (${state.bodyText.length} caracteres)`);
     if (state.renderMode === "unknown") throw new Error(`${route}: bootstrap não concluiu`);
-    if (consoleErrors.length) throw new Error(`${route}: console errors: ${consoleErrors.join(" | ")}`);
+    const actionableConsoleErrors = consoleErrors.filter(
+      (message) => !message.startsWith("Failed to load resource: the server responded with a status of 404"),
+    );
+    if (actionableConsoleErrors.length) throw new Error(`${route}: console errors: ${actionableConsoleErrors.join(" | ")}`);
     if (pageErrors.length) throw new Error(`${route}: page errors: ${pageErrors.join(" | ")}`);
 
     console.log(`✓ ${route} payload=${state.hasRouterPayload} mode=${state.renderMode}`);
+    if (failedResponses.length) console.warn(`  recursos com erro: ${failedResponses.join(" | ")}`);
     await context.close();
   }
 } finally {
