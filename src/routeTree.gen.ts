@@ -144,6 +144,7 @@ import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppLandingOverridesRouteImport } from './routes/_authenticated/app.landing-overrides'
 import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
 import { Route as AuthenticatedAppIndexacaoRouteImport } from './routes/_authenticated/app.indexacao'
+import { Route as AuthenticatedAppHydrationRouteImport } from './routes/_authenticated/app.hydration'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
 import { Route as AuthenticatedAppEcosystemRouteImport } from './routes/_authenticated/app.ecosystem'
 import { Route as AuthenticatedAppDocumentsRouteImport } from './routes/_authenticated/app.documents'
@@ -874,6 +875,12 @@ const AuthenticatedAppIndexacaoRoute =
     path: '/indexacao',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppHydrationRoute =
+  AuthenticatedAppHydrationRouteImport.update({
+    id: '/hydration',
+    path: '/hydration',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppEditorialRoute =
   AuthenticatedAppEditorialRouteImport.update({
     id: '/editorial',
@@ -1171,6 +1178,7 @@ export interface FileRoutesByFullPath {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1337,6 +1345,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1507,6 +1516,7 @@ export interface FileRoutesById {
   '/_authenticated/app/documents': typeof AuthenticatedAppDocumentsRoute
   '/_authenticated/app/ecosystem': typeof AuthenticatedAppEcosystemRoute
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
+  '/_authenticated/app/hydration': typeof AuthenticatedAppHydrationRoute
   '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
   '/_authenticated/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
@@ -1677,6 +1687,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/hydration'
     | '/app/indexacao'
     | '/app/integracoes'
     | '/app/landing-overrides'
@@ -1843,6 +1854,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/ecosystem'
     | '/app/editorial'
+    | '/app/hydration'
     | '/app/indexacao'
     | '/app/integracoes'
     | '/app/landing-overrides'
@@ -2012,6 +2024,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/documents'
     | '/_authenticated/app/ecosystem'
     | '/_authenticated/app/editorial'
+    | '/_authenticated/app/hydration'
     | '/_authenticated/app/indexacao'
     | '/_authenticated/app/integracoes'
     | '/_authenticated/app/landing-overrides'
@@ -3128,6 +3141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexacaoRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/hydration': {
+      id: '/_authenticated/app/hydration'
+      path: '/hydration'
+      fullPath: '/app/hydration'
+      preLoaderRoute: typeof AuthenticatedAppHydrationRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/editorial': {
       id: '/_authenticated/app/editorial'
       path: '/editorial'
@@ -3457,6 +3477,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppDocumentsRoute: typeof AuthenticatedAppDocumentsRoute
   AuthenticatedAppEcosystemRoute: typeof AuthenticatedAppEcosystemRoute
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRouteWithChildren
+  AuthenticatedAppHydrationRoute: typeof AuthenticatedAppHydrationRoute
   AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
   AuthenticatedAppLandingOverridesRoute: typeof AuthenticatedAppLandingOverridesRoute
@@ -3496,6 +3517,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppDocumentsRoute: AuthenticatedAppDocumentsRoute,
   AuthenticatedAppEcosystemRoute: AuthenticatedAppEcosystemRoute,
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRouteWithChildren,
+  AuthenticatedAppHydrationRoute: AuthenticatedAppHydrationRoute,
   AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
   AuthenticatedAppLandingOverridesRoute: AuthenticatedAppLandingOverridesRoute,
