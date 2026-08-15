@@ -7,6 +7,7 @@ import { getRouter } from "./router";
 declare global {
   interface Window {
     $_TSR?: { router?: unknown };
+    __0WEB_RENDER_MODE__?: "ssr-hydrated" | "client-only-fallback";
   }
 }
 
@@ -43,7 +44,7 @@ function reportHydrationState(reason: string, detail: string, mode: "hydrate" | 
 }
 
 function hydrateFromServerPayload(): void {
-  document.documentElement.dataset.renderMode = "ssr-hydrated";
+  window.__0WEB_RENDER_MODE__ = "ssr-hydrated";
   startTransition(() => {
     hydrateRoot(
       document,
@@ -63,7 +64,7 @@ async function renderClientOnly(): Promise<void> {
 
   const router = getRouter();
   await router.load();
-  document.documentElement.dataset.renderMode = "client-only-fallback";
+  window.__0WEB_RENDER_MODE__ = "client-only-fallback";
   createRoot(document).render(
     <StrictMode>
       <RouterProvider router={router} />

@@ -48,7 +48,7 @@ try {
     const state = await page.evaluate(() => ({
       bodyText: document.body?.innerText.trim() || "",
       hasRouterPayload: Boolean(window.$_TSR?.router),
-      renderMode: document.documentElement.dataset.renderMode || "unknown",
+      renderMode: window.__0WEB_RENDER_MODE__ || "unknown",
     }));
     const hydrationErrors = [...consoleErrors, ...pageErrors].filter((message) => invariant.test(message));
 
