@@ -37,15 +37,23 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
-function preventStaleHtml(response: Response): Response {
+async function verifyAndProtectSsrHtml(response: Response, request: Request): Promise<Response> {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("text/html")) return response;
+
+  const html = await response.text();
+  const hasDehydratedRouter = html.includes("$_TSR.router");
+  if (!hasDehydratedRouter) {
+    const route = new URL(request.url).pathname;
+    console.error(`[ssr-payload-missing] route=${route} status=${response.status}`);
+  }
 
   const headers = new Headers(response.headers);
   headers.set("cache-control", "private, no-cache, no-store, must-revalidate");
   headers.set("pragma", "no-cache");
   headers.set("expires", "0");
-  return new Response(response.body, {
+  headers.set("x-0web-ssr-payload", hasDehydratedRouter ? "present" : "missing");
+  return new Response(html, {
     status: response.status,
     statusText: response.statusText,
     headers,
@@ -58,7 +66,7 @@ export default {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
-      return preventStaleHtml(normalized);
+      return await verifyAndProtectSsrHtml(normalized, request);
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
