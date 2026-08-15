@@ -379,7 +379,7 @@ export function FunnelRunner({
     const hasRedirect = Boolean(done.redirectPath);
     const showFallback = done.redirectFailed || !hasRedirect;
     return (
-      <div className={`${embedded ? "py-10" : "min-h-screen"} flex items-center justify-center px-6 bg-background text-foreground`}>
+      <div data-testid="funnel-done" data-redirect={hasRedirect ? "1" : "0"} data-fallback={showFallback ? "1" : "0"} className={`${embedded ? "py-10" : "min-h-screen"} flex items-center justify-center px-6 bg-background text-foreground`}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -404,12 +404,13 @@ export function FunnelRunner({
           </p>
           {done.protocol && (
             <p className="text-xs text-muted-foreground">
-              Protocolo: <span className="font-mono">{done.protocol}</span>
+              Protocolo: <span data-testid="funnel-protocol" className="font-mono">{done.protocol}</span>
             </p>
           )}
           {hasRedirect && (
             <a
               href={done.redirectPath!}
+              data-testid="funnel-whatsapp-link"
               rel="noopener"
               onClick={() =>
                 trackEvent("whatsapp_redirect_requested", {
@@ -493,6 +494,7 @@ export function FunnelRunner({
               <div className="flex items-center justify-between pt-4">
                 <Button
                   variant="ghost"
+                  data-testid="funnel-back"
                   onClick={goBack}
                   disabled={stack.length <= 1 || submitting}
                   className="text-muted-foreground"
@@ -500,7 +502,7 @@ export function FunnelRunner({
                   <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
                 </Button>
                 {current.type !== "radio" && (
-                  <Button onClick={() => goNext()} disabled={submitting} size="lg">
+                  <Button data-testid="funnel-next" onClick={() => goNext()} disabled={submitting} size="lg">
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" />
                       : currentIdx === ordered.length - 1
                         ? <>Enviar <Check className="ml-2 h-4 w-4" /></>
@@ -544,6 +546,7 @@ function QuestionInput({
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
           rows={4}
+          data-testid="funnel-input"
           className="text-lg"
         />
       );
@@ -559,6 +562,7 @@ function QuestionInput({
           placeholder={question.placeholder ?? ""}
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
+          data-testid="funnel-input"
           className="h-12 text-lg"
         />
       );
@@ -571,6 +575,8 @@ function QuestionInput({
               <button
                 key={opt.value}
                 type="button"
+                data-testid="funnel-option"
+                data-value={opt.value}
                 onClick={() => { onChange(opt.value); onAutoAdvance(opt.value); }}
                 className={[
                   "w-full text-left px-5 py-4 rounded-xl border transition-all",
@@ -593,6 +599,7 @@ function QuestionInput({
           autoFocus
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
+          data-testid="funnel-input"
           className="w-full h-12 px-4 rounded-md border border-input bg-background text-lg"
         >
           <option value="" disabled>Selecione…</option>

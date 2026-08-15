@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
   buildWhatsAppLeadMessage,
+  classifyAnswerSource,
+  isFieldAllowedInMessage,
   sanitizeText,
   WHATSAPP_MESSAGE_MAX_LENGTH,
   WHATSAPP_REDIRECT_REUSE_WINDOW_MS,
@@ -140,3 +142,70 @@ describe("constants", () => {
   });
 });
 
+
+describe("classificação por origem (não por formato textual)", () => {
+  it("classifica respostas do visitante como visitor_answer", () => {
+    expect(classifyAnswerSource("telefone")).toBe("visitor_answer");
+    expect(classifyAnswerSource("email")).toBe("visitor_answer");
+    expect(classifyAnswerSource("empresa")).toBe("visitor_answer");
+    expect(classifyAnswerSource("orcamento")).toBe("visitor_answer");
+  });
+
+  it("classifica telemetria e contato operacional corretamente", () => {
+    for (const k of ["ip", "ip_hash", "asn", "isp", "user_agent", "screen_resolution", "consent", "session_id", "token"]) {
+      expect(classifyAnswerSource(k)).toBe("internal_telemetry");
+    }
+    for (const k of ["operational_phone", "operational_email", "admin_contact", "destination_digits"]) {
+      expect(classifyAnswerSource(k)).toBe("operational_contact");
+    }
+  });
+
+  it("permite apenas origens comerciais na mensagem", () => {
+    for (const s of ["visitor_answer", "product", "cart", "location", "page", "attribution"] as const) {
+      expect(isFieldAllowedInMessage({ source: s })).toBe(true);
+    }
+    expect(isFieldAllowedInMessage({ source: "internal_telemetry" })).toBe(false);
+    expect(isFieldAllowedInMessage({ source: "operational_contact" })).toBe(false);
+  });
+
+  it("preserva telefone/e-mail/empresa/cidade do visitante e remove telemetria na mesma mensagem", () => {
+    const msg = buildWhatsAppLeadMessage({
+      protocol: "0W-TURNO3-001",
+      answers: {
+        nome: "Teste E2E 0WEB",
+        telefone: "41999990000",
+        email: "teste-e2e@example.test",
+        empresa: "0Web Testes ME",
+        cidade: "Curitiba",
+        bairro: "Centro",
+        orcamento: "R$ 1.000 a R$ 3.000",
+        prazo: "30 dias",
+        observacoes: "Validar o fluxo Funnel-first",
+        ip: "203.0.113.9",
+        ip_hash: "deadbeefcafe",
+        asn: "AS28573",
+        screen_resolution: "390x844",
+        consent: "true",
+        operational_phone: "5541998864100",
+        operational_email: "ops@0web.internal",
+      },
+      questions: [
+        "nome","telefone","email","empresa","cidade","bairro","orcamento","prazo","observacoes",
+        "ip","ip_hash","asn","screen_resolution","consent","operational_phone","operational_email",
+      ].map((key) => ({ key, label: key, options: [] })),
+    });
+    // visitante preservado
+    expect(msg).toContain("41999990000");
+    expect(msg).toContain("teste-e2e@example.test");
+    expect(msg).toContain("0Web Testes ME");
+    expect(msg).toContain("Curitiba");
+    expect(msg).toContain("R$ 1.000 a R$ 3.000");
+    // interno removido
+    expect(msg).not.toContain("203.0.113.9");
+    expect(msg).not.toContain("deadbeefcafe");
+    expect(msg).not.toContain("AS28573");
+    expect(msg).not.toContain("390x844");
+    expect(msg).not.toContain("5541998864100");
+    expect(msg).not.toContain("ops@0web.internal");
+  });
+});
