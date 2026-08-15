@@ -2090,6 +2090,47 @@ export type Database = {
         }
         Relationships: []
       }
+      landing_overrides_history: {
+        Row: {
+          action: string
+          created_at: string
+          created_by: string | null
+          id: string
+          key: string
+          override_id: string
+          scope: string
+          value: Json | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key: string
+          override_id: string
+          scope: string
+          value?: Json | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key?: string
+          override_id?: string
+          scope?: string
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_overrides_history_override_id_fkey"
+            columns: ["override_id"]
+            isOneToOne: false
+            referencedRelation: "landing_overrides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_history: {
         Row: {
           actor: string | null
@@ -2954,6 +2995,63 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      order_support_requests: {
+        Row: {
+          created_at: string
+          expires_at: string
+          funnel_session_id: string | null
+          id: string
+          ip_hash: string | null
+          order_id: string
+          status: string
+          token_hash: string
+          updated_at: string
+          use_count: number
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          funnel_session_id?: string | null
+          id?: string
+          ip_hash?: string | null
+          order_id: string
+          status?: string
+          token_hash: string
+          updated_at?: string
+          use_count?: number
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          funnel_session_id?: string | null
+          id?: string
+          ip_hash?: string | null
+          order_id?: string
+          status?: string
+          token_hash?: string
+          updated_at?: string
+          use_count?: number
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_support_requests_funnel_session_id_fkey"
+            columns: ["funnel_session_id"]
+            isOneToOne: false
+            referencedRelation: "visitor_funnel_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_support_requests_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {
