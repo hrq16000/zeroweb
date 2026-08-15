@@ -141,6 +141,7 @@ import { Route as AuthenticatedAppMasterRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppMarketplaceRouteImport } from './routes/_authenticated/app.marketplace'
 import { Route as AuthenticatedAppLicensesRouteImport } from './routes/_authenticated/app.licenses'
 import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticated/app.leads'
+import { Route as AuthenticatedAppLandingOverridesRouteImport } from './routes/_authenticated/app.landing-overrides'
 import { Route as AuthenticatedAppIntegracoesRouteImport } from './routes/_authenticated/app.integracoes'
 import { Route as AuthenticatedAppIndexacaoRouteImport } from './routes/_authenticated/app.indexacao'
 import { Route as AuthenticatedAppEditorialRouteImport } from './routes/_authenticated/app.editorial'
@@ -855,6 +856,12 @@ const AuthenticatedAppLeadsRoute = AuthenticatedAppLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppLandingOverridesRoute =
+  AuthenticatedAppLandingOverridesRouteImport.update({
+    id: '/landing-overrides',
+    path: '/landing-overrides',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppIntegracoesRoute =
   AuthenticatedAppIntegracoesRouteImport.update({
     id: '/integracoes',
@@ -1166,6 +1173,7 @@ export interface FileRoutesByFullPath {
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
   '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -1331,6 +1339,7 @@ export interface FileRoutesByTo {
   '/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
   '/app/leads': typeof AuthenticatedAppLeadsRoute
   '/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -1500,6 +1509,7 @@ export interface FileRoutesById {
   '/_authenticated/app/editorial': typeof AuthenticatedAppEditorialRouteWithChildren
   '/_authenticated/app/indexacao': typeof AuthenticatedAppIndexacaoRouteWithChildren
   '/_authenticated/app/integracoes': typeof AuthenticatedAppIntegracoesRoute
+  '/_authenticated/app/landing-overrides': typeof AuthenticatedAppLandingOverridesRoute
   '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRoute
   '/_authenticated/app/licenses': typeof AuthenticatedAppLicensesRoute
   '/_authenticated/app/marketplace': typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -1669,6 +1679,7 @@ export interface FileRouteTypes {
     | '/app/editorial'
     | '/app/indexacao'
     | '/app/integracoes'
+    | '/app/landing-overrides'
     | '/app/leads'
     | '/app/licenses'
     | '/app/marketplace'
@@ -1834,6 +1845,7 @@ export interface FileRouteTypes {
     | '/app/editorial'
     | '/app/indexacao'
     | '/app/integracoes'
+    | '/app/landing-overrides'
     | '/app/leads'
     | '/app/licenses'
     | '/app/marketplace'
@@ -2002,6 +2014,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/editorial'
     | '/_authenticated/app/indexacao'
     | '/_authenticated/app/integracoes'
+    | '/_authenticated/app/landing-overrides'
     | '/_authenticated/app/leads'
     | '/_authenticated/app/licenses'
     | '/_authenticated/app/marketplace'
@@ -3094,6 +3107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppLeadsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/landing-overrides': {
+      id: '/_authenticated/app/landing-overrides'
+      path: '/landing-overrides'
+      fullPath: '/app/landing-overrides'
+      preLoaderRoute: typeof AuthenticatedAppLandingOverridesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/integracoes': {
       id: '/_authenticated/app/integracoes'
       path: '/integracoes'
@@ -3439,6 +3459,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppEditorialRoute: typeof AuthenticatedAppEditorialRouteWithChildren
   AuthenticatedAppIndexacaoRoute: typeof AuthenticatedAppIndexacaoRouteWithChildren
   AuthenticatedAppIntegracoesRoute: typeof AuthenticatedAppIntegracoesRoute
+  AuthenticatedAppLandingOverridesRoute: typeof AuthenticatedAppLandingOverridesRoute
   AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRoute
   AuthenticatedAppLicensesRoute: typeof AuthenticatedAppLicensesRoute
   AuthenticatedAppMarketplaceRoute: typeof AuthenticatedAppMarketplaceRouteWithChildren
@@ -3477,6 +3498,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppEditorialRoute: AuthenticatedAppEditorialRouteWithChildren,
   AuthenticatedAppIndexacaoRoute: AuthenticatedAppIndexacaoRouteWithChildren,
   AuthenticatedAppIntegracoesRoute: AuthenticatedAppIntegracoesRoute,
+  AuthenticatedAppLandingOverridesRoute: AuthenticatedAppLandingOverridesRoute,
   AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRoute,
   AuthenticatedAppLicensesRoute: AuthenticatedAppLicensesRoute,
   AuthenticatedAppMarketplaceRoute:
