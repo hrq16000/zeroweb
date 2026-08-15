@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "test": "bun test",
     "prebuild": "node scripts/validate-route-files.mjs && node scripts/validate-breadcrumbs.mjs",
     "breadcrumbs:validate": "node scripts/validate-breadcrumbs.mjs",
     "build": "vite build && bun run postbuild",
@@ -15,7 +16,8 @@
     "seo:legacy301": "node scripts/validate-legacy-301.mjs",
     "seo:validate": "node scripts/validate-jsonld.mjs https://0web.com.br --with-validator && node scripts/validate-legacy-301.mjs https://0web.com.br",
     "db:validate": "node scripts/validate-required-tables.mjs",
-    "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs && node scripts/validate-canonicals.mjs && node scripts/validate-client-privacy.mjs",
+    "postbuild": "node scripts/optimize-blog-images.mjs && node scripts/validate-seo-images.mjs && node scripts/validate-canonicals.mjs && node scripts/validate-client-privacy.mjs && node scripts/validate-no-public-contact-dist.mjs",
+    "validate:dist-contact": "node scripts/validate-no-public-contact-dist.mjs",
     "validate:client-privacy": "node scripts/validate-client-privacy.mjs",
     "preview": "vite preview",
     "lhci": "lhci autorun --config=.lighthouserc.cjs",
@@ -28,6 +30,7 @@
     "seo:diff": "node scripts/run-seo-diff.mjs",
     "offers:validate": "node scripts/validate-public-offers.mjs",
     "test:e2e:hydration": "node scripts/playwright-hydration.mjs",
+    "test:e2e:funnel": "node scripts/playwright-funnel-e2e.mjs",
     "validate:ssr-payload": "node scripts/validate-ssr-dehydrated.mjs",
     "ci:hydration": "bun run validate:ssr-payload && bun run test:e2e:hydration"
   },
@@ -101,6 +104,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@happy-dom/global-registrator": "^20.11.2",
     "@lhci/cli": "^0.15.1",
     "@lovable.dev/vite-tanstack-config": "2.13.1",
     "@types/node": "^22.16.5",

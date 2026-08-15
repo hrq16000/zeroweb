@@ -44,26 +44,82 @@ export type LeadMessageContext = {
 };
 
 
+/**
+ * Origem de cada campo candidato à mensagem. A sanitização é feita POR ORIGEM
+ * (e por chave), nunca por formato textual — telefone/e-mail preenchidos pelo
+ * visitante são dados comerciais legítimos e DEVEM ser preservados.
+ */
+export type MessageFieldSource =
+  | "visitor_answer"
+  | "product"
+  | "cart"
+  | "location"
+  | "page"
+  | "attribution"
+  | "internal_telemetry"
+  | "operational_contact";
+
+export type MessageField = {
+  key: string;
+  label: string;
+  value: string;
+  source: MessageFieldSource;
+};
+
+/** Origens que podem compor o conteúdo enviado ao WhatsApp. */
+const ALLOWED_SOURCES: ReadonlySet<MessageFieldSource> = new Set([
+  "visitor_answer",
+  "product",
+  "cart",
+  "location",
+  "page",
+  "attribution",
+]);
+
+/** Chaves sempre tratadas como telemetria interna / contato operacional. */
+const INTERNAL_TELEMETRY_KEYS = new Set([
+  "ip",
+  "ip_hash",
+  "asn",
+  "isp",
+  "provider",
+  "user_agent",
+  "ua_browser",
+  "ua_os",
+  "ua_device",
+  "screen_resolution",
+  "viewport",
+  "consent",
+  "consents",
+  "session_id",
+  "visitor_id",
+  "funnel_session_id",
+  "lead_id",
+  "token",
+  "api_key",
+  "secret",
+]);
+const OPERATIONAL_CONTACT_KEYS = new Set([
+  "operational_phone",
+  "operational_email",
+  "admin_contact",
+  "destination_digits",
+]);
+
+export function classifyAnswerSource(key: string): MessageFieldSource {
+  if (INTERNAL_TELEMETRY_KEYS.has(key)) return "internal_telemetry";
+  if (OPERATIONAL_CONTACT_KEYS.has(key)) return "operational_contact";
+  return "visitor_answer";
+}
+
+export function isFieldAllowedInMessage(field: Pick<MessageField, "source">): boolean {
+  return ALLOWED_SOURCES.has(field.source);
+}
+
 export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
   // Preserve visitor-provided contact/data (name, phone, email, city, budget…)
   // and block only internal telemetry / operational contact keys. Sanitization
   // still strips HTML, control chars and enforces length limits per value.
-  const INTERNAL_KEYS = new Set([
-    "ip",
-    "ip_hash",
-    "asn",
-    "user_agent",
-    "ua_browser",
-    "ua_os",
-    "ua_device",
-    "session_id",
-    "visitor_id",
-    "funnel_session_id",
-    "lead_id",
-    "token",
-    "operational_phone",
-    "operational_email",
-  ]);
   const push = (arr: string[], line: string) => {
     if (line) arr.push(line);
   };
@@ -84,7 +140,7 @@ export function buildWhatsAppLeadMessage(ctx: LeadMessageContext): string {
 
   const answersLines: string[] = [];
   for (const q of ctx.questions) {
-    if (INTERNAL_KEYS.has(q.key)) continue;
+    if (!isFieldAllowedInMessage({ source: classifyAnswerSource(q.key) })) continue;
     const raw = ctx.answers[q.key];
     if (raw === undefined || raw === null || raw === "") continue;
     const display = Array.isArray(raw)

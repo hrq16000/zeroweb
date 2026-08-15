@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getLgpdSettings } from "@/lib/visitor-analytics.functions";
 
-const lgpdQuery = queryOptions({
+export const lgpdQuery = queryOptions({
   queryKey: ["lgpd-settings"],
   queryFn: () => getLgpdSettings(),
 });
