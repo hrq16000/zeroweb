@@ -111,14 +111,25 @@ export const adminListLandingOverrideHistory = createServerFn({ method: "POST" }
       .limit(50);
 
     if (error) throw new Error(error.message);
-    return { rows: (rows ?? []) as Array<{
+    type HistoryRow = {
       id: string;
       action: string;
       value: unknown;
       created_at: string;
       created_by: string | null;
-    }> };
+    };
+    // `value` é serializado como texto JSON para atravessar o RPC com segurança.
+    return {
+      rows: ((rows ?? []) as HistoryRow[]).map((r) => ({
+        id: r.id,
+        action: r.action,
+        valueJson: JSON.stringify(r.value ?? null, null, 2),
+        created_at: r.created_at,
+        created_by: r.created_by,
+      })),
+    };
   });
+
 
 export const adminSaveLandingOverrideDraft = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
