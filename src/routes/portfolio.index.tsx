@@ -166,9 +166,7 @@ function PortfolioPage() {
 
             {/* Quick CTA */}
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <FunnelCTAButton size="lg" className="shadow-lg">
-                Quero Meu Site em 24h
-              </FunnelCTAButton>
+              <FunnelCTAButton label="Quero Meu Site em 24h" className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition-opacity shadow-lg" />
               <a 
                 href="/renata-beauty" 
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/30 hover:bg-pink-500/20 text-sm font-semibold transition-all"
@@ -275,9 +273,7 @@ function PortfolioPage() {
                           Ver Demonstração Ao Vivo <ExternalLink className="w-4 h-4" />
                         </Link>
 
-                        <FunnelCTAButton size="sm" variant="outline">
-                          Pedir Igual
-                        </FunnelCTAButton>
+                        <FunnelCTAButton label="Pedir Igual" className="inline-flex items-center gap-2 rounded-full border border-primary/30 text-primary font-semibold px-4 py-2 text-sm hover:bg-primary/10 transition-colors" />
                       </div>
                     </div>
                   </motion.div>
@@ -297,9 +293,7 @@ function PortfolioPage() {
                 Cuidamos do design, dos textos persuasivos, da configuração do Google e do botão de WhatsApp para o seu negócio começar a receber contatos imediatamente.
               </p>
               <div className="pt-2">
-                <FunnelCTAButton size="lg" className="shadow-lg">
-                  Solicitar Proposta sem Compromisso
-                </FunnelCTAButton>
+                <FunnelCTAButton label="Solicitar Proposta sem Compromisso" className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition-opacity shadow-lg" />
               </div>
             </div>
 

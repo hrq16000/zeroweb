@@ -30,6 +30,9 @@ const PATTERNS = [
 
 // Caminhos internos legítimos que contêm "whatsapp" e não são contato.
 const SAFE_LINE = /\/r\/whatsapp\/|r\.whatsapp|whatsapp_redirect|whatsapp-redirect/;
+// Contatos públicos de CLIENTES (páginas de portfólio) — não são contatos da 0WEB.
+const CLIENT_ALLOW = /wa\.me\/554196048639/;
+
 
 const EXT = /\.(js|mjs|cjs|html|json|map|txt|xml)$/;
 
@@ -63,7 +66,7 @@ for (const f of files) {
     const hits = [...content.matchAll(re)].filter((m) => {
       const start = Math.max(0, m.index - 120);
       const ctx = content.slice(start, m.index + 120);
-      return !SAFE_LINE.test(ctx);
+      return !SAFE_LINE.test(ctx) && !CLIENT_ALLOW.test(m[0]);
     });
     if (hits.length) {
       console.error(`[dist-contact] ${rel} → ${name} x${hits.length} (ex.: ${hits[0][0].slice(0, 60)})`);
