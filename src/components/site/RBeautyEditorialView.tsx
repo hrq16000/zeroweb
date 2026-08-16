@@ -374,7 +374,6 @@ export function RBeautyEditorialView() {
         </div>
       </footer>
 
-    </div>
       <PortfolioUpsellPopup pageName="r_beauty" />
     </div>
   );

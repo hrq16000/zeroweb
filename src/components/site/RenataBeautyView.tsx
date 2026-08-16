@@ -760,7 +760,6 @@ export function RenataBeautyView() {
         </a>
       </div>
 
-    </div>
       <PortfolioUpsellPopup pageName="renata-beauty" />
     </div>
   );
