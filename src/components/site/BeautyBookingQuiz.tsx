@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle2, MessageCircle, Sparkles, X } from "lucide-react";
+import { trackConversion, trackEvent, trackWhatsAppClick } from "@/lib/analytics";
+import { persistWaFunnelConversion, persistWaFunnelOpen, persistWaFunnelStep } from "@/lib/persistence";
 
 type Theme = "pink" | "gold";
 type Answers = { service: string; experience: string; period: string; timing: string; note: string };
@@ -88,15 +90,39 @@ export function BeautyBookingQuiz({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
+  const funnelContext = { location: "beauty_booking_quiz", studio_name: studioName, page_type: "portfolio_demo" };
+
   const start = () => {
     setAnswers({ service: service ?? "", experience: "", period: "", timing: "", note: "" });
     setStep(0);
     setOpen(true);
+    trackConversion("wa_funnel_open", funnelContext);
+    void persistWaFunnelOpen(5);
   };
 
   const choose = (field: keyof Omit<Answers, "note">, value: string) => {
-    setAnswers((current) => ({ ...current, [field]: value }));
+    setAnswers((current) => {
+      const next = { ...current, [field]: value };
+      const stepIndex = step + 1;
+      trackEvent("wa_funnel_step", { ...funnelContext, step_id: field, step_index: stepIndex });
+      void persistWaFunnelStep(stepIndex, next);
+      return next;
+    });
     setStep((current) => current + 1);
+  };
+
+  const showMessage = () => {
+    const nextStep = 5;
+    trackEvent("wa_funnel_step", { ...funnelContext, step_id: "note", step_index: nextStep });
+    void persistWaFunnelStep(nextStep, answers);
+    setStep(nextStep);
+  };
+
+  const completeInWhatsApp = () => {
+    const conversion = { ...funnelContext, steps: 5, service: answers.service || "orientacao" };
+    trackConversion("wa_funnel_complete", conversion);
+    trackWhatsAppClick("beauty_booking_quiz_complete", conversion);
+    void persistWaFunnelConversion({ ...answers, studio: studioName, source: "portfolio_demo" });
   };
 
   const question = step === 0
@@ -158,7 +184,7 @@ export function BeautyBookingQuiz({
                     <p className="text-sm leading-relaxed text-gray-400">É opcional. Você pode contar se tem preferência de estilo, horário ou alguma dúvida.</p>
                   </div>
                   <textarea value={answers.note} onChange={(event) => setAnswers((current) => ({ ...current, note: event.target.value.slice(0, 280) }))} maxLength={280} rows={4} placeholder="Ex.: gosto de um efeito mais natural e consigo depois das 18h." className="w-full resize-none rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/40" />
-                  <button type="button" onClick={() => setStep(5)} className={"inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-bold transition " + primaryClass}>
+                  <button type="button" onClick={showMessage} className={"inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-bold transition " + primaryClass}>
                     Ver minha mensagem pronta <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
@@ -173,7 +199,7 @@ export function BeautyBookingQuiz({
                     <p className="font-bold text-white">{answers.service}</p>
                     <p className="mt-1">{answers.experience} · {answers.period} · {answers.timing}</p>
                   </div>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className={"inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-bold transition " + primaryClass}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" onClick={completeInWhatsApp} className={"inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3.5 text-sm font-bold transition " + primaryClass}>
                     <MessageCircle className="h-5 w-5" aria-hidden="true" />
                     Enviar pedido pelo WhatsApp
                   </a>
