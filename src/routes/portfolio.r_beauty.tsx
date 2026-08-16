@@ -15,7 +15,7 @@ export const Route = createFileRoute("/portfolio/r_beauty")({
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { property: "og:url", content: URL },
-      { property: "og:image", content: "https://0web.com.br/images/renata-beauty-flyer.jpg" },
+      { property: "og:image", content: "https://0web.com.br/images/r-beauty-cilios.jpg" },
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

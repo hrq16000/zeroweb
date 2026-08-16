@@ -57,7 +57,7 @@ export function RenataBeautyView() {
       ],
       duration: "1h45 a 2h",
       badgeHighlight: "Volume Intenso & Leve",
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+      image: "/images/volume-egipcio-fios-w.jpg"
     },
     {
       id: "brasileiro",

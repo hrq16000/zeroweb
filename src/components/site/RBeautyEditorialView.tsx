@@ -170,7 +170,7 @@ export function RBeautyEditorialView() {
                   alt="Espaço R_Beauty Studio" 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=800&q=80";
+                    (e.target as HTMLImageElement).src = "/images/r-beauty-cilios.jpg";
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
@@ -215,7 +215,7 @@ export function RBeautyEditorialView() {
             
             {/* After Image (Full background) */}
             <img 
-              src="https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=1200&q=80" 
+              src="/images/volume-egipcio-fios-w.jpg" 
               alt="Cílios Depois" 
               className="absolute inset-0 w-full h-full object-cover"
             />
