@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
+import { InstagramFeedSection } from "@/components/site/InstagramFeedSection";
 
 const PHONE_NUMBER = "554196048639";
 const INSTAGRAM_URL = "https://www.instagram.com/renatabeautystudiio/";
@@ -564,6 +565,8 @@ export function RenataBeautyView() {
 
         </div>
       </section>
+
+      <InstagramFeedSection variant="renata" />
 
       {/* Location & Map Interactive */}
       <section id="localizacao" className="py-20 px-4 bg-[#130810]/80 border-t border-white/10">
