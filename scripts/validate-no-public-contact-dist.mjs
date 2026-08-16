@@ -30,6 +30,9 @@ const PATTERNS = [
 
 // Caminhos internos legítimos que contêm "whatsapp" e não são contato.
 const SAFE_LINE = /\/r\/whatsapp\/|r\.whatsapp|whatsapp_redirect|whatsapp-redirect/;
+// Contatos públicos de CLIENTES (páginas de portfólio) — não são contatos da 0WEB.
+const CLIENT_ALLOW = /wa\.me\/554196048639/;
+
 
 const EXT = /\.(js|mjs|cjs|html|json|map|txt|xml)$/;
 
