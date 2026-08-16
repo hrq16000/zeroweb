@@ -163,7 +163,7 @@ export async function persistWaFunnelStep(stepIndex: number, answers: Record<str
   }
 }
 
-export async function persistWaFunnelComplete(answers: Record<string, string>) {
+export async function persistWaFunnelConversion(answers: Record<string, string>) {
   if (typeof window === "undefined") return;
   try {
     if (waSessionRowId) {
@@ -178,8 +178,14 @@ export async function persistWaFunnelComplete(answers: Record<string, string>) {
     }
   } catch {
     /* swallow */
+  } finally {
+    waSessionRowId = null;
   }
-  // also persist as a lead
+}
+
+export async function persistWaFunnelComplete(answers: Record<string, string>) {
+  await persistWaFunnelConversion(answers);
+  // Forms that collect contact information also register a lead.
   await persistLead({
     name: answers.nome,
     email: answers.email,
@@ -187,7 +193,6 @@ export async function persistWaFunnelComplete(answers: Record<string, string>) {
     source: "wa_funnel",
     payload: answers,
   });
-  waSessionRowId = null;
 }
 
 export async function bumpExperiment(
