@@ -32,6 +32,7 @@ import { Route as SitemapBhNeighborhoodsDotxmlRouteImport } from './routes/sitem
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SeoRouteImport } from './routes/seo'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
+import { Route as RenataBeautyRouteImport } from './routes/renata-beauty'
 import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
@@ -69,6 +70,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SitesIndexRouteImport } from './routes/sites.index'
 import { Route as SitesRobustosIndexRouteImport } from './routes/sites-robustos.index'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as CasesIndexRouteImport } from './routes/cases.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSkyscraperIndexRouteImport } from './routes/blog-skyscraper.index'
@@ -90,6 +92,7 @@ import { Route as ServicosConsultoriaRouteImport } from './routes/servicos.consu
 import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
+import { Route as PortfolioRenataBeautyRouteImport } from './routes/portfolio.renata-beauty'
 import { Route as PedidoIdRouteImport } from './routes/pedido.$id'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
@@ -298,6 +301,11 @@ const RssDotxmlRoute = RssDotxmlRouteImport.update({
   path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RenataBeautyRoute = RenataBeautyRouteImport.update({
+  id: '/renata-beauty',
+  path: '/renata-beauty',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedesSociaisRoute = RedesSociaisRouteImport.update({
   id: '/redes-sociais',
   path: '/redes-sociais',
@@ -482,6 +490,11 @@ const ServicosIndexRoute = ServicosIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ServicosRoute,
 } as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/portfolio/',
+  path: '/portfolio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CasesIndexRoute = CasesIndexRouteImport.update({
   id: '/cases/',
   path: '/cases/',
@@ -588,6 +601,11 @@ const RCodeRoute = RCodeRouteImport.update({
 const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
   id: '/profissional/$slug',
   path: '/profissional/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRenataBeautyRoute = PortfolioRenataBeautyRouteImport.update({
+  id: '/portfolio/renata-beauty',
+  path: '/portfolio/renata-beauty',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoIdRoute = PedidoIdRouteImport.update({
@@ -1108,6 +1126,7 @@ export interface FileRoutesByFullPath {
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
+  '/renata-beauty': typeof RenataBeautyRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
@@ -1155,6 +1174,7 @@ export interface FileRoutesByFullPath {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1176,6 +1196,7 @@ export interface FileRoutesByFullPath {
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/servicos/': typeof ServicosIndexRoute
   '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
@@ -1278,6 +1299,7 @@ export interface FileRoutesByTo {
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
+  '/renata-beauty': typeof RenataBeautyRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/sitemap-bh-neighborhoods.xml': typeof SitemapBhNeighborhoodsDotxmlRoute
@@ -1323,6 +1345,7 @@ export interface FileRoutesByTo {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1344,6 +1367,7 @@ export interface FileRoutesByTo {
   '/blog-skyscraper': typeof BlogSkyscraperIndexRoute
   '/blog': typeof BlogIndexRoute
   '/cases': typeof CasesIndexRoute
+  '/portfolio': typeof PortfolioIndexRoute
   '/servicos': typeof ServicosIndexRoute
   '/sites-robustos': typeof SitesRobustosIndexRoute
   '/sites': typeof SitesIndexRoute
@@ -1448,6 +1472,7 @@ export interface FileRoutesById {
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
   '/redes-sociais': typeof RedesSociaisRoute
+  '/renata-beauty': typeof RenataBeautyRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/seo': typeof SeoRoute
   '/servicos': typeof ServicosRouteWithChildren
@@ -1495,6 +1520,7 @@ export interface FileRoutesById {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
   '/servicos/$slug': typeof ServicosSlugRoute
@@ -1516,6 +1542,7 @@ export interface FileRoutesById {
   '/blog-skyscraper/': typeof BlogSkyscraperIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/cases/': typeof CasesIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/servicos/': typeof ServicosIndexRoute
   '/sites-robustos/': typeof SitesRobustosIndexRoute
   '/sites/': typeof SitesIndexRoute
@@ -1620,6 +1647,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
+    | '/renata-beauty'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -1667,6 +1695,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -1688,6 +1717,7 @@ export interface FileRouteTypes {
     | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
+    | '/portfolio/'
     | '/servicos/'
     | '/sites-robustos/'
     | '/sites/'
@@ -1790,6 +1820,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
+    | '/renata-beauty'
     | '/rss.xml'
     | '/seo'
     | '/sitemap-bh-neighborhoods.xml'
@@ -1835,6 +1866,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -1856,6 +1888,7 @@ export interface FileRouteTypes {
     | '/blog-skyscraper'
     | '/blog'
     | '/cases'
+    | '/portfolio'
     | '/servicos'
     | '/sites-robustos'
     | '/sites'
@@ -1959,6 +1992,7 @@ export interface FileRouteTypes {
     | '/privacidade'
     | '/qa-events'
     | '/redes-sociais'
+    | '/renata-beauty'
     | '/rss.xml'
     | '/seo'
     | '/servicos'
@@ -2006,6 +2040,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
     | '/servicos/$slug'
@@ -2027,6 +2062,7 @@ export interface FileRouteTypes {
     | '/blog-skyscraper/'
     | '/blog/'
     | '/cases/'
+    | '/portfolio/'
     | '/servicos/'
     | '/sites-robustos/'
     | '/sites/'
@@ -2131,6 +2167,7 @@ export interface RootRouteChildren {
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
   RedesSociaisRoute: typeof RedesSociaisRoute
+  RenataBeautyRoute: typeof RenataBeautyRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SeoRoute: typeof SeoRoute
   ServicosRoute: typeof ServicosRouteWithChildren
@@ -2176,6 +2213,7 @@ export interface RootRouteChildren {
   EmpresaSlugRoute: typeof EmpresaSlugRoute
   FSlugRoute: typeof FSlugRoute
   PedidoIdRoute: typeof PedidoIdRoute
+  PortfolioRenataBeautyRoute: typeof PortfolioRenataBeautyRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
   SitesRobustosSlugRoute: typeof SitesRobustosSlugRoute
@@ -2186,6 +2224,7 @@ export interface RootRouteChildren {
   BlogSkyscraperIndexRoute: typeof BlogSkyscraperIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CasesIndexRoute: typeof CasesIndexRoute
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
   SitesRobustosIndexRoute: typeof SitesRobustosIndexRoute
   SitesIndexRoute: typeof SitesIndexRoute
   ApiPublicHealthDbRoute: typeof ApiPublicHealthDbRoute
@@ -2368,6 +2407,13 @@ declare module '@tanstack/react-router' {
       path: '/rss.xml'
       fullPath: '/rss.xml'
       preLoaderRoute: typeof RssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/renata-beauty': {
+      id: '/renata-beauty'
+      path: '/renata-beauty'
+      fullPath: '/renata-beauty'
+      preLoaderRoute: typeof RenataBeautyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redes-sociais': {
@@ -2629,6 +2675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosIndexRouteImport
       parentRoute: typeof ServicosRoute
     }
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/portfolio'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cases/': {
       id: '/cases/'
       path: '/cases'
@@ -2774,6 +2827,13 @@ declare module '@tanstack/react-router' {
       path: '/profissional/$slug'
       fullPath: '/profissional/$slug'
       preLoaderRoute: typeof ProfissionalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/renata-beauty': {
+      id: '/portfolio/renata-beauty'
+      path: '/portfolio/renata-beauty'
+      fullPath: '/portfolio/renata-beauty'
+      preLoaderRoute: typeof PortfolioRenataBeautyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido/$id': {
@@ -3669,6 +3729,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
   RedesSociaisRoute: RedesSociaisRoute,
+  RenataBeautyRoute: RenataBeautyRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SeoRoute: SeoRoute,
   ServicosRoute: ServicosRouteWithChildren,
@@ -3714,6 +3775,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmpresaSlugRoute: EmpresaSlugRoute,
   FSlugRoute: FSlugRoute,
   PedidoIdRoute: PedidoIdRoute,
+  PortfolioRenataBeautyRoute: PortfolioRenataBeautyRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
   SitesRobustosSlugRoute: SitesRobustosSlugRoute,
@@ -3724,6 +3786,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSkyscraperIndexRoute: BlogSkyscraperIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   CasesIndexRoute: CasesIndexRoute,
+  PortfolioIndexRoute: PortfolioIndexRoute,
   SitesRobustosIndexRoute: SitesRobustosIndexRoute,
   SitesIndexRoute: SitesIndexRoute,
   ApiPublicHealthDbRoute: ApiPublicHealthDbRoute,
