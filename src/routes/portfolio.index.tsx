@@ -18,6 +18,7 @@ import { Footer } from "@/components/site/Footer";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { WhatsAppFloat } from "@/components/site/WhatsAppFloat";
 import { FloatingFunnelCTA } from "@/components/funnel/FloatingFunnelCTA";
+import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
 import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 
 const TITLE = "Portfólio & Vitrine de Sites · Projetos Reais Criados pela 0WEB";
@@ -317,6 +318,7 @@ function PortfolioPage() {
       <Footer />
       <WhatsAppFloat />
       <FloatingFunnelCTA />
+      <PortfolioUpsellPopup pageName="portfolio-index" />
     </div>
   );
 }
