@@ -20,6 +20,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
 
 const PHONE_NUMBER = "554196048639";
 const INSTAGRAM_URL = "https://www.instagram.com/renatabeautystudiio/";
@@ -373,6 +374,8 @@ export function RBeautyEditorialView() {
         </div>
       </footer>
 
+    </div>
+      <PortfolioUpsellPopup pageName="r_beauty" />
     </div>
   );
 }
