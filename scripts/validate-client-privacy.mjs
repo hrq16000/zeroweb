@@ -15,6 +15,8 @@ const WA = /wa\.me\/?(\d+)?/g;
 // contatos públicos de CLIENTES (páginas de portfólio) — não são contatos da 0WEB.
 // Ex.: Renata Beauty Studio, cujo site vitrine expõe o WhatsApp do próprio cliente.
 const CLIENT_ALLOW_DIGITS = new Set(["554196048639"]);
+// chunks de páginas-vitrine de clientes: o contato exposto é do próprio cliente
+const CLIENT_CHUNK_PREFIXES = ["RenataBeautyView"];
 const CLIENT_ALLOW_PHONE = /^\+?55[- ]?\(?41\)?[- ]?9604-?8639$/;
 // e-mails: exclui domínios de vendors/schemas/typedefs conhecidos
 const EMAIL = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
@@ -44,7 +46,10 @@ function scan(file) {
   const admin = isAdminChunk(name);
   const src = readFileSync(file, "utf8");
 
-  const waHits = [...src.matchAll(WA)].filter((m) => !(m[1] && CLIENT_ALLOW_DIGITS.has(m[1]))).length;
+  const clientPage = CLIENT_CHUNK_PREFIXES.some((p) => name.startsWith(p));
+  const waHits = clientPage
+    ? 0
+    : [...src.matchAll(WA)].filter((m) => !(m[1] && CLIENT_ALLOW_DIGITS.has(m[1]))).length;
   const emailHits = [...src.matchAll(EMAIL)].filter((m) => !EMAIL_ALLOW.test(m[0])).map((m) => m[0]);
   const phoneHits = PHONE_PATTERNS.flatMap((rx) => [...src.matchAll(rx)].map((m) => m[0]))
     .filter((v) => !PHONE_ALLOW.test(v) && !CLIENT_ALLOW_PHONE.test(v.replace(/\s+/g, " ").trim()));
