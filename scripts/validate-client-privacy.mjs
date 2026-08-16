@@ -16,7 +16,12 @@ const WA = /wa\.me\/?(\d+)?/g;
 // Ex.: Renata Beauty Studio, cujo site vitrine expõe o WhatsApp do próprio cliente.
 const CLIENT_ALLOW_DIGITS = new Set(["554196048639"]);
 // chunks de páginas-vitrine de clientes: o contato exposto é do próprio cliente
-const CLIENT_CHUNK_PREFIXES = ["RenataBeautyView"];
+const CLIENT_CHUNK_PREFIXES = [
+  "RenataBeautyView",
+  "RBeautyEditorialView",
+  "portfolio.renata-beauty",
+  "portfolio.r_beauty",
+];
 const CLIENT_ALLOW_PHONE = /^\+?55[- ]?\(?41\)?[- ]?9604-?8639$/;
 // e-mails: exclui domínios de vendors/schemas/typedefs conhecidos
 const EMAIL = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
