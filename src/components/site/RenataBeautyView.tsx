@@ -43,7 +43,7 @@ export function RenataBeautyView() {
   const services = [
     {
       id: "egipcio",
-      name: "Volume Egípcio (Fios W)",
+      name: "Cílios Volume Egípcio (Fios W)",
       tag: "🔥 Destaque Inauguração R$ 100",
       promoPrice: "100,00",
       normalPrice: "180,00",
@@ -60,7 +60,7 @@ export function RenataBeautyView() {
     },
     {
       id: "brasileiro",
-      name: "Volume Brasileiro (Fios Y)",
+      name: "Cílios Volume Brasileiro (Fios Y)",
       tag: "🔥 Destaque Inauguração R$ 100",
       promoPrice: "100,00",
       normalPrice: "170,00",
@@ -130,7 +130,7 @@ export function RenataBeautyView() {
 
   const faqs = [
     {
-      q: "Qual a diferença entre o Volume Egípcio e o Volume Brasileiro?",
+      q: "Qual a diferença entre o Volume Egípcio e o Volume Brasileiro (extensão de cílios)?",
       a: "O Volume Egípcio utiliza fios tecnológicos em formato W (3 a 4 pontas em uma única base), gerando mais preenchimento, densidade e efeito delineador. Já o Volume Brasileiro utiliza fios em formato Y, conferindo um efeito rímel mais texturizado e curvado. Ambos estão na promoção de R$ 100 na inauguração!"
     },
     {

@@ -3,7 +3,6 @@ import { X, Sparkles, CalendarClock, Share2 } from "lucide-react";
 import { FunnelModalWrapper } from "@/components/funnel/FunnelModalWrapper";
 import { subscribeScroll } from "@/lib/scroll-bus";
 import { trackEvent } from "@/lib/analytics";
-import type { ContactIntent } from "@/lib/contact-intent";
 
 const STORAGE_KEY = "0web:portfolio-upsell-dismissed";
 
@@ -58,13 +57,12 @@ export function PortfolioUpsellPopup({ pageName = "portfolio" }: { pageName?: st
         open={funnelOpen}
         onClose={() => setFunnelOpen(false)}
         funnelSlug="diagnostico-0web"
-        intent={
-          {
-            purpose: "diagnosis",
-            source: `portfolio_upsell_${pageName}`,
-            placement: "modal",
-          } as ContactIntent
-        }
+        intent={{
+          purpose: "diagnosis",
+          source: `portfolio_upsell_${pageName}`,
+          pagePath: typeof window === "undefined" ? "/portfolio" : window.location.pathname,
+          placement: "section",
+        }}
       />
     );
   }
@@ -132,13 +130,12 @@ export function PortfolioUpsellPopup({ pageName = "portfolio" }: { pageName?: st
         open={funnelOpen}
         onClose={() => setFunnelOpen(false)}
         funnelSlug="diagnostico-0web"
-        intent={
-          {
-            purpose: "diagnosis",
-            source: `portfolio_upsell_${pageName}`,
-            placement: "modal",
-          } as ContactIntent
-        }
+        intent={{
+          purpose: "diagnosis",
+          source: `portfolio_upsell_${pageName}`,
+          pagePath: typeof window === "undefined" ? "/portfolio" : window.location.pathname,
+          placement: "section",
+        }}
       />
     </>
   );
