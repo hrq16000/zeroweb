@@ -44,9 +44,10 @@ function scan(file) {
   const admin = isAdminChunk(name);
   const src = readFileSync(file, "utf8");
 
-  const waHits = [...src.matchAll(WA)].length;
+  const waHits = [...src.matchAll(WA)].filter((m) => !(m[1] && CLIENT_ALLOW_DIGITS.has(m[1]))).length;
   const emailHits = [...src.matchAll(EMAIL)].filter((m) => !EMAIL_ALLOW.test(m[0])).map((m) => m[0]);
-  const phoneHits = PHONE_PATTERNS.flatMap((rx) => [...src.matchAll(rx)].map((m) => m[0])).filter((v) => !PHONE_ALLOW.test(v));
+  const phoneHits = PHONE_PATTERNS.flatMap((rx) => [...src.matchAll(rx)].map((m) => m[0]))
+    .filter((v) => !PHONE_ALLOW.test(v) && !CLIENT_ALLOW_PHONE.test(v.replace(/\s+/g, " ").trim()));
 
   if (waHits === 0 && emailHits.length === 0 && phoneHits.length === 0) return;
 
