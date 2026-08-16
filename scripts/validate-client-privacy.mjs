@@ -11,7 +11,11 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const DIST = "dist/client/assets";
-const WA = /wa\.me/g;
+const WA = /wa\.me\/?(\d+)?/g;
+// contatos públicos de CLIENTES (páginas de portfólio) — não são contatos da 0WEB.
+// Ex.: Renata Beauty Studio, cujo site vitrine expõe o WhatsApp do próprio cliente.
+const CLIENT_ALLOW_DIGITS = new Set(["554196048639"]);
+const CLIENT_ALLOW_PHONE = /^\+?55[- ]?\(?41\)?[- ]?9604-?8639$/;
 // e-mails: exclui domínios de vendors/schemas/typedefs conhecidos
 const EMAIL = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 const EMAIL_ALLOW = /^(?:.*@)(?:sentry|example|schema\.org|w3\.org|whatwg|graphql|googleapis|gstatic|facebook|npmjs|types|radix|tanstack|babel|react|supabase|ai-sdk|floating|lovable|vite|fontsource|hookform|lookout|stripe|internal\.|noreply\.)|^(?:seu|email|nome|contato)@(?:email|exemplo|dominio)\./i;
@@ -24,6 +28,7 @@ const PHONE_PATTERNS = [
 ];
 // placeholders comuns em form inputs — não são leak
 const PHONE_ALLOW = /^\(?\d?\d?\)?\s?9?9999-?9999$|^\(11\)\s?90000-0000$|^\(41\)\s?9\d{4}-\d{4}$/;
+
 
 const ADMIN_PREFIXES = ["app.pedidos", "app.servicos", "app.leads", "app.painel", "app.dashboard", "app.crm", "app.usuarios", "app.integracoes", "app.configuracoes", "app.marketplace", "app.b2b"];
 
