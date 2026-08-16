@@ -36,17 +36,30 @@ const CATEGORIES = [
 const PORTFOLIO_ITEMS = [
   {
     id: "renata-beauty",
-    slug: "/renata-beauty",
+    slug: "/portfolio/renata-beauty",
     category: "beleza",
-    title: "Renata Beauty Studio",
+    title: "Renata Beauty Studio (Versão Oficial)",
     subtitle: "Lash Designer, Unhas de Fibra & Estética",
     location: "Boneca do Iguaçu — PR",
-    badge: "Novo Lançamento",
+    badge: "Promoção R$ 100",
     image: "/images/renata-beauty-flyer.jpg",
     fallbackImage: "https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=800&q=80",
     tags: ["Volume Egípcio", "Unhas de Fibra", "WhatsApp Direct", "Design Dark Luxury"],
     metrics: "+300% cliques no WhatsApp",
-    summary: "Landing page de alta conversão criada para o lançamento do novo espaço físico, integrando promoção de R$ 100, mapa no Google Maps e agendamento instantâneo no WhatsApp.",
+    summary: "Landing page oficial criada para a inauguração do novo espaço físico, com visual fiel ao flyer original, mapa e agendamento instantâneo.",
+  },
+  {
+    id: "r_beauty",
+    slug: "/portfolio/r_beauty",
+    category: "beleza",
+    title: "R_Beauty Studio & Spa (Versão Editorial)",
+    subtitle: "Haute Esthetics & Cuidados VIP",
+    location: "Boneca do Iguaçu — PR",
+    badge: "Design Editorial",
+    image: "https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=800&q=80",
+    tags: ["Tipografia Cinética", "Comparador Antes/Depois", "Champagne Gold"],
+    metrics: "Experiência VIP",
+    summary: "Versão com estética de alta costura, slider interativo de antes e depois, e tipografia cinética para posicionamento premium.",
   },
   {
     id: "clinica-sorriso",
@@ -168,7 +181,7 @@ function PortfolioPage() {
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
               <FunnelCTAButton label="Quero Meu Site em 24h" className="inline-flex items-center gap-2 rounded-full bg-gradient-primary text-primary-foreground font-semibold px-6 py-3.5 shadow-glow-primary hover:opacity-95 transition-opacity shadow-lg" />
               <a 
-                href="/renata-beauty" 
+                href="/portfolio/renata-beauty" 
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/30 hover:bg-pink-500/20 text-sm font-semibold transition-all"
               >
                 <Sparkles className="w-4 h-4 text-pink-500" /> Ver Destaque: Renata Beauty
