@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
+import { InstagramFeedSection } from "@/components/site/InstagramFeedSection";
 
 const PHONE_NUMBER = "554196048639";
 const INSTAGRAM_URL = "https://www.instagram.com/renatabeautystudiio/";
@@ -349,6 +350,8 @@ export function RBeautyEditorialView() {
 
         </div>
       </section>
+
+      <InstagramFeedSection variant="editorial" />
 
       {/* Footer */}
       <footer className="py-12 px-4 bg-[#080707] border-t border-white/10 text-xs text-gray-400">
