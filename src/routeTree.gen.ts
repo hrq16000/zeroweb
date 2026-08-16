@@ -37,6 +37,7 @@ import { Route as RedesSociaisRouteImport } from './routes/redes-sociais'
 import { Route as QaEventsRouteImport } from './routes/qa-events'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PresencaDigitalRouteImport } from './routes/presenca-digital'
+import { Route as PortifolioRouteImport } from './routes/portifolio'
 import { Route as PoliticaPrivacidadeRouteImport } from './routes/politica-privacidade'
 import { Route as PlanosComparativoRouteImport } from './routes/planos-comparativo'
 import { Route as PlanosRouteImport } from './routes/planos'
@@ -93,6 +94,7 @@ import { Route as ServicosSlugRouteImport } from './routes/servicos.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ProfissionalSlugRouteImport } from './routes/profissional.$slug'
 import { Route as PortfolioRenataBeautyRouteImport } from './routes/portfolio.renata-beauty'
+import { Route as PortfolioR_beautyRouteImport } from './routes/portfolio.r_beauty'
 import { Route as PedidoIdRouteImport } from './routes/pedido.$id'
 import { Route as FSlugRouteImport } from './routes/f.$slug'
 import { Route as EstadosStateRouteImport } from './routes/estados.$state'
@@ -324,6 +326,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const PresencaDigitalRoute = PresencaDigitalRouteImport.update({
   id: '/presenca-digital',
   path: '/presenca-digital',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortifolioRoute = PortifolioRouteImport.update({
+  id: '/portifolio',
+  path: '/portifolio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaPrivacidadeRoute = PoliticaPrivacidadeRouteImport.update({
@@ -606,6 +613,11 @@ const ProfissionalSlugRoute = ProfissionalSlugRouteImport.update({
 const PortfolioRenataBeautyRoute = PortfolioRenataBeautyRouteImport.update({
   id: '/portfolio/renata-beauty',
   path: '/portfolio/renata-beauty',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioR_beautyRoute = PortfolioR_beautyRouteImport.update({
+  id: '/portfolio/r_beauty',
+  path: '/portfolio/r_beauty',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PedidoIdRoute = PedidoIdRouteImport.update({
@@ -1122,6 +1134,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof PlanosRoute
   '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/portifolio': typeof PortifolioRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -1174,6 +1187,7 @@ export interface FileRoutesByFullPath {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/r_beauty': typeof PortfolioR_beautyRoute
   '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
@@ -1295,6 +1309,7 @@ export interface FileRoutesByTo {
   '/planos': typeof PlanosRoute
   '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/portifolio': typeof PortifolioRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -1345,6 +1360,7 @@ export interface FileRoutesByTo {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/r_beauty': typeof PortfolioR_beautyRoute
   '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
@@ -1468,6 +1484,7 @@ export interface FileRoutesById {
   '/planos': typeof PlanosRoute
   '/planos-comparativo': typeof PlanosComparativoRoute
   '/politica-privacidade': typeof PoliticaPrivacidadeRoute
+  '/portifolio': typeof PortifolioRoute
   '/presenca-digital': typeof PresencaDigitalRoute
   '/privacidade': typeof PrivacidadeRoute
   '/qa-events': typeof QaEventsRoute
@@ -1520,6 +1537,7 @@ export interface FileRoutesById {
   '/estados/$state': typeof EstadosStateRoute
   '/f/$slug': typeof FSlugRoute
   '/pedido/$id': typeof PedidoIdRoute
+  '/portfolio/r_beauty': typeof PortfolioR_beautyRoute
   '/portfolio/renata-beauty': typeof PortfolioRenataBeautyRoute
   '/profissional/$slug': typeof ProfissionalSlugRoute
   '/r/$code': typeof RCodeRoute
@@ -1643,6 +1661,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/planos-comparativo'
     | '/politica-privacidade'
+    | '/portifolio'
     | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
@@ -1695,6 +1714,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/r_beauty'
     | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
@@ -1816,6 +1836,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/planos-comparativo'
     | '/politica-privacidade'
+    | '/portifolio'
     | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
@@ -1866,6 +1887,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/r_beauty'
     | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
@@ -1988,6 +2010,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/planos-comparativo'
     | '/politica-privacidade'
+    | '/portifolio'
     | '/presenca-digital'
     | '/privacidade'
     | '/qa-events'
@@ -2040,6 +2063,7 @@ export interface FileRouteTypes {
     | '/estados/$state'
     | '/f/$slug'
     | '/pedido/$id'
+    | '/portfolio/r_beauty'
     | '/portfolio/renata-beauty'
     | '/profissional/$slug'
     | '/r/$code'
@@ -2163,6 +2187,7 @@ export interface RootRouteChildren {
   PlanosRoute: typeof PlanosRoute
   PlanosComparativoRoute: typeof PlanosComparativoRoute
   PoliticaPrivacidadeRoute: typeof PoliticaPrivacidadeRoute
+  PortifolioRoute: typeof PortifolioRoute
   PresencaDigitalRoute: typeof PresencaDigitalRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   QaEventsRoute: typeof QaEventsRoute
@@ -2213,6 +2238,7 @@ export interface RootRouteChildren {
   EmpresaSlugRoute: typeof EmpresaSlugRoute
   FSlugRoute: typeof FSlugRoute
   PedidoIdRoute: typeof PedidoIdRoute
+  PortfolioR_beautyRoute: typeof PortfolioR_beautyRoute
   PortfolioRenataBeautyRoute: typeof PortfolioRenataBeautyRoute
   ProfissionalSlugRoute: typeof ProfissionalSlugRoute
   RCodeRoute: typeof RCodeRoute
@@ -2442,6 +2468,13 @@ declare module '@tanstack/react-router' {
       path: '/presenca-digital'
       fullPath: '/presenca-digital'
       preLoaderRoute: typeof PresencaDigitalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portifolio': {
+      id: '/portifolio'
+      path: '/portifolio'
+      fullPath: '/portifolio'
+      preLoaderRoute: typeof PortifolioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-privacidade': {
@@ -2834,6 +2867,13 @@ declare module '@tanstack/react-router' {
       path: '/portfolio/renata-beauty'
       fullPath: '/portfolio/renata-beauty'
       preLoaderRoute: typeof PortfolioRenataBeautyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/r_beauty': {
+      id: '/portfolio/r_beauty'
+      path: '/portfolio/r_beauty'
+      fullPath: '/portfolio/r_beauty'
+      preLoaderRoute: typeof PortfolioR_beautyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pedido/$id': {
@@ -3725,6 +3765,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlanosRoute: PlanosRoute,
   PlanosComparativoRoute: PlanosComparativoRoute,
   PoliticaPrivacidadeRoute: PoliticaPrivacidadeRoute,
+  PortifolioRoute: PortifolioRoute,
   PresencaDigitalRoute: PresencaDigitalRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   QaEventsRoute: QaEventsRoute,
@@ -3775,6 +3816,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmpresaSlugRoute: EmpresaSlugRoute,
   FSlugRoute: FSlugRoute,
   PedidoIdRoute: PedidoIdRoute,
+  PortfolioR_beautyRoute: PortfolioR_beautyRoute,
   PortfolioRenataBeautyRoute: PortfolioRenataBeautyRoute,
   ProfissionalSlugRoute: ProfissionalSlugRoute,
   RCodeRoute: RCodeRoute,
