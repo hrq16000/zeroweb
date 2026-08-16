@@ -101,13 +101,11 @@ export function BeautyBookingQuiz({
   };
 
   const choose = (field: keyof Omit<Answers, "note">, value: string) => {
-    setAnswers((current) => {
-      const next = { ...current, [field]: value };
-      const stepIndex = step + 1;
-      trackEvent("wa_funnel_step", { ...funnelContext, step_id: field, step_index: stepIndex });
-      void persistWaFunnelStep(stepIndex, next);
-      return next;
-    });
+    const next = { ...answers, [field]: value };
+    const stepIndex = step + 1;
+    setAnswers(next);
+    trackEvent("wa_funnel_step", { ...funnelContext, step_id: field, step_index: stepIndex });
+    void persistWaFunnelStep(stepIndex, next);
     setStep((current) => current + 1);
   };
 
