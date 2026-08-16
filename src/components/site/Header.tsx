@@ -18,6 +18,7 @@ import { FunnelCTAButton } from "@/components/funnel/FunnelCTAButton";
 const desktopNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
   { to: "/solucoes", label: "Soluções" },
+  { to: "/portfolio", label: "Portfólio" },
   { to: "/sobre", label: "Sobre" },
   { to: "/blog", label: "Blog" },
 ];
@@ -26,6 +27,7 @@ const desktopNav: { to: string; label: string }[] = [
 const mobileNav: { to: string; label: string }[] = [
   { to: "/", label: "Início" },
   { to: "/solucoes", label: "Soluções" },
+  { to: "/portfolio", label: "Portfólio" },
   { to: "/cases", label: "Cases" },
   { to: "/planos", label: "Planos" },
   { to: "/sobre", label: "Sobre" },
