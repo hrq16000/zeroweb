@@ -25,16 +25,12 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
+import { BeautyBookingQuiz } from "@/components/site/BeautyBookingQuiz";
 import { InstagramFeedSection } from "@/components/site/InstagramFeedSection";
 
-const PHONE_NUMBER = "554196048639";
 const INSTAGRAM_URL = "https://www.instagram.com/renatabeautystudiio/";
 const ADDRESS = "Rua Rondônia, 300 - Boneca do Iguaçu";
 const MAPS_URL = "https://maps.google.com/?q=Rua+Rond%C3%B4nia,+300+-+Boneca+do+Igua%C3%A7u";
-
-function getWhatsAppUrl(text: string) {
-  return `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(text)}`;
-}
 
 export function RenataBeautyView() {
   const [selectedService, setSelectedService] = useState<string>("egipcio");
@@ -184,14 +180,9 @@ export function RenataBeautyView() {
             </span>
             <span>Cílios Volume Egípcio ou Brasileiro por apenas <strong>R$ 100,00</strong>!</span>
           </div>
-          <a 
-            href={getWhatsAppUrl("Olá Renata! Quero agendar os Cílios na Promoção de Inauguração de R$ 100 ✨")}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1 font-bold text-yellow-200 hover:text-white transition-all hover:translate-x-1 text-xs uppercase tracking-wider"
-          >
+          <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" service="Cílios — Volume Egípcio ou Brasileiro" className="hidden sm:inline-flex items-center gap-1 font-bold text-yellow-200 hover:text-white transition-all hover:translate-x-1 text-xs uppercase tracking-wider">
             Garantir Horário <ArrowRight className="w-3.5 h-3.5" />
-          </a>
+          </BeautyBookingQuiz>
         </div>
       </div>
 
@@ -223,15 +214,10 @@ export function RenataBeautyView() {
             <a href="#localizacao" className="hover:text-pink-400 transition-colors">Localização</a>
           </nav>
 
-          <a 
-            href={getWhatsAppUrl("Olá Renata! Vim pelo site e gostaria de agendar um horário no novo espaço ✨")}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#E6007A] to-[#FF2E93] hover:from-[#FF2E93] hover:to-[#E6007A] text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-pink-600/40 hover:scale-105 active:scale-95 transition-all"
-          >
+          <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" service="Sobrancelhas e Spa" className="inline-flex items-center gap-2 bg-gradient-to-r from-[#E6007A] to-[#FF2E93] hover:from-[#FF2E93] hover:to-[#E6007A] text-white px-5 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-pink-600/40 hover:scale-105 active:scale-95 transition-all">
             <MessageCircle className="w-4 h-4 fill-white" />
             <span>Agendar no WhatsApp</span>
-          </a>
+          </BeautyBookingQuiz>
 
         </div>
       </header>
@@ -282,15 +268,10 @@ export function RenataBeautyView() {
                   </div>
                 </div>
 
-                <a 
-                  href={getWhatsAppUrl("Olá Renata! Quero garantir minha vaga na Promoção de Inauguração dos Cílios por R$ 100! 💖")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-6 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-green-500/30 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
-                >
+                <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" service="Cílios — Volume Egípcio ou Brasileiro" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-6 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-green-500/30 hover:scale-105 active:scale-95 transition-all whitespace-nowrap">
                   <MessageCircle className="w-4 h-4 fill-white" />
                   Garantir Horário
-                </a>
+                </BeautyBookingQuiz>
               </div>
             </div>
 
@@ -436,15 +417,10 @@ export function RenataBeautyView() {
                     </div>
                   </div>
 
-                  <a 
-                    href={getWhatsAppUrl(`Olá Renata! Quero agendar ${currentServiceObj.name} na Promoção de Inauguração por R$ ${currentServiceObj.promoPrice}! ✨`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95 transition-all"
-                  >
+                  <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" service={currentServiceObj.name} className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 hover:scale-105 active:scale-95 transition-all">
                     <MessageCircle className="w-4 h-4 fill-white" />
                     <span>Agendar Agora</span>
-                  </a>
+                  </BeautyBookingQuiz>
                 </div>
               </div>
 
@@ -705,15 +681,10 @@ export function RenataBeautyView() {
             Aproveite a promoção especial de inauguração e agende seu horário com quem ama cuidar de cada detalhe.
           </p>
           <div className="pt-2">
-            <a 
-              href={getWhatsAppUrl("Olá Renata! Quero garantir meu horário na promoção de inauguração! ✨")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-white text-[#12080E] hover:bg-yellow-100 px-8 py-4 rounded-full font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all"
-            >
+            <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" className="inline-flex items-center gap-2 bg-white text-[#12080E] hover:bg-yellow-100 px-8 py-4 rounded-full font-bold text-base shadow-2xl hover:scale-105 active:scale-95 transition-all">
               <MessageCircle className="w-5 h-5 text-[#25D366] fill-[#25D366]" />
               Falar Direto no WhatsApp
-            </a>
+            </BeautyBookingQuiz>
           </div>
         </div>
       </section>
@@ -734,9 +705,9 @@ export function RenataBeautyView() {
               <Instagram className="w-4 h-4" /> @renatabeautystudiio
             </a>
             <span>•</span>
-            <a href={getWhatsAppUrl("Olá Renata!")} target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 flex items-center gap-1.5">
+            <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" className="hover:text-pink-400 flex items-center gap-1.5">
               <Phone className="w-4 h-4" /> +55 41 9604-8639
-            </a>
+            </BeautyBookingQuiz>
           </div>
 
           <div className="text-[11px] text-gray-400">
@@ -751,16 +722,10 @@ export function RenataBeautyView() {
         <div className="hidden sm:block bg-[#1A0C16]/95 backdrop-blur-md border border-pink-500/30 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-xl group-hover:block transition-all">
           <span className="text-pink-400">Online agora</span> · Agende no WhatsApp ✨
         </div>
-        <a 
-          href={getWhatsAppUrl("Olá Renata! Quero aproveitar a promoção de inauguração de R$ 100! 💖")}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center justify-center shadow-2xl shadow-green-500/50 hover:scale-110 active:scale-95 transition-transform relative cursor-pointer"
-          aria-label="Agendar no WhatsApp"
-        >
+        <BeautyBookingQuiz studioName="Renata Beauty Studio" theme="pink" service="Sobrancelhas e Spa" className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20BA5A] text-white flex items-center justify-center shadow-2xl shadow-green-500/50 hover:scale-110 active:scale-95 transition-transform relative cursor-pointer" ariaLabel="Agendar no WhatsApp">
           <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-500 border-2 border-[#0E090C] flex items-center justify-center text-[9px] font-bold">1</span>
           <MessageCircle className="w-7 h-7 fill-white" />
-        </a>
+        </BeautyBookingQuiz>
       </div>
 
       <PortfolioUpsellPopup pageName="renata-beauty" />

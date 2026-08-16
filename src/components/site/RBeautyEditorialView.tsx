@@ -16,24 +16,18 @@ import {
   ChevronDown, 
   Compass, 
   ArrowRight,
-  Sliders,
   CheckCircle2
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { PortfolioUpsellPopup } from "@/components/site/PortfolioUpsellPopup";
+import { BeautyBookingQuiz } from "@/components/site/BeautyBookingQuiz";
 import { InstagramFeedSection } from "@/components/site/InstagramFeedSection";
 
-const PHONE_NUMBER = "554196048639";
 const INSTAGRAM_URL = "https://www.instagram.com/renatabeautystudiio/";
 const ADDRESS = "Rua Rondônia, 300 - Boneca do Iguaçu";
 const MAPS_URL = "https://maps.google.com/?q=Rua+Rond%C3%B4nia,+300+-+Boneca+do+Igua%C3%A7u";
 
-function getWhatsAppUrl(text: string) {
-  return `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(text)}`;
-}
-
 export function RBeautyEditorialView() {
-  const [sliderPosition, setSliderPosition] = useState(50);
   const [activeTab, setActiveTab] = useState<"cilios" | "unhas" | "sobrancelhas">("cilios");
 
   return (
@@ -71,15 +65,10 @@ export function RBeautyEditorialView() {
             <a href="#localizacao" className="hover:text-[#D4AF37] transition-colors">Localização</a>
           </nav>
 
-          <a 
-            href={getWhatsAppUrl("Olá Renata! Vim pela versão R_Beauty e gostaria de agendar uma sessão exclusiva ✨")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#E5C378] text-black px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg shadow-[#D4AF37]/20 hover:scale-105 transition-all"
-          >
+          <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" service="Sobrancelhas e Spa" className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#E5C378] text-black px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg shadow-[#D4AF37]/20 hover:scale-105 transition-all">
             <MessageCircle className="w-4 h-4 fill-black" />
             <span>Agendamento VIP</span>
-          </a>
+          </BeautyBookingQuiz>
 
         </div>
       </header>
@@ -124,15 +113,10 @@ export function RBeautyEditorialView() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <a 
-                  href={getWhatsAppUrl("Olá Renata! Quero reservar meu horário com valor promocional de R$ 100 no R_Beauty ✨")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-5 py-3 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-105 transition-all"
-                >
+                <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" className="flex-1 inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BA5A] text-white px-5 py-3 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-105 transition-all">
                   <MessageCircle className="w-4 h-4 fill-white" />
                   Reservar Meu Horário
-                </a>
+                </BeautyBookingQuiz>
                 <a 
                   href="#comparador"
                   className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider border border-white/10 transition-all"
@@ -204,61 +188,26 @@ export function RBeautyEditorialView() {
           <div className="text-center space-y-3 max-w-xl mx-auto">
             <span className="text-xs font-bold tracking-[0.3em] text-[#D4AF37] uppercase">Transformação Real</span>
             <h2 className="text-3xl sm:text-4xl font-serif font-light text-white">
-              Arraste para comparar o efeito antes e depois
+              Conheça o resultado do Volume Egípcio
             </h2>
             <p className="text-gray-400 text-sm">
-              Veja como o mapeamento correto e a curvatura precisa valorizam o formato natural do olhar.
+              Cada aplicação é personalizada com curvatura, volume e mapeamento pensados para valorizar o seu olhar.
             </p>
           </div>
 
-          {/* Interactive Before/After Card */}
-          <div className="max-w-3xl mx-auto rounded-3xl overflow-hidden border border-[#D4AF37]/30 shadow-2xl relative select-none h-80 sm:h-96">
-            
-            {/* After Image (Full background) */}
-            <img 
-              src="/images/volume-egipcio-fios-w.jpg" 
-              alt="Cílios Depois" 
+          {/* Resultado em destaque */}
+          <div className="max-w-3xl mx-auto rounded-3xl overflow-hidden border border-[#D4AF37]/30 shadow-2xl relative h-80 sm:h-96">
+            <img
+              src="/images/volume-egipcio-fios-w.jpg"
+              alt="Resultado de extensão de cílios Volume Egípcio"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <span className="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-[#D4AF37]/30 z-10">
-              DEPOIS (Volume Egípcio)
-            </span>
-
-            {/* Before Image (Clipped) */}
-            <div 
-              className="absolute inset-y-0 left-0 overflow-hidden" 
-              style={{ width: `${sliderPosition}%` }}
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1200&q=80" 
-                alt="Cílios Antes" 
-                className="absolute inset-0 w-[800px] sm:w-[1000px] max-w-none h-full object-cover"
-              />
-              <span className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-gray-300 border border-white/20 z-10">
-                ANTES (Fios Naturais)
-              </span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <span className="inline-flex rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-black">RESULTADO EM DESTAQUE</span>
+              <h3 className="mt-3 text-2xl font-serif text-white">Volume Egípcio com leveza e definição</h3>
+              <p className="mt-2 max-w-xl text-sm text-gray-200">O efeito final é personalizado após uma avaliação do olhar e da preferência de cada cliente.</p>
             </div>
-
-            {/* Drag Divider Line */}
-            <div 
-              className="absolute inset-y-0 w-1 bg-[#D4AF37] cursor-ew-resize z-20 shadow-[0_0_15px_#D4AF37]"
-              style={{ left: `${sliderPosition}%` }}
-            >
-              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#D4AF37] text-black flex items-center justify-center shadow-lg">
-                <Sliders className="w-4 h-4" />
-              </div>
-            </div>
-
-            {/* Hidden native range input for frictionless touch & mouse interaction */}
-            <input 
-              type="range" 
-              min="5" 
-              max="95" 
-              value={sliderPosition} 
-              onChange={(e) => setSliderPosition(Number(e.target.value))}
-              className="absolute inset-0 opacity-0 cursor-ew-resize z-30 w-full h-full"
-              aria-label="Controle de antes e depois"
-            />
           </div>
 
         </div>
@@ -290,14 +239,9 @@ export function RBeautyEditorialView() {
                   A partir de R$ 100,00 na inauguração
                 </div>
               </div>
-              <a 
-                href={getWhatsAppUrl("Olá! Gostaria de agendar Cílios no R_Beauty Studio ✨")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all"
-              >
+              <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" service="Cílios — Volume Egípcio ou Brasileiro" className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all">
                 Agendar Horário <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </BeautyBookingQuiz>
             </div>
 
             <div className="p-8 rounded-3xl bg-[#171315] border border-white/10 hover:border-[#D4AF37]/40 transition-all flex flex-col justify-between space-y-6">
@@ -313,14 +257,9 @@ export function RBeautyEditorialView() {
                   Alongamento, Manutenção & Blindagem
                 </div>
               </div>
-              <a 
-                href={getWhatsAppUrl("Olá! Gostaria de agendar Alongamento de Unhas no R_Beauty Studio ✨")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all"
-              >
+              <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" service="Alongamento de unhas" className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all">
                 Agendar Horário <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </BeautyBookingQuiz>
             </div>
 
             <div className="p-8 rounded-3xl bg-[#171315] border border-white/10 hover:border-[#D4AF37]/40 transition-all flex flex-col justify-between space-y-6">
@@ -336,14 +275,9 @@ export function RBeautyEditorialView() {
                   Design, Henna & Spa dos Pés
                 </div>
               </div>
-              <a 
-                href={getWhatsAppUrl("Olá! Gostaria de agendar Sobrancelhas / Spa no R_Beauty Studio ✨")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all"
-              >
+              <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" service="Sobrancelhas e Spa" className="w-full inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-[#D4AF37] hover:text-black text-white py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all">
                 Agendar Horário <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </BeautyBookingQuiz>
             </div>
 
           </div>
@@ -366,9 +300,9 @@ export function RBeautyEditorialView() {
               Instagram @renatabeautystudiio
             </a>
             <span>•</span>
-            <a href={getWhatsAppUrl("Olá Renata!")} target="_blank" rel="noopener noreferrer" className="hover:text-[#D4AF37]">
+            <BeautyBookingQuiz studioName="R_Beauty Haute Studio" theme="gold" className="hover:text-[#D4AF37]">
               WhatsApp Direct
-            </a>
+            </BeautyBookingQuiz>
           </div>
 
           <div className="text-[11px]">
