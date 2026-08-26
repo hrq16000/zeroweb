@@ -30,9 +30,9 @@ const services = [
 ];
 
 const clients = [
-  "Dom Meneghetto", "Interage", "Nutri Linda", "Brotherss", "Pistache", "MP Elétricos",
+  "Dom Meneguetto", "Interage", "Nutri Linda", "Brotherss", "Pistache", "MP Elétricos",
   "Claro", "Ortobom", "Personale", "Era Uma Vez", "Apolar", "Abaré Pizzaria",
-  "Curitibana", "Dinamac", "Não + Pelo", "Frango Americano", "5àSec", "Famiglia Merlini",
+  "Curitibana", "Dinamac", "Não + Pelo", "Frango Americano", "5àSec", "Famigla Merlini",
   "Paraná Banco", "Pé Sapeca", "Celeiro", "Kumon", "Eskimo", "Natura",
   "Casas Bahia", "Ligga Internet", "Ateky Internet", "O Boticário",
 ];
