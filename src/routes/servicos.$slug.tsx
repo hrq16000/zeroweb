@@ -185,12 +185,74 @@ export const Route = createFileRoute("/servicos/$slug")({
     };
   },
   component: ServicePage,
-  notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center">
-      <Link to="/" className="text-primary underline">Voltar ao início</Link>
-    </div>
-  ),
+  notFoundComponent: ServiceNotFound,
 });
+
+function ServiceNotFound() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main className="pt-32 pb-20 lg:pt-40">
+        <section className="mx-auto max-w-5xl px-5 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-hero px-6 py-12 text-center shadow-elegant sm:px-12 sm:py-16">
+            <div className="absolute inset-0 bg-mesh opacity-40 pointer-events-none" aria-hidden="true" />
+            <div className="relative">
+              <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                Erro 404
+              </span>
+              <h1 className="mt-5 text-3xl font-bold tracking-tight sm:text-5xl">
+                Esse serviço mudou de endereço
+              </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                O link que você acessou pode estar antigo ou o serviço pode ter sido reorganizado. Você ainda pode encontrar a solução certa para o seu negócio.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Link
+                  to="/servicos"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow-primary transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  Buscar nos serviços <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  to="/"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-6 py-3 font-semibold transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  Voltar ao início
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {[
+              { to: "/solucoes", title: "Soluções sob medida", text: "Conte seu desafio e encontre um caminho personalizado." },
+              { to: "/portfolio", title: "Ver portfólio", text: "Conheça alguns projetos e experiências já publicados." },
+              { to: "/contato", title: "Falar com a 0WEB", text: "Nossa equipe ajuda você a escolher o próximo passo." },
+            ].map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="group rounded-2xl border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <h2 className="font-semibold">{item.title}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                  Acessar <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Se você veio de um link salvo, atualize-o pelo catálogo atual de serviços.
+          </p>
+        </section>
+      </main>
+      <Footer />
+      <WhatsAppFloat />
+    </div>
+  );
+}
 
 function ServicePage() {
   const data = Route.useLoaderData() as PublicServiceFull;
