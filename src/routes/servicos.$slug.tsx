@@ -253,7 +253,6 @@ function ServiceNotFound() {
     </div>
   );
 }
-});
 
 function ServicePage() {
   const data = Route.useLoaderData() as PublicServiceFull;
