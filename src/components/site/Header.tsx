@@ -128,7 +128,7 @@ export function Header() {
         <Link to="/" aria-label="0WEB — Início" className="flex items-center">
           <img
             src={logoAsset.url}
-            alt="0WEB — do zero ao digital"
+            alt="0WEB — do zero à web"
             width={920}
             height={250}
             className={`w-auto transition-all duration-300 ${
