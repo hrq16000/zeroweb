@@ -59,6 +59,9 @@ export const Route = createFileRoute("/servicos/$slug")({
     if (params.slug === "site-24h") {
       throw redirect({ to: "/servicos/site-express", statusCode: 301, replace: true });
     }
+    if (params.slug === "dyzpromo") {
+      throw redirect({ to: "/dyzpromo", statusCode: 301, replace: true });
+    }
   },
   loader: async ({ params }) => {
     const { service } = await getServicePublic({ data: { slug: params.slug } });
