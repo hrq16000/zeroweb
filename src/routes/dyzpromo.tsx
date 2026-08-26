@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -48,6 +48,9 @@ function whatsappUrl() {
 }
 
 export const Route = createFileRoute("/dyzpromo")({
+  beforeLoad: () => {
+    throw redirect({ to: "/portfolio/dyzpromo", statusCode: 301, replace: true });
+  },
   head: () => {
     const title = "D.Y.Z Promo · Divulgação e panfletagem em Curitiba";
     const description =
@@ -92,7 +95,7 @@ export const Route = createFileRoute("/dyzpromo")({
   component: DyzPromoPage,
 });
 
-function DyzPromoPage() {
+export function DyzPromoPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
