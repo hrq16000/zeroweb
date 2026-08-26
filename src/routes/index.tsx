@@ -48,7 +48,7 @@ const homeSectionsQuery = queryOptions({
   staleTime: 60_000,
 });
 
-const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
+const TITLE = "0WEB · Do zero à web: sites, IA, sistemas e marketing digital";
 const DESC =
   "Do zero à web: criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam empresas em máquinas de crescimento.";
 
