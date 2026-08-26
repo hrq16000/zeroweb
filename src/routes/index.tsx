@@ -50,7 +50,7 @@ const homeSectionsQuery = queryOptions({
 
 const TITLE = "0WEB · Criação de Sites, IA e Marketing Digital";
 const DESC =
-  "Criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam empresas em máquinas de crescimento.";
+  "Do zero à web: criamos sites, automações, sistemas e estratégias digitais que atraem clientes, aumentam vendas e transformam empresas em máquinas de crescimento.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
