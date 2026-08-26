@@ -47,7 +47,7 @@ export function Footer() {
               <BrandLogo size={36} className="brightness-0 invert" />
             </Link>
             <p className="mt-4 text-background/70 max-w-sm leading-relaxed">
-              Tecnologia que gera crescimento. Sites, IA e marketing digital para empresas que querem liderar.
+              Tecnologia que gera crescimento. Do zero à web: sites, sistemas, automações, IA e marketing digital para empresas que querem liderar.
             </p>
 
             <div className="mt-6 text-sm text-background/80">
