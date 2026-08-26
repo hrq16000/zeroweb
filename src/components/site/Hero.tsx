@@ -131,6 +131,9 @@ export function Hero() {
           >
             {copy.sub}
           </motion.p>
+          <p className="mt-4 text-sm font-medium text-foreground/75 max-w-xl">
+            Do zero à web: presença digital, vendas, automações e sistemas conectados para o próximo nível do seu negócio.
+          </p>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
